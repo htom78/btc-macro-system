@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-25T01:25:46.223192+00:00",
+  "generated_at": "2026-05-25T02:08:39.683881+00:00",
   "start_date": "2014-01-01",
   "fetch_errors": {},
   "indicators": {
@@ -360,7 +360,7 @@
   "disclaimer": "Research dashboard only. Not investment advice.",
   "history": {
     "enabled": true,
-    "path": "/Users/tom/Documents/投资思考/btc-macro-system/data/history/observations.jsonl",
+    "path": "data/history/observations.jsonl",
     "count": 1,
     "first_market_date": "2026-05-24",
     "last_market_date": "2026-05-24"

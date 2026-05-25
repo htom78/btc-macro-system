@@ -626,6 +626,15 @@ def write_jsonl(path: Path, entries: list[dict[str, Any]]) -> None:
             f.write(json.dumps(entry, ensure_ascii=False, sort_keys=True) + "\n")
 
 
+def display_path(path: Path | None) -> str | None:
+    if path is None:
+        return None
+    try:
+        return str(path.resolve().relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
 def build_history_entry(latest_json: dict[str, Any]) -> dict[str, Any]:
     indicators = latest_json["indicators"]
     return {
@@ -681,7 +690,7 @@ def upsert_history(path: Path, entry: dict[str, Any]) -> list[dict[str, Any]]:
 def summarize_history(entries: list[dict[str, Any]], path: Path | None) -> dict[str, Any]:
     if not entries:
         return {
-            "path": str(path) if path else None,
+            "path": display_path(path),
             "count": 0,
             "first_market_date": None,
             "last_market_date": None,
@@ -693,7 +702,7 @@ def summarize_history(entries: list[dict[str, Any]], path: Path | None) -> dict[
 
     latest_entry = entries[-1]
     return {
-        "path": str(path) if path else None,
+        "path": display_path(path),
         "count": len(entries),
         "first_market_date": entries[0].get("market_date"),
         "last_market_date": latest_entry.get("market_date"),
