@@ -1,0 +1,77 @@
+name: Update BTC Macro Report
+
+on:
+  workflow_dispatch:
+  schedule:
+    # GitHub cron is UTC. This is 08:10 in Asia/Tokyo.
+    - cron: "10 23 * * *"
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: btc-macro-report
+  cancel-in-progress: false
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate report
+        run: python3 btc-macro-system/run.py --force
+
+      - name: Commit updated history
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add btc-macro-system/outputs/report.html btc-macro-system/outputs/latest.json
+          git add -f btc-macro-system/data/history/observations.jsonl
+          if git diff --cached --quiet; then
+            echo "No report changes to commit."
+          else
+            git commit -m "Update BTC macro report"
+            git push
+          fi
+
+      - name: Prepare Pages artifact
+        run: |
+          rm -rf _site
+          mkdir -p _site
+          cp btc-macro-system/outputs/report.html _site/index.html
+          cp btc-macro-system/outputs/latest.json _site/latest.json
+          if [ -f btc-macro-system/data/history/observations.jsonl ]; then
+            cp btc-macro-system/data/history/observations.jsonl _site/observations.jsonl
+          fi
+          touch _site/.nojekyll
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

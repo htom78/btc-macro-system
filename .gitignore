@@ -1,0 +1,8 @@
+.omx/
+__pycache__/
+*.pyc
+btc-macro-system/data/raw/
+btc-macro-system/data/history/*.jsonl
+btc-macro-system/logs/*.log
+btc-macro-system/logs/*.err
+btc-macro-system/.update.lock/

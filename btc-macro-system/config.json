@@ -1,0 +1,84 @@
+{
+  "start_date": "2014-01-01",
+  "fred": {
+    "base_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}",
+    "series": {
+      "CPIAUCSL": {
+        "label": "CPI",
+        "kind": "level",
+        "group": "inflation"
+      },
+      "FEDFUNDS": {
+        "label": "Fed funds rate",
+        "kind": "rate",
+        "group": "policy"
+      },
+      "DGS10": {
+        "label": "10Y Treasury yield",
+        "kind": "rate",
+        "group": "rates"
+      },
+      "DFII10": {
+        "label": "10Y real yield",
+        "kind": "rate",
+        "group": "rates"
+      },
+      "T10YIE": {
+        "label": "10Y breakeven inflation",
+        "kind": "rate",
+        "group": "inflation"
+      },
+      "T10Y2Y": {
+        "label": "10Y-2Y Treasury spread",
+        "kind": "rate",
+        "group": "rates"
+      },
+      "M2SL": {
+        "label": "M2 money stock",
+        "kind": "level",
+        "group": "liquidity"
+      },
+      "WALCL": {
+        "label": "Fed balance sheet",
+        "kind": "level",
+        "group": "liquidity"
+      },
+      "DTWEXBGS": {
+        "label": "Broad dollar index",
+        "kind": "index",
+        "group": "dollar"
+      },
+      "VIXCLS": {
+        "label": "VIX",
+        "kind": "index",
+        "group": "risk"
+      },
+      "BAMLH0A0HYM2": {
+        "label": "High yield OAS",
+        "kind": "rate",
+        "group": "risk"
+      },
+      "GFDEGDQ188S": {
+        "label": "Gross federal debt/GDP",
+        "kind": "ratio",
+        "group": "debt"
+      },
+      "FYGFGDQ188S": {
+        "label": "Public federal debt/GDP",
+        "kind": "ratio",
+        "group": "debt"
+      },
+      "FYOIGDA188S": {
+        "label": "Federal interest outlays/GDP",
+        "kind": "ratio",
+        "group": "debt"
+      }
+    }
+  },
+  "btc": {
+    "source": "blockchain_info",
+    "url": "https://api.blockchain.info/charts/market-price?timespan=all&format=json&sampled=false",
+    "fallback_url": "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=365&interval=daily"
+  },
+  "correlation_lags_days": [0, 30, 60, 90]
+}
