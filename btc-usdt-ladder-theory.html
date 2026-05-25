@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BTC/USDT 阶梯再平衡：理论基础</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f2e9;
+      --paper-2: #fffaf0;
+      --ink: #161715;
+      --muted: #67635c;
+      --line: rgba(22, 23, 21, 0.16);
+      --panel: rgba(255, 250, 240, 0.84);
+      --green: #178f6a;
+      --green-soft: rgba(23, 143, 106, 0.14);
+      --amber: #be6a18;
+      --amber-soft: rgba(190, 106, 24, 0.16);
+      --red: #c63f3f;
+      --red-soft: rgba(198, 63, 63, 0.14);
+      --cyan: #1b83a4;
+      --blue: #2f62a3;
+      --shadow: 0 18px 55px rgba(26, 24, 19, 0.12);
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(22, 23, 21, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(22, 23, 21, 0.03) 1px, transparent 1px) 0 0 / 42px 42px,
+        radial-gradient(circle at 15% 10%, rgba(247, 147, 26, 0.15), transparent 28%),
+        radial-gradient(circle at 88% 2%, rgba(27, 131, 164, 0.12), transparent 26%),
+        var(--paper);
+    }
+
+    a { color: inherit; }
+
+    .page {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 26px 0 42px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 24px;
+      align-items: end;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--amber);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 880px;
+      margin: 0;
+      font: 760 clamp(34px, 5.6vw, 72px)/0.94 var(--serif);
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      margin: 14px 0 0;
+      max-width: 790px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .hero-actions {
+      display: grid;
+      gap: 10px;
+      justify-items: start;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 250, 240, 0.82);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 780;
+      text-decoration: none;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(22, 23, 21, 0.34);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .button.primary {
+      color: var(--paper-2);
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+
+    .notice {
+      margin: 18px 0 0;
+      padding: 12px 14px;
+      border: 1px solid rgba(190, 106, 24, 0.24);
+      border-radius: 8px;
+      background: var(--amber-soft);
+      color: #77420f;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+      margin-top: 22px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .toc-title {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font: 800 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .toc a {
+      display: block;
+      padding: 9px 0;
+      border-top: 1px solid rgba(22, 23, 21, 0.08);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 720;
+      text-decoration: none;
+    }
+
+    .content {
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .section {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      overflow: hidden;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font: 760 27px/1.15 var(--serif);
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 22px 0 9px;
+      font: 780 15px/1.2 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    p {
+      margin: 0 0 13px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.72;
+    }
+
+    strong { color: var(--ink); }
+
+    .formula {
+      margin: 14px 0;
+      padding: 14px;
+      border: 1px solid rgba(22, 23, 21, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.48);
+      color: var(--ink);
+      font: 760 15px/1.65 var(--mono);
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .card {
+      min-height: 142px;
+      padding: 15px;
+      border: 1px solid rgba(22, 23, 21, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.46);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: var(--ink);
+    }
+
+    .card p {
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    .state-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .state {
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.48);
+      color: var(--ink);
+      font: 780 12px/1 var(--mono);
+    }
+
+    .state.blue { background: rgba(47, 98, 163, 0.13); color: var(--blue); }
+    .state.amber { background: var(--amber-soft); color: var(--amber); }
+    .state.green { background: var(--green-soft); color: var(--green); }
+
+    .mode-table {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 142px minmax(0, 1fr) 110px;
+      gap: 12px;
+      align-items: center;
+      min-height: 58px;
+      padding: 11px 12px;
+      border: 1px solid rgba(22, 23, 21, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.46);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .mode-row b {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    .tag {
+      text-align: right;
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .refs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .ref {
+      display: grid;
+      gap: 8px;
+      min-height: 150px;
+      padding: 15px;
+      border: 1px solid rgba(22, 23, 21, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.46);
+      text-decoration: none;
+    }
+
+    .ref span {
+      color: var(--amber);
+      font: 780 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .ref strong {
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .ref em {
+      color: var(--muted);
+      font-size: 13px;
+      font-style: normal;
+      line-height: 1.5;
+    }
+
+    .ref:hover {
+      border-color: rgba(22, 23, 21, 0.34);
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    @media (max-width: 920px) {
+      .hero, .layout, .grid, .refs { grid-template-columns: 1fr; }
+      .toc { position: static; }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100vw - 20px, 620px);
+        padding-top: 18px;
+      }
+
+      .section { padding: 18px; }
+      .mode-row { grid-template-columns: 1fr; }
+      .tag { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">BTC Treasury Ladder Theory</p>
+        <h1>BTC/USDT 阶梯再平衡：理论基础</h1>
+        <p class="hero-copy">这套模型面向“核心目标是囤 BTC”的人：核心仓不猜顶，战术仓在 ATH 之后分层换成 USDT；如果之后出现深度回撤，再用这些 USDT 分层买回 BTC。</p>
+        <p class="notice">页面示例使用 2026-05-25 通过 CoinGecko API 校验的数据：BTC ATH 约为 126,080 美元，时间为 2025-10-06。后续价格和 ATH 会变化，策略参数应按实时数据重算。</p>
+      </div>
+      <nav class="hero-actions" aria-label="页面链接">
+        <a class="button primary" href="btc-usdt-ladder-demo.html">返回动态演示</a>
+        <a class="button" href="price-ladder-short-theory.html">查看空头阶梯理论</a>
+        <a class="button" href="#references">查看参考链接</a>
+      </nav>
+    </header>
+
+    <div class="layout">
+      <aside class="toc" aria-label="目录">
+        <p class="toc-title">Contents</p>
+        <a href="#model">核心模型</a>
+        <a href="#ath">ATH 不是顶部</a>
+        <a href="#treasury">核心仓与战术仓</a>
+        <a href="#sell">卖出阶梯</a>
+        <a href="#buyback">买回阶梯</a>
+        <a href="#risks">风险边界</a>
+        <a href="#references">参考链接</a>
+      </aside>
+
+      <article class="content">
+        <section class="section" id="model">
+          <h2>1. 核心模型</h2>
+          <p>小币合约空头模型关心的是空头仓位。BTC/USDT 模型关心的是资产结构：你手里有多少 BTC，多少 USDT，以及这些仓位分别承担什么任务。</p>
+          <div class="formula">价格 P + 历史高点 ATH + 回撤状态 D -> BTC 仓位 B 与 USDT 仓位 U
+
+B, U = f(P, ATH, D, R)</div>
+          <p>这里的目标不是“卖在最高点”，而是：上涨进入狂热区时降低战术风险，下跌进入折扣区时恢复或增加 BTC 数量。</p>
+        </section>
+
+        <section class="section" id="ath">
+          <h2>2. ATH 不是顶部</h2>
+          <p><strong>ATH 是历史最高点，不是未来最高点。</strong>牛市真正强的时候，突破旧 ATH 往往意味着进入价格发现区。到 ATH 就全卖，最大的风险不是亏钱，而是被趋势甩下车。</p>
+          <div class="state-line" aria-label="价格状态">
+            <span class="state blue">接近旧 ATH：提醒</span>
+            <span class="state amber">突破 ATH：战术减仓</span>
+            <span class="state green">高点回撤：分层买回</span>
+          </div>
+          <p>所以更合理的处理是：旧 ATH 附近提醒，ATH 上方分层卖出战术仓，而不是把所有 BTC 一次性换成 USDT。</p>
+        </section>
+
+        <section class="section" id="treasury">
+          <h2>3. 核心仓与战术仓</h2>
+          <p>如果你的核心目标是囤 BTC，仓位最好分成两层。</p>
+          <div class="grid">
+            <div class="card">
+              <h3>核心 BTC 仓</h3>
+              <p>长期不动，例如 60%-80%。它负责穿越周期，避免你在真正的大趋势里彻底踏空。</p>
+            </div>
+            <div class="card">
+              <h3>战术 BTC 仓</h3>
+              <p>用于高位分层换成 USDT、深跌分层买回 BTC。它负责改善周期内的风险和现金流。</p>
+            </div>
+          </div>
+          <div class="formula">总 BTC = 核心 BTC + 战术 BTC
+
+核心 BTC：不参与 ATH 清仓
+战术 BTC：按价格阶梯卖出，按回撤阶梯买回</div>
+        </section>
+
+        <section class="section" id="sell">
+          <h2>4. ATH 上方卖出阶梯</h2>
+          <p>卖出阶梯可以用旧 ATH 作为锚点，再按百分比往上展开。每一层只卖战术仓的一部分。</p>
+          <div class="formula">卖出层：
+S_i = ATH * (1 + a)^i
+
+例：ATH = 126,080, a = 15%
+126,080 / 144,992 / 166,741 / 191,752</div>
+          <p>这样做的含义是：越进入价格发现区，越把部分战术 BTC 转成 USDT，但核心仓继续保留上行参与权。</p>
+        </section>
+
+        <section class="section" id="buyback">
+          <h2>5. 高点回撤买回阶梯</h2>
+          <p>买回不应该只看旧 ATH，而应该看突破后形成的阶段高点。因为如果 BTC 从 126k 涨到 180k，再跌回 150k，它已经回撤不少，但仍高于旧 ATH。</p>
+          <div class="formula">买回层：
+B_i = Peak * (1 - d * i)
+
+例：阶段高点 Peak = 180,000, d = 18%
+147,600 / 115,200 / 82,800 / 50,400</div>
+          <p>如果之前在高位卖出 0.05 BTC 得到 USDT，之后用同一笔 USDT 在更低价买回，就可能买回超过 0.05 BTC。模型的关键是用“已卖出的战术资金”买回，而不是无限加仓。</p>
+        </section>
+
+        <section class="section" id="risks">
+          <h2>6. 风险边界</h2>
+          <p>BTC/USDT 阶梯再平衡比合约做空温和，但不是无风险。它的主要风险是踏空、买不回来、USDT 与交易所风险、税务和手续费。</p>
+          <div class="mode-table">
+            <div class="mode-row">
+              <b>踏空风险</b>
+              <span>卖出后价格继续上涨。解决方法不是不卖，而是保留核心 BTC 仓。</span>
+              <span class="tag">核心仓</span>
+            </div>
+            <div class="mode-row">
+              <b>买不回来</b>
+              <span>牛市只浅回调，不到买回层。解决方法是买回层不要过度贪婪。</span>
+              <span class="tag">回撤层</span>
+            </div>
+            <div class="mode-row">
+              <b>稳定币风险</b>
+              <span>USDT 有稳定币、托管、交易所和链上转移风险。它不是无风险现金。</span>
+              <span class="tag">分散</span>
+            </div>
+            <div class="mode-row">
+              <b>过度交易</b>
+              <span>层数太密会增加手续费、税务复杂度和心理负担。</span>
+              <span class="tag">少层</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="references">
+          <h2>7. 参考链接</h2>
+          <p>这些链接用于支撑相关概念：BTC 价格与 ATH、组合再平衡、定投/分批买入、虚拟货币风险。</p>
+          <div class="refs">
+            <a class="ref" href="https://www.coingecko.com/en/coins/bitcoin" target="_blank" rel="noreferrer">
+              <span>CoinGecko</span>
+              <strong>Bitcoin price, market cap, ATH data</strong>
+              <em>用于核对 BTC 当前价格、历史高点和历史高点日期。</em>
+            </a>
+            <a class="ref" href="https://www.fidelity.com/learning-center/trading-investing/rebalance" target="_blank" rel="noreferrer">
+              <span>Fidelity</span>
+              <strong>Rebalancing your investments</strong>
+              <em>组合偏离目标配置后进行再平衡的基础说明。</em>
+            </a>
+            <a class="ref" href="https://investor.vanguard.com/investor-resources-education/portfolio-management/rebalancing-your-portfolio" target="_blank" rel="noreferrer">
+              <span>Vanguard</span>
+              <strong>Rebalancing your portfolio</strong>
+              <em>再平衡不是择时，而是让组合回到长期目标配置。</em>
+            </a>
+            <a class="ref" href="https://www.fidelity.com/learning-center/personal-finance/guide-to-dollar-cost-averaging" target="_blank" rel="noreferrer">
+              <span>Fidelity</span>
+              <strong>A Beginner's guide to dollar-cost averaging</strong>
+              <em>分批投入和降低单点择时风险的基础概念。</em>
+            </a>
+            <a class="ref" href="https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/understand_risks_of_virtual_currency.html" target="_blank" rel="noreferrer">
+              <span>CFTC</span>
+              <strong>Understand the Risks of Virtual Currency Trading</strong>
+              <em>虚拟货币市场风险提醒，包括波动和欺诈风险。</em>
+            </a>
+            <a class="ref" href="btc-usdt-ladder-demo.html">
+              <span>Local Demo</span>
+              <strong>BTC/USDT 阶梯再平衡动态演示</strong>
+              <em>用三种价格路径观察核心仓、战术仓、USDT 储备和买回节奏。</em>
+            </a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+</body>
+</html>

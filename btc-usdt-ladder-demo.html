@@ -1,0 +1,1013 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BTC/USDT 阶梯再平衡动态演示</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f2e9;
+      --paper-2: #fffaf0;
+      --ink: #161715;
+      --muted: #68645d;
+      --line: rgba(22, 23, 21, 0.16);
+      --panel: rgba(255, 250, 240, 0.84);
+      --green: #178f6a;
+      --green-soft: rgba(23, 143, 106, 0.14);
+      --amber: #be6a18;
+      --amber-soft: rgba(190, 106, 24, 0.16);
+      --red: #c63f3f;
+      --red-soft: rgba(198, 63, 63, 0.14);
+      --cyan: #1b83a4;
+      --cyan-soft: rgba(27, 131, 164, 0.13);
+      --blue: #2f62a3;
+      --blue-soft: rgba(47, 98, 163, 0.13);
+      --shadow: 0 18px 55px rgba(26, 24, 19, 0.12);
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(22, 23, 21, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(22, 23, 21, 0.03) 1px, transparent 1px) 0 0 / 42px 42px,
+        radial-gradient(circle at 14% 10%, rgba(247, 147, 26, 0.15), transparent 28%),
+        radial-gradient(circle at 88% 2%, rgba(27, 131, 164, 0.13), transparent 25%),
+        var(--paper);
+    }
+
+    button, input { font: inherit; }
+
+    .app {
+      width: min(1440px, calc(100vw - 32px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 26px 0 34px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) minmax(300px, 560px);
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--amber);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font: 760 clamp(34px, 5vw, 72px)/0.92 var(--serif);
+      letter-spacing: 0;
+      max-width: 920px;
+    }
+
+    .top-copy {
+      display: grid;
+      gap: 12px;
+    }
+
+    .thesis {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .top-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 250, 240, 0.76);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 760;
+      text-decoration: none;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .top-link:hover {
+      transform: translateY(-1px);
+      border-color: rgba(22, 23, 21, 0.32);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 410px;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .chart-panel, .side-panel, .control-panel, .log-panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      border-radius: 8px;
+    }
+
+    .chart-panel {
+      min-height: 675px;
+      display: grid;
+      grid-template-rows: auto minmax(420px, 1fr) auto;
+      overflow: hidden;
+    }
+
+    .chart-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .quote {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .price-now {
+      font: 760 clamp(34px, 5.8vw, 68px)/0.9 var(--mono);
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .price-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-pill {
+      min-width: 164px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.5);
+      font: 700 13px/1.25 var(--mono);
+      text-align: center;
+    }
+
+    .status-pill.is-hold { color: var(--blue); background: var(--blue-soft); }
+    .status-pill.is-sell { color: var(--amber); background: var(--amber-soft); }
+    .status-pill.is-buy { color: var(--green); background: var(--green-soft); }
+
+    .canvas-wrap {
+      position: relative;
+      min-height: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.05)),
+        repeating-linear-gradient(0deg, transparent, transparent 53px, rgba(22, 23, 21, 0.045) 54px),
+        repeating-linear-gradient(90deg, transparent, transparent 69px, rgba(22, 23, 21, 0.04) 70px);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 450px;
+    }
+
+    .legend {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: calc(100% - 36px);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.86);
+      border-radius: 8px;
+      color: var(--muted);
+      font: 700 12px/1 var(--mono);
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+
+    .dot.orange { background: var(--amber); }
+    .dot.green { background: var(--green); }
+    .dot.blue { background: var(--blue); }
+
+    .control-panel {
+      padding: 16px 18px 18px;
+      border-radius: 0;
+      border-width: 1px 0 0;
+      box-shadow: none;
+      display: grid;
+      gap: 16px;
+      background: rgba(255, 250, 240, 0.74);
+    }
+
+    .button-row, .mode-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-btn, .seg-btn {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.58);
+      color: var(--ink);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .icon-btn {
+      width: 42px;
+      font: 800 18px/1 var(--mono);
+    }
+
+    .seg-btn {
+      padding: 0 13px;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .icon-btn:hover, .seg-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(22, 23, 21, 0.32);
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .seg-btn.is-active {
+      color: var(--paper-2);
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+
+    .knobs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .knob {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .knob label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font: 700 12px/1.25 var(--mono);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--ink);
+    }
+
+    .side-panel {
+      min-height: 675px;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      overflow: hidden;
+    }
+
+    .summary, .ladder-section, .allocation {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 13px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: var(--muted);
+      font: 800 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      min-height: 90px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 9px;
+      font: 780 24px/1 var(--mono);
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .bar {
+      height: 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      background: rgba(255, 255, 255, 0.64);
+    }
+
+    .bar span {
+      height: 100%;
+      transition: width 220ms ease;
+    }
+
+    .core-fill { background: var(--blue); }
+    .tactical-fill { background: var(--cyan); }
+    .usdt-fill { background: var(--green); }
+
+    .bar-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font: 700 12px/1.2 var(--mono);
+    }
+
+    .ladder-grids {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .level {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      min-height: 36px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.4);
+      font: 700 12px/1.2 var(--mono);
+    }
+
+    .level-state {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .level.is-sold {
+      background: var(--amber-soft);
+      border-color: rgba(190, 106, 24, 0.28);
+    }
+
+    .level.is-bought {
+      background: var(--green-soft);
+      border-color: rgba(23, 143, 106, 0.28);
+    }
+
+    .scenario-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .log-panel {
+      margin: 16px 18px 18px;
+      box-shadow: none;
+      overflow: hidden;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .log-panel h2 {
+      margin: 0;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      font: 800 12px/1 var(--mono);
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .event-log {
+      margin: 0;
+      padding: 10px 14px 14px;
+      list-style: none;
+      overflow: auto;
+      min-height: 120px;
+      max-height: 240px;
+    }
+
+    .event-log li {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr);
+      gap: 9px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(22, 23, 21, 0.08);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .event-log code {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .gain { color: var(--green); }
+    .warn { color: var(--amber); }
+
+    @media (max-width: 1120px) {
+      .stage, .topbar { grid-template-columns: 1fr; }
+      .side-panel, .chart-panel { min-height: auto; }
+    }
+
+    @media (max-width: 780px) {
+      .app {
+        width: min(100vw - 20px, 720px);
+        padding-top: 18px;
+      }
+
+      .chart-head, .knobs, .metric-grid, .ladder-grids {
+        grid-template-columns: 1fr;
+      }
+
+      .quote {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      canvas { min-height: 370px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">BTC Treasury Ladder Lab</p>
+        <h1>BTC/USDT 阶梯再平衡模型</h1>
+      </div>
+      <div class="top-copy">
+        <p class="thesis">核心 BTC 仓不猜顶，战术 BTC 仓负责在 ATH 之后分层换成 USDT，再在深度回撤时用这些 USDT 买回 BTC。目标不是卖在最高点，而是让上涨时风险下降、下跌时 BTC 数量恢复或增加。</p>
+        <div class="link-row">
+          <a class="top-link" href="btc-usdt-ladder-theory.html">打开配套理论基础</a>
+          <a class="top-link" href="price-ladder-short-demo.html">查看空头阶梯模型</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="stage">
+      <article class="chart-panel">
+        <div class="chart-head">
+          <div class="quote">
+            <div class="price-now" id="priceNow">$90,778</div>
+            <div class="price-label">模拟 BTC/USDT 价格</div>
+          </div>
+          <div class="status-pill is-hold" id="statusPill">核心仓持有</div>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="chart" aria-label="BTC/USDT 阶梯再平衡动态演示图"></canvas>
+          <div class="legend" aria-hidden="true">
+            <span class="chip"><span class="dot"></span>价格路径</span>
+            <span class="chip"><span class="dot blue"></span>旧 ATH</span>
+            <span class="chip"><span class="dot orange"></span>战术卖出</span>
+            <span class="chip"><span class="dot green"></span>回撤买回</span>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <div class="button-row">
+            <button class="icon-btn" id="playBtn" aria-label="播放或暂停">Ⅱ</button>
+            <button class="icon-btn" id="resetBtn" aria-label="重置">↺</button>
+            <div class="mode-row" role="group" aria-label="价格情景">
+              <button class="seg-btn is-active" data-scenario="deepCycle">突破后深回撤</button>
+              <button class="seg-btn" data-scenario="priceDiscovery">突破后继续上涨</button>
+              <button class="seg-btn" data-scenario="failedBreakout">旧高附近失败</button>
+            </div>
+          </div>
+
+          <div class="knobs">
+            <div class="knob">
+              <label for="coreFloor">核心 BTC 仓 <b id="coreValue">70%</b></label>
+              <input id="coreFloor" type="range" min="50" max="90" value="70">
+            </div>
+            <div class="knob">
+              <label for="sellStep">ATH 后卖出间距 <b id="sellValue">15%</b></label>
+              <input id="sellStep" type="range" min="8" max="30" value="15">
+            </div>
+            <div class="knob">
+              <label for="buyDrop">高点回撤买回 <b id="buyValue">18%</b></label>
+              <input id="buyDrop" type="range" min="10" max="35" value="18">
+            </div>
+            <div class="knob">
+              <label for="layers">战术层数 <b id="layerValue">4</b></label>
+              <input id="layers" type="range" min="3" max="6" value="4">
+            </div>
+          </div>
+
+          <div class="scenario-note" id="scenarioNote">当前情景：突破旧 ATH 后继续上冲，然后出现较深回撤。观察战术仓卖出后，USDT 如何在回撤中买回 BTC。</div>
+        </div>
+      </article>
+
+      <aside class="side-panel">
+        <section class="summary">
+          <p class="section-title">Treasury State</p>
+          <div class="metric-grid">
+            <div class="metric">
+              <span>当前 BTC 数量</span>
+              <strong id="btcUnits">1.0000</strong>
+            </div>
+            <div class="metric">
+              <span>BTC 市值占比</span>
+              <strong id="btcAlloc">100%</strong>
+            </div>
+            <div class="metric">
+              <span>USDT 储备</span>
+              <strong id="usdtReserve">$0</strong>
+            </div>
+            <div class="metric">
+              <span>BTC 数量变化</span>
+              <strong id="btcDelta">+0.00%</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="allocation">
+          <p class="section-title">仓位结构</p>
+          <div class="bar" aria-label="仓位结构">
+            <span class="core-fill" id="coreFill"></span>
+            <span class="tactical-fill" id="tacticalFill"></span>
+            <span class="usdt-fill" id="usdtFill"></span>
+          </div>
+          <div class="bar-labels">
+            <span>核心 BTC</span>
+            <span>战术 BTC</span>
+            <span>USDT</span>
+          </div>
+        </section>
+
+        <section class="ladder-section">
+          <p class="section-title">阶梯动作</p>
+          <div class="ladder-grids">
+            <div>
+              <p class="section-title">ATH 上方卖出</p>
+              <div id="sellList"></div>
+            </div>
+            <div>
+              <p class="section-title">高点回撤买回</p>
+              <div id="buyList"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="log-panel">
+          <h2>事件流</h2>
+          <ul class="event-log" id="eventLog"></ul>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const els = {
+      canvas: document.getElementById("chart"),
+      priceNow: document.getElementById("priceNow"),
+      statusPill: document.getElementById("statusPill"),
+      playBtn: document.getElementById("playBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      coreFloor: document.getElementById("coreFloor"),
+      sellStep: document.getElementById("sellStep"),
+      buyDrop: document.getElementById("buyDrop"),
+      layers: document.getElementById("layers"),
+      coreValue: document.getElementById("coreValue"),
+      sellValue: document.getElementById("sellValue"),
+      buyValue: document.getElementById("buyValue"),
+      layerValue: document.getElementById("layerValue"),
+      scenarioNote: document.getElementById("scenarioNote"),
+      btcUnits: document.getElementById("btcUnits"),
+      btcAlloc: document.getElementById("btcAlloc"),
+      usdtReserve: document.getElementById("usdtReserve"),
+      btcDelta: document.getElementById("btcDelta"),
+      coreFill: document.getElementById("coreFill"),
+      tacticalFill: document.getElementById("tacticalFill"),
+      usdtFill: document.getElementById("usdtFill"),
+      sellList: document.getElementById("sellList"),
+      buyList: document.getElementById("buyList"),
+      eventLog: document.getElementById("eventLog")
+    };
+
+    const ctx = els.canvas.getContext("2d");
+    const ath = 126080;
+    const maxTicks = 260;
+    const scenarios = {
+      deepCycle: {
+        label: "当前情景：突破旧 ATH 后继续上冲，然后出现较深回撤。观察战术仓卖出后，USDT 如何在回撤中买回 BTC。",
+        anchors: [[0, 0.72], [38, 0.88], [74, 1.03], [112, 1.23], [148, 1.38], [181, 1.16], [220, 0.86], [260, 0.76]]
+      },
+      priceDiscovery: {
+        label: "当前情景：突破旧 ATH 后进入价格发现区。阶梯卖出会降低风险，但核心仓保留继续上涨的参与权。",
+        anchors: [[0, 0.72], [42, 0.9], [78, 1.0], [112, 1.18], [152, 1.42], [194, 1.68], [230, 1.48], [260, 1.58]]
+      },
+      failedBreakout: {
+        label: "当前情景：价格靠近旧 ATH 后失败回落。模型不会因为接近 ATH 就清仓，战术动作更少。",
+        anchors: [[0, 0.72], [45, 0.86], [84, 0.98], [118, 1.04], [152, 0.95], [202, 0.78], [260, 0.82]]
+      }
+    };
+
+    const state = {
+      scenario: "deepCycle",
+      tick: 0,
+      playing: true,
+      lastFrame: 0,
+      prices: [],
+      sellLevels: [],
+      soldLevels: new Set(),
+      boughtLevels: new Set(),
+      events: [],
+      btcUnits: 1,
+      coreUnits: 0.7,
+      tacticalHeld: 0.3,
+      tacticalStart: 0.3,
+      usdt: 0,
+      saleLots: [],
+      runningPeak: ath * 0.72
+    };
+
+    function config() {
+      return {
+        core: Number(els.coreFloor.value) / 100,
+        sellStep: Number(els.sellStep.value) / 100,
+        buyDrop: Number(els.buyDrop.value) / 100,
+        layers: Number(els.layers.value)
+      };
+    }
+
+    function money(value) {
+      return `$${Math.round(value).toLocaleString("en-US")}`;
+    }
+
+    function pct(value) {
+      return `${value.toFixed(1)}%`;
+    }
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    function buildPath() {
+      const anchors = scenarios[state.scenario].anchors.map(([t, m]) => [t, m * ath]);
+      const prices = new Array(maxTicks + 1).fill(anchors[0][1]);
+      for (let i = 0; i < anchors.length - 1; i += 1) {
+        const [t0, p0] = anchors[i];
+        const [t1, p1] = anchors[i + 1];
+        for (let t = t0; t <= t1; t += 1) {
+          const local = (t - t0) / Math.max(1, t1 - t0);
+          const ease = local < 0.5 ? 2 * local * local : 1 - Math.pow(-2 * local + 2, 2) / 2;
+          const pulse = Math.sin(t * 0.18) * 950 + Math.sin(t * 0.071) * 580;
+          prices[t] = Math.max(1000, lerp(p0, p1, ease) + pulse);
+        }
+      }
+      return prices;
+    }
+
+    function buildSellLevels() {
+      const c = config();
+      return Array.from({ length: c.layers }, (_, index) => ({
+        id: index,
+        price: ath * Math.pow(1 + c.sellStep, index)
+      }));
+    }
+
+    function buyLevels() {
+      const c = config();
+      return Array.from({ length: c.layers }, (_, index) => ({
+        id: index,
+        price: state.runningPeak * Math.max(0.12, 1 - c.buyDrop * (index + 1))
+      }));
+    }
+
+    function addEvent(tick, text) {
+      const last = state.events[0];
+      if (last && last.tick === tick && last.text === text) return;
+      state.events.unshift({ tick, text });
+      state.events = state.events.slice(0, 9);
+    }
+
+    function reset(keepPlaying = true) {
+      const c = config();
+      state.tick = 0;
+      state.playing = keepPlaying;
+      state.prices = buildPath();
+      state.sellLevels = buildSellLevels();
+      state.soldLevels = new Set();
+      state.boughtLevels = new Set();
+      state.events = [];
+      state.coreUnits = c.core;
+      state.tacticalStart = Math.max(0, 1 - c.core);
+      state.tacticalHeld = state.tacticalStart;
+      state.btcUnits = 1;
+      state.usdt = 0;
+      state.saleLots = [];
+      state.runningPeak = state.prices[0];
+      els.playBtn.textContent = state.playing ? "Ⅱ" : "▶";
+      els.coreValue.textContent = `${els.coreFloor.value}%`;
+      els.sellValue.textContent = `${els.sellStep.value}%`;
+      els.buyValue.textContent = `${els.buyDrop.value}%`;
+      els.layerValue.textContent = els.layers.value;
+      els.scenarioNote.textContent = scenarios[state.scenario].label;
+      addEvent(0, "模型重置：核心仓不动，战术仓等待 ATH 上方分层卖出。");
+      update();
+    }
+
+    function maybeTrade(price) {
+      state.runningPeak = Math.max(state.runningPeak, price);
+      const c = config();
+      const slice = state.tacticalStart / c.layers;
+
+      state.sellLevels.forEach((level) => {
+        if (!state.soldLevels.has(level.id) && price >= level.price && state.tacticalHeld > 0.000001) {
+          const amount = Math.min(slice, state.tacticalHeld);
+          state.btcUnits -= amount;
+          state.tacticalHeld -= amount;
+          const usd = amount * price;
+          state.usdt += usd;
+          state.saleLots.push({ usd, originalBtc: amount, levelId: level.id });
+          state.soldLevels.add(level.id);
+          addEvent(state.tick, `卖出战术仓 ${amount.toFixed(4)} BTC，价格 ${money(price)}。`);
+        }
+      });
+
+      buyLevels().forEach((level) => {
+        if (!state.boughtLevels.has(level.id) && state.saleLots.length > 0 && price <= level.price) {
+          const lot = state.saleLots.shift();
+          const bought = lot.usd / price;
+          state.usdt -= lot.usd;
+          state.btcUnits += bought;
+          state.boughtLevels.add(level.id);
+          addEvent(state.tick, `用 USDT 买回 ${bought.toFixed(4)} BTC，价格 ${money(price)}。`);
+        }
+      });
+    }
+
+    function stats(price) {
+      const btcValue = state.btcUnits * price;
+      const total = btcValue + state.usdt;
+      const btcAllocation = total > 0 ? (btcValue / total) * 100 : 0;
+      const coreValue = state.coreUnits * price;
+      const tacticalValue = Math.max(0, (state.btcUnits - state.coreUnits)) * price;
+      const corePct = total > 0 ? (coreValue / total) * 100 : 0;
+      const tacticalPct = total > 0 ? (tacticalValue / total) * 100 : 0;
+      const usdtPct = total > 0 ? (state.usdt / total) * 100 : 0;
+      return { btcValue, total, btcAllocation, corePct, tacticalPct, usdtPct };
+    }
+
+    function setStatus(price) {
+      els.statusPill.className = "status-pill";
+      if (state.saleLots.length > 0 && price < state.runningPeak * (1 - config().buyDrop)) {
+        els.statusPill.textContent = "回撤买回区";
+        els.statusPill.classList.add("is-buy");
+      } else if (state.soldLevels.size > 0) {
+        els.statusPill.textContent = "战术仓已减";
+        els.statusPill.classList.add("is-sell");
+      } else {
+        els.statusPill.textContent = price >= ath ? "ATH 上方观察" : "核心仓持有";
+        els.statusPill.classList.add("is-hold");
+      }
+    }
+
+    function renderSide(price) {
+      const s = stats(price);
+      els.btcUnits.textContent = state.btcUnits.toFixed(4);
+      els.btcAlloc.textContent = pct(s.btcAllocation);
+      els.usdtReserve.textContent = money(Math.max(0, state.usdt));
+      const delta = (state.btcUnits - 1) * 100;
+      els.btcDelta.textContent = `${delta >= 0 ? "+" : ""}${delta.toFixed(2)}%`;
+      els.btcDelta.className = delta >= 0 ? "gain" : "warn";
+      els.coreFill.style.width = `${Math.max(0, Math.min(100, s.corePct))}%`;
+      els.tacticalFill.style.width = `${Math.max(0, Math.min(100, s.tacticalPct))}%`;
+      els.usdtFill.style.width = `${Math.max(0, Math.min(100, s.usdtPct))}%`;
+
+      els.sellList.innerHTML = state.sellLevels.map((level) => {
+        const sold = state.soldLevels.has(level.id);
+        return `<div class="level ${sold ? "is-sold" : ""}"><span>${money(level.price)}</span><span class="level-state">${sold ? "已卖" : "等待"}</span></div>`;
+      }).join("");
+
+      els.buyList.innerHTML = buyLevels().map((level) => {
+        const bought = state.boughtLevels.has(level.id);
+        const enabled = state.soldLevels.size > 0;
+        return `<div class="level ${bought ? "is-bought" : ""}"><span>${money(level.price)}</span><span class="level-state">${bought ? "已买" : enabled ? "等待" : "先卖出"}</span></div>`;
+      }).join("");
+
+      els.eventLog.innerHTML = state.events.map((event) => {
+        return `<li><code>T+${event.tick}</code><span>${event.text}</span></li>`;
+      }).join("");
+    }
+
+    function sizeCanvas() {
+      const rect = els.canvas.getBoundingClientRect();
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      const width = Math.floor(rect.width * dpr);
+      const height = Math.floor(rect.height * dpr);
+      if (els.canvas.width !== width || els.canvas.height !== height) {
+        els.canvas.width = width;
+        els.canvas.height = height;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { width: rect.width, height: rect.height };
+    }
+
+    function drawChart(price) {
+      const { width, height } = sizeCanvas();
+      const pad = { left: 74, right: 24, top: 28, bottom: 50 };
+      const plotW = Math.max(1, width - pad.left - pad.right);
+      const plotH = Math.max(1, height - pad.top - pad.bottom);
+      const path = state.prices.slice(0, state.tick + 1);
+      const all = state.prices.concat(state.sellLevels.map((level) => level.price)).concat([ath, state.runningPeak]);
+      const min = Math.min(...all) * 0.88;
+      const max = Math.max(...all) * 1.08;
+      const x = (tick) => pad.left + (tick / maxTicks) * plotW;
+      const y = (value) => pad.top + (1 - (value - min) / (max - min)) * plotH;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(22, 23, 21, 0.12)";
+      ctx.fillStyle = "rgba(22, 23, 21, 0.54)";
+      ctx.font = "12px Menlo, monospace";
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+      for (let i = 0; i <= 5; i += 1) {
+        const value = min + ((max - min) / 5) * i;
+        const yy = y(value);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, yy);
+        ctx.lineTo(width - pad.right, yy);
+        ctx.stroke();
+        ctx.fillText(money(value), pad.left - 10, yy);
+      }
+
+      function dashedLine(value, color, label) {
+        const yy = y(value);
+        ctx.strokeStyle = color;
+        ctx.setLineDash([8, 7]);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, yy);
+        ctx.lineTo(width - pad.right, yy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "rgba(255, 250, 240, 0.9)";
+        ctx.fillRect(width - pad.right - 116, yy - 13, 112, 24);
+        ctx.strokeStyle = "rgba(22, 23, 21, 0.12)";
+        ctx.strokeRect(width - pad.right - 116, yy - 13, 112, 24);
+        ctx.fillStyle = "rgba(22, 23, 21, 0.74)";
+        ctx.textAlign = "center";
+        ctx.fillText(label, width - pad.right - 60, yy);
+      }
+
+      dashedLine(ath, "rgba(47, 98, 163, 0.72)", `ATH ${money(ath)}`);
+      state.sellLevels.forEach((level) => dashedLine(level.price, "rgba(190, 106, 24, 0.46)", money(level.price)));
+      buyLevels().forEach((level) => dashedLine(level.price, "rgba(23, 143, 106, 0.32)", money(level.price)));
+
+      if (path.length > 1) {
+        const gradient = ctx.createLinearGradient(pad.left, 0, width - pad.right, 0);
+        gradient.addColorStop(0, "#1b83a4");
+        gradient.addColorStop(0.45, "#be6a18");
+        gradient.addColorStop(1, "#178f6a");
+        ctx.beginPath();
+        path.forEach((value, tick) => {
+          const xx = x(tick);
+          const yy = y(value);
+          if (tick === 0) ctx.moveTo(xx, yy);
+          else ctx.lineTo(xx, yy);
+        });
+        ctx.lineWidth = 4;
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
+        ctx.strokeStyle = gradient;
+        ctx.shadowColor = "rgba(27, 131, 164, 0.18)";
+        ctx.shadowBlur = 14;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+      const lastX = x(state.tick);
+      const lastY = y(price);
+      ctx.fillStyle = "#161715";
+      ctx.beginPath();
+      ctx.arc(lastX, lastY, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#fffaf0";
+      ctx.beginPath();
+      ctx.arc(lastX, lastY, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function update() {
+      const price = state.prices[state.tick] || state.prices[0];
+      maybeTrade(price);
+      els.priceNow.textContent = money(price);
+      setStatus(price);
+      renderSide(price);
+      drawChart(price);
+    }
+
+    function animate(timestamp) {
+      if (!state.lastFrame) state.lastFrame = timestamp;
+      const elapsed = timestamp - state.lastFrame;
+      if (state.playing && elapsed > 70) {
+        state.tick = Math.min(maxTicks, state.tick + 1);
+        update();
+        state.lastFrame = timestamp;
+        if (state.tick >= maxTicks) {
+          state.playing = false;
+          els.playBtn.textContent = "▶";
+          addEvent(state.tick, "路径结束：检查 BTC 数量、USDT 储备和仓位结构。");
+          renderSide(state.prices[state.tick]);
+        }
+      }
+      window.requestAnimationFrame(animate);
+    }
+
+    document.querySelectorAll("[data-scenario]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-scenario]").forEach((item) => item.classList.remove("is-active"));
+        button.classList.add("is-active");
+        state.scenario = button.dataset.scenario;
+        reset(true);
+      });
+    });
+
+    [els.coreFloor, els.sellStep, els.buyDrop, els.layers].forEach((input) => {
+      input.addEventListener("input", () => reset(state.playing));
+    });
+
+    els.playBtn.addEventListener("click", () => {
+      state.playing = !state.playing;
+      els.playBtn.textContent = state.playing ? "Ⅱ" : "▶";
+    });
+
+    els.resetBtn.addEventListener("click", () => reset(true));
+    window.addEventListener("resize", () => drawChart(state.prices[state.tick] || state.prices[0]));
+
+    reset(true);
+    window.requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
