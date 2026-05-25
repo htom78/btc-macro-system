@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>价格阶梯仓位模型：理论基础</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f2e9;
+      --paper-2: #fffaf0;
+      --ink: #161715;
+      --muted: #67635c;
+      --line: rgba(22, 23, 21, 0.16);
+      --panel: rgba(255, 250, 240, 0.82);
+      --green: #178f6a;
+      --green-soft: rgba(23, 143, 106, 0.14);
+      --amber: #be6a18;
+      --amber-soft: rgba(190, 106, 24, 0.16);
+      --red: #c63f3f;
+      --red-soft: rgba(198, 63, 63, 0.14);
+      --cyan: #1b83a4;
+      --cyan-soft: rgba(27, 131, 164, 0.13);
+      --shadow: 0 18px 55px rgba(26, 24, 19, 0.12);
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(22, 23, 21, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(22, 23, 21, 0.03) 1px, transparent 1px) 0 0 / 42px 42px,
+        radial-gradient(circle at 15% 10%, rgba(27, 131, 164, 0.15), transparent 28%),
+        radial-gradient(circle at 88% 2%, rgba(190, 106, 24, 0.12), transparent 26%),
+        var(--paper);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 26px 0 42px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 24px;
+      align-items: end;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--amber);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font: 760 clamp(34px, 5.6vw, 72px)/0.94 var(--serif);
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      margin: 14px 0 0;
+      max-width: 770px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .hero-actions {
+      display: grid;
+      gap: 10px;
+      justify-items: start;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 250, 240, 0.82);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 780;
+      text-decoration: none;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(22, 23, 21, 0.34);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .button.primary {
+      color: var(--paper-2);
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+
+    .notice {
+      margin: 18px 0 0;
+      padding: 12px 14px;
+      border: 1px solid rgba(198, 63, 63, 0.24);
+      border-radius: 8px;
+      background: var(--red-soft);
+      color: #7c2727;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+      margin-top: 22px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .toc-title {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font: 800 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .toc a {
+      display: block;
+      padding: 9px 0;
+      border-top: 1px solid rgba(22, 23, 21, 0.08);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 720;
+      text-decoration: none;
+    }
+
+    .content {
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .section {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      overflow: hidden;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font: 760 27px/1.15 var(--serif);
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 22px 0 9px;
+      font: 780 15px/1.2 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    p {
+      margin: 0 0 13px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.72;
+    }
+
+    strong {
+      color: var(--ink);
+    }
+
+    .formula {
+      margin: 14px 0;
+      padding: 14px;
+      border: 1px solid rgba(22, 23, 21, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.48);
+      color: var(--ink);
+      font: 760 15px/1.65 var(--mono);
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .card {
+      min-height: 150px;
+      padding: 15px;
+      border: 1px solid rgba(22, 23, 21, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.46);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: var(--ink);
+    }
+
+    .card p {
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    .mode-table {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 118px minmax(0, 1fr) 116px;
+      gap: 12px;
+      align-items: center;
+      min-height: 58px;
+      padding: 11px 12px;
+      border: 1px solid rgba(22, 23, 21, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.46);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .mode-row b {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    .risk-high {
+      color: var(--red);
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .risk-mid {
+      color: var(--amber);
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .risk-low {
+      color: var(--green);
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .state-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .state {
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.48);
+      color: var(--ink);
+      font: 780 12px/1 var(--mono);
+    }
+
+    .state.alert {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .state.short {
+      background: var(--red-soft);
+      color: var(--red);
+    }
+
+    .state.profit {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .refs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .ref {
+      display: grid;
+      gap: 8px;
+      min-height: 150px;
+      padding: 15px;
+      border: 1px solid rgba(22, 23, 21, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.46);
+      text-decoration: none;
+    }
+
+    .ref span {
+      color: var(--amber);
+      font: 780 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .ref strong {
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .ref em {
+      color: var(--muted);
+      font-size: 13px;
+      font-style: normal;
+      line-height: 1.5;
+    }
+
+    .ref:hover {
+      border-color: rgba(22, 23, 21, 0.34);
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .layout,
+      .grid,
+      .refs {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100vw - 20px, 620px);
+        padding-top: 18px;
+      }
+
+      .section {
+        padding: 18px;
+      }
+
+      .mode-row {
+        grid-template-columns: 1fr;
+      }
+
+      .risk-high,
+      .risk-mid,
+      .risk-low {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Theory Companion</p>
+        <h1>价格阶梯仓位模型：理论基础</h1>
+        <p class="hero-copy">这不是一个“猜顶”方法，而是一套把顶部未知、开仓触发、仓位大小和最大亏损拆开的研究框架。适用场景是：小币短期暴涨后想观察潜在做空机会，但不确定价格会先冲到哪里。</p>
+        <p class="notice">仅用于策略建模和风控演示，不构成投资建议。合约、杠杆和小市值币种可能出现极端波动、滑点、资金费率变化和强平风险。</p>
+      </div>
+      <nav class="hero-actions" aria-label="页面链接">
+        <a class="button primary" href="price-ladder-short-demo.html">返回动态演示</a>
+        <a class="button" href="#references">查看参考链接</a>
+      </nav>
+    </header>
+
+    <div class="layout">
+      <aside class="toc" aria-label="目录">
+        <p class="toc-title">Contents</p>
+        <a href="#model">核心模型</a>
+        <a href="#ladder">价格阶梯</a>
+        <a href="#state">状态机</a>
+        <a href="#sizing">仓位与风险</a>
+        <a href="#modes">三种执行方式</a>
+        <a href="#risks">合约风险</a>
+        <a href="#references">参考链接</a>
+      </aside>
+
+      <article class="content">
+        <section class="section" id="model">
+          <h2>1. 核心模型</h2>
+          <p>原始问题是：<strong>我认为暴涨后迟早会回落，但不知道顶部在哪里。</strong>价格阶梯模型的处理方式不是预测顶部，而是把决策改写成函数。</p>
+          <div class="formula">价格 P + 状态信号 C + 风险预算 R -> 目标空头仓位 S
+
+S = f(P, C, R)</div>
+          <p>其中，<strong>P</strong> 是当前价格，<strong>C</strong> 是确认信号，<strong>R</strong> 是可承受亏损，<strong>S</strong> 是目标空头仓位。这个框架解决四个问题：价格涨到哪一层提醒，是否需要转弱确认，每层开多少，继续上涨时在哪里认错。</p>
+        </section>
+
+        <section class="section" id="ladder">
+          <h2>2. 价格阶梯</h2>
+          <p>小币合约更适合用百分比阶梯，而不是固定价格步长。因为从 30 到 40 是涨 33.3%，从 80 到 90 只是涨 12.5%，固定步长会让不同价位的风险密度失真。</p>
+          <div class="formula">百分比阶梯：
+L_i = P0 * (1 + r)^i
+
+例：P0 = 30, r = 20%
+36, 43.2, 51.84, 62.21, 74.65, 89.58</div>
+          <div class="grid">
+            <div class="card">
+              <h3>等差阶梯</h3>
+              <p><strong>L_i = P0 + i * Δ</strong>。适合展示概念，但在价格跨度很大时不够自然。</p>
+            </div>
+            <div class="card">
+              <h3>等比阶梯</h3>
+              <p><strong>L_i = P0 * (1 + r)^i</strong>。每一层都是同等百分比变化，更适合高波动合约。</p>
+            </div>
+            <div class="card">
+              <h3>斐波那契阶梯</h3>
+              <p><strong>L + ratio * (H - L)</strong>。用于把一个已知波段按 23.6%、38.2%、61.8% 等比例切分。</p>
+            </div>
+            <div class="card">
+              <h3>波动率阶梯</h3>
+              <p>阶梯距离由 ATR、历史波动率或盘口波动决定。波动越大，层间距越宽。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="state">
+          <h2>3. 状态机</h2>
+          <p>这个模型里，<strong>到价不等于开仓</strong>。价格层更像雷达坐标，真正开空需要状态信号确认。</p>
+          <div class="state-line" aria-label="状态流程">
+            <span class="state">未触发</span>
+            <span class="state alert">已提醒</span>
+            <span class="state">等确认</span>
+            <span class="state short">已开空</span>
+            <span class="state profit">止盈 / 止损</span>
+          </div>
+          <div class="formula">条件开空示例：
+价格触及 L_i
+-> 只发提醒
+-> 从阶段高点回落 c%
+-> 或跌破短周期结构
+-> 才允许开第 i 层空单</div>
+          <p>这样做的目的，是避免在单边拉升里被动连续成交。你不是在一路猜顶，而是在等待上涨动能开始松动。</p>
+        </section>
+
+        <section class="section" id="sizing">
+          <h2>4. 仓位与风险</h2>
+          <p>仓位不应该从感觉出发，而应该从最大亏损反推。假设第 i 层开空价是 <strong>E_i</strong>，止损价是 <strong>X_i</strong>，这一层最多愿意亏 <strong>R_i</strong>。</p>
+          <div class="formula">单层合约数量：
+q_i = R_i / (X_i - E_i)
+
+空单浮动盈亏：
+PnL_i = q_i * (E_i - P)
+
+总最大亏损：
+MaxLoss = Σ q_i * (X_i - E_i)</div>
+          <p>这一步是模型的护栏。没有最大亏损预算，阶梯做空很容易退化成逆势加仓，最后被极端拉升打穿。</p>
+        </section>
+
+        <section class="section" id="modes">
+          <h2>5. 三种执行方式</h2>
+          <p>同样的价格阶梯，执行方式不同，风险完全不同。</p>
+          <div class="mode-table">
+            <div class="mode-row">
+              <b>只提醒</b>
+              <span>价格触及阶梯后只通知，不自动开仓。适合暴涨小币的观察阶段。</span>
+              <span class="risk-low">风险最低</span>
+            </div>
+            <div class="mode-row">
+              <b>条件开空</b>
+              <span>先触及价格层，再等待回落确认或结构转弱，才开一小部分空单。</span>
+              <span class="risk-mid">风险中等</span>
+            </div>
+            <div class="mode-row">
+              <b>提前挂空</b>
+              <span>每一层提前挂限价空单，价格涨到就成交。单边拉升时会连续吃单。</span>
+              <span class="risk-high">风险最高</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="risks">
+          <h2>6. 合约风险</h2>
+          <p>小币合约里，这套模型最怕的不是“方向错一次”，而是方向错了以后还继续加仓。合约市场有保证金和强平机制，极端波动时保证金要求、标记价格、盘口深度和滑点都会让理论亏损变成真实亏损。</p>
+          <div class="grid">
+            <div class="card">
+              <h3>强平与保证金</h3>
+              <p>空单遇到继续上涨，保证金会被侵蚀。价格接近强平线时，交易所可能强制平仓。</p>
+            </div>
+            <div class="card">
+              <h3>滑点与盘口</h3>
+              <p>小币深度薄，止损触发价不等于实际成交价。行情越急，成交越可能偏离模型。</p>
+            </div>
+            <div class="card">
+              <h3>资金费率</h3>
+              <p>永续合约持仓有资金费率成本。高热度币种的费用会改变持仓收益结构。</p>
+            </div>
+            <div class="card">
+              <h3>单边挤压</h3>
+              <p>暴涨小币常有连续拉升、插针和逼空。提前挂空容易让所有层同时变成浮亏。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="references">
+          <h2>7. 参考链接</h2>
+          <p>这些链接不是对策略有效性的背书，只是模型中相关概念的基础参考：期货保证金、虚拟货币风险、网格交易、斐波那契比例。</p>
+          <div class="refs">
+            <a class="ref" href="https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/understand_risks_of_virtual_currency.html" target="_blank" rel="noreferrer">
+              <span>CFTC</span>
+              <strong>Customer Advisory: Understand the Risks of Virtual Currency Trading</strong>
+              <em>虚拟货币现货、期货和期权市场的风险提醒。</em>
+            </a>
+            <a class="ref" href="https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/FuturesMarketBasics/index.htm" target="_blank" rel="noreferrer">
+              <span>CFTC</span>
+              <strong>Basics of Futures Trading</strong>
+              <em>期货市场基础和零售投资者风险说明。</em>
+            </a>
+            <a class="ref" href="https://www.cmegroup.com/education/courses/introduction-to-futures/margin-know-what-is-needed.html" target="_blank" rel="noreferrer">
+              <span>CME Group</span>
+              <strong>Margin: Know What's Needed</strong>
+              <em>初始保证金、维持保证金以及波动率变化下的保证金要求。</em>
+            </a>
+            <a class="ref" href="https://www.binance.com/en/academy/articles/step-by-step-guide-to-grid-trading-on-binance-futures" target="_blank" rel="noreferrer">
+              <span>Binance Academy</span>
+              <strong>Step-by-step guide to Grid Trading on Binance Futures</strong>
+              <em>期货网格、价格区间、预设间隔以及止盈止损提示。</em>
+            </a>
+            <a class="ref" href="https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/fibonacci-retracement" target="_blank" rel="noreferrer">
+              <span>Fidelity</span>
+              <strong>Fibonacci Retracement</strong>
+              <em>23.6%、38.2%、50%、61.8% 等回撤比例的技术分析解释。</em>
+            </a>
+            <a class="ref" href="price-ladder-short-demo.html">
+              <span>Local Demo</span>
+              <strong>空头价格阶梯模型动态演示</strong>
+              <em>用可调参数和三种行情路径观察提醒、条件开空和提前挂空的差异。</em>
+            </a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+</body>
+</html>

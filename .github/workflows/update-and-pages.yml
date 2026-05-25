@@ -63,6 +63,7 @@ jobs:
           cp btc-macro-system/outputs/report.html _site/index.html
           cp btc-macro-system/outputs/latest.json _site/latest.json
           cp price-ladder-short-demo.html _site/price-ladder-short-demo.html
+          cp price-ladder-short-theory.html _site/price-ladder-short-theory.html
           if [ -f btc-macro-system/data/history/observations.jsonl ]; then
             cp btc-macro-system/data/history/observations.jsonl _site/observations.jsonl
           fi
