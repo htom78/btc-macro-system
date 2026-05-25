@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Binance 小币阶梯测试台</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f2e9;
+      --paper-2: #fffaf0;
+      --ink: #161715;
+      --muted: #67635c;
+      --line: rgba(22, 23, 21, 0.16);
+      --panel: rgba(255, 250, 240, 0.84);
+      --green: #178f6a;
+      --green-soft: rgba(23, 143, 106, 0.14);
+      --amber: #be6a18;
+      --amber-soft: rgba(190, 106, 24, 0.16);
+      --red: #c63f3f;
+      --red-soft: rgba(198, 63, 63, 0.14);
+      --cyan: #1b83a4;
+      --cyan-soft: rgba(27, 131, 164, 0.13);
+      --blue: #2f62a3;
+      --blue-soft: rgba(47, 98, 163, 0.13);
+      --shadow: 0 18px 55px rgba(26, 24, 19, 0.12);
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(22, 23, 21, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(22, 23, 21, 0.03) 1px, transparent 1px) 0 0 / 42px 42px,
+        radial-gradient(circle at 14% 10%, rgba(198, 63, 63, 0.13), transparent 28%),
+        radial-gradient(circle at 88% 2%, rgba(27, 131, 164, 0.13), transparent 25%),
+        var(--paper);
+    }
+
+    button, input { font: inherit; }
+
+    .app {
+      width: min(1480px, calc(100vw - 32px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 26px 0 34px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(320px, 620px);
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--amber);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font: 760 clamp(34px, 5vw, 72px)/0.92 var(--serif);
+      letter-spacing: 0;
+      max-width: 920px;
+    }
+
+    .top-copy {
+      display: grid;
+      gap: 12px;
+    }
+
+    .thesis {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .link-row, .button-row, .mode-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .top-link, .seg-btn, .icon-btn {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 250, 240, 0.76);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 760;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .top-link, .seg-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 13px;
+    }
+
+    .icon-btn {
+      width: 42px;
+      font: 800 18px/1 var(--mono);
+    }
+
+    .top-link:hover, .seg-btn:hover, .icon-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(22, 23, 21, 0.32);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .seg-btn.is-active {
+      color: var(--paper-2);
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr) 390px;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .sample-panel {
+      min-height: 680px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+    }
+
+    .panel-head {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: var(--muted);
+      font: 800 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .source-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .search-wrap {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 10px;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.55);
+      color: var(--ink);
+      padding: 0 12px;
+      outline: none;
+    }
+
+    .sample-list {
+      overflow: auto;
+      min-height: 0;
+      padding: 10px;
+    }
+
+    .coin-row {
+      width: 100%;
+      min-height: 78px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid rgba(22, 23, 21, 0.12);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .coin-row + .coin-row {
+      margin-top: 8px;
+    }
+
+    .coin-row.is-active {
+      border-color: rgba(22, 23, 21, 0.55);
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .symbol {
+      display: block;
+      font: 850 18px/1 var(--mono);
+      letter-spacing: 0;
+    }
+
+    .coin-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 9px;
+      color: var(--muted);
+      font: 700 11px/1 var(--mono);
+    }
+
+    .pct {
+      color: var(--red);
+      font: 850 17px/1 var(--mono);
+      white-space: nowrap;
+    }
+
+    .chart-panel {
+      min-height: 680px;
+      display: grid;
+      grid-template-rows: auto minmax(430px, 1fr) auto;
+    }
+
+    .chart-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .quote {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .price-now {
+      font: 760 clamp(34px, 5.4vw, 64px)/0.9 var(--mono);
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .price-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-pill {
+      min-width: 164px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--cyan-soft);
+      color: var(--cyan);
+      font: 700 13px/1.25 var(--mono);
+      text-align: center;
+    }
+
+    .status-pill.is-open {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .status-pill.is-profit {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .canvas-wrap {
+      position: relative;
+      min-height: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.05)),
+        repeating-linear-gradient(0deg, transparent, transparent 53px, rgba(22, 23, 21, 0.045) 54px),
+        repeating-linear-gradient(90deg, transparent, transparent 69px, rgba(22, 23, 21, 0.04) 70px);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 450px;
+    }
+
+    .legend {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: calc(100% - 36px);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.86);
+      border-radius: 8px;
+      color: var(--muted);
+      font: 700 12px/1 var(--mono);
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+
+    .dot.amber { background: var(--amber); }
+    .dot.red { background: var(--red); }
+    .dot.green { background: var(--green); }
+
+    .control-panel {
+      padding: 16px 18px 18px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 16px;
+      background: rgba(255, 250, 240, 0.74);
+    }
+
+    .knobs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 12px;
+    }
+
+    .knob {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .knob label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font: 700 12px/1.25 var(--mono);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--ink);
+    }
+
+    .side-panel {
+      min-height: 680px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+    }
+
+    .metrics, .ladder-box {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 13px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      min-height: 86px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 9px;
+      font: 780 22px/1 var(--mono);
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .ladder-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .level {
+      display: grid;
+      grid-template-columns: 86px minmax(0, 1fr) 76px;
+      gap: 8px;
+      align-items: center;
+      min-height: 38px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.4);
+      font: 700 12px/1.2 var(--mono);
+    }
+
+    .level-bar {
+      height: 8px;
+      border-radius: 99px;
+      background: rgba(22, 23, 21, 0.08);
+      overflow: hidden;
+    }
+
+    .level-fill {
+      width: 0;
+      height: 100%;
+      background: var(--cyan);
+    }
+
+    .level.is-alert .level-fill {
+      width: 48%;
+      background: var(--amber);
+    }
+
+    .level.is-open .level-fill {
+      width: 78%;
+      background: var(--red);
+    }
+
+    .level.is-profit .level-fill {
+      width: 100%;
+      background: var(--green);
+    }
+
+    .level-state {
+      color: var(--muted);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .log-panel {
+      margin: 16px 18px 18px;
+      box-shadow: none;
+      overflow: hidden;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .log-panel h2 {
+      margin: 0;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      font: 800 12px/1 var(--mono);
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .event-log {
+      margin: 0;
+      padding: 10px 14px 14px;
+      list-style: none;
+      overflow: auto;
+      min-height: 140px;
+      max-height: 260px;
+    }
+
+    .event-log li {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr);
+      gap: 9px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(22, 23, 21, 0.08);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .event-log code {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .danger { color: var(--red); }
+    .gain { color: var(--green); }
+    .warn { color: var(--amber); }
+
+    @media (max-width: 1280px) {
+      .stage {
+        grid-template-columns: 330px minmax(0, 1fr);
+      }
+      .side-panel {
+        grid-column: 1 / -1;
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        width: min(100vw - 20px, 860px);
+        padding-top: 18px;
+      }
+      .topbar, .stage, .chart-head, .knobs, .metric-grid {
+        grid-template-columns: 1fr;
+      }
+      .sample-panel, .chart-panel {
+        min-height: auto;
+      }
+      .quote {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      canvas { min-height: 380px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Binance Hot Perp Ladder Lab</p>
+        <h1>小币阶梯测试台</h1>
+      </div>
+      <div class="top-copy">
+        <p class="thesis">从 Binance USDⓈ-M 永续里筛 24h 涨幅和成交额靠前的小币，用最近 72 小时 K 线回放价格阶梯策略。它是模型检验工具，不是做空推荐。</p>
+        <div class="link-row">
+          <a class="top-link" href="price-ladder-short-demo.html">返回空头阶梯演示</a>
+          <a class="top-link" href="price-ladder-short-theory.html">查看理论基础</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="stage">
+      <aside class="panel sample-panel">
+        <div class="panel-head">
+          <p class="section-title">Live Sample Pool</p>
+          <p class="source-note" id="sourceNote">正在连接 Binance Futures API...</p>
+        </div>
+        <div class="search-wrap">
+          <input class="search-input" id="symbolSearch" placeholder="搜索 symbol，例如 PLAY / NIL / XAN">
+          <div class="button-row">
+            <button class="seg-btn" id="refreshBtn">刷新样本池</button>
+          </div>
+        </div>
+        <div class="sample-list" id="sampleList"></div>
+      </aside>
+
+      <article class="panel chart-panel">
+        <div class="chart-head">
+          <div class="quote">
+            <div class="price-now" id="priceNow">--</div>
+            <div class="price-label" id="priceLabel">等待选择币种</div>
+          </div>
+          <div class="status-pill" id="statusPill">等待样本</div>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="chart" aria-label="Binance 小币阶梯回放图"></canvas>
+          <div class="legend" aria-hidden="true">
+            <span class="chip"><span class="dot"></span>72h 价格路径</span>
+            <span class="chip"><span class="dot amber"></span>提醒触发</span>
+            <span class="chip"><span class="dot red"></span>模拟开空</span>
+            <span class="chip"><span class="dot green"></span>最终浮盈</span>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <div class="button-row">
+            <button class="icon-btn" id="playBtn" aria-label="播放或暂停">Ⅱ</button>
+            <button class="icon-btn" id="resetBtn" aria-label="重置">↺</button>
+            <div class="mode-row" role="group" aria-label="执行方式">
+              <button class="seg-btn is-active" data-mode="alert">只提醒</button>
+              <button class="seg-btn" data-mode="confirm">回落确认</button>
+              <button class="seg-btn" data-mode="limit">提前挂空</button>
+            </div>
+          </div>
+
+          <div class="knobs">
+            <div class="knob">
+              <label for="stepPct">阶梯间距 <b id="stepValue">15%</b></label>
+              <input id="stepPct" type="range" min="6" max="35" value="15">
+            </div>
+            <div class="knob">
+              <label for="confirmPct">回落确认 <b id="confirmValue">7%</b></label>
+              <input id="confirmPct" type="range" min="2" max="18" value="7">
+            </div>
+            <div class="knob">
+              <label for="unitRisk">单层风险 <b id="riskValue">1.0%</b></label>
+              <input id="unitRisk" type="range" min="3" max="25" value="10">
+            </div>
+            <div class="knob">
+              <label for="layers">阶梯层数 <b id="layerValue">5</b></label>
+              <input id="layers" type="range" min="3" max="8" value="5">
+            </div>
+          </div>
+          <p class="source-note" id="replayNote">回放使用最近 72 根 1h K 线；阶梯锚点取回放起点价格。</p>
+        </div>
+      </article>
+
+      <aside class="panel side-panel">
+        <section class="metrics">
+          <p class="section-title">Replay Result</p>
+          <div class="metric-grid">
+            <div class="metric">
+              <span>触发提醒</span>
+              <strong id="alertCount">0</strong>
+            </div>
+            <div class="metric">
+              <span>模拟空单</span>
+              <strong id="shortCount">0</strong>
+            </div>
+            <div class="metric">
+              <span>平均开空价</span>
+              <strong id="avgEntry">--</strong>
+            </div>
+            <div class="metric">
+              <span>最终浮动盈亏</span>
+              <strong id="pnl">0.00%</strong>
+            </div>
+          </div>
+        </section>
+        <section class="ladder-box">
+          <p class="section-title">价格阶梯</p>
+          <div class="ladder-list" id="ladderList"></div>
+        </section>
+        <section class="log-panel">
+          <h2>事件流</h2>
+          <ul class="event-log" id="eventLog"></ul>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const API = "https://fapi.binance.com";
+    const majors = new Set([
+      "BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "DOGEUSDT", "ADAUSDT",
+      "TRXUSDT", "AVAXUSDT", "LINKUSDT", "TONUSDT", "DOTUSDT", "LTCUSDT", "BCHUSDT",
+      "UNIUSDT", "AAVEUSDT", "NEARUSDT", "APTUSDT", "SUIUSDT", "OPUSDT", "ARBUSDT",
+      "ETCUSDT", "FILUSDT", "ATOMUSDT", "INJUSDT", "HBARUSDT", "XLMUSDT", "MATICUSDT",
+      "POLUSDT", "ICPUSDT", "TAOUSDT", "WLDUSDT", "ENAUSDT", "TRUMPUSDT"
+    ]);
+
+    const fallbackRows = [
+      { symbol: "PLAYUSDT", pct24: 43.88, quoteVolume: 232433968, last: 0.1088, high24: 0.139, low24: 0.07584, count: 2984241 },
+      { symbol: "SAGAUSDT", pct24: 36.99, quoteVolume: 74547664, last: 0.02611, high24: 0.02737, low24: 0.01946, count: 753517 },
+      { symbol: "XANUSDT", pct24: 32.41, quoteVolume: 210828765, last: 0.012211, high24: 0.013488, low24: 0.008686, count: 2717560 },
+      { symbol: "PHAUSDT", pct24: 26.15, quoteVolume: 46577433, last: 0.04733, high24: 0.04912, low24: 0.0347, count: 650677 },
+      { symbol: "DRIFTUSDT", pct24: 23.84, quoteVolume: 25889612, last: 0.03402, high24: 0.03626, low24: 0.02635, count: 324476 },
+      { symbol: "UBUSDT", pct24: 21.57, quoteVolume: 202767638, last: 0.18892, high24: 0.204, low24: 0.1612, count: 3883401 },
+      { symbol: "NILUSDT", pct24: 21.35, quoteVolume: 405757834, last: 0.08065, high24: 0.0863, low24: 0.0623, count: 4748998 },
+      { symbol: "SPORTFUNUSDT", pct24: 18.45, quoteVolume: 21957783, last: 0.06207, high24: 0.06738, low24: 0.05359, count: 330290 },
+      { symbol: "DEXEUSDT", pct24: 18.41, quoteVolume: 69643499, last: 17.415, high24: 17.98, low24: 14.44, count: 1324243 },
+      { symbol: "HUSDT", pct24: 14.78, quoteVolume: 28206985, last: 0.25584, high24: 0.2676, low24: 0.2205, count: 1071191 }
+    ];
+
+    const els = {
+      sourceNote: document.getElementById("sourceNote"),
+      symbolSearch: document.getElementById("symbolSearch"),
+      refreshBtn: document.getElementById("refreshBtn"),
+      sampleList: document.getElementById("sampleList"),
+      canvas: document.getElementById("chart"),
+      priceNow: document.getElementById("priceNow"),
+      priceLabel: document.getElementById("priceLabel"),
+      statusPill: document.getElementById("statusPill"),
+      playBtn: document.getElementById("playBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      stepPct: document.getElementById("stepPct"),
+      confirmPct: document.getElementById("confirmPct"),
+      unitRisk: document.getElementById("unitRisk"),
+      layers: document.getElementById("layers"),
+      stepValue: document.getElementById("stepValue"),
+      confirmValue: document.getElementById("confirmValue"),
+      riskValue: document.getElementById("riskValue"),
+      layerValue: document.getElementById("layerValue"),
+      replayNote: document.getElementById("replayNote"),
+      alertCount: document.getElementById("alertCount"),
+      shortCount: document.getElementById("shortCount"),
+      avgEntry: document.getElementById("avgEntry"),
+      pnl: document.getElementById("pnl"),
+      ladderList: document.getElementById("ladderList"),
+      eventLog: document.getElementById("eventLog")
+    };
+
+    const ctx = els.canvas.getContext("2d");
+    const state = {
+      mode: "alert",
+      samples: [],
+      selected: null,
+      bars: [],
+      tick: 0,
+      playing: true,
+      lastFrame: 0,
+      levels: [],
+      alerted: new Set(),
+      opened: new Set(),
+      entries: [],
+      events: [],
+      live: false
+    };
+
+    function formatPrice(value) {
+      if (!Number.isFinite(value)) return "--";
+      if (value >= 100) return value.toFixed(2);
+      if (value >= 1) return value.toFixed(4);
+      if (value >= 0.01) return value.toFixed(5);
+      return value.toFixed(7).replace(/0+$/, "").replace(/\.$/, "");
+    }
+
+    function money(value) {
+      if (!Number.isFinite(value)) return "--";
+      if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(2)}B`;
+      if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
+      return `$${Math.round(value).toLocaleString("en-US")}`;
+    }
+
+    function cfg() {
+      return {
+        step: Number(els.stepPct.value) / 100,
+        confirm: Number(els.confirmPct.value) / 100,
+        unitRisk: Number(els.unitRisk.value) / 10,
+        layers: Number(els.layers.value)
+      };
+    }
+
+    async function getJson(path) {
+      const res = await fetch(`${API}${path}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`${path} ${res.status}`);
+      return res.json();
+    }
+
+    async function loadSamples() {
+      els.sourceNote.textContent = "正在连接 Binance Futures API...";
+      try {
+        const [exchange, tickers] = await Promise.all([
+          getJson("/fapi/v1/exchangeInfo"),
+          getJson("/fapi/v1/ticker/24hr")
+        ]);
+        const tradable = new Set(exchange.symbols
+          .filter((s) => s.status === "TRADING" && s.quoteAsset === "USDT" && s.contractType === "PERPETUAL")
+          .map((s) => s.symbol));
+        state.samples = tickers
+          .filter((t) => tradable.has(t.symbol) && !majors.has(t.symbol))
+          .map((t) => ({
+            symbol: t.symbol,
+            pct24: Number(t.priceChangePercent),
+            quoteVolume: Number(t.quoteVolume),
+            last: Number(t.lastPrice),
+            high24: Number(t.highPrice),
+            low24: Number(t.lowPrice),
+            count: Number(t.count)
+          }))
+          .filter((r) => r.pct24 >= 12 && r.quoteVolume >= 20_000_000 && r.count >= 20000)
+          .sort((a, b) => (b.pct24 - a.pct24) || (b.quoteVolume - a.quoteVolume))
+          .slice(0, 24);
+        state.live = true;
+        els.sourceNote.textContent = `Live: ${new Date().toLocaleString()}，筛选 24h 涨幅、成交额和交易笔数。`;
+      } catch (err) {
+        state.samples = fallbackRows;
+        state.live = false;
+        els.sourceNote.textContent = `Live API 未能读取，使用 2026-05-25 快照样本。原因：${err.message}`;
+      }
+      renderSamples();
+      if (!state.selected && state.samples[0]) selectSymbol(state.samples[0].symbol);
+    }
+
+    function renderSamples() {
+      const q = els.symbolSearch.value.trim().toUpperCase();
+      const rows = state.samples.filter((r) => !q || r.symbol.includes(q));
+      els.sampleList.innerHTML = rows.map((r) => {
+        const range = r.low24 ? ((r.high24 / r.low24 - 1) * 100) : 0;
+        return `<button class="coin-row ${state.selected && state.selected.symbol === r.symbol ? "is-active" : ""}" data-symbol="${r.symbol}">
+          <span>
+            <span class="symbol">${r.symbol}</span>
+            <span class="coin-meta">
+              <span>VOL ${money(r.quoteVolume)}</span>
+              <span>RANGE ${range.toFixed(1)}%</span>
+              <span>${Math.round(r.count).toLocaleString("en-US")} trades</span>
+            </span>
+          </span>
+          <span class="pct">+${r.pct24.toFixed(2)}%</span>
+        </button>`;
+      }).join("");
+      document.querySelectorAll(".coin-row").forEach((button) => {
+        button.addEventListener("click", () => selectSymbol(button.dataset.symbol));
+      });
+    }
+
+    async function selectSymbol(symbol) {
+      const sample = state.samples.find((r) => r.symbol === symbol);
+      if (!sample) return;
+      state.selected = sample;
+      renderSamples();
+      els.priceNow.textContent = formatPrice(sample.last);
+      els.priceLabel.textContent = `${sample.symbol} 正在读取 1h K 线`;
+      try {
+        const klines = await getJson(`/fapi/v1/klines?symbol=${sample.symbol}&interval=1h&limit=72`);
+        state.bars = klines.map((k) => ({
+          time: Number(k[0]),
+          open: Number(k[1]),
+          high: Number(k[2]),
+          low: Number(k[3]),
+          close: Number(k[4])
+        }));
+      } catch (err) {
+        state.bars = syntheticBars(sample);
+        els.sourceNote.textContent = `${state.live ? "Live 样本可用，但 K 线读取失败" : "Fallback"}；${sample.symbol} 使用合成回放。原因：${err.message}`;
+      }
+      resetReplay(true);
+    }
+
+    function syntheticBars(sample) {
+      const bars = [];
+      const start = sample.last / (1 + sample.pct24 / 100);
+      for (let i = 0; i < 72; i += 1) {
+        const t = i / 71;
+        const pulse = Math.sin(i * 0.34) * 0.04 + Math.sin(i * 0.11) * 0.025;
+        const close = start * (1 + (sample.pct24 / 100) * Math.pow(t, 1.45) + pulse);
+        const spread = 0.018 + Math.abs(Math.sin(i * 0.19)) * 0.025;
+        bars.push({
+          time: Date.now() - (72 - i) * 3600000,
+          open: i ? bars[i - 1].close : start,
+          high: close * (1 + spread),
+          low: close * (1 - spread),
+          close: Math.max(0.000001, close)
+        });
+      }
+      return bars;
+    }
+
+    function buildLevels() {
+      const c = cfg();
+      const anchor = state.bars[0] ? state.bars[0].close : (state.selected ? state.selected.last : 1);
+      return Array.from({ length: c.layers }, (_, index) => ({
+        id: index,
+        price: anchor * Math.pow(1 + c.step, index + 1),
+        peak: 0
+      }));
+    }
+
+    function addEvent(tick, text) {
+      const last = state.events[0];
+      if (last && last.tick === tick && last.text === text) return;
+      state.events.unshift({ tick, text });
+      state.events = state.events.slice(0, 9);
+    }
+
+    function resetReplay(keepPlaying = true) {
+      state.tick = 0;
+      state.playing = keepPlaying;
+      state.levels = buildLevels();
+      state.alerted = new Set();
+      state.opened = new Set();
+      state.entries = [];
+      state.events = [];
+      els.stepValue.textContent = `${els.stepPct.value}%`;
+      els.confirmValue.textContent = `${els.confirmPct.value}%`;
+      els.riskValue.textContent = `${(Number(els.unitRisk.value) / 10).toFixed(1)}%`;
+      els.layerValue.textContent = els.layers.value;
+      els.playBtn.textContent = state.playing ? "Ⅱ" : "▶";
+      addEvent(0, `${state.selected ? state.selected.symbol : "样本"} 回放重置，以 72h 起点价格生成阶梯。`);
+      update();
+    }
+
+    function maybeTrigger(bar) {
+      const c = cfg();
+      state.levels.forEach((level) => {
+        if (!state.alerted.has(level.id) && bar.high >= level.price) {
+          state.alerted.add(level.id);
+          level.peak = bar.high;
+          addEvent(state.tick, `触发第 ${level.id + 1} 层提醒：${formatPrice(level.price)}。`);
+          if (state.mode === "limit") openShort(level, level.price, "提前挂空成交");
+        }
+
+        if (state.alerted.has(level.id) && !state.opened.has(level.id)) {
+          level.peak = Math.max(level.peak || level.price, bar.high);
+          if (state.mode === "confirm" && bar.close <= level.peak * (1 - c.confirm)) {
+            openShort(level, bar.close, "回落确认开空");
+          }
+        }
+      });
+    }
+
+    function openShort(level, price, reason) {
+      const size = cfg().unitRisk;
+      state.opened.add(level.id);
+      state.entries.push({ levelId: level.id, price, size });
+      addEvent(state.tick, `${reason}：第 ${level.id + 1} 层，价格 ${formatPrice(price)}。`);
+    }
+
+    function stats(price) {
+      const exposure = state.entries.reduce((sum, e) => sum + e.size, 0);
+      const avg = exposure ? state.entries.reduce((sum, e) => sum + e.price * e.size, 0) / exposure : 0;
+      const pnl = state.entries.reduce((sum, e) => sum + ((e.price - price) / e.price) * e.size, 0);
+      return { exposure, avg, pnl };
+    }
+
+    function setStatus(price) {
+      const s = stats(price);
+      els.statusPill.className = "status-pill";
+      if (state.entries.length) {
+        els.statusPill.textContent = s.pnl >= 0 ? "回放浮盈" : "回放承压";
+        els.statusPill.classList.add(s.pnl >= 0 ? "is-profit" : "is-open");
+      } else if (state.alerted.size) {
+        els.statusPill.textContent = "已触发提醒";
+      } else {
+        els.statusPill.textContent = "等待价格层";
+      }
+    }
+
+    function renderSide(price) {
+      const s = stats(price);
+      els.alertCount.textContent = String(state.alerted.size);
+      els.shortCount.textContent = String(state.entries.length);
+      els.avgEntry.textContent = s.avg ? formatPrice(s.avg) : "--";
+      els.pnl.textContent = `${s.pnl >= 0 ? "+" : ""}${s.pnl.toFixed(2)}%`;
+      els.pnl.className = s.pnl >= 0 ? "gain" : "danger";
+      els.ladderList.innerHTML = state.levels.map((level) => {
+        const entry = state.entries.find((e) => e.levelId === level.id);
+        let cls = "";
+        let label = "未触发";
+        if (entry && price < entry.price) {
+          cls = "is-profit";
+          label = "浮盈";
+        } else if (entry) {
+          cls = "is-open";
+          label = "已开";
+        } else if (state.alerted.has(level.id)) {
+          cls = "is-alert";
+          label = "提醒";
+        }
+        return `<div class="level ${cls}">
+          <span>${formatPrice(level.price)}</span>
+          <span class="level-bar"><span class="level-fill"></span></span>
+          <span class="level-state">${label}</span>
+        </div>`;
+      }).join("");
+      els.eventLog.innerHTML = state.events.map((event) => {
+        return `<li><code>T+${event.tick}</code><span>${event.text}</span></li>`;
+      }).join("");
+    }
+
+    function sizeCanvas() {
+      const rect = els.canvas.getBoundingClientRect();
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      const width = Math.floor(rect.width * dpr);
+      const height = Math.floor(rect.height * dpr);
+      if (els.canvas.width !== width || els.canvas.height !== height) {
+        els.canvas.width = width;
+        els.canvas.height = height;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { width: rect.width, height: rect.height };
+    }
+
+    function drawChart(price) {
+      const { width, height } = sizeCanvas();
+      const pad = { left: 66, right: 24, top: 28, bottom: 50 };
+      const plotW = Math.max(1, width - pad.left - pad.right);
+      const plotH = Math.max(1, height - pad.top - pad.bottom);
+      const visible = state.bars.slice(0, state.tick + 1);
+      const allValues = state.bars.flatMap((b) => [b.high, b.low]).concat(state.levels.map((l) => l.price));
+      const min = Math.min(...allValues, price || 1) * 0.92;
+      const max = Math.max(...allValues, price || 1) * 1.08;
+      const x = (i) => pad.left + (i / Math.max(1, state.bars.length - 1)) * plotW;
+      const y = (value) => pad.top + (1 - (value - min) / (max - min)) * plotH;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(22, 23, 21, 0.12)";
+      ctx.fillStyle = "rgba(22, 23, 21, 0.54)";
+      ctx.font = "12px Menlo, monospace";
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+      for (let i = 0; i <= 5; i += 1) {
+        const value = min + ((max - min) / 5) * i;
+        const yy = y(value);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, yy);
+        ctx.lineTo(width - pad.right, yy);
+        ctx.stroke();
+        ctx.fillText(formatPrice(value), pad.left - 10, yy);
+      }
+
+      state.levels.forEach((level) => {
+        const yy = y(level.price);
+        ctx.strokeStyle = state.opened.has(level.id)
+          ? "rgba(198, 63, 63, 0.72)"
+          : state.alerted.has(level.id)
+            ? "rgba(190, 106, 24, 0.82)"
+            : "rgba(27, 131, 164, 0.42)";
+        ctx.setLineDash([8, 7]);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, yy);
+        ctx.lineTo(width - pad.right, yy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "rgba(255, 250, 240, 0.9)";
+        ctx.fillRect(width - pad.right - 86, yy - 13, 82, 24);
+        ctx.strokeStyle = "rgba(22, 23, 21, 0.12)";
+        ctx.strokeRect(width - pad.right - 86, yy - 13, 82, 24);
+        ctx.fillStyle = "rgba(22, 23, 21, 0.74)";
+        ctx.textAlign = "center";
+        ctx.fillText(formatPrice(level.price), width - pad.right - 45, yy);
+      });
+
+      if (visible.length > 1) {
+        const gradient = ctx.createLinearGradient(pad.left, 0, width - pad.right, 0);
+        gradient.addColorStop(0, "#1b83a4");
+        gradient.addColorStop(0.6, "#be6a18");
+        gradient.addColorStop(1, "#c63f3f");
+        ctx.beginPath();
+        visible.forEach((bar, i) => {
+          const xx = x(i);
+          const yy = y(bar.close);
+          if (i === 0) ctx.moveTo(xx, yy);
+          else ctx.lineTo(xx, yy);
+        });
+        ctx.lineWidth = 4;
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
+        ctx.strokeStyle = gradient;
+        ctx.shadowColor = "rgba(27, 131, 164, 0.18)";
+        ctx.shadowBlur = 14;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+      if (visible.length) {
+        const lastX = x(state.tick);
+        const lastY = y(price);
+        ctx.fillStyle = "#161715";
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#fffaf0";
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function update() {
+      if (!state.bars.length) {
+        drawChart(1);
+        return;
+      }
+      const bar = state.bars[state.tick] || state.bars[state.bars.length - 1];
+      maybeTrigger(bar);
+      const price = bar.close;
+      els.priceNow.textContent = formatPrice(price);
+      els.priceLabel.textContent = `${state.selected.symbol} 72h replay`;
+      setStatus(price);
+      renderSide(price);
+      drawChart(price);
+    }
+
+    function animate(timestamp) {
+      if (!state.lastFrame) state.lastFrame = timestamp;
+      const elapsed = timestamp - state.lastFrame;
+      if (state.playing && state.bars.length && elapsed > 120) {
+        state.tick = Math.min(state.bars.length - 1, state.tick + 1);
+        update();
+        state.lastFrame = timestamp;
+        if (state.tick >= state.bars.length - 1) {
+          state.playing = false;
+          els.playBtn.textContent = "▶";
+          addEvent(state.tick, "回放结束：查看最终浮动盈亏和触发层。");
+          renderSide(state.bars[state.tick].close);
+        }
+      }
+      window.requestAnimationFrame(animate);
+    }
+
+    document.querySelectorAll("[data-mode]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-mode]").forEach((item) => item.classList.remove("is-active"));
+        button.classList.add("is-active");
+        state.mode = button.dataset.mode;
+        resetReplay(state.playing);
+      });
+    });
+
+    [els.stepPct, els.confirmPct, els.unitRisk, els.layers].forEach((input) => {
+      input.addEventListener("input", () => resetReplay(state.playing));
+    });
+
+    els.playBtn.addEventListener("click", () => {
+      state.playing = !state.playing;
+      els.playBtn.textContent = state.playing ? "Ⅱ" : "▶";
+    });
+    els.resetBtn.addEventListener("click", () => resetReplay(true));
+    els.refreshBtn.addEventListener("click", () => loadSamples());
+    els.symbolSearch.addEventListener("input", () => renderSamples());
+    window.addEventListener("resize", () => drawChart(state.bars[state.tick] ? state.bars[state.tick].close : 1));
+
+    loadSamples();
+    window.requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
