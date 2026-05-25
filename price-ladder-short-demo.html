@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>空头价格阶梯模型动态演示</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f2e9;
+      --paper-2: #fffaf0;
+      --ink: #161715;
+      --muted: #68645d;
+      --line: rgba(22, 23, 21, 0.16);
+      --panel: rgba(255, 250, 240, 0.82);
+      --green: #178f6a;
+      --green-soft: rgba(23, 143, 106, 0.14);
+      --amber: #be6a18;
+      --amber-soft: rgba(190, 106, 24, 0.16);
+      --red: #c63f3f;
+      --red-soft: rgba(198, 63, 63, 0.14);
+      --cyan: #1b83a4;
+      --cyan-soft: rgba(27, 131, 164, 0.13);
+      --shadow: 0 18px 55px rgba(26, 24, 19, 0.12);
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(22, 23, 21, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(22, 23, 21, 0.03) 1px, transparent 1px) 0 0 / 42px 42px,
+        radial-gradient(circle at 16% 12%, rgba(27, 131, 164, 0.15), transparent 28%),
+        radial-gradient(circle at 86% 4%, rgba(190, 106, 24, 0.13), transparent 26%),
+        var(--paper);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      width: min(1440px, calc(100vw - 32px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 26px 0 34px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(250px, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--amber);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font: 700 clamp(34px, 5vw, 72px)/0.92 var(--serif);
+      letter-spacing: 0;
+      max-width: 900px;
+    }
+
+    .thesis {
+      max-width: 520px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 390px;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .chart-panel,
+    .side-panel,
+    .control-panel,
+    .log-panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      border-radius: 8px;
+    }
+
+    .chart-panel {
+      min-height: 650px;
+      display: grid;
+      grid-template-rows: auto minmax(400px, 1fr) auto;
+      overflow: hidden;
+    }
+
+    .chart-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .quote {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .price-now {
+      font: 760 clamp(36px, 6vw, 72px)/0.9 var(--mono);
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .price-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-pill {
+      min-width: 152px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.5);
+      font: 700 13px/1.25 var(--mono);
+      text-align: center;
+    }
+
+    .status-pill.is-watch {
+      color: var(--cyan);
+      background: var(--cyan-soft);
+    }
+
+    .status-pill.is-short {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .status-pill.is-calm {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .canvas-wrap {
+      position: relative;
+      min-height: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.05)),
+        repeating-linear-gradient(0deg, transparent, transparent 53px, rgba(22, 23, 21, 0.045) 54px),
+        repeating-linear-gradient(90deg, transparent, transparent 69px, rgba(22, 23, 21, 0.04) 70px);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 440px;
+    }
+
+    .legend {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: calc(100% - 36px);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.86);
+      border-radius: 8px;
+      color: var(--muted);
+      font: 700 12px/1 var(--mono);
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+
+    .dot.red {
+      background: var(--red);
+    }
+
+    .dot.green {
+      background: var(--green);
+    }
+
+    .dot.amber {
+      background: var(--amber);
+    }
+
+    .control-panel {
+      padding: 16px 18px 18px;
+      border-radius: 0;
+      border-width: 1px 0 0;
+      box-shadow: none;
+      display: grid;
+      gap: 16px;
+      background: rgba(255, 250, 240, 0.74);
+    }
+
+    .button-row,
+    .mode-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-btn,
+    .seg-btn {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.58);
+      color: var(--ink);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .icon-btn {
+      width: 42px;
+      font: 800 18px/1 var(--mono);
+    }
+
+    .seg-btn {
+      padding: 0 13px;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .icon-btn:hover,
+    .seg-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(22, 23, 21, 0.32);
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .seg-btn.is-active {
+      color: var(--paper-2);
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+
+    .knobs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .knob {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .knob label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font: 700 12px/1.25 var(--mono);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--ink);
+    }
+
+    .side-panel {
+      min-height: 650px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      overflow: hidden;
+    }
+
+    .risk-summary {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 14px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      min-height: 92px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 9px;
+      font: 780 26px/1 var(--mono);
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .risk-bar {
+      height: 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.64);
+      overflow: hidden;
+    }
+
+    .risk-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green), var(--amber), var(--red));
+      transition: width 220ms ease;
+    }
+
+    .ladder-list {
+      padding: 16px 18px 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 9px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: var(--muted);
+      font: 800 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .level {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr) 78px;
+      gap: 10px;
+      align-items: center;
+      min-height: 40px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.4);
+      font: 700 12px/1.2 var(--mono);
+    }
+
+    .level-price {
+      color: var(--ink);
+    }
+
+    .level-bar {
+      height: 8px;
+      border-radius: 99px;
+      background: rgba(22, 23, 21, 0.08);
+      overflow: hidden;
+    }
+
+    .level-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--cyan);
+      transition: width 220ms ease, background 220ms ease;
+    }
+
+    .level-state {
+      color: var(--muted);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .level.is-alert .level-fill {
+      width: 46%;
+      background: var(--amber);
+    }
+
+    .level.is-open .level-fill {
+      width: 78%;
+      background: var(--red);
+    }
+
+    .level.is-profit .level-fill {
+      width: 100%;
+      background: var(--green);
+    }
+
+    .log-panel {
+      margin: 16px 18px 18px;
+      box-shadow: none;
+      overflow: hidden;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .log-panel h2 {
+      margin: 0;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      font: 800 12px/1 var(--mono);
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .event-log {
+      margin: 0;
+      padding: 10px 14px 14px;
+      list-style: none;
+      overflow: auto;
+      min-height: 120px;
+      max-height: 260px;
+    }
+
+    .event-log li {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr);
+      gap: 9px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(22, 23, 21, 0.08);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .event-log code {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .scenario-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .danger {
+      color: var(--red);
+    }
+
+    .gain {
+      color: var(--green);
+    }
+
+    @media (max-width: 1120px) {
+      .stage {
+        grid-template-columns: 1fr;
+      }
+
+      .side-panel,
+      .chart-panel {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .app {
+        width: min(100vw - 20px, 720px);
+        padding-top: 18px;
+      }
+
+      .topbar,
+      .chart-head {
+        grid-template-columns: 1fr;
+      }
+
+      .quote {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .knobs,
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .level {
+        grid-template-columns: 70px minmax(64px, 1fr) 72px;
+      }
+
+      canvas {
+        min-height: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Laddered Short Entry Lab</p>
+        <h1>空头价格阶梯模型</h1>
+      </div>
+      <p class="thesis">把“它迟早会跌，但不知道顶部在哪”拆成价格层、提醒层、确认层和最大亏损层。模型的重点不是猜顶，而是限制每一层错误判断的成本。</p>
+    </header>
+
+    <section class="stage">
+      <article class="chart-panel">
+        <div class="chart-head">
+          <div class="quote">
+            <div class="price-now" id="priceNow">30.00</div>
+            <div class="price-label">模拟小币合约价格</div>
+          </div>
+          <div class="status-pill is-watch" id="statusPill">等待价格层</div>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="chart" aria-label="价格阶梯动态演示图"></canvas>
+          <div class="legend" aria-hidden="true">
+            <span class="chip"><span class="dot"></span>价格路径</span>
+            <span class="chip"><span class="dot amber"></span>提醒触发</span>
+            <span class="chip"><span class="dot red"></span>条件开空</span>
+            <span class="chip"><span class="dot green"></span>回落获利区</span>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <div class="button-row">
+            <button class="icon-btn" id="playBtn" aria-label="播放或暂停">▶</button>
+            <button class="icon-btn" id="resetBtn" aria-label="重置">↺</button>
+            <div class="mode-row" role="group" aria-label="执行方式">
+              <button class="seg-btn is-active" data-mode="alert">只提醒</button>
+              <button class="seg-btn" data-mode="confirm">条件开空</button>
+              <button class="seg-btn" data-mode="limit">提前挂空</button>
+            </div>
+            <div class="mode-row" role="group" aria-label="价格情景">
+              <button class="seg-btn is-active" data-scenario="blowoff">冲高回落</button>
+              <button class="seg-btn" data-scenario="meltup">继续拉升</button>
+              <button class="seg-btn" data-scenario="chop">高位震荡</button>
+            </div>
+          </div>
+
+          <div class="knobs">
+            <div class="knob">
+              <label for="stepPct">阶梯间距 <b id="stepValue">20%</b></label>
+              <input id="stepPct" type="range" min="8" max="40" value="20">
+            </div>
+            <div class="knob">
+              <label for="confirmPct">回落确认 <b id="confirmValue">6%</b></label>
+              <input id="confirmPct" type="range" min="2" max="16" value="6">
+            </div>
+            <div class="knob">
+              <label for="unitRisk">单层风险 <b id="riskValue">1.0%</b></label>
+              <input id="unitRisk" type="range" min="4" max="25" value="10">
+            </div>
+            <div class="knob">
+              <label for="layers">阶梯层数 <b id="layerValue">6</b></label>
+              <input id="layers" type="range" min="3" max="8" value="6">
+            </div>
+          </div>
+
+          <div class="scenario-note" id="scenarioNote">当前情景：价格快速穿过多个提醒层后回落。适合观察“只提醒”和“条件开空”的区别。</div>
+        </div>
+      </article>
+
+      <aside class="side-panel">
+        <section class="risk-summary">
+          <p class="section-title">Position Function</p>
+          <div class="metric-grid">
+            <div class="metric">
+              <span>已触发提醒</span>
+              <strong id="alertCount">0</strong>
+            </div>
+            <div class="metric">
+              <span>空头层数</span>
+              <strong id="shortCount">0</strong>
+            </div>
+            <div class="metric">
+              <span>平均开空价</span>
+              <strong id="avgEntry">--</strong>
+            </div>
+            <div class="metric">
+              <span>浮动盈亏</span>
+              <strong id="pnl">0.00%</strong>
+            </div>
+          </div>
+          <div>
+            <p class="section-title">预算风险占用</p>
+            <div class="risk-bar" aria-label="预算风险占用">
+              <div class="risk-fill" id="riskFill"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ladder-list">
+          <p class="section-title">价格阶梯</p>
+          <div id="ladderList"></div>
+        </section>
+
+        <section class="log-panel">
+          <h2>事件流</h2>
+          <ul class="event-log" id="eventLog"></ul>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const els = {
+      canvas: document.getElementById("chart"),
+      priceNow: document.getElementById("priceNow"),
+      statusPill: document.getElementById("statusPill"),
+      playBtn: document.getElementById("playBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      stepPct: document.getElementById("stepPct"),
+      confirmPct: document.getElementById("confirmPct"),
+      unitRisk: document.getElementById("unitRisk"),
+      layers: document.getElementById("layers"),
+      stepValue: document.getElementById("stepValue"),
+      confirmValue: document.getElementById("confirmValue"),
+      riskValue: document.getElementById("riskValue"),
+      layerValue: document.getElementById("layerValue"),
+      scenarioNote: document.getElementById("scenarioNote"),
+      ladderList: document.getElementById("ladderList"),
+      eventLog: document.getElementById("eventLog"),
+      alertCount: document.getElementById("alertCount"),
+      shortCount: document.getElementById("shortCount"),
+      avgEntry: document.getElementById("avgEntry"),
+      pnl: document.getElementById("pnl"),
+      riskFill: document.getElementById("riskFill")
+    };
+
+    const ctx = els.canvas.getContext("2d");
+    const startPrice = 30;
+    const maxTicks = 260;
+    const scenarios = {
+      blowoff: {
+        label: "当前情景：价格快速穿过多个提醒层后回落。适合观察“只提醒”和“条件开空”的区别。",
+        anchors: [[0, 30], [34, 38], [64, 49], [91, 67], [115, 91], [140, 76], [174, 48], [219, 31], [260, 25]]
+      },
+      meltup: {
+        label: "当前情景：价格继续单边拉升。提前挂空会迅速累积浮亏，提醒模式则保持等待。",
+        anchors: [[0, 30], [32, 39], [61, 51], [94, 70], [124, 93], [156, 118], [203, 142], [260, 165]]
+      },
+      chop: {
+        label: "当前情景：价格高位来回震荡。条件开空会更频繁触发，但仍需要止损和风险预算。",
+        anchors: [[0, 30], [31, 39], [59, 53], [90, 45], [121, 62], [154, 50], [184, 71], [214, 55], [260, 43]]
+      }
+    };
+
+    const state = {
+      mode: "alert",
+      scenario: "blowoff",
+      tick: 0,
+      playing: true,
+      prices: [],
+      levels: [],
+      events: [],
+      alerted: new Set(),
+      opened: new Set(),
+      entries: [],
+      lastFrame: 0
+    };
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    function formatPrice(value) {
+      return value >= 100 ? value.toFixed(1) : value.toFixed(2);
+    }
+
+    function currentConfig() {
+      return {
+        step: Number(els.stepPct.value) / 100,
+        confirm: Number(els.confirmPct.value) / 100,
+        unitRisk: Number(els.unitRisk.value) / 10,
+        layers: Number(els.layers.value)
+      };
+    }
+
+    function buildPath() {
+      const anchors = scenarios[state.scenario].anchors;
+      const prices = new Array(maxTicks + 1).fill(startPrice);
+      for (let i = 0; i < anchors.length - 1; i += 1) {
+        const [t0, p0] = anchors[i];
+        const [t1, p1] = anchors[i + 1];
+        for (let t = t0; t <= t1; t += 1) {
+          const local = (t - t0) / Math.max(1, t1 - t0);
+          const ease = local < 0.5 ? 2 * local * local : 1 - Math.pow(-2 * local + 2, 2) / 2;
+          const pulse = Math.sin(t * 0.21) * 0.55 + Math.sin(t * 0.077) * 0.35;
+          prices[t] = Math.max(1, lerp(p0, p1, ease) + pulse);
+        }
+      }
+      return prices;
+    }
+
+    function buildLevels() {
+      const config = currentConfig();
+      return Array.from({ length: config.layers }, (_, index) => {
+        const price = startPrice * Math.pow(1 + config.step, index + 1);
+        return {
+          id: index,
+          price,
+          confirmPrice: price * (1 - config.confirm)
+        };
+      });
+    }
+
+    function addEvent(tick, text) {
+      const last = state.events[state.events.length - 1];
+      if (last && last.text === text && last.tick === tick) return;
+      state.events.unshift({ tick, text });
+      state.events = state.events.slice(0, 9);
+    }
+
+    function resetSimulation(keepPlaying = true) {
+      state.tick = 0;
+      state.prices = buildPath();
+      state.levels = buildLevels();
+      state.events = [];
+      state.alerted = new Set();
+      state.opened = new Set();
+      state.entries = [];
+      state.playing = keepPlaying;
+      els.playBtn.textContent = state.playing ? "Ⅱ" : "▶";
+      addEvent(0, "模型重置，等待第一层价格提醒。");
+      renderStaticLists();
+      update();
+    }
+
+    function maybeTrigger(price) {
+      const previous = state.prices[Math.max(0, state.tick - 1)] || startPrice;
+      state.levels.forEach((level) => {
+        if (!state.alerted.has(level.id) && price >= level.price) {
+          state.alerted.add(level.id);
+          addEvent(state.tick, `价格到 ${formatPrice(level.price)}，触发第 ${level.id + 1} 层提醒。`);
+          if (state.mode === "limit") {
+            openShort(level, level.price, "提前挂空成交");
+          }
+        }
+
+        if (state.mode === "confirm" && state.alerted.has(level.id) && !state.opened.has(level.id)) {
+          const crossedDown = previous > level.confirmPrice && price <= level.confirmPrice;
+          if (crossedDown) {
+            openShort(level, price, "回落确认开空");
+          }
+        }
+      });
+    }
+
+    function openShort(level, price, reason) {
+      const config = currentConfig();
+      state.opened.add(level.id);
+      state.entries.push({
+        levelId: level.id,
+        price,
+        size: config.unitRisk,
+        stop: price * (1 + config.step)
+      });
+      addEvent(state.tick, `${reason}：第 ${level.id + 1} 层，价格 ${formatPrice(price)}。`);
+    }
+
+    function stats(price) {
+      const exposure = state.entries.reduce((sum, entry) => sum + entry.size, 0);
+      const weightedEntry = state.entries.reduce((sum, entry) => sum + entry.price * entry.size, 0);
+      const avg = exposure > 0 ? weightedEntry / exposure : 0;
+      const pnl = state.entries.reduce((sum, entry) => {
+        return sum + ((entry.price - price) / entry.price) * entry.size;
+      }, 0);
+      const budget = currentConfig().unitRisk * currentConfig().layers;
+      const riskUsed = budget > 0 ? Math.min(100, (exposure / budget) * 100) : 0;
+      return { exposure, avg, pnl, riskUsed };
+    }
+
+    function setStatus(price) {
+      const hasShort = state.entries.length > 0;
+      const hasAlert = state.alerted.size > 0;
+      els.statusPill.className = "status-pill";
+      if (hasShort) {
+        const s = stats(price);
+        els.statusPill.textContent = s.pnl >= 0 ? "空头浮盈中" : "空头承压中";
+        els.statusPill.classList.add(s.pnl >= 0 ? "is-calm" : "is-short");
+      } else if (hasAlert) {
+        els.statusPill.textContent = "已触发提醒";
+        els.statusPill.classList.add("is-watch");
+      } else {
+        els.statusPill.textContent = "等待价格层";
+        els.statusPill.classList.add("is-watch");
+      }
+    }
+
+    function renderStaticLists() {
+      els.ladderList.innerHTML = state.levels.map((level, index) => {
+        return `
+          <div class="level" data-level="${index}">
+            <span class="level-price">${formatPrice(level.price)}</span>
+            <span class="level-bar"><span class="level-fill"></span></span>
+            <span class="level-state">未触发</span>
+          </div>
+        `;
+      }).join("");
+      els.scenarioNote.textContent = scenarios[state.scenario].label;
+      els.stepValue.textContent = `${els.stepPct.value}%`;
+      els.confirmValue.textContent = `${els.confirmPct.value}%`;
+      els.riskValue.textContent = `${(Number(els.unitRisk.value) / 10).toFixed(1)}%`;
+      els.layerValue.textContent = els.layers.value;
+    }
+
+    function renderSide(price) {
+      const s = stats(price);
+      els.alertCount.textContent = String(state.alerted.size);
+      els.shortCount.textContent = String(state.entries.length);
+      els.avgEntry.textContent = s.avg ? formatPrice(s.avg) : "--";
+      els.pnl.textContent = `${s.pnl >= 0 ? "+" : ""}${s.pnl.toFixed(2)}%`;
+      els.pnl.className = s.pnl >= 0 ? "gain" : "danger";
+      els.riskFill.style.width = `${s.riskUsed}%`;
+
+      document.querySelectorAll(".level").forEach((row) => {
+        const id = Number(row.dataset.level);
+        row.classList.remove("is-alert", "is-open", "is-profit");
+        const stateLabel = row.querySelector(".level-state");
+        const entry = state.entries.find((item) => item.levelId === id);
+        if (entry && price < entry.price) {
+          row.classList.add("is-profit");
+          stateLabel.textContent = "浮盈";
+        } else if (entry) {
+          row.classList.add("is-open");
+          stateLabel.textContent = "已开空";
+        } else if (state.alerted.has(id)) {
+          row.classList.add("is-alert");
+          stateLabel.textContent = "已提醒";
+        } else {
+          stateLabel.textContent = "未触发";
+        }
+      });
+
+      els.eventLog.innerHTML = state.events.map((event) => {
+        return `<li><code>T+${event.tick}</code><span>${event.text}</span></li>`;
+      }).join("");
+    }
+
+    function sizeCanvas() {
+      const rect = els.canvas.getBoundingClientRect();
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      const width = Math.floor(rect.width * dpr);
+      const height = Math.floor(rect.height * dpr);
+      if (els.canvas.width !== width || els.canvas.height !== height) {
+        els.canvas.width = width;
+        els.canvas.height = height;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { width: rect.width, height: rect.height };
+    }
+
+    function drawChart(price) {
+      const { width, height } = sizeCanvas();
+      const pad = { left: 58, right: 22, top: 26, bottom: 50 };
+      const plotW = Math.max(1, width - pad.left - pad.right);
+      const plotH = Math.max(1, height - pad.top - pad.bottom);
+      const visible = state.prices.slice(0, state.tick + 1);
+      const allPrices = state.prices.concat(state.levels.map((level) => level.price));
+      const min = Math.min(...allPrices, startPrice) * 0.84;
+      const max = Math.max(...allPrices, startPrice) * 1.08;
+      const x = (tick) => pad.left + (tick / maxTicks) * plotW;
+      const y = (value) => pad.top + (1 - (value - min) / (max - min)) * plotH;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(22, 23, 21, 0.12)";
+      ctx.fillStyle = "rgba(22, 23, 21, 0.54)";
+      ctx.font = "12px Menlo, monospace";
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+      for (let i = 0; i <= 5; i += 1) {
+        const value = min + ((max - min) / 5) * i;
+        const yy = y(value);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, yy);
+        ctx.lineTo(width - pad.right, yy);
+        ctx.stroke();
+        ctx.fillText(formatPrice(value), pad.left - 10, yy);
+      }
+
+      state.levels.forEach((level) => {
+        const yy = y(level.price);
+        ctx.strokeStyle = state.opened.has(level.id)
+          ? "rgba(198, 63, 63, 0.72)"
+          : state.alerted.has(level.id)
+            ? "rgba(190, 106, 24, 0.82)"
+            : "rgba(27, 131, 164, 0.4)";
+        ctx.setLineDash([8, 7]);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, yy);
+        ctx.lineTo(width - pad.right, yy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "rgba(255, 250, 240, 0.9)";
+        ctx.fillRect(width - pad.right - 72, yy - 13, 68, 24);
+        ctx.strokeStyle = "rgba(22, 23, 21, 0.12)";
+        ctx.strokeRect(width - pad.right - 72, yy - 13, 68, 24);
+        ctx.fillStyle = "rgba(22, 23, 21, 0.74)";
+        ctx.textAlign = "center";
+        ctx.fillText(formatPrice(level.price), width - pad.right - 38, yy);
+      });
+
+      if (visible.length > 1) {
+        const gradient = ctx.createLinearGradient(pad.left, 0, width - pad.right, 0);
+        gradient.addColorStop(0, "#1b83a4");
+        gradient.addColorStop(0.56, "#be6a18");
+        gradient.addColorStop(1, "#c63f3f");
+
+        ctx.beginPath();
+        visible.forEach((value, tick) => {
+          const xx = x(tick);
+          const yy = y(value);
+          if (tick === 0) ctx.moveTo(xx, yy);
+          else ctx.lineTo(xx, yy);
+        });
+        ctx.lineWidth = 4;
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
+        ctx.strokeStyle = gradient;
+        ctx.shadowColor = "rgba(27, 131, 164, 0.18)";
+        ctx.shadowBlur = 14;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        const lastX = x(state.tick);
+        const lastY = y(price);
+        ctx.fillStyle = "#161715";
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#fffaf0";
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      state.entries.forEach((entry) => {
+        const entryTick = Math.max(0, state.tick - 1);
+        const yy = y(entry.price);
+        ctx.fillStyle = "rgba(198, 63, 63, 0.95)";
+        ctx.beginPath();
+        ctx.arc(x(entryTick), yy, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.restore();
+    }
+
+    function update() {
+      const price = state.prices[state.tick] || startPrice;
+      maybeTrigger(price);
+      els.priceNow.textContent = formatPrice(price);
+      setStatus(price);
+      renderSide(price);
+      drawChart(price);
+    }
+
+    function animate(timestamp) {
+      if (!state.lastFrame) state.lastFrame = timestamp;
+      const elapsed = timestamp - state.lastFrame;
+      if (state.playing && elapsed > 70) {
+        state.tick = Math.min(maxTicks, state.tick + 1);
+        update();
+        state.lastFrame = timestamp;
+        if (state.tick >= maxTicks) {
+          state.playing = false;
+          els.playBtn.textContent = "▶";
+          addEvent(state.tick, "路径结束，观察最终仓位与风险占用。");
+          renderSide(state.prices[state.tick]);
+        }
+      }
+      window.requestAnimationFrame(animate);
+    }
+
+    document.querySelectorAll("[data-mode]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-mode]").forEach((item) => item.classList.remove("is-active"));
+        button.classList.add("is-active");
+        state.mode = button.dataset.mode;
+        resetSimulation(state.playing);
+      });
+    });
+
+    document.querySelectorAll("[data-scenario]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-scenario]").forEach((item) => item.classList.remove("is-active"));
+        button.classList.add("is-active");
+        state.scenario = button.dataset.scenario;
+        resetSimulation(true);
+      });
+    });
+
+    [els.stepPct, els.confirmPct, els.unitRisk, els.layers].forEach((input) => {
+      input.addEventListener("input", () => resetSimulation(state.playing));
+    });
+
+    els.playBtn.addEventListener("click", () => {
+      state.playing = !state.playing;
+      els.playBtn.textContent = state.playing ? "Ⅱ" : "▶";
+    });
+
+    els.resetBtn.addEventListener("click", () => resetSimulation(true));
+    window.addEventListener("resize", () => drawChart(state.prices[state.tick] || startPrice));
+
+    resetSimulation(true);
+    window.requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
