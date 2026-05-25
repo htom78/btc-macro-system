@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BTC 核心仓 + MA95 风控混合策略</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f2e9;
+      --paper-2: #fffaf0;
+      --ink: #161715;
+      --muted: #67635c;
+      --line: rgba(22, 23, 21, 0.16);
+      --panel: rgba(255, 250, 240, 0.84);
+      --green: #178f6a;
+      --green-soft: rgba(23, 143, 106, 0.14);
+      --amber: #be6a18;
+      --amber-soft: rgba(190, 106, 24, 0.16);
+      --red: #c63f3f;
+      --red-soft: rgba(198, 63, 63, 0.14);
+      --cyan: #1b83a4;
+      --cyan-soft: rgba(27, 131, 164, 0.13);
+      --blue: #2f62a3;
+      --blue-soft: rgba(47, 98, 163, 0.13);
+      --shadow: 0 18px 55px rgba(26, 24, 19, 0.12);
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(22, 23, 21, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(22, 23, 21, 0.03) 1px, transparent 1px) 0 0 / 42px 42px,
+        radial-gradient(circle at 14% 10%, rgba(247, 147, 26, 0.15), transparent 28%),
+        radial-gradient(circle at 88% 2%, rgba(47, 98, 163, 0.13), transparent 25%),
+        var(--paper);
+    }
+
+    button, input { font: inherit; }
+
+    .app {
+      width: min(1440px, calc(100vw - 32px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 26px 0 34px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(320px, 620px);
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--amber);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font: 760 clamp(34px, 5vw, 72px)/0.92 var(--serif);
+      letter-spacing: 0;
+      max-width: 930px;
+    }
+
+    .top-copy {
+      display: grid;
+      gap: 12px;
+    }
+
+    .thesis {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .link-row, .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .top-link, .seg-btn, .icon-btn {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 250, 240, 0.76);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 760;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .top-link, .seg-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 13px;
+    }
+
+    .icon-btn {
+      width: 42px;
+      font: 800 18px/1 var(--mono);
+    }
+
+    .top-link:hover, .seg-btn:hover, .icon-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(22, 23, 21, 0.32);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 410px;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .chart-panel {
+      min-height: 690px;
+      display: grid;
+      grid-template-rows: auto minmax(430px, 1fr) auto;
+    }
+
+    .chart-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .quote {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .price-now {
+      font: 760 clamp(34px, 5.8vw, 68px)/0.9 var(--mono);
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .price-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-pill {
+      min-width: 176px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--blue-soft);
+      color: var(--blue);
+      font: 700 13px/1.25 var(--mono);
+      text-align: center;
+    }
+
+    .status-pill.is-risk {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .status-pill.is-restore {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .canvas-wrap {
+      position: relative;
+      min-height: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0.05)),
+        repeating-linear-gradient(0deg, transparent, transparent 53px, rgba(22, 23, 21, 0.045) 54px),
+        repeating-linear-gradient(90deg, transparent, transparent 69px, rgba(22, 23, 21, 0.04) 70px);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 450px;
+    }
+
+    .legend {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: calc(100% - 36px);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.86);
+      border-radius: 8px;
+      color: var(--muted);
+      font: 700 12px/1 var(--mono);
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+
+    .dot.blue { background: var(--blue); }
+    .dot.red { background: var(--red); }
+    .dot.green { background: var(--green); }
+
+    .control-panel {
+      padding: 16px 18px 18px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 16px;
+      background: rgba(255, 250, 240, 0.74);
+    }
+
+    .knobs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .knob {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .knob label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font: 700 12px/1.25 var(--mono);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--ink);
+    }
+
+    .side-panel {
+      min-height: 690px;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+    }
+
+    .summary, .policy, .allocation {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 13px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: var(--muted);
+      font: 800 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      min-height: 88px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 9px;
+      font: 780 22px/1 var(--mono);
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .bar {
+      height: 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      background: rgba(255, 255, 255, 0.64);
+    }
+
+    .bar span {
+      height: 100%;
+      transition: width 220ms ease;
+    }
+
+    .core-fill { background: var(--blue); }
+    .tactical-fill { background: var(--cyan); }
+    .usdt-fill { background: var(--green); }
+
+    .bar-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font: 700 12px/1.2 var(--mono);
+    }
+
+    .rules {
+      display: grid;
+      gap: 8px;
+    }
+
+    .rule {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr);
+      gap: 10px;
+      min-height: 50px;
+      padding: 10px;
+      border: 1px solid rgba(22, 23, 21, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.46);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .rule b {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .action-card {
+      padding: 14px;
+      border: 1px solid rgba(22, 23, 21, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.48);
+    }
+
+    .action-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font: 800 17px/1.2 var(--serif);
+    }
+
+    .action-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .log-panel {
+      margin: 16px 18px 18px;
+      box-shadow: none;
+      overflow: hidden;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .log-panel h2 {
+      margin: 0;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      font: 800 12px/1 var(--mono);
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .event-log {
+      margin: 0;
+      padding: 10px 14px 14px;
+      list-style: none;
+      overflow: auto;
+      min-height: 120px;
+      max-height: 230px;
+    }
+
+    .event-log li {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 9px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(22, 23, 21, 0.08);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .event-log code {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .source-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .gain { color: var(--green); }
+    .danger { color: var(--red); }
+    .warn { color: var(--amber); }
+
+    @media (max-width: 1120px) {
+      .stage, .topbar {
+        grid-template-columns: 1fr;
+      }
+      .side-panel, .chart-panel {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .app {
+        width: min(100vw - 20px, 740px);
+        padding-top: 18px;
+      }
+
+      .chart-head, .knobs, .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quote {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .rule {
+        grid-template-columns: 1fr;
+      }
+
+      canvas { min-height: 370px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">BTC Core + MA95 Risk Filter</p>
+        <h1>BTC 核心仓 + MA95 风控混合策略</h1>
+      </div>
+      <div class="top-copy">
+        <p class="thesis">核心仓永远持有 BTC；战术仓按 ATH 阶梯高位卖出、回撤买回；MA95 -4% 只做风险警报，暂停买回或降低战术仓；MA95 +4% 才允许恢复战术 BTC。</p>
+        <div class="link-row">
+          <a class="top-link" href="btc-usdt-ladder-demo.html">返回 BTC/USDT 阶梯演示</a>
+          <a class="top-link" href="btc-usdt-ladder-theory.html">查看再平衡理论</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="stage">
+      <article class="panel chart-panel">
+        <div class="chart-head">
+          <div class="quote">
+            <div class="price-now" id="priceNow">--</div>
+            <div class="price-label" id="priceLabel">读取 Binance BTCUSDT 日线</div>
+          </div>
+          <div class="status-pill" id="statusPill">等待数据</div>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="chart" aria-label="BTC MA95 混合策略图"></canvas>
+          <div class="legend" aria-hidden="true">
+            <span class="chip"><span class="dot"></span>BTC 收盘价</span>
+            <span class="chip"><span class="dot blue"></span>MA95</span>
+            <span class="chip"><span class="dot green"></span>MA95 +4%</span>
+            <span class="chip"><span class="dot red"></span>MA95 -4%</span>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <div class="button-row">
+            <button class="icon-btn" id="refreshBtn" aria-label="刷新数据">↻</button>
+            <span class="source-note" id="sourceNote">数据源：Binance spot BTCUSDT 1d。</span>
+          </div>
+          <div class="knobs">
+            <div class="knob">
+              <label for="corePct">核心仓 <b id="coreValue">65%</b></label>
+              <input id="corePct" type="range" min="60" max="70" value="65">
+            </div>
+            <div class="knob">
+              <label for="bandPct">MA95 带宽 <b id="bandValue">4%</b></label>
+              <input id="bandPct" type="range" min="2" max="8" value="4">
+            </div>
+            <div class="knob">
+              <label for="sellStep">ATH 卖出间距 <b id="sellValue">15%</b></label>
+              <input id="sellStep" type="range" min="8" max="30" value="15">
+            </div>
+            <div class="knob">
+              <label for="buyDrop">回撤买回 <b id="buyValue">18%</b></label>
+              <input id="buyDrop" type="range" min="10" max="35" value="18">
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="panel side-panel">
+        <section class="summary">
+          <p class="section-title">Live State</p>
+          <div class="metric-grid">
+            <div class="metric">
+              <span>MA95</span>
+              <strong id="maValue">--</strong>
+            </div>
+            <div class="metric">
+              <span>相对 MA95</span>
+              <strong id="distanceValue">--</strong>
+            </div>
+            <div class="metric">
+              <span>上轨</span>
+              <strong id="upperValue">--</strong>
+            </div>
+            <div class="metric">
+              <span>下轨</span>
+              <strong id="lowerValue">--</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="allocation">
+          <p class="section-title">目标仓位结构</p>
+          <div class="bar" aria-label="目标仓位结构">
+            <span class="core-fill" id="coreFill"></span>
+            <span class="tactical-fill" id="tacticalFill"></span>
+            <span class="usdt-fill" id="usdtFill"></span>
+          </div>
+          <div class="bar-labels">
+            <span>核心 BTC</span>
+            <span>战术 BTC</span>
+            <span>USDT</span>
+          </div>
+        </section>
+
+        <section class="policy">
+          <p class="section-title">Policy Rules</p>
+          <div class="rules">
+            <div class="rule"><b>核心仓</b><span>60%-70% 永远 BTC，不看 MA95，不做清仓。</span></div>
+            <div class="rule"><b>战术仓</b><span>30%-40% 用 ATH 阶梯卖出，用阶段高点回撤阶梯买回。</span></div>
+            <div class="rule"><b>MA95 -4%</b><span>风险警报：暂停买回，必要时降低战术仓。</span></div>
+            <div class="rule"><b>MA95 +4%</b><span>趋势恢复：允许重新增加战术 BTC。</span></div>
+          </div>
+          <div class="action-card">
+            <strong id="actionTitle">等待数据</strong>
+            <p id="actionText">读取 BTC 日线后会显示当前状态。</p>
+          </div>
+        </section>
+
+        <section class="log-panel">
+          <h2>状态日志</h2>
+          <ul class="event-log" id="eventLog"></ul>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const API = "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=220";
+    const els = {
+      canvas: document.getElementById("chart"),
+      priceNow: document.getElementById("priceNow"),
+      priceLabel: document.getElementById("priceLabel"),
+      statusPill: document.getElementById("statusPill"),
+      refreshBtn: document.getElementById("refreshBtn"),
+      sourceNote: document.getElementById("sourceNote"),
+      corePct: document.getElementById("corePct"),
+      bandPct: document.getElementById("bandPct"),
+      sellStep: document.getElementById("sellStep"),
+      buyDrop: document.getElementById("buyDrop"),
+      coreValue: document.getElementById("coreValue"),
+      bandValue: document.getElementById("bandValue"),
+      sellValue: document.getElementById("sellValue"),
+      buyValue: document.getElementById("buyValue"),
+      maValue: document.getElementById("maValue"),
+      distanceValue: document.getElementById("distanceValue"),
+      upperValue: document.getElementById("upperValue"),
+      lowerValue: document.getElementById("lowerValue"),
+      coreFill: document.getElementById("coreFill"),
+      tacticalFill: document.getElementById("tacticalFill"),
+      usdtFill: document.getElementById("usdtFill"),
+      actionTitle: document.getElementById("actionTitle"),
+      actionText: document.getElementById("actionText"),
+      eventLog: document.getElementById("eventLog")
+    };
+    const ctx = els.canvas.getContext("2d");
+
+    const state = {
+      rows: [],
+      events: []
+    };
+
+    function money(value) {
+      if (!Number.isFinite(value)) return "--";
+      return `$${Math.round(value).toLocaleString("en-US")}`;
+    }
+
+    function pct(value) {
+      if (!Number.isFinite(value)) return "--";
+      return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
+    }
+
+    function config() {
+      return {
+        core: Number(els.corePct.value),
+        band: Number(els.bandPct.value),
+        sellStep: Number(els.sellStep.value),
+        buyDrop: Number(els.buyDrop.value)
+      };
+    }
+
+    function addEvent(label, text) {
+      state.events.unshift({ label, text });
+      state.events = state.events.slice(0, 7);
+      els.eventLog.innerHTML = state.events.map((event) => {
+        return `<li><code>${event.label}</code><span>${event.text}</span></li>`;
+      }).join("");
+    }
+
+    async function loadData() {
+      els.sourceNote.textContent = "正在读取 Binance BTCUSDT 日线...";
+      try {
+        const res = await fetch(API, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        state.rows = data.map((k) => ({
+          date: new Date(k[0]).toISOString().slice(0, 10),
+          close: Number(k[4])
+        }));
+        computeRows();
+        els.sourceNote.textContent = `Live: ${new Date().toLocaleString()}，Binance spot BTCUSDT 1d。`;
+        addEvent("DATA", `读取 ${state.rows.length} 根日线，MA95 已更新。`);
+      } catch (err) {
+        els.sourceNote.textContent = `读取失败：${err.message}`;
+        addEvent("ERR", "无法读取 Binance 日线，稍后刷新。");
+      }
+      updateView();
+    }
+
+    function computeRows() {
+      state.rows.forEach((row, i) => {
+        if (i >= 94) {
+          const slice = state.rows.slice(i - 94, i + 1).map((item) => item.close);
+          row.ma95 = slice.reduce((sum, value) => sum + value, 0) / slice.length;
+        } else {
+          row.ma95 = null;
+        }
+      });
+    }
+
+    function currentState() {
+      const c = config();
+      const rows = state.rows.filter((row) => row.ma95);
+      const last = rows[rows.length - 1];
+      if (!last) return null;
+      const upper = last.ma95 * (1 + c.band / 100);
+      const lower = last.ma95 * (1 - c.band / 100);
+      const distance = (last.close / last.ma95 - 1) * 100;
+      let regime = "neutral";
+      let title = "中性区：只执行 ATH 阶梯，不主动扩大战术仓";
+      let text = "价格位于 MA95 风控带内。核心仓不动；战术仓可以保留已有计划，但不急着追高或补仓。";
+      if (last.close < lower) {
+        regime = "risk";
+        title = "风险警报：暂停买回，降低战术仓";
+        text = "价格跌破 MA95 下轨，说明趋势可能转弱。核心 BTC 仓仍不动，但战术仓停止买回，已有 USDT 不急着换回 BTC。";
+      } else if (last.close > upper) {
+        regime = "restore";
+        title = "趋势恢复：允许重新增加战术 BTC";
+        text = "价格站上 MA95 上轨，说明趋势偏强。核心仓继续持有，战术仓允许按 ATH/回撤规则恢复买回或继续参与上行。";
+      }
+      return { last, upper, lower, distance, regime, title, text };
+    }
+
+    function updateView() {
+      const c = config();
+      els.coreValue.textContent = `${c.core}%`;
+      els.bandValue.textContent = `${c.band}%`;
+      els.sellValue.textContent = `${c.sellStep}%`;
+      els.buyValue.textContent = `${c.buyDrop}%`;
+      const s = currentState();
+      const tactical = 100 - c.core;
+      let tacticalBtc = tactical;
+      let usdt = 0;
+      if (s && s.regime === "risk") {
+        tacticalBtc = Math.round(tactical * 0.35);
+        usdt = tactical - tacticalBtc;
+      } else if (s && s.regime === "neutral") {
+        tacticalBtc = Math.round(tactical * 0.65);
+        usdt = tactical - tacticalBtc;
+      }
+      els.coreFill.style.width = `${c.core}%`;
+      els.tacticalFill.style.width = `${tacticalBtc}%`;
+      els.usdtFill.style.width = `${usdt}%`;
+      if (!s) {
+        drawChart();
+        return;
+      }
+      els.priceNow.textContent = money(s.last.close);
+      els.priceLabel.textContent = `${s.last.date} close`;
+      els.maValue.textContent = money(s.last.ma95);
+      els.upperValue.textContent = money(s.upper);
+      els.lowerValue.textContent = money(s.lower);
+      els.distanceValue.textContent = pct(s.distance);
+      els.distanceValue.className = s.distance >= 0 ? "gain" : "danger";
+      els.statusPill.className = "status-pill";
+      if (s.regime === "risk") {
+        els.statusPill.textContent = "MA95 下轨风险";
+        els.statusPill.classList.add("is-risk");
+      } else if (s.regime === "restore") {
+        els.statusPill.textContent = "MA95 上轨恢复";
+        els.statusPill.classList.add("is-restore");
+      } else {
+        els.statusPill.textContent = "MA95 中性区";
+      }
+      els.actionTitle.textContent = s.title;
+      els.actionText.textContent = s.text;
+      drawChart();
+    }
+
+    function sizeCanvas() {
+      const rect = els.canvas.getBoundingClientRect();
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      const width = Math.floor(rect.width * dpr);
+      const height = Math.floor(rect.height * dpr);
+      if (els.canvas.width !== width || els.canvas.height !== height) {
+        els.canvas.width = width;
+        els.canvas.height = height;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { width: rect.width, height: rect.height };
+    }
+
+    function drawChart() {
+      const { width, height } = sizeCanvas();
+      const c = config();
+      const rows = state.rows.filter((row) => row.ma95).slice(-160);
+      ctx.clearRect(0, 0, width, height);
+      if (!rows.length) return;
+
+      const pad = { left: 76, right: 24, top: 28, bottom: 50 };
+      const plotW = Math.max(1, width - pad.left - pad.right);
+      const plotH = Math.max(1, height - pad.top - pad.bottom);
+      const values = rows.flatMap((row) => [row.close, row.ma95, row.ma95 * (1 + c.band / 100), row.ma95 * (1 - c.band / 100)]);
+      const min = Math.min(...values) * 0.94;
+      const max = Math.max(...values) * 1.06;
+      const x = (i) => pad.left + (i / Math.max(1, rows.length - 1)) * plotW;
+      const y = (value) => pad.top + (1 - (value - min) / (max - min)) * plotH;
+
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(22, 23, 21, 0.12)";
+      ctx.fillStyle = "rgba(22, 23, 21, 0.54)";
+      ctx.font = "12px Menlo, monospace";
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+      for (let i = 0; i <= 5; i += 1) {
+        const value = min + ((max - min) / 5) * i;
+        const yy = y(value);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, yy);
+        ctx.lineTo(width - pad.right, yy);
+        ctx.stroke();
+        ctx.fillText(money(value), pad.left - 10, yy);
+      }
+
+      function strokeLine(selector, color, widthLine = 2, dash = []) {
+        ctx.beginPath();
+        rows.forEach((row, i) => {
+          const xx = x(i);
+          const yy = y(selector(row));
+          if (i === 0) ctx.moveTo(xx, yy);
+          else ctx.lineTo(xx, yy);
+        });
+        ctx.lineWidth = widthLine;
+        ctx.strokeStyle = color;
+        ctx.setLineDash(dash);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      strokeLine((row) => row.ma95 * (1 + c.band / 100), "rgba(23, 143, 106, 0.62)", 2, [8, 7]);
+      strokeLine((row) => row.ma95 * (1 - c.band / 100), "rgba(198, 63, 63, 0.62)", 2, [8, 7]);
+      strokeLine((row) => row.ma95, "rgba(47, 98, 163, 0.88)", 2.5);
+      strokeLine((row) => row.close, "rgba(27, 131, 164, 0.95)", 4);
+
+      const last = rows[rows.length - 1];
+      const lastX = x(rows.length - 1);
+      const lastY = y(last.close);
+      ctx.fillStyle = "#161715";
+      ctx.beginPath();
+      ctx.arc(lastX, lastY, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#fffaf0";
+      ctx.beginPath();
+      ctx.arc(lastX, lastY, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "rgba(255, 250, 240, 0.9)";
+      ctx.fillRect(width - pad.right - 132, y(last.ma95) - 13, 128, 24);
+      ctx.strokeStyle = "rgba(22, 23, 21, 0.12)";
+      ctx.strokeRect(width - pad.right - 132, y(last.ma95) - 13, 128, 24);
+      ctx.fillStyle = "rgba(22, 23, 21, 0.74)";
+      ctx.textAlign = "center";
+      ctx.fillText(`MA95 ${money(last.ma95)}`, width - pad.right - 68, y(last.ma95));
+      ctx.restore();
+    }
+
+    [els.corePct, els.bandPct, els.sellStep, els.buyDrop].forEach((input) => {
+      input.addEventListener("input", updateView);
+    });
+    els.refreshBtn.addEventListener("click", loadData);
+    window.addEventListener("resize", drawChart);
+    loadData();
+  </script>
+</body>
+</html>

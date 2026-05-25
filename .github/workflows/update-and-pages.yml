@@ -67,6 +67,7 @@ jobs:
           cp binance-hot-ladder-lab.html _site/binance-hot-ladder-lab.html
           cp btc-usdt-ladder-demo.html _site/btc-usdt-ladder-demo.html
           cp btc-usdt-ladder-theory.html _site/btc-usdt-ladder-theory.html
+          cp btc-ma95-hybrid-strategy.html _site/btc-ma95-hybrid-strategy.html
           if [ -f btc-macro-system/data/history/observations.jsonl ]; then
             cp btc-macro-system/data/history/observations.jsonl _site/observations.jsonl
           fi
