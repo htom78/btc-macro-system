@@ -475,7 +475,7 @@
     .side-panel {
       min-height: 680px;
       display: grid;
-      grid-template-rows: auto auto 1fr;
+      grid-template-rows: auto auto auto 1fr;
     }
 
     .metrics, .ladder-box {
@@ -560,10 +560,109 @@
       background: var(--green);
     }
 
+    .level.is-stopped .level-fill {
+      width: 100%;
+      background: var(--red);
+    }
+
     .level-state {
       color: var(--muted);
       text-align: right;
       white-space: nowrap;
+    }
+
+    .trade-box {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 13px;
+      background: rgba(255, 250, 240, 0.56);
+    }
+
+    .assist-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .assist-card {
+      min-height: 72px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .assist-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .assist-card strong {
+      display: block;
+      margin-top: 8px;
+      font: 800 17px/1.1 var(--mono);
+      overflow-wrap: anywhere;
+    }
+
+    .assist-card strong.is-danger { color: var(--red); }
+    .assist-card strong.is-warn { color: var(--amber); }
+    .assist-card strong.is-ok { color: var(--green); }
+
+    .order-plan {
+      display: grid;
+      gap: 7px;
+    }
+
+    .order-row {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) minmax(0, 1fr) 66px 52px;
+      gap: 7px;
+      align-items: center;
+      min-height: 36px;
+      padding: 8px 9px;
+      border: 1px solid rgba(22, 23, 21, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.38);
+      color: var(--muted);
+      font: 700 11px/1.2 var(--mono);
+    }
+
+    .order-row b {
+      color: var(--ink);
+      font-weight: 850;
+    }
+
+    .trade-steps {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .trade-steps li {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .step-index {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.54);
+      color: var(--ink);
+      font: 850 11px/1 var(--mono);
     }
 
     .log-panel {
@@ -629,7 +728,7 @@
         width: min(100vw - 20px, 860px);
         padding-top: 18px;
       }
-      .topbar, .stage, .chart-head, .knobs, .metric-grid, .carry-strip {
+      .topbar, .stage, .chart-head, .knobs, .metric-grid, .carry-strip, .assist-grid {
         grid-template-columns: 1fr;
       }
       .sample-panel, .chart-panel {
@@ -640,6 +739,13 @@
         flex-direction: column;
       }
       canvas { min-height: 380px; }
+      .order-row {
+        grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1fr);
+      }
+      .order-row span:nth-child(4),
+      .order-row span:nth-child(5) {
+        grid-column: span 1;
+      }
     }
   </style>
 </head>
@@ -734,12 +840,31 @@
               <input id="confirmPct" type="range" min="2" max="18" value="7">
             </div>
             <div class="knob">
-              <label for="unitRisk">单层风险 <b id="riskValue">1.0%</b></label>
+              <label for="unitRisk">单层仓位 <b id="riskValue">1.0%</b></label>
               <input id="unitRisk" type="range" min="3" max="25" value="10">
             </div>
             <div class="knob">
               <label for="layers">阶梯层数 <b id="layerValue">5</b></label>
               <input id="layers" type="range" min="3" max="8" value="5">
+            </div>
+          </div>
+
+          <div class="knobs">
+            <div class="knob">
+              <label for="stopPct">单层止损 <b id="stopValue">15%</b></label>
+              <input id="stopPct" type="range" min="5" max="35" value="15">
+            </div>
+            <div class="knob">
+              <label for="basketBuffer">组合止损上浮 <b id="basketValue">15%</b></label>
+              <input id="basketBuffer" type="range" min="5" max="45" value="15">
+            </div>
+            <div class="knob">
+              <label for="frictionPct">滑点/费用缓冲 <b id="frictionValue">0.4%</b></label>
+              <input id="frictionPct" type="range" min="0" max="20" value="4">
+            </div>
+            <div class="knob">
+              <label for="riskCap">组合风险上限 <b id="riskCapValue">2.0%</b></label>
+              <input id="riskCap" type="range" min="5" max="80" value="20">
             </div>
           </div>
           <p class="source-note" id="replayNote">回放使用最近 72 根 1h K 线；阶梯锚点取回放起点价格。</p>
@@ -771,6 +896,29 @@
         <section class="ladder-box">
           <p class="section-title">价格阶梯</p>
           <div class="ladder-list" id="ladderList"></div>
+        </section>
+        <section class="trade-box">
+          <p class="section-title">Trading Assistant</p>
+          <div class="assist-grid">
+            <div class="assist-card">
+              <span>组合止损价</span>
+              <strong id="basketStop">--</strong>
+            </div>
+            <div class="assist-card">
+              <span>已开最大亏损</span>
+              <strong id="activeMaxLoss">--</strong>
+            </div>
+            <div class="assist-card">
+              <span>满层最大亏损</span>
+              <strong id="planMaxLoss">--</strong>
+            </div>
+            <div class="assist-card">
+              <span>下一步</span>
+              <strong id="nextAction">等待样本</strong>
+            </div>
+          </div>
+          <div class="order-plan" id="orderPlan"></div>
+          <ol class="trade-steps" id="tradeSteps"></ol>
         </section>
         <section class="log-panel">
           <h2>事件流</h2>
@@ -822,16 +970,30 @@
       confirmPct: document.getElementById("confirmPct"),
       unitRisk: document.getElementById("unitRisk"),
       layers: document.getElementById("layers"),
+      stopPct: document.getElementById("stopPct"),
+      basketBuffer: document.getElementById("basketBuffer"),
+      frictionPct: document.getElementById("frictionPct"),
+      riskCap: document.getElementById("riskCap"),
       stepValue: document.getElementById("stepValue"),
       confirmValue: document.getElementById("confirmValue"),
       riskValue: document.getElementById("riskValue"),
       layerValue: document.getElementById("layerValue"),
+      stopValue: document.getElementById("stopValue"),
+      basketValue: document.getElementById("basketValue"),
+      frictionValue: document.getElementById("frictionValue"),
+      riskCapValue: document.getElementById("riskCapValue"),
       replayNote: document.getElementById("replayNote"),
       alertCount: document.getElementById("alertCount"),
       shortCount: document.getElementById("shortCount"),
       avgEntry: document.getElementById("avgEntry"),
       pnl: document.getElementById("pnl"),
       ladderList: document.getElementById("ladderList"),
+      basketStop: document.getElementById("basketStop"),
+      activeMaxLoss: document.getElementById("activeMaxLoss"),
+      planMaxLoss: document.getElementById("planMaxLoss"),
+      nextAction: document.getElementById("nextAction"),
+      orderPlan: document.getElementById("orderPlan"),
+      tradeSteps: document.getElementById("tradeSteps"),
       eventLog: document.getElementById("eventLog")
     };
 
@@ -867,6 +1029,11 @@
       return `$${Math.round(value).toLocaleString("en-US")}`;
     }
 
+    function accountPct(value, digits = 2) {
+      if (!Number.isFinite(value)) return "--";
+      return `${value >= 0 ? "+" : ""}${value.toFixed(digits)}%`;
+    }
+
     function pct(value, digits = 2) {
       if (!Number.isFinite(value)) return "--";
       return `${value >= 0 ? "+" : ""}${(value * 100).toFixed(digits)}%`;
@@ -891,7 +1058,11 @@
         step: Number(els.stepPct.value) / 100,
         confirm: Number(els.confirmPct.value) / 100,
         unitRisk: Number(els.unitRisk.value) / 10,
-        layers: Number(els.layers.value)
+        layers: Number(els.layers.value),
+        stop: Number(els.stopPct.value) / 100,
+        basketBuffer: Number(els.basketBuffer.value) / 100,
+        friction: Number(els.frictionPct.value) / 1000,
+        riskCap: Number(els.riskCap.value) / 10
       };
     }
 
@@ -1183,6 +1354,7 @@
       return Array.from({ length: c.layers }, (_, index) => ({
         id: index,
         price: anchor * Math.pow(1 + c.step, index + 1),
+        stopPrice: anchor * Math.pow(1 + c.step, index + 1) * (1 + c.stop),
         peak: 0
       }));
     }
@@ -1191,7 +1363,43 @@
       const last = state.events[0];
       if (last && last.tick === tick && last.text === text) return;
       state.events.unshift({ tick, text });
-      state.events = state.events.slice(0, 9);
+      state.events = state.events.slice(0, 12);
+    }
+
+    function activeEntries() {
+      return state.entries.filter((entry) => !entry.closed);
+    }
+
+    function basketStopPrice() {
+      const c = cfg();
+      const lastLevel = state.levels[state.levels.length - 1];
+      return lastLevel ? lastLevel.price * (1 + c.basketBuffer) : null;
+    }
+
+    function lossAtStop(entry, stopPrice) {
+      const c = cfg();
+      const exit = stopPrice * (1 + c.friction);
+      return Math.max(0, ((exit - entry.price) / entry.price) * entry.size);
+    }
+
+    function plannedLossAt(stopPrice) {
+      const c = cfg();
+      return state.levels.reduce((sum, level) => {
+        return sum + lossAtStop({ price: level.price, size: c.unitRisk }, stopPrice);
+      }, 0);
+    }
+
+    function riskClass(value) {
+      const cap = cfg().riskCap;
+      if (!Number.isFinite(value)) return "";
+      if (value > cap) return "is-danger";
+      if (value > cap * 0.7) return "is-warn";
+      return "is-ok";
+    }
+
+    function setStrong(el, value, className = "") {
+      el.textContent = value;
+      el.className = className;
     }
 
     function resetReplay(keepPlaying = true) {
@@ -1206,12 +1414,34 @@
       els.confirmValue.textContent = `${els.confirmPct.value}%`;
       els.riskValue.textContent = `${(Number(els.unitRisk.value) / 10).toFixed(1)}%`;
       els.layerValue.textContent = els.layers.value;
+      els.stopValue.textContent = `${els.stopPct.value}%`;
+      els.basketValue.textContent = `${els.basketBuffer.value}%`;
+      els.frictionValue.textContent = `${(Number(els.frictionPct.value) / 10).toFixed(1)}%`;
+      els.riskCapValue.textContent = `${(Number(els.riskCap.value) / 10).toFixed(1)}%`;
       els.playBtn.textContent = state.playing ? "Ⅱ" : "▶";
       addEvent(0, `${state.selected ? state.selected.symbol : "样本"} 回放重置，以 72h 起点价格生成阶梯。`);
       if (state.selected && state.selected.pressureNote) {
         addEvent(0, `衍生品状态：${state.selected.pressureLabel}。${state.selected.pressureNote}`);
       }
       update();
+    }
+
+    function closeShort(entry, price, reason) {
+      if (entry.closed) return;
+      entry.closed = true;
+      entry.exitPrice = price;
+      entry.exitTick = state.tick;
+      entry.exitReason = reason;
+      addEvent(state.tick, `${reason}：第 ${entry.levelId + 1} 层，平仓 ${formatPrice(price)}，本层 ${accountPct(((entry.price - price) / entry.price) * entry.size)}。`);
+    }
+
+    function maybeStop(bar) {
+      const c = cfg();
+      activeEntries().forEach((entry) => {
+        if (bar.high >= entry.stopPrice) {
+          closeShort(entry, entry.stopPrice * (1 + c.friction), "单层止损触发");
+        }
+      });
     }
 
     function maybeTrigger(bar) {
@@ -1236,15 +1466,20 @@
     function openShort(level, price, reason) {
       const size = cfg().unitRisk;
       state.opened.add(level.id);
-      state.entries.push({ levelId: level.id, price, size });
-      addEvent(state.tick, `${reason}：第 ${level.id + 1} 层，价格 ${formatPrice(price)}。`);
+      const stopPrice = price * (1 + cfg().stop);
+      state.entries.push({ levelId: level.id, price, size, stopPrice, closed: false });
+      addEvent(state.tick, `${reason}：第 ${level.id + 1} 层，价格 ${formatPrice(price)}，止损 ${formatPrice(stopPrice)}。`);
     }
 
     function stats(price) {
-      const exposure = state.entries.reduce((sum, e) => sum + e.size, 0);
-      const avg = exposure ? state.entries.reduce((sum, e) => sum + e.price * e.size, 0) / exposure : 0;
-      const pnl = state.entries.reduce((sum, e) => sum + ((e.price - price) / e.price) * e.size, 0);
-      return { exposure, avg, pnl };
+      const open = activeEntries();
+      const exposure = open.reduce((sum, e) => sum + e.size, 0);
+      const avg = exposure ? open.reduce((sum, e) => sum + e.price * e.size, 0) / exposure : 0;
+      const unrealized = open.reduce((sum, e) => sum + ((e.price - price) / e.price) * e.size, 0);
+      const realized = state.entries
+        .filter((e) => e.closed)
+        .reduce((sum, e) => sum + ((e.price - e.exitPrice) / e.price) * e.size, 0);
+      return { exposure, avg, unrealized, realized, pnl: realized + unrealized };
     }
 
     function setStatus(price) {
@@ -1263,7 +1498,7 @@
     function renderSide(price) {
       const s = stats(price);
       els.alertCount.textContent = String(state.alerted.size);
-      els.shortCount.textContent = String(state.entries.length);
+      els.shortCount.textContent = `${activeEntries().length}/${state.entries.length}`;
       els.avgEntry.textContent = s.avg ? formatPrice(s.avg) : "--";
       els.pnl.textContent = `${s.pnl >= 0 ? "+" : ""}${s.pnl.toFixed(2)}%`;
       els.pnl.className = s.pnl >= 0 ? "gain" : "danger";
@@ -1271,7 +1506,10 @@
         const entry = state.entries.find((e) => e.levelId === level.id);
         let cls = "";
         let label = "未触发";
-        if (entry && price < entry.price) {
+        if (entry && entry.closed) {
+          cls = "is-stopped";
+          label = "止损";
+        } else if (entry && price < entry.price) {
           cls = "is-profit";
           label = "浮盈";
         } else if (entry) {
@@ -1287,8 +1525,78 @@
           <span class="level-state">${label}</span>
         </div>`;
       }).join("");
+      renderAssistant(price);
       els.eventLog.innerHTML = state.events.map((event) => {
         return `<li><code>T+${event.tick}</code><span>${event.text}</span></li>`;
+      }).join("");
+    }
+
+    function nextActionText(planLoss) {
+      const c = cfg();
+      if (!state.selected) return "等待样本";
+      if (planLoss > c.riskCap) return "先降仓位";
+      if (state.mode === "alert") return state.alerted.size ? "人工复核" : "等提醒";
+      if (state.mode === "confirm") return state.alerted.size ? "等回落确认" : "等触发";
+      return activeEntries().length ? "盯止损线" : "挂阶梯单";
+    }
+
+    function renderAssistant(price) {
+      const c = cfg();
+      const stop = basketStopPrice();
+      if (!stop) {
+        setStrong(els.basketStop, "--");
+        setStrong(els.activeMaxLoss, "--");
+        setStrong(els.planMaxLoss, "--");
+        setStrong(els.nextAction, "等待样本");
+        els.orderPlan.innerHTML = "";
+        els.tradeSteps.innerHTML = "";
+        return;
+      }
+
+      const activeLoss = activeEntries().reduce((sum, entry) => sum + lossAtStop(entry, stop), 0);
+      const planLoss = plannedLossAt(stop);
+      setStrong(els.basketStop, formatPrice(stop));
+      setStrong(els.activeMaxLoss, accountPct(activeLoss), riskClass(activeLoss));
+      setStrong(els.planMaxLoss, accountPct(planLoss), riskClass(planLoss));
+      setStrong(els.nextAction, nextActionText(planLoss), riskClass(planLoss));
+
+      els.orderPlan.innerHTML = state.levels.map((level) => {
+        const entry = state.entries.find((item) => item.levelId === level.id);
+        const stopLoss = (c.stop + c.friction) * c.unitRisk;
+        const status = entry
+          ? entry.closed ? "已止损" : "持仓"
+          : state.alerted.has(level.id) ? "已提醒" : "计划";
+        return `<div class="order-row">
+          <b>L${level.id + 1}</b>
+          <span>SELL ${formatPrice(level.price)}</span>
+          <span>BUY stop ${formatPrice(level.price * (1 + c.stop))}</span>
+          <span>${accountPct(stopLoss)}</span>
+          <span>${status}</span>
+        </div>`;
+      }).join("");
+
+      const pressure = state.selected && state.selected.pressureLabel ? state.selected.pressureLabel : "等待衍生品状态";
+      const modeText = {
+        alert: "只提醒：触发阶梯后只记录信号，不模拟开空。",
+        confirm: `回落确认：触发后等价格从峰值回落 ${els.confirmPct.value}% 再模拟开空。`,
+        limit: "提前挂空：价格碰到阶梯价即模拟 SELL 限价成交。"
+      }[state.mode];
+      const riskStep = planLoss > c.riskCap
+        ? `满层最大亏损 ${accountPct(planLoss)} 已超过风险上限 ${c.riskCap.toFixed(1)}%，先降低单层仓位、减少层数或收紧组合止损。`
+        : `满层最大亏损 ${accountPct(planLoss)} 在风险上限 ${c.riskCap.toFixed(1)}% 内。`;
+      const openStop = activeEntries().length
+        ? `当前有 ${activeEntries().length} 层持仓，若价格上穿各层 BUY stop，将按止损价加 ${els.frictionValue.textContent} 缓冲计入已实现亏损。`
+        : "当前没有持仓，先观察提醒层和衍生品状态。";
+      const steps = [
+        `先看拥挤状态：${pressure}。${state.selected && state.selected.pressureNote ? state.selected.pressureNote : ""}`,
+        modeText,
+        `每一层计划：SELL 开空价，同时准备 BUY reduce-only stop；单层估算亏损约 ${accountPct((c.stop + c.friction) * c.unitRisk)}。`,
+        `组合止损线 ${formatPrice(stop)}，用于检查极端情形下所有阶梯打满后的账户损失。`,
+        riskStep,
+        openStop
+      ];
+      els.tradeSteps.innerHTML = steps.map((step, index) => {
+        return `<li><span class="step-index">${index + 1}</span><span>${step}</span></li>`;
       }).join("");
     }
 
@@ -1311,7 +1619,13 @@
       const plotW = Math.max(1, width - pad.left - pad.right);
       const plotH = Math.max(1, height - pad.top - pad.bottom);
       const visible = state.bars.slice(0, state.tick + 1);
-      const allValues = state.bars.flatMap((b) => [b.high, b.low]).concat(state.levels.map((l) => l.price));
+      const basket = basketStopPrice();
+      const stopValues = activeEntries().map((entry) => entry.stopPrice);
+      const allValues = state.bars
+        .flatMap((b) => [b.high, b.low])
+        .concat(state.levels.map((l) => l.price))
+        .concat(stopValues)
+        .concat(Number.isFinite(basket) ? [basket] : []);
       const min = Math.min(...allValues, price || 1) * 0.92;
       const max = Math.max(...allValues, price || 1) * 1.08;
       const x = (i) => pad.left + (i / Math.max(1, state.bars.length - 1)) * plotW;
@@ -1357,6 +1671,24 @@
         ctx.fillText(formatPrice(level.price), width - pad.right - 45, yy);
       });
 
+      if (Number.isFinite(basket)) {
+        const yy = y(basket);
+        ctx.strokeStyle = "rgba(198, 63, 63, 0.42)";
+        ctx.setLineDash([3, 6]);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, yy);
+        ctx.lineTo(width - pad.right, yy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "rgba(198, 63, 63, 0.08)";
+        ctx.fillRect(width - pad.right - 108, yy - 13, 104, 24);
+        ctx.strokeStyle = "rgba(198, 63, 63, 0.24)";
+        ctx.strokeRect(width - pad.right - 108, yy - 13, 104, 24);
+        ctx.fillStyle = "rgba(198, 63, 63, 0.84)";
+        ctx.textAlign = "center";
+        ctx.fillText(`止损 ${formatPrice(basket)}`, width - pad.right - 56, yy);
+      }
+
       if (visible.length > 1) {
         const gradient = ctx.createLinearGradient(pad.left, 0, width - pad.right, 0);
         gradient.addColorStop(0, "#1b83a4");
@@ -1401,6 +1733,7 @@
       }
       const bar = state.bars[state.tick] || state.bars[state.bars.length - 1];
       maybeTrigger(bar);
+      maybeStop(bar);
       const price = bar.close;
       els.priceNow.textContent = formatPrice(price);
       els.priceLabel.textContent = `${state.selected.symbol} 72h replay`;
@@ -1435,7 +1768,7 @@
       });
     });
 
-    [els.stepPct, els.confirmPct, els.unitRisk, els.layers].forEach((input) => {
+    [els.stepPct, els.confirmPct, els.unitRisk, els.layers, els.stopPct, els.basketBuffer, els.frictionPct, els.riskCap].forEach((input) => {
       input.addEventListener("input", () => resetReplay(state.playing));
     });
 
