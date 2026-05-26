@@ -903,6 +903,16 @@ def render_report(
       font-size: 12px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.72);
     }}
+    a.meta-chip {{
+      color: inherit;
+      text-decoration: none;
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    }}
+    a.meta-chip:hover {{
+      transform: translateY(-1px);
+      border-color: rgba(24,26,31,0.28);
+      background: rgba(255,255,255,0.92);
+    }}
     .summary-grid {{
       display: grid;
       grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.45fr);
@@ -1058,6 +1068,7 @@ def render_report(
       <p class="subtitle">把通胀、利率、债务、流动性、美元与 BTC 价格压到同一个观察平面里。This report compresses inflation, rates, debt, liquidity, the dollar, and BTC into one research surface.</p>
     </div>
     <div class="meta-stack">
+      <a class="meta-chip" href="./">返回首页 / home</a>
       <span class="meta-chip">生成时间 / generated {html.escape(generated)}</span>
       <span class="meta-chip">非投资建议 / not investment advice</span>
       <span class="meta-chip">公开数据 / public data</span>
