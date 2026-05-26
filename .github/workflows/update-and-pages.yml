@@ -60,7 +60,8 @@ jobs:
         run: |
           rm -rf _site
           mkdir -p _site
-          cp btc-macro-system/outputs/report.html _site/index.html
+          cp home.html _site/index.html
+          cp btc-macro-system/outputs/report.html _site/macro-report.html
           cp btc-macro-system/outputs/latest.json _site/latest.json
           cp price-ladder-short-demo.html _site/price-ladder-short-demo.html
           cp price-ladder-short-theory.html _site/price-ladder-short-theory.html
