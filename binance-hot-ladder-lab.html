@@ -228,6 +228,16 @@
       background: rgba(255, 255, 255, 0.82);
     }
 
+    .coin-row.is-caution {
+      border-color: rgba(198, 63, 63, 0.34);
+      background: rgba(198, 63, 63, 0.055);
+    }
+
+    .coin-row.is-decay {
+      border-color: rgba(23, 143, 106, 0.34);
+      background: rgba(23, 143, 106, 0.055);
+    }
+
     .symbol {
       display: block;
       font: 850 18px/1 var(--mono);
@@ -240,7 +250,7 @@
       gap: 8px;
       margin-top: 9px;
       color: var(--muted);
-      font: 700 11px/1 var(--mono);
+      font: 700 11px/1.2 var(--mono);
     }
 
     .pct {
@@ -249,10 +259,51 @@
       white-space: nowrap;
     }
 
+    .coin-side {
+      display: grid;
+      justify-items: end;
+      gap: 8px;
+      min-width: 86px;
+    }
+
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+      min-height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.62);
+      color: var(--cyan);
+      font: 850 12px/1 var(--mono);
+      white-space: nowrap;
+    }
+
+    .score-badge.is-caution {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .score-badge.is-decay {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .score-badge.is-warn {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .score-badge.is-muted {
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.44);
+    }
+
     .chart-panel {
       min-height: 680px;
       display: grid;
-      grid-template-rows: auto minmax(430px, 1fr) auto;
+      grid-template-rows: auto auto minmax(430px, 1fr) auto;
     }
 
     .chart-head {
@@ -302,6 +353,41 @@
       color: var(--green);
       background: var(--green-soft);
     }
+
+    .carry-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.62);
+    }
+
+    .carry-card {
+      min-height: 72px;
+      padding: 11px 12px;
+      border: 1px solid rgba(22, 23, 21, 0.12);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .carry-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .carry-card strong {
+      display: block;
+      margin-top: 8px;
+      font: 850 18px/1.05 var(--mono);
+      overflow-wrap: anywhere;
+    }
+
+    .carry-card strong.is-caution { color: var(--red); }
+    .carry-card strong.is-decay { color: var(--green); }
+    .carry-card strong.is-warn { color: var(--amber); }
 
     .canvas-wrap {
       position: relative;
@@ -543,7 +629,7 @@
         width: min(100vw - 20px, 860px);
         padding-top: 18px;
       }
-      .topbar, .stage, .chart-head, .knobs, .metric-grid {
+      .topbar, .stage, .chart-head, .knobs, .metric-grid, .carry-strip {
         grid-template-columns: 1fr;
       }
       .sample-panel, .chart-panel {
@@ -565,7 +651,7 @@
         <h1>小币阶梯测试台</h1>
       </div>
       <div class="top-copy">
-        <p class="thesis">从 Binance USDⓈ-M 永续里筛 24h 涨幅和成交额靠前的小币，用最近 72 小时 K 线回放价格阶梯策略。它是模型检验工具，不是做空推荐。</p>
+        <p class="thesis">从 Binance USDⓈ-M 永续里筛 24h 涨幅和成交额靠前的小币，再补充资金费率与 Open Interest，判断上涨是多头拥挤、杠杆涌入，还是动能开始衰减。它是模型检验工具，不是做空推荐。</p>
         <div class="link-row">
           <a class="top-link" href="price-ladder-short-demo.html">返回空头阶梯演示</a>
           <a class="top-link" href="price-ladder-short-theory.html">查看理论基础</a>
@@ -595,6 +681,25 @@
             <div class="price-label" id="priceLabel">等待选择币种</div>
           </div>
           <div class="status-pill" id="statusPill">等待样本</div>
+        </div>
+
+        <div class="carry-strip" aria-label="资金费率和 Open Interest">
+          <div class="carry-card">
+            <span>拥挤评分</span>
+            <strong id="crowdingScore">--</strong>
+          </div>
+          <div class="carry-card">
+            <span>Funding 8h</span>
+            <strong id="fundingRate">--</strong>
+          </div>
+          <div class="carry-card">
+            <span>OI 24h</span>
+            <strong id="oiChange">--</strong>
+          </div>
+          <div class="carry-card">
+            <span>状态判断</span>
+            <strong id="carryLabel">等待样本</strong>
+          </div>
         </div>
 
         <div class="canvas-wrap">
@@ -706,6 +811,10 @@
       priceNow: document.getElementById("priceNow"),
       priceLabel: document.getElementById("priceLabel"),
       statusPill: document.getElementById("statusPill"),
+      crowdingScore: document.getElementById("crowdingScore"),
+      fundingRate: document.getElementById("fundingRate"),
+      oiChange: document.getElementById("oiChange"),
+      carryLabel: document.getElementById("carryLabel"),
       playBtn: document.getElementById("playBtn"),
       resetBtn: document.getElementById("resetBtn"),
       stepPct: document.getElementById("stepPct"),
@@ -757,6 +866,25 @@
       return `$${Math.round(value).toLocaleString("en-US")}`;
     }
 
+    function pct(value, digits = 2) {
+      if (!Number.isFinite(value)) return "--";
+      return `${value >= 0 ? "+" : ""}${(value * 100).toFixed(digits)}%`;
+    }
+
+    function fundingLabel(value) {
+      if (!Number.isFinite(value)) return "--";
+      return pct(value, 4);
+    }
+
+    function oiLabel(value) {
+      if (!Number.isFinite(value)) return "--";
+      return pct(value, 1);
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
     function cfg() {
       return {
         step: Number(els.stepPct.value) / 100,
@@ -772,6 +900,115 @@
       return res.json();
     }
 
+    function pressureProfile(row, fundingRate, oiChange) {
+      const hasFunding = Number.isFinite(fundingRate);
+      const hasOi = Number.isFinite(oiChange);
+      if (!hasFunding && !hasOi) {
+        return {
+          score: null,
+          label: "仅价格样本",
+          className: "is-muted",
+          note: "Funding/OI 未读取，先按涨幅和成交额观察。"
+        };
+      }
+
+      const momentum = clamp((row.pct24 - 10) * 1.25, 0, 30);
+      const volume = clamp(Math.log10(Math.max(1, row.quoteVolume / 20_000_000)) * 12, 0, 18);
+      const fundingCrowding = hasFunding ? clamp(fundingRate * 100000, -20, 28) : 0;
+      const oiCrowding = hasOi ? clamp(oiChange * 70, -12, 26) : 0;
+      const squeezePenalty = hasFunding && hasOi && row.pct24 > 18 && fundingRate > 0.0003 && oiChange > 0.28 ? 16 : 0;
+      const score = Math.round(clamp(38 + momentum + volume + fundingCrowding + oiCrowding - squeezePenalty, 0, 100));
+
+      if (hasFunding && fundingRate < -0.0001) {
+        return {
+          score,
+          label: "空头拥挤",
+          className: "is-caution",
+          note: "资金费率偏负，空头可能已经拥挤，追空质量下降。"
+        };
+      }
+
+      if (hasFunding && hasOi && fundingRate > 0.0003 && oiChange > 0.28) {
+        return {
+          score,
+          label: "逼空风险高",
+          className: "is-caution",
+          note: "正资金费率叠加 OI 快速上升，说明杠杆多头仍在涌入，适合等待回落确认。"
+        };
+      }
+
+      if (hasFunding && hasOi && fundingRate > 0.00015 && oiChange <= 0.06) {
+        return {
+          score,
+          label: "动能衰减",
+          className: "is-decay",
+          note: "正资金费率仍在，但 OI 增速放缓或回落，更适合进入提醒观察。"
+        };
+      }
+
+      if (hasFunding && fundingRate > 0.0008) {
+        return {
+          score,
+          label: "费率偏热",
+          className: "is-warn",
+          note: "多头支付较高资金费率，但仍要等价格阶梯和回落确认配合。"
+        };
+      }
+
+      if (hasOi && oiChange > 0.22) {
+        return {
+          score,
+          label: "OI 扩张",
+          className: "is-warn",
+          note: "未平仓量扩张，说明杠杆资金在堆积，开空前要降低层级风险。"
+        };
+      }
+
+      return {
+        score,
+        label: "拥挤观察",
+        className: "",
+        note: "Funding/OI 没有极端信号，继续看价格阶梯是否触发。"
+      };
+    }
+
+    async function enrichSample(row) {
+      const symbol = encodeURIComponent(row.symbol);
+      const [fundingRes, oiHistRes, oiNowRes] = await Promise.allSettled([
+        getJson(`/fapi/v1/fundingRate?symbol=${symbol}&limit=3`),
+        getJson(`/futures/data/openInterestHist?symbol=${symbol}&period=1h&limit=24`),
+        getJson(`/fapi/v1/openInterest?symbol=${symbol}`)
+      ]);
+
+      const fundingRows = fundingRes.status === "fulfilled" && Array.isArray(fundingRes.value) ? fundingRes.value : [];
+      const lastFunding = fundingRows[fundingRows.length - 1];
+      const fundingRate = lastFunding ? Number(lastFunding.fundingRate) : null;
+      const fundingTime = lastFunding ? Number(lastFunding.fundingTime) : null;
+
+      const oiRows = oiHistRes.status === "fulfilled" && Array.isArray(oiHistRes.value) ? oiHistRes.value : [];
+      const firstOi = oiRows.length ? Number(oiRows[0].sumOpenInterestValue) : null;
+      const lastOi = oiRows.length ? Number(oiRows[oiRows.length - 1].sumOpenInterestValue) : null;
+      const histOiChange = Number.isFinite(firstOi) && firstOi > 0 && Number.isFinite(lastOi) ? (lastOi / firstOi) - 1 : null;
+      const currentOiUnits = oiNowRes.status === "fulfilled" ? Number(oiNowRes.value.openInterest) : null;
+      const estimatedOiValue = Number.isFinite(currentOiUnits) && Number.isFinite(row.last) ? currentOiUnits * row.last : null;
+      const oiValue = Number.isFinite(lastOi) ? lastOi : estimatedOiValue;
+      const oiChange = Number.isFinite(histOiChange) ? histOiChange : null;
+      const profile = pressureProfile(row, fundingRate, oiChange);
+
+      return {
+        ...row,
+        fundingRate,
+        fundingTime,
+        oiChange,
+        oiValue,
+        currentOiUnits,
+        pressureScore: profile.score,
+        pressureLabel: profile.label,
+        pressureClass: profile.className,
+        pressureNote: profile.note
+      };
+    }
+
     async function loadSamples() {
       els.sourceNote.textContent = "正在连接 Binance Futures API...";
       try {
@@ -782,7 +1019,7 @@
         const tradable = new Set(exchange.symbols
           .filter((s) => s.status === "TRADING" && s.quoteAsset === "USDT" && s.contractType === "PERPETUAL")
           .map((s) => s.symbol));
-        state.samples = tickers
+        const baseRows = tickers
           .filter((t) => tradable.has(t.symbol) && !majors.has(t.symbol))
           .map((t) => ({
             symbol: t.symbol,
@@ -795,16 +1032,39 @@
           }))
           .filter((r) => r.pct24 >= 12 && r.quoteVolume >= 20_000_000 && r.count >= 20000)
           .sort((a, b) => (b.pct24 - a.pct24) || (b.quoteVolume - a.quoteVolume))
-          .slice(0, 24);
+          .slice(0, 18);
+        state.samples = baseRows.map((row) => ({
+          ...row,
+          pressureScore: null,
+          pressureLabel: "补充数据中",
+          pressureClass: "is-muted",
+          pressureNote: "正在读取资金费率与 OI。"
+        }));
+        renderSamples();
+        els.sourceNote.textContent = `Live: 找到 ${baseRows.length} 个热样本，正在补充 Funding / OI...`;
+        state.samples = (await Promise.all(baseRows.map(enrichSample)))
+          .sort((a, b) => ((b.pressureScore ?? -1) - (a.pressureScore ?? -1)) || (b.pct24 - a.pct24) || (b.quoteVolume - a.quoteVolume));
         state.live = true;
-        els.sourceNote.textContent = `Live: ${new Date().toLocaleString()}，筛选 24h 涨幅、成交额和交易笔数。`;
+        els.sourceNote.textContent = `Live: ${new Date().toLocaleString()}，筛选 24h 涨幅、成交额、交易笔数，并补充 Funding / OI。`;
       } catch (err) {
-        state.samples = fallbackRows;
+        state.samples = fallbackRows.map((row) => ({
+          ...row,
+          fundingRate: null,
+          oiChange: null,
+          oiValue: null,
+          pressureScore: null,
+          pressureLabel: "快照样本",
+          pressureClass: "is-muted",
+          pressureNote: "Live API 未读取，快照不含 Funding / OI。"
+        }));
         state.live = false;
         els.sourceNote.textContent = `Live API 未能读取，使用 2026-05-25 快照样本。原因：${err.message}`;
       }
       renderSamples();
-      if (!state.selected && state.samples[0]) selectSymbol(state.samples[0].symbol);
+      const previous = state.selected ? state.selected.symbol : null;
+      const next = state.samples.find((row) => row.symbol === previous) || state.samples[0];
+      if (next) selectSymbol(next.symbol);
+      else renderCarry(null);
     }
 
     function renderSamples() {
@@ -812,16 +1072,28 @@
       const rows = state.samples.filter((r) => !q || r.symbol.includes(q));
       els.sampleList.innerHTML = rows.map((r) => {
         const range = r.low24 ? ((r.high24 / r.low24 - 1) * 100) : 0;
-        return `<button class="coin-row ${state.selected && state.selected.symbol === r.symbol ? "is-active" : ""}" data-symbol="${r.symbol}">
+        const rowClass = [
+          "coin-row",
+          state.selected && state.selected.symbol === r.symbol ? "is-active" : "",
+          r.pressureClass === "is-caution" ? "is-caution" : "",
+          r.pressureClass === "is-decay" ? "is-decay" : ""
+        ].filter(Boolean).join(" ");
+        const score = Number.isFinite(r.pressureScore) ? r.pressureScore : "--";
+        return `<button class="${rowClass}" data-symbol="${r.symbol}">
           <span>
             <span class="symbol">${r.symbol}</span>
             <span class="coin-meta">
               <span>VOL ${money(r.quoteVolume)}</span>
               <span>RANGE ${range.toFixed(1)}%</span>
+              <span>FND ${fundingLabel(r.fundingRate)}</span>
+              <span>OI ${oiLabel(r.oiChange)}</span>
               <span>${Math.round(r.count).toLocaleString("en-US")} trades</span>
             </span>
           </span>
-          <span class="pct">+${r.pct24.toFixed(2)}%</span>
+          <span class="coin-side">
+            <span class="pct">+${r.pct24.toFixed(2)}%</span>
+            <span class="score-badge ${r.pressureClass || ""}">${score}</span>
+          </span>
         </button>`;
       }).join("");
       document.querySelectorAll(".coin-row").forEach((button) => {
@@ -829,11 +1101,44 @@
       });
     }
 
+    function setCarryClass(el, className) {
+      el.className = className || "";
+    }
+
+    function renderCarry(sample) {
+      if (!sample) {
+        els.crowdingScore.textContent = "--";
+        els.fundingRate.textContent = "--";
+        els.oiChange.textContent = "--";
+        els.carryLabel.textContent = "等待样本";
+        [els.crowdingScore, els.fundingRate, els.oiChange, els.carryLabel].forEach((el) => setCarryClass(el, ""));
+        return;
+      }
+
+      els.crowdingScore.textContent = Number.isFinite(sample.pressureScore) ? `${sample.pressureScore}/100` : "--";
+      els.fundingRate.textContent = fundingLabel(sample.fundingRate);
+      els.oiChange.textContent = oiLabel(sample.oiChange);
+      els.carryLabel.textContent = sample.pressureLabel || "观察";
+      [els.crowdingScore, els.fundingRate, els.oiChange, els.carryLabel].forEach((el) => setCarryClass(el, sample.pressureClass));
+    }
+
+    function buildReplayNote(sample) {
+      const parts = ["回放使用最近 72 根 1h K 线；阶梯锚点取回放起点价格。"];
+      if (sample) {
+        parts.push(`Funding ${fundingLabel(sample.fundingRate)}。`);
+        parts.push(`OI 24h ${oiLabel(sample.oiChange)}。`);
+        if (sample.pressureNote) parts.push(sample.pressureNote);
+      }
+      return parts.join(" ");
+    }
+
     async function selectSymbol(symbol) {
       const sample = state.samples.find((r) => r.symbol === symbol);
       if (!sample) return;
       state.selected = sample;
       renderSamples();
+      renderCarry(sample);
+      els.replayNote.textContent = buildReplayNote(sample);
       els.priceNow.textContent = formatPrice(sample.last);
       els.priceLabel.textContent = `${sample.symbol} 正在读取 1h K 线`;
       try {
@@ -902,6 +1207,9 @@
       els.layerValue.textContent = els.layers.value;
       els.playBtn.textContent = state.playing ? "Ⅱ" : "▶";
       addEvent(0, `${state.selected ? state.selected.symbol : "样本"} 回放重置，以 72h 起点价格生成阶梯。`);
+      if (state.selected && state.selected.pressureNote) {
+        addEvent(0, `衍生品状态：${state.selected.pressureLabel}。${state.selected.pressureNote}`);
+      }
       update();
     }
 
