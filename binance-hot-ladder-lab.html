@@ -472,13 +472,25 @@
       accent-color: var(--ink);
     }
 
+    input[type="number"] {
+      width: 100%;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.48);
+      color: var(--ink);
+      padding: 0 10px;
+      font: 760 13px/1 var(--mono);
+      outline: none;
+    }
+
     .side-panel {
       min-height: 680px;
       display: grid;
-      grid-template-rows: auto auto auto 1fr;
+      grid-template-rows: auto auto auto auto 1fr;
     }
 
-    .metrics, .ladder-box {
+    .metrics, .strategy-box, .ladder-box {
       padding: 18px;
       border-bottom: 1px solid var(--line);
       display: grid;
@@ -569,6 +581,62 @@
       color: var(--muted);
       text-align: right;
       white-space: nowrap;
+    }
+
+    .strategy-grid {
+      display: grid;
+      gap: 9px;
+    }
+
+    .strategy-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+      min-height: 72px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .strategy-card.is-best {
+      border-color: rgba(23, 143, 106, 0.48);
+      background: rgba(23, 143, 106, 0.075);
+    }
+
+    .strategy-card b {
+      display: block;
+      font: 850 13px/1.1 var(--mono);
+      color: var(--ink);
+    }
+
+    .strategy-card span,
+    .strategy-card small {
+      color: var(--muted);
+      font: 700 11px/1.4 var(--mono);
+    }
+
+    .strategy-pnl {
+      font: 850 18px/1 var(--mono);
+      white-space: nowrap;
+    }
+
+    .dryrun-box {
+      display: grid;
+      gap: 8px;
+      padding: 11px 12px;
+      border: 1px solid rgba(22, 23, 21, 0.11);
+      border-radius: 8px;
+      background: rgba(22, 23, 21, 0.035);
+    }
+
+    .dryrun-box code {
+      display: block;
+      color: var(--ink);
+      font: 700 11px/1.45 var(--mono);
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
     }
 
     .trade-box {
@@ -757,7 +825,7 @@
         <h1>小币阶梯测试台</h1>
       </div>
       <div class="top-copy">
-        <p class="thesis">从 Binance USDⓈ-M 永续里筛 24h 涨幅和成交额靠前的小币，再补充资金费率与 Open Interest，判断上涨是多头拥挤、杠杆涌入，还是动能开始衰减。它是模型检验工具，不是做空推荐。</p>
+        <p class="thesis">从 Binance USDⓈ-M 永续里筛 24h 涨幅和成交额靠前的小币，再补充资金费率与 Open Interest，比较冲高回落、阶梯挂空和订单 dry-run 计划。它是模型检验工具，不是做空推荐；真实下单请走本地 CLI 或后端。</p>
         <div class="link-row">
           <a class="top-link" href="./">返回首页</a>
           <a class="top-link" href="price-ladder-short-demo.html">返回空头阶梯演示</a>
@@ -825,8 +893,8 @@
             <button class="icon-btn" id="resetBtn" aria-label="重置">↺</button>
             <div class="mode-row" role="group" aria-label="执行方式">
               <button class="seg-btn is-active" data-mode="alert">只提醒</button>
-              <button class="seg-btn" data-mode="confirm">回落确认</button>
-              <button class="seg-btn" data-mode="limit">提前挂空</button>
+              <button class="seg-btn" data-mode="confirm">冲高回落</button>
+              <button class="seg-btn" data-mode="limit">阶梯挂空</button>
             </div>
           </div>
 
@@ -866,6 +934,10 @@
               <label for="riskCap">组合风险上限 <b id="riskCapValue">2.0%</b></label>
               <input id="riskCap" type="range" min="5" max="80" value="20">
             </div>
+            <div class="knob">
+              <label for="notionalUsdt">每层名义金额 <b id="notionalValue">20 USDT</b></label>
+              <input id="notionalUsdt" type="number" min="5" max="5000" step="5" value="20">
+            </div>
           </div>
           <p class="source-note" id="replayNote">回放使用最近 72 根 1h K 线；阶梯锚点取回放起点价格。</p>
         </div>
@@ -893,6 +965,10 @@
             </div>
           </div>
         </section>
+        <section class="strategy-box">
+          <p class="section-title">Strategy Compare</p>
+          <div class="strategy-grid" id="strategyCompare"></div>
+        </section>
         <section class="ladder-box">
           <p class="section-title">价格阶梯</p>
           <div class="ladder-list" id="ladderList"></div>
@@ -918,6 +994,10 @@
             </div>
           </div>
           <div class="order-plan" id="orderPlan"></div>
+          <div class="dryrun-box">
+            <p class="section-title">CLI Dry-run</p>
+            <code id="cliCommand">等待样本</code>
+          </div>
           <ol class="trade-steps" id="tradeSteps"></ol>
         </section>
         <section class="log-panel">
@@ -974,6 +1054,7 @@
       basketBuffer: document.getElementById("basketBuffer"),
       frictionPct: document.getElementById("frictionPct"),
       riskCap: document.getElementById("riskCap"),
+      notionalUsdt: document.getElementById("notionalUsdt"),
       stepValue: document.getElementById("stepValue"),
       confirmValue: document.getElementById("confirmValue"),
       riskValue: document.getElementById("riskValue"),
@@ -982,6 +1063,7 @@
       basketValue: document.getElementById("basketValue"),
       frictionValue: document.getElementById("frictionValue"),
       riskCapValue: document.getElementById("riskCapValue"),
+      notionalValue: document.getElementById("notionalValue"),
       replayNote: document.getElementById("replayNote"),
       alertCount: document.getElementById("alertCount"),
       shortCount: document.getElementById("shortCount"),
@@ -992,7 +1074,9 @@
       activeMaxLoss: document.getElementById("activeMaxLoss"),
       planMaxLoss: document.getElementById("planMaxLoss"),
       nextAction: document.getElementById("nextAction"),
+      strategyCompare: document.getElementById("strategyCompare"),
       orderPlan: document.getElementById("orderPlan"),
+      cliCommand: document.getElementById("cliCommand"),
       tradeSteps: document.getElementById("tradeSteps"),
       eventLog: document.getElementById("eventLog")
     };
@@ -1062,7 +1146,8 @@
         stop: Number(els.stopPct.value) / 100,
         basketBuffer: Number(els.basketBuffer.value) / 100,
         friction: Number(els.frictionPct.value) / 1000,
-        riskCap: Number(els.riskCap.value) / 10
+        riskCap: Number(els.riskCap.value) / 10,
+        notional: clamp(Number(els.notionalUsdt.value) || 20, 5, 5000)
       };
     }
 
@@ -1418,6 +1503,7 @@
       els.basketValue.textContent = `${els.basketBuffer.value}%`;
       els.frictionValue.textContent = `${(Number(els.frictionPct.value) / 10).toFixed(1)}%`;
       els.riskCapValue.textContent = `${(Number(els.riskCap.value) / 10).toFixed(1)}%`;
+      els.notionalValue.textContent = `${cfg().notional.toFixed(0)} USDT`;
       els.playBtn.textContent = state.playing ? "Ⅱ" : "▶";
       addEvent(0, `${state.selected ? state.selected.symbol : "样本"} 回放重置，以 72h 起点价格生成阶梯。`);
       if (state.selected && state.selected.pressureNote) {
@@ -1451,7 +1537,7 @@
           state.alerted.add(level.id);
           level.peak = bar.high;
           addEvent(state.tick, `触发第 ${level.id + 1} 层提醒：${formatPrice(level.price)}。`);
-          if (state.mode === "limit") openShort(level, level.price, "提前挂空成交");
+          if (state.mode === "limit") openShort(level, level.price, "阶梯挂空成交");
         }
 
         if (state.alerted.has(level.id) && !state.opened.has(level.id)) {
@@ -1540,6 +1626,135 @@
       return activeEntries().length ? "盯止损线" : "挂阶梯单";
     }
 
+    function simulateStrategy(mode) {
+      const c = cfg();
+      const levels = buildLevels();
+      const alerted = new Set();
+      const opened = new Set();
+      const entries = [];
+      const finalBar = state.bars[state.bars.length - 1];
+      if (!finalBar) {
+        return {
+          mode,
+          alerts: 0,
+          entries: 0,
+          stopped: 0,
+          active: 0,
+          avg: null,
+          pnl: 0,
+          maxLoss: 0,
+          final: null
+        };
+      }
+
+      state.bars.forEach((bar, tick) => {
+        levels.forEach((level) => {
+          if (!alerted.has(level.id) && bar.high >= level.price) {
+            alerted.add(level.id);
+            level.peak = bar.high;
+            if (mode === "limit") {
+              opened.add(level.id);
+              entries.push({
+                levelId: level.id,
+                price: level.price,
+                size: c.unitRisk,
+                stopPrice: level.price * (1 + c.stop),
+                closed: false,
+                openTick: tick
+              });
+            }
+          }
+
+          if (mode === "confirm" && alerted.has(level.id) && !opened.has(level.id)) {
+            level.peak = Math.max(level.peak || level.price, bar.high);
+            if (bar.close <= level.peak * (1 - c.confirm)) {
+              opened.add(level.id);
+              entries.push({
+                levelId: level.id,
+                price: bar.close,
+                size: c.unitRisk,
+                stopPrice: bar.close * (1 + c.stop),
+                closed: false,
+                openTick: tick
+              });
+            }
+          }
+        });
+
+        entries.forEach((entry) => {
+          if (!entry.closed && bar.high >= entry.stopPrice) {
+            entry.closed = true;
+            entry.exitPrice = entry.stopPrice * (1 + c.friction);
+            entry.exitTick = tick;
+          }
+        });
+      });
+
+      const active = entries.filter((entry) => !entry.closed);
+      const exposure = active.reduce((sum, entry) => sum + entry.size, 0);
+      const avg = exposure ? active.reduce((sum, entry) => sum + entry.price * entry.size, 0) / exposure : null;
+      const pnl = entries.reduce((sum, entry) => {
+        const exit = entry.closed ? entry.exitPrice : finalBar.close;
+        return sum + ((entry.price - exit) / entry.price) * entry.size;
+      }, 0);
+
+      return {
+        mode,
+        alerts: alerted.size,
+        entries: entries.length,
+        stopped: entries.filter((entry) => entry.closed).length,
+        active: active.length,
+        avg,
+        pnl,
+        maxLoss: c.layers * c.unitRisk * (c.stop + c.friction),
+        final: finalBar.close
+      };
+    }
+
+    function renderStrategyCompare() {
+      if (!state.bars.length) {
+        els.strategyCompare.innerHTML = `<div class="strategy-card"><span>等待 K 线数据</span></div>`;
+        return;
+      }
+
+      const results = [simulateStrategy("confirm"), simulateStrategy("limit")];
+      const best = results
+        .slice()
+        .sort((a, b) => (b.pnl - a.pnl) || (a.stopped - b.stopped))[0];
+      const labels = {
+        confirm: ["冲高回落", "触发后等峰值回落再开空"],
+        limit: ["阶梯挂空", "价格触达阶梯即模拟成交"]
+      };
+      els.strategyCompare.innerHTML = results.map((item) => {
+        const [title, note] = labels[item.mode];
+        const cls = item.mode === best.mode ? "strategy-card is-best" : "strategy-card";
+        const avg = item.avg ? formatPrice(item.avg) : "--";
+        const pnlClass = item.pnl >= 0 ? "gain" : "danger";
+        return `<div class="${cls}">
+          <span>
+            <b>${title}</b>
+            <small>${note}</small><br>
+            <small>${item.alerts} 提醒 / ${item.entries} 开仓 / ${item.stopped} 止损 / 均价 ${avg}</small>
+          </span>
+          <span>
+            <span class="strategy-pnl ${pnlClass}">${accountPct(item.pnl)}</span><br>
+            <small>估算满层 ${accountPct(item.maxLoss)}</small>
+          </span>
+        </div>`;
+      }).join("");
+    }
+
+    function cliCommandText() {
+      const c = cfg();
+      if (!state.selected) return "等待样本";
+      const symbol = state.selected.symbol;
+      const notional = Math.round(c.notional);
+      return [
+        `python3 tools/binance_smallcap_cli.py simulate ${symbol} --strategy both --step-pct ${els.stepPct.value} --layers ${els.layers.value} --confirm-pct ${els.confirmPct.value} --stop-pct ${els.stopPct.value}`,
+        `python3 tools/binance_smallcap_cli.py order ${symbol} --notional ${notional} --step-pct ${els.stepPct.value} --layers ${els.layers.value} --stop-pct ${els.stopPct.value}`
+      ].join("\n");
+    }
+
     function renderAssistant(price) {
       const c = cfg();
       const stop = basketStopPrice();
@@ -1548,7 +1763,9 @@
         setStrong(els.activeMaxLoss, "--");
         setStrong(els.planMaxLoss, "--");
         setStrong(els.nextAction, "等待样本");
+        els.strategyCompare.innerHTML = "";
         els.orderPlan.innerHTML = "";
+        els.cliCommand.textContent = "等待样本";
         els.tradeSteps.innerHTML = "";
         return;
       }
@@ -1559,27 +1776,30 @@
       setStrong(els.activeMaxLoss, accountPct(activeLoss), riskClass(activeLoss));
       setStrong(els.planMaxLoss, accountPct(planLoss), riskClass(planLoss));
       setStrong(els.nextAction, nextActionText(planLoss), riskClass(planLoss));
+      renderStrategyCompare();
 
       els.orderPlan.innerHTML = state.levels.map((level) => {
         const entry = state.entries.find((item) => item.levelId === level.id);
         const stopLoss = (c.stop + c.friction) * c.unitRisk;
+        const qty = level.price ? c.notional / level.price : 0;
         const status = entry
           ? entry.closed ? "已止损" : "持仓"
           : state.alerted.has(level.id) ? "已提醒" : "计划";
         return `<div class="order-row">
           <b>L${level.id + 1}</b>
-          <span>SELL ${formatPrice(level.price)}</span>
+          <span>SELL ${formatPrice(level.price)} · ${qty.toFixed(qty >= 100 ? 0 : 2)}</span>
           <span>BUY stop ${formatPrice(level.price * (1 + c.stop))}</span>
           <span>${accountPct(stopLoss)}</span>
           <span>${status}</span>
         </div>`;
       }).join("");
+      els.cliCommand.textContent = cliCommandText();
 
       const pressure = state.selected && state.selected.pressureLabel ? state.selected.pressureLabel : "等待衍生品状态";
       const modeText = {
         alert: "只提醒：触发阶梯后只记录信号，不模拟开空。",
         confirm: `回落确认：触发后等价格从峰值回落 ${els.confirmPct.value}% 再模拟开空。`,
-        limit: "提前挂空：价格碰到阶梯价即模拟 SELL 限价成交。"
+        limit: "阶梯挂空：价格碰到阶梯价即模拟 SELL 限价成交。"
       }[state.mode];
       const riskStep = planLoss > c.riskCap
         ? `满层最大亏损 ${accountPct(planLoss)} 已超过风险上限 ${c.riskCap.toFixed(1)}%，先降低单层仓位、减少层数或收紧组合止损。`
@@ -1590,10 +1810,11 @@
       const steps = [
         `先看拥挤状态：${pressure}。${state.selected && state.selected.pressureNote ? state.selected.pressureNote : ""}`,
         modeText,
-        `每一层计划：SELL 开空价，同时准备 BUY reduce-only stop；单层估算亏损约 ${accountPct((c.stop + c.friction) * c.unitRisk)}。`,
+        `每一层计划：按 ${c.notional.toFixed(0)} USDT 名义金额估算数量；SELL 开空价，同时准备 BUY reduce-only stop；单层估算亏损约 ${accountPct((c.stop + c.friction) * c.unitRisk)}。`,
         `组合止损线 ${formatPrice(stop)}，用于检查极端情形下所有阶梯打满后的账户损失。`,
         riskStep,
-        openStop
+        openStop,
+        "网页不保存 API key，也不直接发真实订单；下单 dry-run 命令可复制到本地 CLI，确认无误后再进入 testnet 或 live 流程。"
       ];
       els.tradeSteps.innerHTML = steps.map((step, index) => {
         return `<li><span class="step-index">${index + 1}</span><span>${step}</span></li>`;
@@ -1768,7 +1989,7 @@
       });
     });
 
-    [els.stepPct, els.confirmPct, els.unitRisk, els.layers, els.stopPct, els.basketBuffer, els.frictionPct, els.riskCap].forEach((input) => {
+    [els.stepPct, els.confirmPct, els.unitRisk, els.layers, els.stopPct, els.basketBuffer, els.frictionPct, els.riskCap, els.notionalUsdt].forEach((input) => {
       input.addEventListener("input", () => resetReplay(state.playing));
     });
 
