@@ -135,6 +135,16 @@ def markdown_to_html(text: str) -> str:
     return "\n".join(blocks)
 
 
+def strip_duplicate_title(text: str, title: str) -> str:
+    lines = text.splitlines()
+    if not lines:
+        return text
+    first = lines[0].strip()
+    if first == f"# {title}":
+        return "\n".join(lines[1:]).lstrip()
+    return text
+
+
 def render_article(entry: dict, body_html: str) -> str:
     image_html = ""
     if entry.get("image"):
@@ -351,6 +361,17 @@ def render_article(entry: dict, body_html: str) -> str:
     @media (max-width: 880px) {{
       .hero {{ grid-template-columns: 1fr; }}
     }}
+
+    @media (max-width: 560px) {{
+      h1 {{
+        font-size: 36px;
+        line-height: 1.08;
+      }}
+
+      .quote p {{
+        font-size: 26px;
+      }}
+    }}
   </style>
 </head>
 <body>
@@ -438,7 +459,7 @@ def main() -> int:
         "image": image_path,
     }
 
-    body_html = markdown_to_html(body_text)
+    body_html = markdown_to_html(strip_duplicate_title(body_text, args.title))
     page_path.write_text(render_article(entry, body_html), encoding="utf-8")
 
     entries = [item for item in load_entries() if item.get("id") != slug]

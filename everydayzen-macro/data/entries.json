@@ -1,10 +1,29 @@
 [
   {
+    "id": "three-natures-cognitive-script",
+    "title": "三自性：把现实、故事和真实分开",
+    "subtitle": "依他起、遍计所执、圆成实的日常观察法",
+    "date": "2026-05-28",
+    "format": [
+      "口播稿",
+      "唯识",
+      "三自性",
+      "练习卡"
+    ],
+    "thesis": "三自性不是让人否定现实，而是把现实、情绪、故事和执著分开。",
+    "page": "three-natures-cognitive-script.html",
+    "image": "assets/three-natures-cognitive-script.svg"
+  },
+  {
     "id": "china-capital-flow-2026",
     "title": "中国不是没钱了，而是钱开始想离开原来的位置",
     "subtitle": "外贸、外储、资金出海与人民币升值",
     "date": "2026-05-28",
-    "format": ["口播稿", "大图", "宏观结构"],
+    "format": [
+      "口播稿",
+      "大图",
+      "宏观结构"
+    ],
     "thesis": "出口在给经济续命，但内需没有真正接棒；外贸在创造外汇，但外汇没有完全留在外储。",
     "page": "china-capital-flow-2026.html",
     "image": "assets/china-macro-flow-2026.png"

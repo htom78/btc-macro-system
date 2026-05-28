@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>三自性：把现实、故事和真实分开</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f2e8;
+      --ink: #181816;
+      --muted: #68625a;
+      --line: rgba(24, 24, 22, .16);
+      --panel: rgba(255, 253, 247, .86);
+      --red: #b94b45;
+      --gold: #b48635;
+      --shadow: 0 24px 80px rgba(28, 25, 20, .12);
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      --mono: "SFMono-Regular", "Menlo", monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(24, 24, 22, .035) 1px, transparent 1px) 0 0 / 44px 44px,
+        linear-gradient(rgba(24, 24, 22, .032) 1px, transparent 1px) 0 0 / 44px 44px,
+        radial-gradient(circle at 12% 8%, rgba(180, 134, 53, .18), transparent 28%),
+        var(--paper);
+      line-height: 1.72;
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      width: min(1080px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 850;
+    }
+
+    .seal {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(24, 24, 22, .32);
+      border-radius: 50%;
+      background: rgba(255, 253, 247, .74);
+      font-size: 14px;
+      line-height: 1.05;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a,
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, .72);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 32px;
+      align-items: end;
+      padding: 58px 0 34px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--red);
+      font: 780 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 820px;
+      font: 820 clamp(42px, 7vw, 80px)/1 var(--serif);
+      letter-spacing: 0;
+    }
+
+    .dek {
+      max-width: 740px;
+      margin: 24px 0 0;
+      color: #3f3b36;
+      font-size: 19px;
+      font-weight: 560;
+    }
+
+    .quote {
+      padding: 24px;
+      border: 1px solid rgba(24, 24, 22, .18);
+      background: #181816;
+      color: #fffdf7;
+      box-shadow: var(--shadow);
+    }
+
+    .quote strong {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--gold);
+      font: 780 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .quote p {
+      margin: 0;
+      font: 760 24px/1.42 var(--serif);
+    }
+
+    .visual {
+      margin: 10px 0 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .visual img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    article {
+      padding: clamp(26px, 5vw, 52px);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 18px 50px rgba(28, 25, 20, .08);
+    }
+
+    article h2 {
+      margin: 34px 0 12px;
+      font: 820 32px/1.2 var(--serif);
+    }
+
+    article h2:first-child { margin-top: 0; }
+
+    article h3 {
+      margin: 28px 0 10px;
+      font-size: 22px;
+    }
+
+    article p,
+    article li {
+      color: #282622;
+      font-size: 19px;
+    }
+
+    article p { margin: 0 0 18px; }
+    article ul { margin: 0 0 22px; padding-left: 22px; }
+
+    footer {
+      margin-top: 42px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 880px) {
+      .hero { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      h1 {
+        font-size: 36px;
+        line-height: 1.08;
+      }
+
+      .quote p {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topline">
+      <a class="brand" href="index.html">
+        <span class="seal">动<br>中</span>
+        <span>动中禅宏观观察</span>
+      </a>
+      <nav class="nav" aria-label="站点导航">
+        <a href="index.html">内容索引</a>
+        <a href="../index.html">策略工作台</a>
+        <a href="assets/three-natures-cognitive-script.svg">大图</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">口播稿 / 唯识 / 三自性 / 练习卡 / 2026-05-28</p>
+        <h1>三自性：把现实、故事和真实分开</h1>
+        <p class="dek">依他起、遍计所执、圆成实的日常观察法</p>
+      </div>
+      <aside class="quote">
+        <strong>一句话看懂</strong>
+        <p>三自性不是让人否定现实，而是把现实、情绪、故事和执著分开。</p>
+      </aside>
+    </section>
+
+    <figure class="visual">
+      <img src="assets/three-natures-cognitive-script.svg" alt="三自性：把现实、故事和真实分开">
+    </figure>
+    <article>
+<h2>口播稿</h2>
+<p>你有没有发现，人真正痛苦的时候，往往不是事情本身最伤人，而是事情后面跟着冒出来的那一整套解释。</p>
+<p>一个人没有回你消息。</p>
+<p>这是一个事实。</p>
+<p>但很快，心里就开始出现第二层东西：</p>
+<p>他是不是不在乎我？</p>
+<p>我是不是说错话了？</p>
+<p>这段关系是不是要变了？</p>
+<p>是不是我这个人本来就不值得被认真对待？</p>
+<p>事情只发生了一件，心里却已经演完了一部电影。</p>
+<p>佛教唯识学里，有一套非常精密的观察方法，叫做“三自性”：依他起、遍计所执、圆成实。</p>
+<p>它不是三个抽象名词，也不是给哲学家玩的概念游戏。它真正要解决的问题是：我们怎样把现实看错，又怎样从看错里醒过来。</p>
+<p>今天我们就用最直接的方式，把这套系统讲清楚。</p>
+<h2>依他起：经验依条件生起</h2>
+<p>三自性里面，第一个叫依他起性。</p>
+<p>“依他起”，字面意思就是：依靠其他条件而生起。</p>
+<p>任何事情，都不是孤立出现的。一个情绪的产生，有身体状态，有记忆，有当下环境，有过去经验，有语言习惯，有关系背景，也有我们长期积累下来的反应模式。</p>
+<p>比如你今天很烦躁。表面看，是因为别人说了一句话。但如果仔细看，可能还包括昨晚没睡好，最近压力大，对方刚好碰到了你的旧伤，你又习惯把别人的语气理解成否定。</p>
+<p>所以“烦躁”不是凭空来的。它是很多条件临时组合出来的结果。</p>
+<p>这就是依他起。</p>
+<p>依他起不是说“什么都没有”。恰恰相反，它承认现象确实在发生。身体在紧张，心跳在加快，念头在出现，关系在变化，事情在推进。</p>
+<p>但它同时提醒我们：这些东西不是独立、固定、永恒的实体。它们是因缘组合，是条件流动，是暂时成立。</p>
+<h2>遍计所执：心把解释抓成真实</h2>
+<p>第二个叫遍计所执性。</p>
+<p>“遍计”，就是到处分别、计算、命名、解释。</p>
+<p>“所执”，就是把这些分别和解释抓住，当成真实。</p>
+<p>依他起是事情和经验的生起；遍计所执，是心在这个经验上继续加东西。</p>
+<p>一个人皱眉，这是依他起。</p>
+<p>你马上认定：“他讨厌我。”这是遍计所执。</p>
+<p>项目出了问题，这是依他起。</p>
+<p>你马上认定：“我完了，我不行，我的人生就是这样。”这是遍计所执。</p>
+<p>身体出现焦虑，这是依他起。</p>
+<p>你马上认定：“我不能焦虑，我这样很失败。”这还是遍计所执。</p>
+<p>遍计所执最厉害的地方，是它不只是制造一个想法，而是让我们忘记这只是想法。它会把一个解释伪装成事实，把一个念头伪装成世界，把一个临时情绪伪装成“我就是这样的人”。</p>
+<p>于是，人不是被事情困住，而是被自己对事情的固化解释困住。</p>
+<h2>圆成实：在经验中看见执著不成立</h2>
+<p>第三个叫圆成实性。</p>
+<p>圆成实不是在现实之外另外找到一个神秘世界。它也不是突然获得某种特殊体验。</p>
+<p>圆成实的重点是：在依他起的经验中，看见遍计所执并不成立。</p>
+<p>事情还在。情绪还在。身体反应还在。因果关系还在。</p>
+<p>但是那个被心加上去的、绝对化的、自我中心的故事，开始松动了。</p>
+<p>你看到：对方没有回消息，这是真的。</p>
+<p>但“他一定不在乎我”，不一定是真的。</p>
+<p>你看到：我现在很焦虑，这是真的。</p>
+<p>但“我不能焦虑，否则我就是失败的人”，不是真的。</p>
+<p>你看到：事情出了问题，这是真的。</p>
+<p>但“这证明我整个人没有价值”，不是真的。</p>
+<p>这就是圆成实的方向：不是逃离现实，而是在现实中看见虚构的部分。</p>
+<p>所以三自性可以这样理解：</p>
+<p>依他起，是经验依条件生起。</p>
+<p>遍计所执，是心在经验上加名、加我、加对象、加故事，并把它执为真实。</p>
+<p>圆成实，是看见这些执著没有自性。</p>
+<h2>它避免两个极端</h2>
+<p>这套系统非常重要，因为它避免了两个极端。</p>
+<p>第一个极端，是把一切都当真。</p>
+<p>别人一句话是真的，我对这句话的解释也是真的。</p>
+<p>身体一个反应是真的，我对这个反应的恐惧也是真的。</p>
+<p>一次失败是真的，我给自己贴上的失败者标签也是真的。</p>
+<p>这样活着，人会非常沉重。因为世界不只是世界，世界还被我们叠加了无数层意义、判断、比较和自我攻击。</p>
+<p>第二个极端，是把一切都当假。</p>
+<p>既然一切都是空，那事情也无所谓，责任也无所谓，情绪也无所谓，关系也无所谓。</p>
+<p>这不是智慧，而是逃避。</p>
+<p>依他起提醒我们：因果是存在的，条件是运作的，行为会产生结果。</p>
+<p>遍计所执提醒我们：我们对因果和结果的解释，经常被自我执著扭曲。</p>
+<p>圆成实提醒我们：看清扭曲，不是离开生活，而是更准确地进入生活。</p>
+<h2>一个会议里的例子</h2>
+<p>我们可以把它放进一个最日常的场景。</p>
+<p>你在会议上提出一个方案，领导没有表态，只说：“我们再看看。”</p>
+<p>第一层，依他起：</p>
+<p>确实发生了一句话。领导说了“再看看”。你的身体紧了一下，心里有不安。这些都是条件中生起的现象。</p>
+<p>第二层，遍计所执：</p>
+<p>心马上开始补全：“他是不是觉得我很差？我是不是要被边缘化？是不是大家都看出来我能力不够？”</p>
+<p>第三层，圆成实：</p>
+<p>你停下来，看见：这里有一个事实，也有一个身体反应，还有一串自动生成的故事。事实需要处理，情绪可以被照顾，但故事不必立刻相信。</p>
+<p>这时候，你不是变得冷漠，也不是压抑自己。你反而有了空间。</p>
+<p>你可以会后问一句：“这个方案您主要想再看哪一部分？”</p>
+<p>你可以回去补充数据。</p>
+<p>你也可以承认自己紧张，但不把紧张解释成失败。</p>
+<p>这就是三自性的实用性。</p>
+<p>它不是让你变成没有情绪的人，而是让你不再把情绪上升成自我审判。</p>
+<p>它不是让你否定问题，而是让你把问题从故事里拿出来，放回因缘里看。</p>
+<p>它不是让你追求一种永远平静的状态，而是让你在不平静的时候，也能看见不平静是怎么被制造出来的。</p>
+<h2>成功里也有遍计所执</h2>
+<p>这里还有一个关键点：遍计所执不只发生在痛苦里，也发生在成功里。</p>
+<p>当你失败时，心会说：“我完了。”</p>
+<p>当你成功时，心也会说：“我终于证明我比别人强。”</p>
+<p>前者是自我否定，后者是自我膨胀。表面相反，本质一样，都是把一个暂时发生的经验，抓成一个固定的“我”。</p>
+<p>所以三自性不是只用来处理焦虑，也用来处理骄傲；不是只用来处理低谷，也用来处理高峰。</p>
+<p>一切体验，只要被抓成“这就是我”“这证明我”“这否定我”“这成就我”，就开始进入遍计所执。</p>
+<h2>四步练习</h2>
+<p>那我们怎么练？</p>
+<p>可以用一个简单的四步法。</p>
+<p>第一步，只说事实。</p>
+<p>不要急着解释。</p>
+<p>只问：实际发生了什么？</p>
+<p>对方说了哪句话？做了哪个动作？现在身体有什么感受？环境里有哪些条件？</p>
+<p>第二步，看见情绪。</p>
+<p>情绪不是敌人。愤怒、恐惧、羞耻、失落，都是依他起。它们有身体基础，有心理条件，有过去经验。不要一开始就批判它。</p>
+<p>你只需要承认：现在有愤怒。现在有害怕。现在有紧张。</p>
+<p>第三步，抓住故事。</p>
+<p>问自己：我在这个事实和情绪上，又加了什么解释？</p>
+<p>是不是加了“他一定看不起我”？</p>
+<p>是不是加了“我永远不会好”？</p>
+<p>是不是加了“这件事证明我没价值”？</p>
+<p>是不是加了“我必须立刻控制一切”？</p>
+<p>这些通常就是遍计所执。</p>
+<p>第四步，回到行动。</p>
+<p>圆成实不是停在“我看懂了”。真正看懂以后，行动会变得更准确。</p>
+<p>该沟通就沟通。</p>
+<p>该道歉就道歉。</p>
+<p>该休息就休息。</p>
+<p>该承担责任就承担责任。</p>
+<p>该放下幻想就放下幻想。</p>
+<p>区别在于，你不再从一个被故事绑架的状态行动，而是从更清楚的状态行动。</p>
+<h2>因为依他起，所以可以改变</h2>
+<p>这也是为什么三自性不是消极的。</p>
+<p>它不是说：反正一切都是空，所以不用做什么。</p>
+<p>它说的是：正因为一切依条件生起，所以条件可以被看见，也可以被调整。</p>
+<p>你改变睡眠，情绪会变。</p>
+<p>你改变沟通方式，关系会变。</p>
+<p>你改变解释习惯，痛苦会变。</p>
+<p>你改变长期熏习，生命的走向也会变。</p>
+<p>依他起给了我们改变的可能。</p>
+<p>遍计所执指出我们误认的地方。</p>
+<p>圆成实给出看清之后的自由。</p>
+<h2>从一个很小的瞬间开始</h2>
+<p>最后，我们要特别小心一个误区：不要把“圆成实”想成一个遥远的、神秘的、只有修行很高的人才能碰到的境界。</p>
+<p>当然，在完整的佛教修行里，圆成实有很深的义理。但在日常观察里，它至少可以从一个很小的瞬间开始。</p>
+<p>当你正要相信“他不回我，就是不爱我”的时候，你停了一下。</p>
+<p>当你正要相信“我焦虑，所以我很糟糕”的时候，你停了一下。</p>
+<p>当你正要相信“我成功了，所以我终于高人一等”的时候，你停了一下。</p>
+<p>这个“停一下”，不是压住念头，而是看见念头只是念头。</p>
+<p>在这一瞬间，依他起还在，但遍计所执松了一点。</p>
+<p>故事还会来，但你不再完全住进故事里。</p>
+<p>情绪还会动，但你不再把情绪当作绝对真理。</p>
+<p>这就是三自性给现代人的意义。</p>
+<p>它不是一套逃离生活的哲学，而是一套回到生活的观察方法。</p>
+<p>事情发生了，这是依他起。</p>
+<p>我给事情编出了一个关于“我”的故事，这是遍计所执。</p>
+<p>我看见故事只是故事，不再把它当成真实的自我和真实的世界，这是圆成实的方向。</p>
+<p>所以，下次当你痛苦的时候，不必急着问：“我怎么才能不痛苦？”</p>
+<p>可以先问三个更准确的问题：</p>
+<p>第一，实际发生了什么？</p>
+<p>第二，我在上面加了什么故事？</p>
+<p>第三，如果这个故事不是绝对真实，我现在可以怎样行动？</p>
+<p>这三个问题，就是三自性在日常生活中的入口。</p>
+<p>它让我们既不否定现实，也不被现实表面的故事吞没。</p>
+<p>既承认因果，也不执著固定自我。</p>
+<p>既认真生活，也不把每一次得失都变成对自己的最终判决。</p>
+<p>真正的清醒，不是世界从此没有风浪。</p>
+<p>而是风浪来的时候，你知道哪些是水，哪些是你心里画出来的怪影。</p>
+<p>依他起，是水在动。</p>
+<p>遍计所执，是心把影子当成真实。</p>
+<p>圆成实，是看见水还是水，影子只是影子。</p>
+<p>从这里开始，人就有了一点自由。</p>
+    </article>
+
+    <footer>
+      <span>仅作宏观研究和内容整理，不构成投资建议。</span>
+      <span><a href="index.html">返回索引</a> · <a href="data/entries.json">entries.json</a></span>
+    </footer>
+  </main>
+</body>
+</html>
