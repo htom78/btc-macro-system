@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>中国不是没钱了，而是钱开始想离开原来的位置</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f2e8;
+      --ink: #181816;
+      --muted: #68625a;
+      --line: rgba(24, 24, 22, .16);
+      --panel: rgba(255, 253, 247, .86);
+      --red: #b94b45;
+      --blue: #2c638a;
+      --gold: #b48635;
+      --shadow: 0 24px 80px rgba(28, 25, 20, .12);
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      --mono: "SFMono-Regular", "Menlo", monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(24, 24, 22, .035) 1px, transparent 1px) 0 0 / 44px 44px,
+        linear-gradient(rgba(24, 24, 22, .032) 1px, transparent 1px) 0 0 / 44px 44px,
+        radial-gradient(circle at 12% 8%, rgba(180, 134, 53, .18), transparent 28%),
+        radial-gradient(circle at 92% 22%, rgba(44, 99, 138, .12), transparent 24%),
+        var(--paper);
+      line-height: 1.72;
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      width: min(1120px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 850;
+    }
+
+    .seal {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(24, 24, 22, .32);
+      border-radius: 50%;
+      background: rgba(255, 253, 247, .74);
+      font-size: 14px;
+      line-height: 1.05;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a,
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, .72);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 32px;
+      align-items: end;
+      padding: 58px 0 34px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--red);
+      font: 780 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 820px;
+      font: 820 clamp(42px, 7vw, 80px)/1 var(--serif);
+      letter-spacing: 0;
+    }
+
+    .dek {
+      max-width: 740px;
+      margin: 24px 0 0;
+      color: #3f3b36;
+      font-size: 19px;
+      font-weight: 560;
+    }
+
+    .quote {
+      padding: 24px;
+      border: 1px solid rgba(24, 24, 22, .18);
+      background: #181816;
+      color: #fffdf7;
+      box-shadow: var(--shadow);
+    }
+
+    .quote strong {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--gold);
+      font: 780 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .quote p {
+      margin: 0;
+      font: 760 24px/1.42 var(--serif);
+    }
+
+    .visual {
+      margin: 10px 0 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .visual img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 268px;
+      gap: 34px;
+      align-items: start;
+    }
+
+    article {
+      padding: clamp(26px, 5vw, 52px);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 18px 50px rgba(28, 25, 20, .08);
+    }
+
+    article h2 {
+      margin: 34px 0 12px;
+      font: 820 32px/1.2 var(--serif);
+    }
+
+    article h2:first-child { margin-top: 0; }
+
+    article p {
+      margin: 0 0 18px;
+      color: #282622;
+      font-size: 19px;
+    }
+
+    .side {
+      position: sticky;
+      top: 20px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .side-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, .78);
+    }
+
+    .side-card b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .side-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .sources {
+      margin-top: 34px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    footer {
+      margin-top: 42px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 880px) {
+      .hero,
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: static;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .side {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topline">
+      <a class="brand" href="index.html">
+        <span class="seal">动<br>中</span>
+        <span>动中禅宏观观察</span>
+      </a>
+      <nav class="nav" aria-label="站点导航">
+        <a href="index.html">内容索引</a>
+        <a href="../index.html">策略工作台</a>
+        <a href="assets/china-macro-flow-2026.png">大图</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Issue 001 / China Macro</p>
+        <h1>中国不是没钱了，而是钱开始想离开原来的位置。</h1>
+        <p class="dek">外贸很强，外储不一定同步增加；监管收紧跨境券商，也不是孤立事件。真正的核心，是国内资产的长期吸引力能不能回来。</p>
+      </div>
+      <aside class="quote">
+        <strong>一句话看懂</strong>
+        <p>出口在给经济续命，但内需没有真正接棒；外贸在创造外汇，但外汇没有完全留在外储。</p>
+      </aside>
+    </section>
+
+    <figure class="visual">
+      <img src="assets/china-macro-flow-2026.png" alt="中国宏观结构图：外贸、外储与资金出海">
+    </figure>
+
+    <section class="content">
+      <article>
+        <h2>口播稿</h2>
+        <p>很多人最近在讨论一个问题：中国的宏观，到底怎么了？</p>
+        <p>有人说，资本外逃一年一万亿美元。有人说，老虎、富途、长桥这些跨境券商被重罚，是为了堵住钱往外走。也有人说，人民币如果升值，反而有利于资产负债表。</p>
+        <p>这些说法，都摸到了一部分真相。但如果只看一句话，很容易看偏。</p>
+        <p>中国现在真正的状态，不是简单的“崩了”，也不是简单的“稳了”。</p>
+        <p>更像是：生产还很强，出口还很强，国家机器还能维持增长；但居民、企业、民间资本的信心，没有同步回来。</p>
+        <p>这就是今天中国宏观最核心的分裂。</p>
+
+        <h2>外贸强，和资本外流可以同时存在</h2>
+        <p>一边，是外贸顺差很大。中国仍然是世界工厂，而且不是过去那种低端工厂。新能源车、电子、机械设备、工业品，还在往外走。</p>
+        <p>另一边，是国内资产的吸引力下降。房地产不再是财富蓄水池，A 股长期回报不稳定，民营部门投资意愿弱，居民消费也谨慎。</p>
+        <p>所以钱会出现一个很自然的动作：它不一定马上逃跑，但它会寻找出口。</p>
+        <p>这就是为什么“外贸强”和“资本外流”可以同时存在。</p>
+
+        <h2>贸易顺差，不等于外储增加</h2>
+        <p>很多人以为，外贸顺差大，外汇储备就一定大涨。其实不是。</p>
+        <p>出口商赚到美元以后，不一定马上结汇。企业可以留美元，可以投海外，可以做海外产能，可以买海外资产。银行、机构、居民，也会通过各种合规或灰色的方式配置境外资产。</p>
+        <p>所以贸易顺差，不等于外储增加。</p>
+        <p>外储只是其中一部分钱，最后进入央行资产负债表以后，才会体现出来。</p>
+        <p>这也是今天外汇逻辑最关键的一点：中国不是没有外汇。中国的问题是，外汇越来越不只停在央行手里。</p>
+
+        <h2>监管收口，是把门改成闸机</h2>
+        <p>老虎、富途这些平台被打，表面上是牌照问题、非法跨境展业问题。</p>
+        <p>但放到宏观里看，它就是一个信号：监管不是要完全禁止中国人看海外资产，而是要把这种需求重新收回到可监管、可限额、可统计的通道里。</p>
+        <p>比如港股通、QDII、跨境理财通。这些通道不是没有门，但门是国家开的。</p>
+        <p>老虎、富途这类平台的问题，是它们让普通人看见了另一扇门。当越来越多人想从这扇门出去的时候，监管一定会来关门，或者至少把门改成闸机。</p>
+
+        <h2>人民币升值，不是万能药</h2>
+        <p>人民币升值，当然有好处。它能降低进口成本，缓解美元债压力，也能改善资本外流预期。</p>
+        <p>但它不是万能药。</p>
+        <p>因为中国是出口大国，也是净外部资产大国。人民币升值，会压缩出口企业利润，也会让海外资产折成人民币以后缩水。</p>
+        <p>所以人民币升值不是简单的“利好中国资产负债表”。它更像是一剂药：对一部分人是补药，对另一部分人是压力。</p>
+        <p>真正的问题不在汇率本身。真正的问题是，国内资产能不能重新变得值得持有。</p>
+
+        <h2>最后的判断</h2>
+        <p>如果房地产没有财富效应，股市没有长期回报，民营企业没有稳定预期，居民收入没有安全感，那么不管人民币升还是贬，钱都会想寻找别的地方。</p>
+        <p>这就是今天中国宏观最深的逻辑：出口在给经济续命，但内需没有真正接棒。外贸在创造外汇，但外汇没有完全沉淀为国家外储。监管在维持秩序，但它也说明，民间的资产出海冲动已经足够强。</p>
+        <p>所以不要只问：中国外汇储备够不够？更应该问：中国内部还有多少资产，能让人愿意长期持有？</p>
+        <p>一个经济体最怕的，不是钱暂时流出去。而是人们心里开始形成一个共识：赚的钱，最好不要只放在这里。</p>
+        <p>当这个共识慢慢形成，宏观问题就不再只是数字问题。它变成了信心问题。</p>
+        <p>而信心，不是靠封一个平台就能回来。它要靠资产回报、制度预期、收入安全感，慢慢长回来。</p>
+        <p>所以今天的中国宏观，不是崩溃叙事。也不是繁荣叙事。</p>
+        <p>它更像一个庞大的身体：肌肉还很强，手还在生产，脚还在奔跑。但心气弱了，血液开始寻找别的循环。</p>
+        <p>看懂这一点，才算真正看懂了外贸、外储和资本外流之间的关系。</p>
+
+        <div class="sources">
+          <b>数据口径：</b>国家统计局、海关总署、国家外汇管理局、证监会公开信息；本页表达结构关系，不构成投资建议或短线汇率预测。
+        </div>
+      </article>
+
+      <aside class="side">
+        <div class="side-card">
+          <b>核心变量</b>
+          <span>外贸顺差、外汇储备、资本金融账户、居民海外配置、人民币汇率。</span>
+        </div>
+        <div class="side-card">
+          <b>内容用途</b>
+          <span>长图文、视频口播、封面内页、宏观观察索引。</span>
+        </div>
+        <div class="side-card">
+          <b>关键提醒</b>
+          <span>外贸顺差是收入，外储是央行资产，二者不是同一个账户。</span>
+        </div>
+      </aside>
+    </section>
+
+    <footer>
+      <span>仅作宏观研究和内容整理，不构成投资建议。</span>
+      <span><a href="index.html">返回索引</a> · <a href="data/entries.json">entries.json</a></span>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>动中禅宏观观察</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f2e8;
+      --ink: #181816;
+      --muted: #68625a;
+      --line: rgba(24, 24, 22, .16);
+      --panel: rgba(255, 253, 247, .84);
+      --red: #b94b45;
+      --blue: #2c638a;
+      --green: #4d7b59;
+      --gold: #b48635;
+      --shadow: 0 24px 80px rgba(28, 25, 20, .12);
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      --mono: "SFMono-Regular", "Menlo", monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(24, 24, 22, .035) 1px, transparent 1px) 0 0 / 44px 44px,
+        linear-gradient(rgba(24, 24, 22, .032) 1px, transparent 1px) 0 0 / 44px 44px,
+        radial-gradient(circle at 12% 8%, rgba(180, 134, 53, .18), transparent 28%),
+        radial-gradient(circle at 92% 22%, rgba(44, 99, 138, .12), transparent 24%),
+        var(--paper);
+      line-height: 1.58;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .shell {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 850;
+    }
+
+    .seal {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(24, 24, 22, .32);
+      border-radius: 50%;
+      background: rgba(255, 253, 247, .74);
+      font-size: 14px;
+      line-height: 1.05;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a,
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, .72);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 28px;
+      align-items: end;
+      padding: 58px 0 36px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--red);
+      font: 780 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 820px;
+      font: 820 clamp(46px, 7vw, 88px)/.98 var(--serif);
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 720px;
+      margin: 24px 0 0;
+      color: #3f3b36;
+      font-size: 19px;
+      font-weight: 560;
+    }
+
+    .snapshot {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .snapshot strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-size: 13px;
+      font-family: var(--mono);
+      text-transform: uppercase;
+    }
+
+    .snapshot p {
+      margin: 0;
+      font: 760 25px/1.34 var(--serif);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.04fr .96fr;
+      gap: 24px;
+      align-items: stretch;
+      margin-top: 16px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(28, 25, 20, .08);
+    }
+
+    .poster {
+      min-height: 100%;
+      display: block;
+      background: #ebe5d8;
+    }
+
+    .poster img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .issue {
+      padding: 32px;
+      display: grid;
+      align-content: space-between;
+      gap: 28px;
+    }
+
+    .issue h2 {
+      margin: 0;
+      max-width: 620px;
+      font: 820 38px/1.12 var(--serif);
+    }
+
+    .issue p {
+      margin: 14px 0 0;
+      color: #45413c;
+      font-size: 17px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border: 1px solid rgba(24, 24, 22, .14);
+      border-radius: 999px;
+      color: #3f3b36;
+      background: rgba(255, 255, 255, .46);
+      font: 700 12px/1 var(--mono);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button.primary {
+      background: #181816;
+      color: #fffdf7;
+      border-color: #181816;
+    }
+
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .module {
+      min-height: 142px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, .72);
+    }
+
+    .module b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    .module span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .archive {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 247, .74);
+      overflow: hidden;
+    }
+
+    .archive-head,
+    .archive-row {
+      display: grid;
+      grid-template-columns: 130px minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 16px 18px;
+    }
+
+    .archive-head {
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      font: 760 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .archive-row + .archive-row {
+      border-top: 1px solid var(--line);
+    }
+
+    .archive-row b {
+      display: block;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .archive-row span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      margin-top: 42px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 820px) {
+      .hero,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modules {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .archive-head,
+      .archive-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .modules {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topline">
+      <a class="brand" href="../index.html">
+        <span class="seal">动<br>中</span>
+        <span>动中禅宏观观察</span>
+      </a>
+      <nav class="nav" aria-label="站点导航">
+        <a href="../index.html">策略工作台</a>
+        <a href="../macro-report.html">BTC 宏观</a>
+        <a href="../investment-research.html">投资研究</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">EveryDayZen Macro Notes</p>
+        <h1>把宏观判断，整理成可复用的内容系统。</h1>
+        <p class="lead">这里收纳口播稿、大图、关键判断和数据口径。每一期只回答一个问题：它如何改变普通人的资产位置、现金流和长期选择。</p>
+      </div>
+      <aside class="snapshot">
+        <strong>当前主题</strong>
+        <p>外贸很强，外储不一定同步增加；钱不是消失了，而是在寻找新的安全坐标。</p>
+      </aside>
+    </section>
+
+    <section class="grid">
+      <a class="card poster" id="featuredPoster" href="china-capital-flow-2026.html">
+        <img id="featuredImage" src="assets/china-macro-flow-2026.png" alt="中国宏观：外贸、外储、资金出海">
+      </a>
+
+      <article class="card issue">
+        <div>
+          <p class="eyebrow" id="featuredMeta">Issue 001 / 2026-05-28</p>
+          <h2 id="featuredTitle">中国不是没钱了，而是钱开始想离开原来的位置。</h2>
+          <p id="featuredThesis">出口在给经济续命，但内需没有真正接棒；外贸在创造外汇，但外汇没有完全留在外储。</p>
+          <div class="tags" id="featuredTags">
+            <span class="tag">外贸</span>
+            <span class="tag">外储</span>
+            <span class="tag">资本出海</span>
+            <span class="tag">人民币</span>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="button primary" id="featuredPage" href="china-capital-flow-2026.html">阅读完整文案</a>
+          <a class="button" id="featuredImageLink" href="assets/china-macro-flow-2026.png">打开大图</a>
+          <a class="button" href="data/entries.json">内容索引 JSON</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="modules" aria-label="内容结构">
+      <div class="module">
+        <b>判断</b>
+        <span>先给结论，再拆结构，不把宏观变成数字堆砌。</span>
+      </div>
+      <div class="module">
+        <b>文案</b>
+        <span>适合口播、图文和视频旁白，保持动中禅的慢判断。</span>
+      </div>
+      <div class="module">
+        <b>视觉</b>
+        <span>每篇配一张结构图，方便复用到封面和视频中段。</span>
+      </div>
+      <div class="module">
+        <b>数据</b>
+        <span>保留口径和来源，避免把情绪当成宏观结论。</span>
+      </div>
+    </section>
+
+    <section class="archive" aria-label="历史内容">
+      <div class="archive-head">
+        <span>日期</span>
+        <span>主题</span>
+        <span>格式</span>
+      </div>
+      <div id="archiveList">
+        <a class="archive-row" href="china-capital-flow-2026.html">
+          <span>2026-05-28</span>
+          <b>中国不是没钱了，而是钱开始想离开原来的位置。</b>
+          <span>口播稿 / 大图 / 宏观结构</span>
+        </a>
+      </div>
+    </section>
+
+    <footer>
+      <span>仅作宏观研究和内容整理，不构成投资建议。</span>
+      <span><a href="https://github.com/htom78/btc-macro-system">GitHub</a> · <a href="data/entries.json">entries.json</a></span>
+    </footer>
+  </main>
+  <script>
+    const byId = (id) => document.getElementById(id);
+
+    function renderEntries(entries) {
+      if (!Array.isArray(entries) || entries.length === 0) return;
+      const latest = entries[0];
+      const page = latest.page || "#";
+      const image = latest.image || "";
+      byId("featuredPoster").href = page;
+      byId("featuredPage").href = page;
+      byId("featuredTitle").textContent = latest.title || "未命名内容";
+      byId("featuredThesis").textContent = latest.thesis || latest.subtitle || "";
+      byId("featuredMeta").textContent = `Issue ${String(entries.length).padStart(3, "0")} / ${latest.date || ""}`;
+      byId("featuredTags").innerHTML = (latest.format || []).map((item) => `<span class="tag">${item}</span>`).join("");
+      if (image) {
+        byId("featuredImage").src = image;
+        byId("featuredImage").alt = latest.title || "动中禅宏观图";
+        byId("featuredImageLink").href = image;
+        byId("featuredImageLink").style.display = "";
+      } else {
+        byId("featuredImageLink").style.display = "none";
+      }
+
+      byId("archiveList").innerHTML = entries.map((entry) => `
+        <a class="archive-row" href="${entry.page}">
+          <span>${entry.date || ""}</span>
+          <b>${entry.title || "未命名内容"}</b>
+          <span>${(entry.format || []).join(" / ")}</span>
+        </a>
+      `).join("");
+    }
+
+    fetch("data/entries.json")
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error("entries unavailable")))
+      .then(renderEntries)
+      .catch(() => {});
+  </script>
+</body>
+</html>
