@@ -400,7 +400,7 @@
 
     .route-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 12px;
     }
 
@@ -648,7 +648,8 @@
         <a href="macro-report.html">宏观仪表盘</a>
         <a href="btc-ma95-hybrid-strategy.html">MA95 混合策略</a>
         <a href="btc-usdt-ladder-demo.html">BTC/USDT 阶梯</a>
-        <a href="binance-hot-ladder-lab.html">小币测试台</a>
+        <a href="binance-hot-ladder-lab.html">小币做空</a>
+        <a href="binance-upside-lab.html">小币潜力</a>
       </nav>
     </div>
 
@@ -723,9 +724,9 @@
       <div class="section-head">
         <div>
           <p class="eyebrow">Main routes</p>
-          <h2>四个主要入口</h2>
+          <h2>五个主要入口</h2>
         </div>
-        <p>从“长期囤 BTC”到“短期暴涨小币做空测试”，每个页面都负责一个独立问题，首页只负责把路径整理清楚。</p>
+        <p>从“长期囤 BTC”到“小币多空候选筛选”，每个页面都负责一个独立问题，首页只负责把路径整理清楚。</p>
       </div>
 
       <div class="route-grid">
@@ -768,13 +769,26 @@
         <a class="route-card tone-red" href="binance-hot-ladder-lab.html">
           <div class="route-kicker"><span>Futures lab</span><span class="route-index">04</span></div>
           <div class="route-title">
-            <h3>Binance 小币策略台</h3>
-            <p>筛选短期涨幅较猛的小币合约，对比冲高回落、阶梯挂空和订单 dry-run 计划。</p>
+            <h3>小币做空策略台</h3>
+            <p>筛选短期涨幅过猛的小币合约，对比冲高回落、阶梯挂空和订单 dry-run 计划。</p>
           </div>
           <div class="route-meta">
             <span class="tag">hot coins</span>
             <span class="tag">pullback</span>
             <span class="tag">dry-run</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-violet" href="binance-upside-lab.html">
+          <div class="route-kicker"><span>Upside scan</span><span class="route-index">05</span></div>
+          <div class="route-title">
+            <h3>小币多头潜力扫描器</h3>
+            <p>找涨幅不过热、成交放大、OI 温和进入、Funding 不拥挤的早期候选。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">early watch</span>
+            <span class="tag">breakout</span>
+            <span class="tag">pullback buy</span>
           </div>
         </a>
       </div>
@@ -819,6 +833,10 @@
           <div class="status-item">
             <span>MA95 混合仓位模型</span>
             <b><a href="btc-ma95-hybrid-strategy.html">独立页</a></b>
+          </div>
+          <div class="status-item">
+            <span>小币合约策略模型</span>
+            <b><a href="binance-hot-ladder-lab.html">做空</a> / <a href="binance-upside-lab.html">潜力</a></b>
           </div>
           <div class="status-item">
             <span>公开数据接口</span>

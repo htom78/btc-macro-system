@@ -66,6 +66,7 @@ jobs:
           cp price-ladder-short-demo.html _site/price-ladder-short-demo.html
           cp price-ladder-short-theory.html _site/price-ladder-short-theory.html
           cp binance-hot-ladder-lab.html _site/binance-hot-ladder-lab.html
+          cp binance-upside-lab.html _site/binance-upside-lab.html
           cp btc-usdt-ladder-demo.html _site/btc-usdt-ladder-demo.html
           cp btc-usdt-ladder-theory.html _site/btc-usdt-ladder-theory.html
           cp btc-ma95-hybrid-strategy.html _site/btc-ma95-hybrid-strategy.html

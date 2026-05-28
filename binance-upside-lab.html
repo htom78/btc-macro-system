@@ -1,0 +1,1217 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Binance 小币多头潜力扫描器</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f1e8;
+      --paper-2: #fffaf0;
+      --ink: #161715;
+      --muted: #66625a;
+      --line: rgba(22, 23, 21, 0.16);
+      --panel: rgba(255, 250, 240, 0.86);
+      --green: #168369;
+      --green-soft: rgba(22, 131, 105, 0.14);
+      --amber: #be6a18;
+      --amber-soft: rgba(190, 106, 24, 0.15);
+      --red: #bd4545;
+      --red-soft: rgba(189, 69, 69, 0.13);
+      --blue: #2f62a3;
+      --blue-soft: rgba(47, 98, 163, 0.13);
+      --shadow: 0 18px 58px rgba(26, 24, 19, 0.12);
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(22, 23, 21, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(22, 23, 21, 0.03) 1px, transparent 1px) 0 0 / 42px 42px,
+        radial-gradient(circle at 18% 8%, rgba(22, 131, 105, 0.14), transparent 28%),
+        radial-gradient(circle at 84% 6%, rgba(47, 98, 163, 0.12), transparent 26%),
+        var(--paper);
+      overflow-x: hidden;
+    }
+
+    button, input { font: inherit; }
+
+    .app {
+      width: min(1480px, calc(100vw - 32px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 26px 0 34px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(320px, 640px);
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+
+    .eyebrow, .section-title {
+      margin: 0;
+      color: var(--green);
+      font: 800 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      color: var(--muted);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 960px;
+      font: 760 clamp(34px, 5vw, 72px)/0.92 var(--serif);
+      letter-spacing: 0;
+    }
+
+    .top-copy {
+      display: grid;
+      gap: 12px;
+    }
+
+    .thesis, .source-note, p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .thesis { font-size: 15px; }
+    .source-note {
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .link-row, .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .top-link, .seg-btn, .icon-btn {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 250, 240, 0.76);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 760;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .top-link, .seg-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 13px;
+    }
+
+    .icon-btn {
+      width: 42px;
+      font: 800 18px/1 var(--mono);
+    }
+
+    .top-link:hover, .seg-btn:hover, .icon-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(22, 23, 21, 0.32);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr) 390px;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .stage > * { min-width: 0; }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .sample-panel {
+      min-height: 680px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+    }
+
+    .panel-head, .search-wrap, .score-box, .plan-box, .factor-box {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 11px;
+    }
+
+    .search-input, input[type="number"] {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.55);
+      color: var(--ink);
+      padding: 0 12px;
+      outline: none;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--ink);
+    }
+
+    .sample-list {
+      overflow: auto;
+      min-height: 0;
+      padding: 10px;
+    }
+
+    .coin-row {
+      width: 100%;
+      min-height: 82px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid rgba(22, 23, 21, 0.12);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .coin-row + .coin-row { margin-top: 8px; }
+
+    .coin-row.is-active {
+      border-color: rgba(22, 23, 21, 0.55);
+      background: rgba(255, 255, 255, 0.84);
+    }
+
+    .coin-row.is-hot {
+      border-color: rgba(189, 69, 69, 0.34);
+      background: var(--red-soft);
+    }
+
+    .coin-row.is-ready {
+      border-color: rgba(22, 131, 105, 0.34);
+      background: rgba(22, 131, 105, 0.065);
+    }
+
+    .symbol {
+      display: block;
+      font: 850 18px/1 var(--mono);
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .coin-row > :first-child { min-width: 0; }
+    .coin-row > :last-child {
+      display: grid;
+      justify-items: end;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .coin-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 9px;
+      color: var(--muted);
+      font: 700 11px/1.2 var(--mono);
+    }
+
+    .score-badge {
+      display: grid;
+      place-items: center;
+      min-width: 48px;
+      min-height: 30px;
+      border: 1px solid rgba(22, 131, 105, 0.28);
+      border-radius: 8px;
+      background: var(--green-soft);
+      color: var(--green);
+      font: 850 15px/1 var(--mono);
+    }
+
+    .pct {
+      color: var(--green);
+      font: 850 17px/1 var(--mono);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .chart-panel {
+      min-height: 680px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+    }
+
+    .chart-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .price-now {
+      font: 850 clamp(42px, 5vw, 70px)/0.95 var(--mono);
+      letter-spacing: 0;
+    }
+
+    .price-label {
+      margin-top: 4px;
+      color: var(--muted);
+      font: 700 12px/1.2 var(--mono);
+    }
+
+    .status-pill {
+      min-width: 128px;
+      min-height: 40px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid rgba(22, 131, 105, 0.28);
+      border-radius: 8px;
+      background: var(--green-soft);
+      color: var(--green);
+      font: 850 13px/1 var(--mono);
+    }
+
+    .signal-strip, .knobs, .metric-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .signal-strip, .knobs {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .metric-grid {
+      grid-template-columns: repeat(2, minmax(145px, 1fr));
+    }
+
+    .signal-strip {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.54);
+    }
+
+    .signal-card, .metric, .factor-card {
+      min-height: 72px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .signal-card span, .metric span, .factor-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .signal-card strong, .metric strong, .factor-card strong {
+      display: block;
+      margin-top: 8px;
+      font: 820 18px/1 var(--mono);
+      overflow-wrap: anywhere;
+    }
+
+    .metric-grid .metric strong {
+      font-size: 16px;
+      line-height: 1.12;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      min-height: 420px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(255, 250, 240, 0.16)),
+        repeating-linear-gradient(90deg, rgba(22, 23, 21, 0.04) 0 1px, transparent 1px 62px);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+    }
+
+    .legend {
+      position: absolute;
+      left: 18px;
+      bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      display: inline-flex;
+      gap: 7px;
+      align-items: center;
+      min-height: 32px;
+      border: 1px solid rgba(22, 23, 21, 0.12);
+      border-radius: 8px;
+      padding: 0 10px;
+      background: rgba(255, 250, 240, 0.82);
+      color: var(--muted);
+      font: 720 12px/1 var(--mono);
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    .dot.green { background: var(--green); }
+    .dot.amber { background: var(--amber); }
+    .dot.red { background: var(--red); }
+
+    .control-panel {
+      padding: 16px 18px 18px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 14px;
+      background: rgba(255, 250, 240, 0.74);
+    }
+
+    .knob {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .knob label {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font: 700 12px/1.25 var(--mono);
+    }
+
+    .side-panel {
+      min-height: 680px;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+    }
+
+    .score-number {
+      font: 850 52px/0.95 var(--mono);
+      letter-spacing: 0;
+    }
+
+    .score-number.is-hot { color: var(--red); }
+    .score-number.is-ok { color: var(--green); }
+
+    .reason-list, .plan-list, .event-log {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .reason-list li, .plan-list li, .event-log li {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 9px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .idx {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.54);
+      color: var(--ink);
+      font: 850 11px/1 var(--mono);
+    }
+
+    .factor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .dryrun-box {
+      display: grid;
+      gap: 8px;
+      padding: 11px 12px;
+      border: 1px solid rgba(22, 23, 21, 0.11);
+      border-radius: 8px;
+      background: rgba(22, 23, 21, 0.035);
+    }
+
+    .dryrun-box code {
+      display: block;
+      color: var(--ink);
+      font: 700 11px/1.45 var(--mono);
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .event-log {
+      max-height: 220px;
+      overflow: auto;
+    }
+
+    @media (max-width: 1280px) {
+      .stage {
+        grid-template-columns: 330px minmax(0, 1fr);
+      }
+      .side-panel {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app { width: min(100vw - 20px, 860px); }
+      .topbar, .stage, .chart-head, .signal-strip, .knobs, .metric-grid {
+        grid-template-columns: 1fr;
+      }
+      .sample-panel, .chart-panel { min-height: auto; }
+      canvas { min-height: 380px; }
+    }
+
+    @media (max-width: 520px) {
+      .app {
+        width: 100%;
+        padding: 22px 0 28px;
+      }
+      .topbar {
+        padding: 0 10px 16px;
+        overflow: hidden;
+      }
+      h1 {
+        max-width: calc(100vw - 20px);
+        font-size: 30px;
+        line-height: 1;
+        overflow-wrap: anywhere;
+      }
+      .thesis {
+        max-width: calc(100vw - 20px);
+        font-size: 14px;
+        overflow-wrap: anywhere;
+      }
+      .stage {
+        gap: 10px;
+      }
+      .sample-list {
+        overflow-x: hidden;
+      }
+      .panel,
+      .panel-head,
+      .search-wrap,
+      .sample-list,
+      .source-note {
+        max-width: 100vw;
+      }
+      .coin-row {
+        display: block;
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+        padding-right: 10px;
+      }
+      .coin-row > :last-child {
+        position: static;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-top: 9px;
+      }
+      .symbol {
+        font-size: 17px;
+      }
+      .coin-meta {
+        gap: 6px;
+        font-size: 10px;
+        line-height: 1.35;
+      }
+      .coin-meta span:last-child {
+        flex-basis: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Binance Smallcap Upside Lab</p>
+        <h1>小币多头潜力扫描器</h1>
+      </div>
+      <div class="top-copy">
+        <p class="thesis">反过来找“还没完全涨起来”的小币：涨幅不过热、成交开始放大、OI 温和进场、Funding 不拥挤，再用突破和回踩结构筛选。它是观察和模拟工具，不是买入推荐。</p>
+        <div class="link-row">
+          <a class="top-link" href="./">返回首页</a>
+          <a class="top-link" href="binance-hot-ladder-lab.html">返回小币做空策略台</a>
+          <a class="top-link" href="btc-ma95-hybrid-strategy.html">MA95 混合策略</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="stage">
+      <aside class="panel sample-panel">
+        <div class="panel-head">
+          <p class="section-title">Potential Pool</p>
+          <p class="source-note" id="sourceNote">正在连接 Binance Futures API...</p>
+        </div>
+        <div class="search-wrap">
+          <input class="search-input" id="symbolSearch" placeholder="搜索 symbol，例如 DRIFT / PHA / IO">
+          <div class="button-row">
+            <button class="seg-btn" id="refreshBtn">刷新潜力池</button>
+          </div>
+        </div>
+        <div class="sample-list" id="sampleList"></div>
+      </aside>
+
+      <article class="panel chart-panel">
+        <div class="chart-head">
+          <div>
+            <div class="price-now" id="priceNow">--</div>
+            <div class="price-label" id="priceLabel">等待选择币种</div>
+          </div>
+          <div class="status-pill" id="statusPill">等待样本</div>
+        </div>
+
+        <div class="signal-strip">
+          <div class="signal-card">
+            <span>潜力评分</span>
+            <strong id="potentialScore">--</strong>
+          </div>
+          <div class="signal-card">
+            <span>Funding 8h</span>
+            <strong id="fundingRate">--</strong>
+          </div>
+          <div class="signal-card">
+            <span>OI 24h</span>
+            <strong id="oiChange">--</strong>
+          </div>
+          <div class="signal-card">
+            <span>状态判断</span>
+            <strong id="phaseLabel">等待样本</strong>
+          </div>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="chart" aria-label="Binance 小币多头潜力图"></canvas>
+          <div class="legend">
+            <span class="chip"><span class="dot"></span>72h 价格路径</span>
+            <span class="chip"><span class="dot green"></span>突破线</span>
+            <span class="chip"><span class="dot amber"></span>回踩买入区</span>
+            <span class="chip"><span class="dot red"></span>失效线</span>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <div class="knobs">
+            <div class="knob">
+              <label for="minPct">最小 24h <b id="minPctValue">-3%</b></label>
+              <input id="minPct" type="range" min="-12" max="12" value="-3">
+            </div>
+            <div class="knob">
+              <label for="maxPct">最大 24h <b id="maxPctValue">24%</b></label>
+              <input id="maxPct" type="range" min="8" max="45" value="24">
+            </div>
+            <div class="knob">
+              <label for="pullbackPct">回踩确认 <b id="pullbackValue">6%</b></label>
+              <input id="pullbackPct" type="range" min="3" max="18" value="6">
+            </div>
+            <div class="knob">
+              <label for="stopPct">失效止损 <b id="stopValue">12%</b></label>
+              <input id="stopPct" type="range" min="5" max="28" value="12">
+            </div>
+          </div>
+          <p class="source-note" id="replayNote">候选来自最近 24h ticker、Funding、OI 与 72 根 1h K 线。</p>
+        </div>
+      </article>
+
+      <aside class="panel side-panel">
+        <section class="score-box">
+          <p class="section-title">Potential Thesis</p>
+          <div class="score-number" id="scoreNumber">--</div>
+          <p id="scoreNote">等待样本。</p>
+        </section>
+
+        <section class="factor-box">
+          <p class="section-title">Signal Factors</p>
+          <div class="factor-grid">
+            <div class="factor-card"><span>量能扩张</span><strong id="volumeRatio">--</strong></div>
+            <div class="factor-card"><span>距 72h 高点</span><strong id="pullbackFromHigh">--</strong></div>
+            <div class="factor-card"><span>72h 区间</span><strong id="range72">--</strong></div>
+            <div class="factor-card"><span>突破线</span><strong id="breakoutLine">--</strong></div>
+          </div>
+          <ul class="reason-list" id="reasonList"></ul>
+        </section>
+
+        <section class="plan-box">
+          <p class="section-title">Long-side Playbook</p>
+          <div class="metric-grid">
+            <div class="metric"><span>回踩买入区</span><strong id="buyZone">--</strong></div>
+            <div class="metric"><span>失效线</span><strong id="invalidLine">--</strong></div>
+            <div class="metric"><span>观察动作</span><strong id="nextAction">等待</strong></div>
+            <div class="metric"><span>仓位建议</span><strong id="sizeHint">观察</strong></div>
+          </div>
+          <div class="dryrun-box">
+            <p class="section-title">CLI Command</p>
+            <code id="cliCommand">等待样本</code>
+          </div>
+          <ul class="plan-list" id="planList"></ul>
+        </section>
+
+        <section class="plan-box">
+          <p class="section-title">Event Log</p>
+          <ul class="event-log" id="eventLog"></ul>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const API = "https://fapi.binance.com";
+    const majors = new Set([
+      "BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "DOGEUSDT", "ADAUSDT",
+      "TRXUSDT", "AVAXUSDT", "LINKUSDT", "TONUSDT", "DOTUSDT", "LTCUSDT", "BCHUSDT",
+      "UNIUSDT", "AAVEUSDT", "NEARUSDT", "APTUSDT", "SUIUSDT", "OPUSDT", "ARBUSDT",
+      "ETCUSDT", "FILUSDT", "ATOMUSDT", "INJUSDT", "HBARUSDT", "XLMUSDT", "MATICUSDT",
+      "POLUSDT", "ICPUSDT", "TAOUSDT", "WLDUSDT", "ENAUSDT", "TRUMPUSDT"
+    ]);
+
+    const fallbackRows = [
+      { symbol: "DRIFTUSDT", pct24: 8.9, quoteVolume: 72600000, last: 0.0371, high24: 0.0398, low24: 0.0328, count: 820000 },
+      { symbol: "PHAUSDT", pct24: 6.4, quoteVolume: 51500000, last: 0.0412, high24: 0.0436, low24: 0.0374, count: 640000 },
+      { symbol: "IOUSDT", pct24: 4.8, quoteVolume: 41200000, last: 0.352, high24: 0.371, low24: 0.319, count: 520000 },
+      { symbol: "BASUSDT", pct24: 11.3, quoteVolume: 26300000, last: 0.022, high24: 0.0235, low24: 0.0197, count: 410000 }
+    ];
+
+    const els = {
+      sourceNote: document.getElementById("sourceNote"),
+      symbolSearch: document.getElementById("symbolSearch"),
+      refreshBtn: document.getElementById("refreshBtn"),
+      sampleList: document.getElementById("sampleList"),
+      canvas: document.getElementById("chart"),
+      priceNow: document.getElementById("priceNow"),
+      priceLabel: document.getElementById("priceLabel"),
+      statusPill: document.getElementById("statusPill"),
+      potentialScore: document.getElementById("potentialScore"),
+      fundingRate: document.getElementById("fundingRate"),
+      oiChange: document.getElementById("oiChange"),
+      phaseLabel: document.getElementById("phaseLabel"),
+      minPct: document.getElementById("minPct"),
+      maxPct: document.getElementById("maxPct"),
+      pullbackPct: document.getElementById("pullbackPct"),
+      stopPct: document.getElementById("stopPct"),
+      minPctValue: document.getElementById("minPctValue"),
+      maxPctValue: document.getElementById("maxPctValue"),
+      pullbackValue: document.getElementById("pullbackValue"),
+      stopValue: document.getElementById("stopValue"),
+      replayNote: document.getElementById("replayNote"),
+      scoreNumber: document.getElementById("scoreNumber"),
+      scoreNote: document.getElementById("scoreNote"),
+      volumeRatio: document.getElementById("volumeRatio"),
+      pullbackFromHigh: document.getElementById("pullbackFromHigh"),
+      range72: document.getElementById("range72"),
+      breakoutLine: document.getElementById("breakoutLine"),
+      reasonList: document.getElementById("reasonList"),
+      buyZone: document.getElementById("buyZone"),
+      invalidLine: document.getElementById("invalidLine"),
+      nextAction: document.getElementById("nextAction"),
+      sizeHint: document.getElementById("sizeHint"),
+      cliCommand: document.getElementById("cliCommand"),
+      planList: document.getElementById("planList"),
+      eventLog: document.getElementById("eventLog")
+    };
+
+    const ctx = els.canvas.getContext("2d");
+    const state = {
+      samples: [],
+      selected: null,
+      bars: [],
+      live: false
+    };
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function avg(values) {
+      const clean = values.filter(Number.isFinite);
+      return clean.length ? clean.reduce((sum, value) => sum + value, 0) / clean.length : null;
+    }
+
+    function cfg() {
+      return {
+        minPct: Number(els.minPct.value),
+        maxPct: Number(els.maxPct.value),
+        pullback: Number(els.pullbackPct.value) / 100,
+        stop: Number(els.stopPct.value) / 100
+      };
+    }
+
+    function formatPrice(value) {
+      if (!Number.isFinite(value)) return "--";
+      if (value >= 100) return value.toFixed(2);
+      if (value >= 1) return value.toFixed(4);
+      if (value >= 0.01) return value.toFixed(5);
+      return value.toFixed(7).replace(/0+$/, "").replace(/\.$/, "");
+    }
+
+    function money(value) {
+      if (!Number.isFinite(value)) return "--";
+      if (value >= 1_000_000_000) return `$${(value / 1_000_000_000).toFixed(2)}B`;
+      if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
+      return `$${Math.round(value).toLocaleString("en-US")}`;
+    }
+
+    function pct(value, digits = 2) {
+      if (!Number.isFinite(value)) return "--";
+      return `${value >= 0 ? "+" : ""}${(value * 100).toFixed(digits)}%`;
+    }
+
+    function fundingLabel(value) {
+      return pct(value, 4);
+    }
+
+    function oiLabel(value) {
+      return pct(value, 1);
+    }
+
+    async function getJson(path) {
+      const res = await fetch(`${API}${path}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`${path} ${res.status}`);
+      return res.json();
+    }
+
+    function barStats(bars) {
+      const high72 = Math.max(...bars.map((bar) => bar.high));
+      const low72 = Math.min(...bars.map((bar) => bar.low));
+      const close = bars[bars.length - 1]?.close || 0;
+      const prevHigh = Math.max(...bars.slice(0, -6).map((bar) => bar.high), high72);
+      const recentVolume = avg(bars.slice(-12).map((bar) => bar.quoteVolume)) || 0;
+      const previousVolume = avg(bars.slice(-36, -12).map((bar) => bar.quoteVolume)) || recentVolume || 1;
+      const volumeRatio = previousVolume > 0 ? recentVolume / previousVolume : 1;
+      return {
+        close,
+        high72,
+        low72,
+        prevHigh,
+        range72: low72 > 0 ? (high72 / low72) - 1 : 0,
+        pullbackFromHigh: close > 0 ? (high72 / close) - 1 : 0,
+        volumeRatio,
+        nearBreakout: close >= prevHigh * 0.995,
+        pullbackHold: close > 0 && ((high72 / close) - 1) >= 0.025 && ((high72 / close) - 1) <= 0.14 && close >= low72 + (high72 - low72) * 0.55,
+        baseBuild: false
+      };
+    }
+
+    function potentialProfile(row, bars = []) {
+      const stats = bars.length ? barStats(bars) : null;
+      if (stats) stats.baseBuild = row.pct24 >= -2 && row.pct24 <= 9 && stats.range72 >= 0.08 && stats.range72 <= 0.35 && stats.volumeRatio >= 0.9;
+      const funding = row.fundingRate;
+      const oi = row.oiChange;
+      const liquidity = clamp(Math.log10(Math.max(1, row.quoteVolume / 10_000_000)) * 10, 0, 18);
+      let momentum = 4;
+      if (row.pct24 >= -6 && row.pct24 <= 4) momentum = 14 + row.pct24;
+      else if (row.pct24 > 4 && row.pct24 <= 18) momentum = 22;
+      else if (row.pct24 > 18 && row.pct24 <= 28) momentum = 12;
+      const fundingScore = !Number.isFinite(funding)
+        ? 10
+        : funding <= -0.00005 ? 19
+          : funding <= 0.00025 ? 20
+            : funding <= 0.0008 ? 11 : 3;
+      const oiScore = !Number.isFinite(oi)
+        ? 9
+        : oi >= 0.03 && oi <= 0.24 ? 20
+          : oi >= 0 && oi < 0.03 ? 13
+            : oi > 0.24 && oi <= 0.45 ? 10 : 4;
+      const volumeScore = stats ? clamp((stats.volumeRatio - 0.75) * 18, 0, 15) : 6;
+      let structure = 0;
+      if (stats?.nearBreakout) structure += 12;
+      if (stats?.pullbackHold) structure += 10;
+      if (stats?.baseBuild) structure += 8;
+      if (stats?.range72 > 0.7) structure -= 8;
+      if (row.pct24 > 32) structure -= 12;
+      const score = Math.round(clamp(liquidity + momentum + fundingScore + oiScore + volumeScore + structure, 0, 100));
+
+      let label = "早期观察";
+      let className = "";
+      let note = "价格和衍生品数据没有明显共振，先放入观察池。";
+      if (row.pct24 > 32 || (Number.isFinite(funding) && funding > 0.0012)) {
+        label = "过热回避";
+        className = "is-hot";
+        note = "涨幅或资金费率已经偏热，不适合作为低风险潜伏点。";
+      } else if (stats?.nearBreakout && stats.volumeRatio >= 1.05) {
+        label = "突破观察";
+        className = "is-ready";
+        note = "价格接近或站上前高，同时量能扩张，适合等待回踩确认。";
+      } else if (stats?.pullbackHold) {
+        label = "回踩买入";
+        className = "is-ready";
+        note = "价格从高位回落但仍守在区间上半部，适合看回踩是否缩量企稳。";
+      } else if (stats?.baseBuild) {
+        label = "潜伏观察";
+        className = "";
+        note = "涨幅不大、区间未失控，量能没有明显衰退，可继续观察是否突破。";
+      }
+      return { score, label, className, note, stats };
+    }
+
+    async function enrichSample(row, withBars = false) {
+      const symbol = encodeURIComponent(row.symbol);
+      const calls = [
+        getJson(`/fapi/v1/fundingRate?symbol=${symbol}&limit=3`),
+        getJson(`/futures/data/openInterestHist?symbol=${symbol}&period=1h&limit=24`)
+      ];
+      if (withBars) calls.push(getJson(`/fapi/v1/klines?symbol=${symbol}&interval=1h&limit=72`));
+      const [fundingRes, oiRes, klineRes] = await Promise.allSettled(calls);
+      const fundingRows = fundingRes.status === "fulfilled" && Array.isArray(fundingRes.value) ? fundingRes.value : [];
+      const lastFunding = fundingRows[fundingRows.length - 1];
+      const fundingRate = lastFunding ? Number(lastFunding.fundingRate) : null;
+      const oiRows = oiRes.status === "fulfilled" && Array.isArray(oiRes.value) ? oiRes.value : [];
+      const firstOi = oiRows.length ? Number(oiRows[0].sumOpenInterestValue) : null;
+      const lastOi = oiRows.length ? Number(oiRows[oiRows.length - 1].sumOpenInterestValue) : null;
+      const oiChange = Number.isFinite(firstOi) && firstOi > 0 && Number.isFinite(lastOi) ? (lastOi / firstOi) - 1 : null;
+      const bars = klineRes && klineRes.status === "fulfilled" && Array.isArray(klineRes.value)
+        ? klineRes.value.map((k) => ({
+          time: Number(k[0]),
+          open: Number(k[1]),
+          high: Number(k[2]),
+          low: Number(k[3]),
+          close: Number(k[4]),
+          quoteVolume: Number(k[7])
+        }))
+        : [];
+      const profile = potentialProfile({ ...row, fundingRate, oiChange }, bars);
+      return { ...row, fundingRate, oiChange, pressureScore: profile.score, pressureLabel: profile.label, pressureClass: profile.className, pressureNote: profile.note, bars, factors: profile.stats };
+    }
+
+    async function loadSamples() {
+      const c = cfg();
+      els.minPctValue.textContent = `${els.minPct.value}%`;
+      els.maxPctValue.textContent = `${els.maxPct.value}%`;
+      els.pullbackValue.textContent = `${els.pullbackPct.value}%`;
+      els.stopValue.textContent = `${els.stopPct.value}%`;
+      els.sourceNote.textContent = "正在连接 Binance Futures API...";
+      try {
+        const [exchange, tickers] = await Promise.all([
+          getJson("/fapi/v1/exchangeInfo"),
+          getJson("/fapi/v1/ticker/24hr")
+        ]);
+        const tradable = new Set(exchange.symbols
+          .filter((s) => s.status === "TRADING" && s.quoteAsset === "USDT" && s.contractType === "PERPETUAL")
+          .map((s) => s.symbol));
+        const baseRows = tickers
+          .filter((t) => tradable.has(t.symbol) && !majors.has(t.symbol))
+          .map((t) => ({
+            symbol: t.symbol,
+            pct24: Number(t.priceChangePercent),
+            quoteVolume: Number(t.quoteVolume),
+            last: Number(t.lastPrice),
+            high24: Number(t.highPrice),
+            low24: Number(t.lowPrice),
+            count: Number(t.count)
+          }))
+          .filter((r) => r.pct24 >= c.minPct && r.pct24 <= c.maxPct && r.quoteVolume >= 15_000_000 && r.count >= 20000)
+          .sort((a, b) => (Math.abs(a.pct24 - 8) - Math.abs(b.pct24 - 8)) || (b.quoteVolume - a.quoteVolume))
+          .slice(0, 28);
+        state.samples = baseRows.map((row) => ({ ...row, pressureScore: null, pressureLabel: "评分中", pressureClass: "", pressureNote: "正在读取 Funding、OI 与 K 线。" }));
+        renderSamples();
+        els.sourceNote.textContent = `Live: 找到 ${baseRows.length} 个候选，正在补充 Funding / OI / K 线...`;
+        state.samples = (await Promise.all(baseRows.map((row) => enrichSample(row, true))))
+          .sort((a, b) => ((b.pressureScore ?? -1) - (a.pressureScore ?? -1)) || (b.quoteVolume - a.quoteVolume))
+          .slice(0, 18);
+        state.live = true;
+        els.sourceNote.textContent = `Live: ${new Date().toLocaleString()}，筛选涨幅不过热、成交足够、Funding/OI 未拥挤的小币。`;
+      } catch (err) {
+        state.samples = fallbackRows.map((row) => {
+          const synthetic = syntheticBars(row);
+          const profile = potentialProfile({ ...row, fundingRate: null, oiChange: null }, synthetic);
+          return { ...row, fundingRate: null, oiChange: null, pressureScore: profile.score, pressureLabel: profile.label, pressureClass: profile.className, pressureNote: profile.note, bars: synthetic, factors: profile.stats };
+        });
+        state.live = false;
+        els.sourceNote.textContent = `Live API 未能读取，使用快照样本。原因：${err.message}`;
+      }
+      renderSamples();
+      const next = state.samples[0];
+      if (next) selectSymbol(next.symbol);
+    }
+
+    function syntheticBars(sample) {
+      const bars = [];
+      const start = sample.last / (1 + sample.pct24 / 100);
+      for (let i = 0; i < 72; i += 1) {
+        const t = i / 71;
+        const pulse = Math.sin(i * 0.32) * 0.028 + Math.sin(i * 0.09) * 0.018;
+        const close = start * (1 + (sample.pct24 / 100) * Math.pow(t, 1.25) + pulse);
+        const spread = 0.015 + Math.abs(Math.sin(i * 0.17)) * 0.025;
+        bars.push({
+          time: Date.now() - (72 - i) * 3600000,
+          open: i ? bars[i - 1].close : start,
+          high: close * (1 + spread),
+          low: close * (1 - spread),
+          close: Math.max(0.000001, close),
+          quoteVolume: sample.quoteVolume / 72 * (0.65 + Math.abs(Math.sin(i * 0.21)))
+        });
+      }
+      return bars;
+    }
+
+    function renderSamples() {
+      const q = els.symbolSearch.value.trim().toUpperCase();
+      const rows = state.samples.filter((r) => !q || r.symbol.includes(q));
+      els.sampleList.innerHTML = rows.map((r) => {
+        const range = r.low24 ? ((r.high24 / r.low24 - 1) * 100) : 0;
+        const rowClass = ["coin-row", state.selected && state.selected.symbol === r.symbol ? "is-active" : "", r.pressureClass || ""].filter(Boolean).join(" ");
+        const score = Number.isFinite(r.pressureScore) ? r.pressureScore : "--";
+        return `<button class="${rowClass}" data-symbol="${r.symbol}">
+          <span>
+            <span class="symbol">${r.symbol}</span>
+            <span class="coin-meta">
+              <span>VOL ${money(r.quoteVolume)}</span>
+              <span>RANGE ${range.toFixed(1)}%</span>
+              <span>FND ${fundingLabel(r.fundingRate)}</span>
+              <span>OI ${oiLabel(r.oiChange)}</span>
+              <span>${Math.round(r.count).toLocaleString("en-US")} trades</span>
+            </span>
+          </span>
+          <span>
+            <span class="pct">${r.pct24 >= 0 ? "+" : ""}${r.pct24.toFixed(2)}%</span>
+            <span class="score-badge">${score}</span>
+          </span>
+        </button>`;
+      }).join("");
+      document.querySelectorAll(".coin-row").forEach((button) => {
+        button.addEventListener("click", () => selectSymbol(button.dataset.symbol));
+      });
+    }
+
+    function selectSymbol(symbol) {
+      const sample = state.samples.find((r) => r.symbol === symbol);
+      if (!sample) return;
+      state.selected = sample;
+      state.bars = sample.bars && sample.bars.length ? sample.bars : syntheticBars(sample);
+      const profile = potentialProfile(sample, state.bars);
+      state.selected = { ...sample, pressureScore: profile.score, pressureLabel: profile.label, pressureClass: profile.className, pressureNote: profile.note, factors: profile.stats };
+      renderSamples();
+      update();
+    }
+
+    function longPlan() {
+      const c = cfg();
+      const stats = state.selected?.factors || barStats(state.bars);
+      const breakout = stats.prevHigh || stats.high72 || state.selected.last;
+      const buyHigh = breakout * (1 - c.pullback);
+      const buyLow = breakout * (1 - c.pullback * 1.65);
+      const invalid = buyLow * (1 - c.stop);
+      return { breakout, buyHigh, buyLow, invalid };
+    }
+
+    function reasonItems(sample) {
+      const f = sample.factors || {};
+      const items = [];
+      if (sample.pct24 <= cfg().maxPct) items.push(`24h 涨幅 ${sample.pct24.toFixed(2)}%，还没有进入极端追涨区。`);
+      if (Number.isFinite(sample.fundingRate) && sample.fundingRate <= 0.00025) items.push(`Funding ${fundingLabel(sample.fundingRate)}，多头拥挤度暂时不高。`);
+      if (Number.isFinite(sample.oiChange) && sample.oiChange > 0) items.push(`OI 24h ${oiLabel(sample.oiChange)}，杠杆资金开始进入。`);
+      if (f.volumeRatio >= 1.05) items.push(`最近 12h 成交额约为前段的 ${f.volumeRatio.toFixed(2)}x，量能在放大。`);
+      if (f.nearBreakout) items.push("价格接近 72h 前高，属于突破观察状态。");
+      if (f.pullbackHold) items.push("价格从高点回落但仍守在区间上半部，适合看回踩质量。");
+      if (!items.length) items.push("当前信号不够集中，先观察，不急着模拟买入。");
+      return items;
+    }
+
+    function update() {
+      const sample = state.selected;
+      if (!sample || !state.bars.length) {
+        drawChart();
+        return;
+      }
+      const f = sample.factors || barStats(state.bars);
+      const plan = longPlan();
+      els.priceNow.textContent = formatPrice(f.close || sample.last);
+      els.priceLabel.textContent = `${sample.symbol} 72h structure`;
+      els.statusPill.textContent = sample.pressureLabel;
+      els.potentialScore.textContent = `${sample.pressureScore}/100`;
+      els.fundingRate.textContent = fundingLabel(sample.fundingRate);
+      els.oiChange.textContent = oiLabel(sample.oiChange);
+      els.phaseLabel.textContent = sample.pressureLabel;
+      els.scoreNumber.textContent = sample.pressureScore;
+      els.scoreNumber.className = `score-number ${sample.pressureClass === "is-hot" ? "is-hot" : "is-ok"}`;
+      els.scoreNote.textContent = sample.pressureNote;
+      els.volumeRatio.textContent = `${(f.volumeRatio || 0).toFixed(2)}x`;
+      els.pullbackFromHigh.textContent = pct(f.pullbackFromHigh || 0, 1);
+      els.range72.textContent = pct(f.range72 || 0, 1);
+      els.breakoutLine.textContent = formatPrice(plan.breakout);
+      els.buyZone.textContent = `${formatPrice(plan.buyLow)} - ${formatPrice(plan.buyHigh)}`;
+      els.invalidLine.textContent = formatPrice(plan.invalid);
+      els.nextAction.textContent = sample.pressureClass === "is-hot" ? "先跳过" : f.nearBreakout ? "等回踩" : f.pullbackHold ? "看企稳" : "放观察池";
+      els.sizeHint.textContent = sample.pressureScore >= 75 && sample.pressureClass !== "is-hot" ? "小仓试算" : "只观察";
+      els.reasonList.innerHTML = reasonItems(sample).map((item, index) => `<li><span class="idx">${index + 1}</span><span>${item}</span></li>`).join("");
+      els.planList.innerHTML = [
+        `突破线 ${formatPrice(plan.breakout)}，不追突破长阳，优先等回踩。`,
+        `回踩买入区 ${formatPrice(plan.buyLow)} - ${formatPrice(plan.buyHigh)}，观察是否缩量企稳。`,
+        `失效线 ${formatPrice(plan.invalid)}，跌破说明结构失败，不把潜伏单变成长线套单。`,
+        "网页只生成观察和命令，不保存 API key，也不直接真实下单。"
+      ].map((item, index) => `<li><span class="idx">${index + 1}</span><span>${item}</span></li>`).join("");
+      els.cliCommand.textContent = `python3 tools/binance_smallcap_cli.py long-scan --limit 12 --min-pct ${els.minPct.value} --max-pct ${els.maxPct.value}`;
+      els.eventLog.innerHTML = [
+        `选中 ${sample.symbol}：${sample.pressureLabel}，潜力评分 ${sample.pressureScore}/100。`,
+        `Funding ${fundingLabel(sample.fundingRate)}，OI 24h ${oiLabel(sample.oiChange)}，量能 ${els.volumeRatio.textContent}。`,
+        `计划：突破线 ${formatPrice(plan.breakout)}，回踩区 ${els.buyZone.textContent}，失效线 ${formatPrice(plan.invalid)}。`
+      ].map((item, index) => `<li><span class="idx">${index + 1}</span><span>${item}</span></li>`).join("");
+      drawChart();
+    }
+
+    function sizeCanvas() {
+      const rect = els.canvas.getBoundingClientRect();
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      const width = Math.floor(rect.width * dpr);
+      const height = Math.floor(rect.height * dpr);
+      if (els.canvas.width !== width || els.canvas.height !== height) {
+        els.canvas.width = width;
+        els.canvas.height = height;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { width: rect.width, height: rect.height };
+    }
+
+    function drawChart() {
+      const { width, height } = sizeCanvas();
+      const bars = state.bars;
+      const pad = { left: 66, right: 24, top: 28, bottom: 50 };
+      const plotW = Math.max(1, width - pad.left - pad.right);
+      const plotH = Math.max(1, height - pad.top - pad.bottom);
+      ctx.clearRect(0, 0, width, height);
+      if (!bars.length) return;
+      const plan = longPlan();
+      const allValues = bars.flatMap((bar) => [bar.high, bar.low]).concat([plan.breakout, plan.buyHigh, plan.buyLow, plan.invalid]);
+      const min = Math.min(...allValues) * 0.94;
+      const max = Math.max(...allValues) * 1.06;
+      const x = (i) => pad.left + (i / Math.max(1, bars.length - 1)) * plotW;
+      const y = (value) => pad.top + (1 - (value - min) / (max - min)) * plotH;
+
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(22, 23, 21, 0.12)";
+      ctx.fillStyle = "rgba(22, 23, 21, 0.54)";
+      ctx.font = "12px Menlo, monospace";
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+      for (let i = 0; i <= 5; i += 1) {
+        const value = min + ((max - min) / 5) * i;
+        const yy = y(value);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, yy);
+        ctx.lineTo(width - pad.right, yy);
+        ctx.stroke();
+        ctx.fillText(formatPrice(value), pad.left - 10, yy);
+      }
+
+      function guide(value, label, color, dash = [8, 7]) {
+        const yy = y(value);
+        ctx.strokeStyle = color;
+        ctx.setLineDash(dash);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, yy);
+        ctx.lineTo(width - pad.right, yy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "rgba(255, 250, 240, 0.92)";
+        ctx.fillRect(width - pad.right - 120, yy - 13, 116, 24);
+        ctx.strokeStyle = "rgba(22, 23, 21, 0.12)";
+        ctx.strokeRect(width - pad.right - 120, yy - 13, 116, 24);
+        ctx.fillStyle = color;
+        ctx.textAlign = "center";
+        ctx.fillText(label, width - pad.right - 62, yy);
+      }
+      guide(plan.breakout, `突破 ${formatPrice(plan.breakout)}`, "rgba(22, 131, 105, 0.78)");
+      guide(plan.buyHigh, `买区 ${formatPrice(plan.buyHigh)}`, "rgba(190, 106, 24, 0.74)");
+      guide(plan.buyLow, formatPrice(plan.buyLow), "rgba(190, 106, 24, 0.45)", [4, 6]);
+      guide(plan.invalid, `失效 ${formatPrice(plan.invalid)}`, "rgba(189, 69, 69, 0.68)", [3, 6]);
+
+      const gradient = ctx.createLinearGradient(pad.left, 0, width - pad.right, 0);
+      gradient.addColorStop(0, "#2f62a3");
+      gradient.addColorStop(0.62, "#168369");
+      gradient.addColorStop(1, "#be6a18");
+      ctx.beginPath();
+      bars.forEach((bar, i) => {
+        const xx = x(i);
+        const yy = y(bar.close);
+        if (i === 0) ctx.moveTo(xx, yy);
+        else ctx.lineTo(xx, yy);
+      });
+      ctx.lineWidth = 4;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.strokeStyle = gradient;
+      ctx.shadowColor = "rgba(22, 131, 105, 0.18)";
+      ctx.shadowBlur = 14;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      const last = bars[bars.length - 1];
+      ctx.fillStyle = "#161715";
+      ctx.beginPath();
+      ctx.arc(x(bars.length - 1), y(last.close), 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#fffaf0";
+      ctx.beginPath();
+      ctx.arc(x(bars.length - 1), y(last.close), 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    [els.minPct, els.maxPct, els.pullbackPct, els.stopPct].forEach((input) => {
+      input.addEventListener("input", () => {
+        els.minPctValue.textContent = `${els.minPct.value}%`;
+        els.maxPctValue.textContent = `${els.maxPct.value}%`;
+        els.pullbackValue.textContent = `${els.pullbackPct.value}%`;
+        els.stopValue.textContent = `${els.stopPct.value}%`;
+        if (input === els.minPct || input === els.maxPct) loadSamples();
+        else update();
+      });
+    });
+    els.refreshBtn.addEventListener("click", () => loadSamples());
+    els.symbolSearch.addEventListener("input", () => renderSamples());
+    window.addEventListener("resize", () => drawChart());
+
+    loadSamples();
+  </script>
+</body>
+</html>

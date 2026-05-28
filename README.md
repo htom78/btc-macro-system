@@ -30,6 +30,7 @@ For the contract small-coin ladder idea:
 
 ```bash
 python3 tools/binance_smallcap_cli.py scan --limit 10
+python3 tools/binance_smallcap_cli.py long-scan --limit 12
 python3 tools/binance_smallcap_cli.py simulate PLAYUSDT --strategy both
 python3 tools/binance_smallcap_cli.py plan PLAYUSDT --notional 20
 ```

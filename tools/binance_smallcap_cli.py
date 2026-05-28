@@ -267,6 +267,199 @@ def pressure_score(pct24: float, quote_volume: float, funding: float | None, oi_
     return score, "crowding-watch"
 
 
+def average(values: list[float]) -> float | None:
+    clean = [value for value in values if math.isfinite(value)]
+    if not clean:
+        return None
+    return sum(clean) / len(clean)
+
+
+def long_potential_score(
+    pct24: float,
+    quote_volume: float,
+    funding: float | None,
+    oi_change: float | None,
+    bars: list[Bar],
+) -> tuple[int, str, dict[str, float | bool]]:
+    close = bars[-1].close if bars else math.nan
+    highs = [bar.high for bar in bars]
+    lows = [bar.low for bar in bars]
+    high72 = max(highs) if highs else math.nan
+    low72 = min(lows) if lows else math.nan
+    prev_high = max((bar.high for bar in bars[:-6]), default=high72)
+    recent_volume = average([bar.quote_volume for bar in bars[-12:]]) or 0
+    previous_volume = average([bar.quote_volume for bar in bars[-36:-12]]) or recent_volume or 1
+    volume_ratio = recent_volume / previous_volume if previous_volume > 0 else 1
+    range72 = (high72 / low72 - 1) if low72 and math.isfinite(low72) else 0
+    pullback_from_high = (high72 / close - 1) if close and math.isfinite(close) else 0
+    near_breakout = math.isfinite(prev_high) and close >= prev_high * 0.995
+    pullback_hold = 0.025 <= pullback_from_high <= 0.14 and close >= low72 + (high72 - low72) * 0.55
+    base_build = -2 <= pct24 <= 9 and 0.08 <= range72 <= 0.35 and volume_ratio >= 0.9
+
+    liquidity_score = clamp(math.log10(max(1, quote_volume / 10_000_000)) * 10, 0, 18)
+    if pct24 < -6:
+        momentum_score = 4
+    elif pct24 <= 4:
+        momentum_score = 14 + pct24
+    elif pct24 <= 18:
+        momentum_score = 22
+    elif pct24 <= 28:
+        momentum_score = 12
+    else:
+        momentum_score = 3
+
+    has_funding = funding is not None and math.isfinite(funding)
+    has_oi = oi_change is not None and math.isfinite(oi_change)
+    if not has_funding:
+        funding_score = 10
+    elif funding <= -0.00005:
+        funding_score = 19
+    elif funding <= 0.00025:
+        funding_score = 20
+    elif funding <= 0.0008:
+        funding_score = 11
+    else:
+        funding_score = 3
+
+    if not has_oi:
+        oi_score = 9
+    elif 0.03 <= oi_change <= 0.24:
+        oi_score = 20
+    elif 0 <= oi_change < 0.03:
+        oi_score = 13
+    elif 0.24 < oi_change <= 0.45:
+        oi_score = 10
+    else:
+        oi_score = 4
+
+    volume_score = clamp((volume_ratio - 0.75) * 18, 0, 15)
+    structure_score = 0
+    if near_breakout:
+        structure_score += 12
+    if pullback_hold:
+        structure_score += 10
+    if base_build:
+        structure_score += 8
+    if range72 > 0.7:
+        structure_score -= 8
+    if pct24 > 32:
+        structure_score -= 12
+    score = int(round(clamp(liquidity_score + momentum_score + funding_score + oi_score + volume_score + structure_score, 0, 100)))
+
+    if pct24 > 32 or (has_funding and funding > 0.0012):
+        label = "overheated-avoid"
+    elif near_breakout and volume_ratio >= 1.05:
+        label = "breakout-watch"
+    elif pullback_hold:
+        label = "pullback-long"
+    elif base_build:
+        label = "accumulation-watch"
+    else:
+        label = "early-watch"
+
+    factors: dict[str, float | bool] = {
+        "close": close,
+        "high72": high72,
+        "low72": low72,
+        "prev_high": prev_high,
+        "range72": range72,
+        "pullback_from_high": pullback_from_high,
+        "volume_ratio": volume_ratio,
+        "near_breakout": near_breakout,
+        "pullback_hold": pullback_hold,
+        "base_build": base_build,
+    }
+    return score, label, factors
+
+
+def scan_long_candidates(client: BinanceClient, args: argparse.Namespace) -> list[dict[str, Any]]:
+    rules = fetch_rules(client)
+    tickers = client.get("/fapi/v1/ticker/24hr")
+    if not isinstance(tickers, list):
+        raise RuntimeError("ticker response was not a list")
+
+    rows: list[dict[str, Any]] = []
+    for ticker in tickers:
+        symbol = str(ticker.get("symbol", ""))
+        rule = rules.get(symbol)
+        if not rule:
+            continue
+        if rule.status != "TRADING" or rule.quote_asset != "USDT" or rule.contract_type != "PERPETUAL":
+            continue
+        if not args.include_majors and symbol in MAJORS:
+            continue
+        pct24 = as_float(ticker.get("priceChangePercent"))
+        quote_volume = as_float(ticker.get("quoteVolume"))
+        trades = int(as_float(ticker.get("count"), 0))
+        if pct24 < args.min_pct or pct24 > args.max_pct or quote_volume < args.min_quote_volume or trades < args.min_trades:
+            continue
+        rows.append(
+            {
+                "symbol": symbol,
+                "pct24": pct24,
+                "quote_volume": quote_volume,
+                "trades": trades,
+                "last": as_float(ticker.get("lastPrice")),
+                "high24": as_float(ticker.get("highPrice")),
+                "low24": as_float(ticker.get("lowPrice")),
+            }
+        )
+
+    rows.sort(key=lambda item: (abs(item["pct24"] - 8), -item["quote_volume"]))
+    rows = rows[: args.prefilter_limit]
+
+    candidates: list[dict[str, Any]] = []
+    for row in rows:
+        funding: float | None = None
+        oi_change: float | None = None
+        oi_value: float | None = None
+        if not args.no_enrich:
+            try:
+                funding = funding_rate(client, row["symbol"])
+            except Exception:
+                funding = None
+            try:
+                oi_change, oi_value = open_interest_change(client, row["symbol"])
+            except Exception:
+                oi_change, oi_value = None, None
+        try:
+            bars = fetch_bars(client, row["symbol"], args.interval, args.klines)
+            score, label, factors = long_potential_score(row["pct24"], row["quote_volume"], funding, oi_change, bars)
+        except Exception:
+            score, label, factors = 0, "kline-error", {}
+        candidates.append(
+            {
+                **row,
+                "funding_rate": funding,
+                "oi_change": oi_change,
+                "oi_value": oi_value,
+                "score": score,
+                "label": label,
+                "factors": factors,
+            }
+        )
+
+    candidates.sort(key=lambda item: (item["score"], item["quote_volume"]), reverse=True)
+    return candidates[: args.limit]
+
+
+def render_long_candidates(candidates: list[dict[str, Any]], as_json: bool = False) -> None:
+    if as_json:
+        print(json.dumps(candidates, ensure_ascii=False, indent=2))
+        return
+
+    print(f"{'SYMBOL':<16} {'24H':>8} {'QUOTE':>11} {'FUNDING':>10} {'OI24':>9} {'VOLX':>6} {'SCORE':>7}  LABEL")
+    for item in candidates:
+        factors = item.get("factors", {})
+        volume_ratio = factors.get("volume_ratio")
+        volume_text = f"{volume_ratio:.2f}" if isinstance(volume_ratio, (int, float)) and math.isfinite(volume_ratio) else "--"
+        print(
+            f"{item['symbol']:<16} {item['pct24']:>+7.2f}% {money(item['quote_volume']):>11} "
+            f"{pct(item.get('funding_rate'), 4):>10} {pct(item.get('oi_change'), 1):>9} "
+            f"{volume_text:>6} {item['score']:>7}  {item['label']}"
+        )
+
+
 def scan_candidates(client: BinanceClient, args: argparse.Namespace) -> list[Candidate]:
     rules = fetch_rules(client)
     tickers = client.get("/fapi/v1/ticker/24hr")
@@ -651,6 +844,18 @@ def add_market_filters(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--no-enrich", action="store_true", help="skip funding and open-interest enrichment")
 
 
+def add_long_filters(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--min-pct", type=float, default=-3.0, help="minimum 24h change percentage")
+    parser.add_argument("--max-pct", type=float, default=24.0, help="maximum 24h change percentage before treating it as too hot")
+    parser.add_argument("--min-quote-volume", type=float, default=15_000_000, help="minimum 24h quote volume in USDT")
+    parser.add_argument("--min-trades", type=int, default=20_000, help="minimum 24h trade count")
+    parser.add_argument("--prefilter-limit", type=int, default=36, help="number of liquid candidates to enrich with klines")
+    parser.add_argument("--interval", default="1h", help="kline interval")
+    parser.add_argument("--klines", type=int, default=72, help="number of klines used for structure score")
+    parser.add_argument("--include-majors", action="store_true", help="include large-cap symbols")
+    parser.add_argument("--no-enrich", action="store_true", help="skip funding and open-interest enrichment")
+
+
 def add_strategy_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--step-pct", type=float, default=15.0, help="ladder spacing percentage")
     parser.add_argument("--layers", type=int, default=5, help="number of ladder levels")
@@ -671,6 +876,11 @@ def build_parser() -> argparse.ArgumentParser:
     scan.add_argument("--limit", type=int, default=12, help="number of candidates to display")
     scan.add_argument("--include-majors", action="store_true", help="include large-cap symbols")
     scan.add_argument("--json", action="store_true", help="print JSON")
+
+    long_scan = sub.add_parser("long-scan", help="find small-cap candidates with early long-side potential")
+    add_long_filters(long_scan)
+    long_scan.add_argument("--limit", type=int, default=12, help="number of candidates to display")
+    long_scan.add_argument("--json", action="store_true", help="print JSON")
 
     sim = sub.add_parser("simulate", help="simulate ladder and pullback short models on recent klines")
     sim.add_argument("symbol", nargs="*", help="symbol(s), e.g. PLAYUSDT")
@@ -713,6 +923,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "scan":
             render_candidates(scan_candidates(client, args), as_json=args.json)
+        elif args.command == "long-scan":
+            render_long_candidates(scan_long_candidates(client, args), as_json=args.json)
         elif args.command == "simulate":
             if not args.auto and not args.symbol:
                 raise RuntimeError("simulate needs at least one symbol, or use --auto")

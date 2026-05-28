@@ -29,6 +29,18 @@ python3 tools/binance_smallcap_cli.py scan --limit 10
 python3 tools/binance_smallcap_cli.py scan --limit 10 --no-enrich
 ```
 
+反过来扫描“涨幅不过热、Funding 不拥挤、OI 温和进场、价格接近突破或回踩确认”的多头潜力候选：
+
+```bash
+python3 tools/binance_smallcap_cli.py long-scan --limit 12
+```
+
+收紧 24h 涨幅范围，避免追已经高潮的标的：
+
+```bash
+python3 tools/binance_smallcap_cli.py long-scan --min-pct -3 --max-pct 22 --limit 12
+```
+
 对一个标的同时跑“阶梯提前挂空”和“冲高回落确认”模拟：
 
 ```bash
@@ -81,6 +93,14 @@ python3 tools/binance_smallcap_cli.py --testnet order PLAYUSDT \
 - 触发后持续记录该层之后的最高价。
 - 当收盘价低于 `触发后最高价 × (1 - --confirm-pct)` 时，模拟回落确认开空。
 - 止损价仍按实际开空价计算。
+
+`long-scan`：
+
+- 过滤成交额、交易笔数和 24h 涨幅范围。
+- 用 Funding 判断多头是否已经拥挤。
+- 用 OI 判断是否有杠杆资金温和进场。
+- 用 72 根 1h K 线判断是否接近突破、回踩守住或仍在蓄力。
+- 输出的是观察候选，不是自动买入信号。
 
 模拟结果中的 `MAX_LOSS` 是简化估算：
 
