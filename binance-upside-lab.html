@@ -681,7 +681,7 @@
         <div class="control-panel">
           <div class="button-row">
             <button class="seg-btn run-btn" id="startBtn"><span class="run-dot"></span><span id="startBtnText">开始跑动</span></button>
-            <button class="seg-btn run-btn secondary" id="retryBtn"><span class="run-dot"></span><span id="retryBtnText">重试</span></button>
+            <button class="seg-btn run-btn secondary" id="retryBtn"><span class="run-dot"></span><span id="retryBtnText">重启</span></button>
           </div>
 
           <div class="knobs">
@@ -811,7 +811,13 @@
       selected: null,
       bars: [],
       live: false,
-      running: false,
+      loading: false,
+      replaying: false,
+      replayActive: false,
+      replayFinished: false,
+      replayTick: 0,
+      replayFrame: null,
+      lastReplayFrame: 0,
       runMode: "start",
       loadToken: 0
     };
@@ -843,25 +849,119 @@
     }
 
     function setRunning(isRunning, mode = "start") {
-      state.running = isRunning;
+      state.loading = isRunning;
       state.runMode = mode;
-      const activeBtn = mode === "retry" ? els.retryBtn : els.startBtn;
-      const idleStart = "开始跑动";
-      const idleRetry = "重试";
-      els.startBtn.disabled = isRunning;
-      els.retryBtn.disabled = isRunning;
-      els.startBtn.classList.toggle("is-running", isRunning && activeBtn === els.startBtn);
-      els.retryBtn.classList.toggle("is-running", isRunning && activeBtn === els.retryBtn);
-      els.startBtnText.textContent = isRunning && activeBtn === els.startBtn ? "跑动中" : idleStart;
-      els.retryBtnText.textContent = isRunning && activeBtn === els.retryBtn ? "重试中" : idleRetry;
+      updateRunButtons();
       if (isRunning) {
         els.statusPill.textContent = "扫描中";
         setEventLog([
-          mode === "retry" ? "重试启动：重新拉取 Binance Futures 公共数据。" : "开始跑动：读取 24h ticker、Funding、OI 与 72h K 线。",
+          mode === "retry" ? "重新读取 Binance Futures 公共数据。" : "读取 24h ticker、Funding、OI 与 72h K 线。",
           "筛选条件：涨幅不过热、成交足够、Funding/OI 未拥挤。",
           "完成后会自动选中评分最高的候选。"
         ]);
       }
+    }
+
+    function updateRunButtons() {
+      const ready = Boolean(state.selected && state.bars.length);
+      els.startBtn.classList.toggle("is-running", state.replaying || state.loading);
+      els.retryBtn.classList.remove("is-running");
+      els.startBtn.disabled = state.loading || !ready || state.replayFinished;
+      els.retryBtn.disabled = state.loading || state.replaying || !state.replayFinished;
+
+      if (state.loading) {
+        els.startBtnText.textContent = "读取中";
+      } else if (state.replaying) {
+        els.startBtnText.textContent = "暂停";
+      } else if (state.replayFinished) {
+        els.startBtnText.textContent = "已完成";
+      } else if (state.replayActive) {
+        els.startBtnText.textContent = "继续";
+      } else {
+        els.startBtnText.textContent = "开始跑动";
+      }
+      els.retryBtnText.textContent = "重启";
+    }
+
+    function stopReplay({ keepPosition = true, keepFinished = false } = {}) {
+      if (state.replayFrame) window.cancelAnimationFrame(state.replayFrame);
+      state.replayFrame = null;
+      state.lastReplayFrame = 0;
+      state.replaying = false;
+      state.replayActive = keepPosition && state.replayActive;
+      state.replayFinished = keepFinished && state.replayFinished;
+      updateRunButtons();
+    }
+
+    function startReplay(mode = "start") {
+      if (!state.selected || !state.bars.length || state.loading) return;
+      stopReplay({ keepPosition: false, keepFinished: false });
+      state.runMode = mode;
+      state.replayActive = true;
+      state.replayFinished = false;
+      state.replayTick = 0;
+      state.replaying = true;
+      updateRunButtons();
+      setEventLog([
+        `${mode === "restart" ? "重启" : "开始"}：${state.selected.symbol} 回放从 T+0 开始。`,
+        "图表会按 72h K 线逐根推进，观察突破、回踩买入区和失效线。",
+        "运行中按钮会变成“暂停”；暂停后会变成“继续”。"
+      ]);
+      update();
+      state.replayFrame = window.requestAnimationFrame(animateReplay);
+    }
+
+    function pauseReplay() {
+      if (!state.replaying) return;
+      if (state.replayFrame) window.cancelAnimationFrame(state.replayFrame);
+      state.replayFrame = null;
+      state.lastReplayFrame = 0;
+      state.replaying = false;
+      updateRunButtons();
+      setEventLog([
+        `${state.selected.symbol} 回放已暂停在 T+${state.replayTick}。`,
+        "点击“继续”会从当前位置接着跑。",
+        "当前回放未完成，“重启”保持锁定。"
+      ]);
+    }
+
+    function resumeReplay() {
+      if (!state.replayActive || state.replayFinished || state.loading) return;
+      state.replaying = true;
+      updateRunButtons();
+      setEventLog([
+        `${state.selected.symbol} 从 T+${state.replayTick} 继续回放。`,
+        "继续观察价格是否靠近回踩买入区或失效线。",
+        "跑完后才会开放“重启”。"
+      ]);
+      state.replayFrame = window.requestAnimationFrame(animateReplay);
+    }
+
+    function animateReplay(timestamp) {
+      if (!state.replaying || !state.bars.length) return;
+      if (!state.lastReplayFrame) state.lastReplayFrame = timestamp;
+      const elapsed = timestamp - state.lastReplayFrame;
+      if (elapsed > 105) {
+        state.replayTick = Math.min(state.bars.length - 1, state.replayTick + 1);
+        state.lastReplayFrame = timestamp;
+        update();
+        if (state.replayTick >= state.bars.length - 1) {
+          state.replaying = false;
+          state.replayActive = true;
+          state.replayFinished = true;
+          state.replayFrame = null;
+          state.lastReplayFrame = 0;
+          updateRunButtons();
+          els.statusPill.textContent = "回放完成";
+          setEventLog([
+            `${state.selected.symbol} 回放结束：72h 路径已跑到最后一根。`,
+            `最终价格 ${formatPrice(state.bars[state.replayTick].close)}，继续看回踩区 ${els.buyZone.textContent}。`,
+            "现在可以点击“重启”，不拉新数据，直接从 T+0 重新跑。"
+          ]);
+          return;
+        }
+      }
+      state.replayFrame = window.requestAnimationFrame(animateReplay);
     }
 
     function formatPrice(value) {
@@ -1002,7 +1102,8 @@
     }
 
     async function loadSamples(mode = "start") {
-      if (state.running) return;
+      if (state.loading) return;
+      stopReplay({ keepPosition: false });
       const token = state.loadToken + 1;
       state.loadToken = token;
       setRunning(true, mode);
@@ -1054,15 +1155,15 @@
         state.live = false;
         els.sourceNote.textContent = `Live API 未能读取，使用快照样本。原因：${err.message}`;
         setEventLog([
-          "重试建议：当前 live API 没读到，页面已切换到快照样本。",
+          "读取建议：当前 live API 没读到，页面已切换到快照样本。",
           `错误信息：${err.message}`,
-          "可以稍后点击“重试”重新拉取。"
+          "可以稍后刷新页面或调整筛选条件重新拉取。"
         ]);
       }
       renderSamples();
       const next = state.samples[0];
-      if (next) selectSymbol(next.symbol);
       setRunning(false, mode);
+      if (next) selectSymbol(next.symbol);
     }
 
     function syntheticBars(sample) {
@@ -1117,12 +1218,17 @@
     function selectSymbol(symbol) {
       const sample = state.samples.find((r) => r.symbol === symbol);
       if (!sample) return;
+      stopReplay({ keepPosition: false, keepFinished: false });
       state.selected = sample;
       state.bars = sample.bars && sample.bars.length ? sample.bars : syntheticBars(sample);
       const profile = potentialProfile(sample, state.bars);
       state.selected = { ...sample, pressureScore: profile.score, pressureLabel: profile.label, pressureClass: profile.className, pressureNote: profile.note, factors: profile.stats };
+      state.replayActive = false;
+      state.replayFinished = false;
+      state.replayTick = Math.max(0, state.bars.length - 1);
       renderSamples();
       update();
+      updateRunButtons();
     }
 
     function longPlan() {
@@ -1156,9 +1262,20 @@
       }
       const f = sample.factors || barStats(state.bars);
       const plan = longPlan();
-      els.priceNow.textContent = formatPrice(f.close || sample.last);
-      els.priceLabel.textContent = `${sample.symbol} 72h structure`;
-      els.statusPill.textContent = sample.pressureLabel;
+      const replayBar = state.replayActive ? state.bars[state.replayTick] : null;
+      els.priceNow.textContent = formatPrice(replayBar ? replayBar.close : f.close || sample.last);
+      els.priceLabel.textContent = state.replayActive
+        ? `${sample.symbol} 72h replay · T+${state.replayTick}`
+        : `${sample.symbol} 72h structure`;
+      if (state.replaying) {
+        els.statusPill.textContent = `回放 T+${state.replayTick}`;
+      } else if (state.replayFinished) {
+        els.statusPill.textContent = "回放完成";
+      } else if (state.replayActive) {
+        els.statusPill.textContent = "回放暂停";
+      } else {
+        els.statusPill.textContent = sample.pressureLabel;
+      }
       els.potentialScore.textContent = `${sample.pressureScore}/100`;
       els.fundingRate.textContent = fundingLabel(sample.fundingRate);
       els.oiChange.textContent = oiLabel(sample.oiChange);
@@ -1182,11 +1299,19 @@
         "网页只生成观察和命令，不保存 API key，也不直接真实下单。"
       ]);
       els.cliCommand.textContent = `python3 tools/binance_smallcap_cli.py long-scan --limit 12 --min-pct ${els.minPct.value} --max-pct ${els.maxPct.value}`;
-      setEventLog([
-        `选中 ${sample.symbol}：${sample.pressureLabel}，潜力评分 ${sample.pressureScore}/100。`,
-        `Funding ${fundingLabel(sample.fundingRate)}，OI 24h ${oiLabel(sample.oiChange)}，量能 ${els.volumeRatio.textContent}。`,
-        `计划：突破线 ${formatPrice(plan.breakout)}，回踩区 ${els.buyZone.textContent}，失效线 ${formatPrice(plan.invalid)}。`
-      ]);
+      if (state.replayActive) {
+        setEventLog([
+          `T+${state.replayTick}：${sample.symbol} 回放价格 ${formatPrice(replayBar ? replayBar.close : sample.last)}。`,
+          `突破线 ${formatPrice(plan.breakout)}，回踩区 ${els.buyZone.textContent}，失效线 ${formatPrice(plan.invalid)}。`,
+          state.replaying ? "运行中：点击“暂停”会停在当前 K 线。" : "已暂停：点击“继续”接着跑；跑完后才可点“重启”。"
+        ]);
+      } else {
+        setEventLog([
+          `选中 ${sample.symbol}：${sample.pressureLabel}，潜力评分 ${sample.pressureScore}/100。`,
+          `Funding ${fundingLabel(sample.fundingRate)}，OI 24h ${oiLabel(sample.oiChange)}，量能 ${els.volumeRatio.textContent}。`,
+          `计划：突破线 ${formatPrice(plan.breakout)}，回踩区 ${els.buyZone.textContent}，失效线 ${formatPrice(plan.invalid)}。`
+        ]);
+      }
       drawChart();
     }
 
@@ -1211,6 +1336,8 @@
       const plotH = Math.max(1, height - pad.top - pad.bottom);
       ctx.clearRect(0, 0, width, height);
       if (!bars.length) return;
+      const lastVisibleIndex = state.replayActive ? clamp(state.replayTick, 0, bars.length - 1) : bars.length - 1;
+      const visibleBars = bars.slice(0, lastVisibleIndex + 1);
       const plan = longPlan();
       const allValues = bars.flatMap((bar) => [bar.high, bar.low]).concat([plan.breakout, plan.buyHigh, plan.buyLow, plan.invalid]);
       const min = Math.min(...allValues) * 0.94;
@@ -1262,7 +1389,7 @@
       gradient.addColorStop(0.62, "#168369");
       gradient.addColorStop(1, "#be6a18");
       ctx.beginPath();
-      bars.forEach((bar, i) => {
+      visibleBars.forEach((bar, i) => {
         const xx = x(i);
         const yy = y(bar.close);
         if (i === 0) ctx.moveTo(xx, yy);
@@ -1277,14 +1404,14 @@
       ctx.stroke();
       ctx.shadowBlur = 0;
 
-      const last = bars[bars.length - 1];
+      const last = visibleBars[visibleBars.length - 1];
       ctx.fillStyle = "#161715";
       ctx.beginPath();
-      ctx.arc(x(bars.length - 1), y(last.close), 6, 0, Math.PI * 2);
+      ctx.arc(x(lastVisibleIndex), y(last.close), 6, 0, Math.PI * 2);
       ctx.fill();
       ctx.fillStyle = "#fffaf0";
       ctx.beginPath();
-      ctx.arc(x(bars.length - 1), y(last.close), 2.5, 0, Math.PI * 2);
+      ctx.arc(x(lastVisibleIndex), y(last.close), 2.5, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
@@ -1299,8 +1426,16 @@
         else update();
       });
     });
-    els.startBtn.addEventListener("click", () => loadSamples("start"));
-    els.retryBtn.addEventListener("click", () => loadSamples("retry"));
+    els.startBtn.addEventListener("click", () => {
+      if (state.loading || state.replayFinished) return;
+      if (state.replaying) pauseReplay();
+      else if (state.replayActive) resumeReplay();
+      else startReplay("start");
+    });
+    els.retryBtn.addEventListener("click", () => {
+      if (!state.replayFinished || state.loading || state.replaying) return;
+      startReplay("restart");
+    });
     els.symbolSearch.addEventListener("input", () => renderSamples());
     window.addEventListener("resize", () => drawChart());
 
