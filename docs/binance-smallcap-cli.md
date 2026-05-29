@@ -47,6 +47,12 @@ python3 tools/binance_smallcap_cli.py long-scan --min-pct -3 --max-pct 22 --limi
 python3 tools/binance_smallcap_cli.py simulate PLAYUSDT --strategy both
 ```
 
+输出一个标的的技术指标确认层。第一版使用本地纯 Python 计算，指标集合对应 `cinar/indicator` 里最适合当前模型的 ATR、RSI、MACD、Donchian、SuperTrend、MFI：
+
+```bash
+python3 tools/binance_smallcap_cli.py indicators ALLOUSDT --interval 1h --klines 120 --json
+```
+
 先自动扫描，再对前 5 个候选做模拟：
 
 ```bash
@@ -101,6 +107,13 @@ python3 tools/binance_smallcap_cli.py --testnet order PLAYUSDT \
 - 用 OI 判断是否有杠杆资金温和进场。
 - 用 72 根 1h K 线判断是否接近突破、回踩守住或仍在蓄力。
 - 输出的是观察候选，不是自动买入信号。
+
+`indicators`：
+
+- 拉取指定标的的 Binance USD-M K 线。
+- 计算 ATR、RSI、MACD、Donchian Channel、SuperTrend、MFI。
+- 输出 `short_bias`，只作为阶梯做空模型的技术确认层。
+- 不读取账户、不下单、不替代 Funding / OI / 最大亏损控制。
 
 模拟结果中的 `MAX_LOSS` 是简化估算：
 

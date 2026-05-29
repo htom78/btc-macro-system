@@ -171,8 +171,8 @@ def pct(value: float | None, digits: int = 2) -> str:
     return f"{value * 100:+.{digits}f}%"
 
 
-def price_text(value: float) -> str:
-    if not math.isfinite(value):
+def price_text(value: float | None) -> str:
+    if value is None or not math.isfinite(value):
         return "--"
     if value >= 100:
         return f"{value:.2f}"
@@ -272,6 +272,298 @@ def average(values: list[float]) -> float | None:
     if not clean:
         return None
     return sum(clean) / len(clean)
+
+
+def rolling_average(values: list[float], period: int) -> list[float | None]:
+    result: list[float | None] = [None] * len(values)
+    if period <= 0:
+        return result
+    window_sum = 0.0
+    for index, value in enumerate(values):
+        window_sum += value
+        if index >= period:
+            window_sum -= values[index - period]
+        if index >= period - 1:
+            result[index] = window_sum / period
+    return result
+
+
+def ema_series(values: list[float], period: int) -> list[float | None]:
+    result: list[float | None] = [None] * len(values)
+    if period <= 0 or len(values) < period:
+        return result
+    seed = sum(values[:period]) / period
+    result[period - 1] = seed
+    multiplier = 2 / (period + 1)
+    previous = seed
+    for index in range(period, len(values)):
+        previous = (values[index] - previous) * multiplier + previous
+        result[index] = previous
+    return result
+
+
+def rma_series(values: list[float], period: int) -> list[float | None]:
+    result: list[float | None] = [None] * len(values)
+    if period <= 0 or len(values) < period:
+        return result
+    previous = sum(values[:period]) / period
+    result[period - 1] = previous
+    for index in range(period, len(values)):
+        previous = ((previous * (period - 1)) + values[index]) / period
+        result[index] = previous
+    return result
+
+
+def last_number(values: list[float | None]) -> float | None:
+    for value in reversed(values):
+        if value is not None and math.isfinite(value):
+            return value
+    return None
+
+
+def previous_number(values: list[float | None]) -> float | None:
+    seen = False
+    for value in reversed(values):
+        if value is None or not math.isfinite(value):
+            continue
+        if seen:
+            return value
+        seen = True
+    return None
+
+
+def true_ranges(bars: list[Bar]) -> list[float]:
+    result: list[float] = []
+    previous_close: float | None = None
+    for bar in bars:
+        if previous_close is None:
+            result.append(bar.high - bar.low)
+        else:
+            result.append(max(bar.high - bar.low, abs(bar.high - previous_close), abs(bar.low - previous_close)))
+        previous_close = bar.close
+    return result
+
+
+def rsi_values(closes: list[float], period: int = 14) -> list[float | None]:
+    if len(closes) < period + 1:
+        return [None] * len(closes)
+    changes = [0.0] + [closes[index] - closes[index - 1] for index in range(1, len(closes))]
+    gains = [max(0.0, change) for change in changes]
+    losses = [max(0.0, -change) for change in changes]
+    avg_gains = rma_series(gains[1:], period)
+    avg_losses = rma_series(losses[1:], period)
+    result: list[float | None] = [None]
+    for gain, loss in zip(avg_gains, avg_losses, strict=False):
+        if gain is None or loss is None:
+            result.append(None)
+        elif loss == 0:
+            result.append(100.0)
+        else:
+            rs = gain / loss
+            result.append(100 - (100 / (1 + rs)))
+    return result[: len(closes)]
+
+
+def macd_values(closes: list[float], fast: int = 12, slow: int = 26, signal: int = 9) -> dict[str, float | None | str]:
+    fast_ema = ema_series(closes, fast)
+    slow_ema = ema_series(closes, slow)
+    macd_line: list[float | None] = [
+        (fast_value - slow_value) if fast_value is not None and slow_value is not None else None
+        for fast_value, slow_value in zip(fast_ema, slow_ema, strict=False)
+    ]
+    dense_macd = [value for value in macd_line if value is not None]
+    signal_dense = ema_series(dense_macd, signal)
+    signal_line: list[float | None] = [None] * len(macd_line)
+    signal_index = 0
+    for index, value in enumerate(macd_line):
+        if value is None:
+            continue
+        signal_line[index] = signal_dense[signal_index]
+        signal_index += 1
+    histogram = [
+        (macd - signal_value) if macd is not None and signal_value is not None else None
+        for macd, signal_value in zip(macd_line, signal_line, strict=False)
+    ]
+    hist = last_number(histogram)
+    prev_hist = previous_number(histogram)
+    if hist is None:
+        state = "warming-up"
+    elif hist < 0:
+        state = "bearish"
+    elif prev_hist is not None and hist < prev_hist:
+        state = "momentum-decay"
+    else:
+        state = "bullish"
+    return {
+        "macd": last_number(macd_line),
+        "signal": last_number(signal_line),
+        "histogram": hist,
+        "previous_histogram": prev_hist,
+        "state": state,
+    }
+
+
+def donchian_values(bars: list[Bar], period: int = 20) -> dict[str, float | None | str]:
+    if len(bars) < period:
+        return {"period": period, "upper": None, "lower": None, "mid": None, "position": None, "state": "warming-up"}
+    window = bars[-period:]
+    upper = max(bar.high for bar in window)
+    lower = min(bar.low for bar in window)
+    mid = (upper + lower) / 2
+    close = bars[-1].close
+    position = (close - lower) / (upper - lower) if upper > lower else 0.5
+    if close < mid:
+        state = "below-mid"
+    elif position > 0.82:
+        state = "near-upper"
+    else:
+        state = "inside-channel"
+    return {"period": period, "upper": upper, "lower": lower, "mid": mid, "position": position, "state": state}
+
+
+def supertrend_values(bars: list[Bar], period: int = 10, multiplier: float = 3.0) -> dict[str, float | None | str]:
+    if len(bars) < period + 2:
+        return {"period": period, "multiplier": multiplier, "value": None, "direction": "warming-up"}
+    atr = rolling_average(true_ranges(bars), period)
+    final_upper: list[float | None] = [None] * len(bars)
+    final_lower: list[float | None] = [None] * len(bars)
+    trend: list[float | None] = [None] * len(bars)
+    direction = "up"
+    for index, bar in enumerate(bars):
+        atr_value = atr[index]
+        if atr_value is None:
+            continue
+        hl2 = (bar.high + bar.low) / 2
+        basic_upper = hl2 + multiplier * atr_value
+        basic_lower = hl2 - multiplier * atr_value
+        if index == 0 or final_upper[index - 1] is None or final_lower[index - 1] is None:
+            final_upper[index] = basic_upper
+            final_lower[index] = basic_lower
+            trend[index] = basic_lower
+            direction = "up"
+            continue
+        prev_close = bars[index - 1].close
+        final_upper[index] = basic_upper if basic_upper < final_upper[index - 1] or prev_close > final_upper[index - 1] else final_upper[index - 1]
+        final_lower[index] = basic_lower if basic_lower > final_lower[index - 1] or prev_close < final_lower[index - 1] else final_lower[index - 1]
+        previous_trend = trend[index - 1]
+        if previous_trend == final_upper[index - 1]:
+            if bar.close <= final_upper[index]:
+                trend[index] = final_upper[index]
+                direction = "down"
+            else:
+                trend[index] = final_lower[index]
+                direction = "up"
+        else:
+            if bar.close >= final_lower[index]:
+                trend[index] = final_lower[index]
+                direction = "up"
+            else:
+                trend[index] = final_upper[index]
+                direction = "down"
+    return {"period": period, "multiplier": multiplier, "value": last_number(trend), "direction": direction}
+
+
+def mfi_values(bars: list[Bar], period: int = 14) -> list[float | None]:
+    result: list[float | None] = [None] * len(bars)
+    typical = [(bar.high + bar.low + bar.close) / 3 for bar in bars]
+    raw_flow = [typical[index] * bars[index].volume for index in range(len(bars))]
+    for index in range(period, len(bars)):
+        positive = 0.0
+        negative = 0.0
+        for inner in range(index - period + 1, index + 1):
+            if typical[inner] > typical[inner - 1]:
+                positive += raw_flow[inner]
+            elif typical[inner] < typical[inner - 1]:
+                negative += raw_flow[inner]
+        if negative == 0:
+            result[index] = 100.0
+        else:
+            ratio = positive / negative
+            result[index] = 100 - (100 / (1 + ratio))
+    return result
+
+
+def technical_confirmation(bars: list[Bar]) -> dict[str, Any]:
+    closes = [bar.close for bar in bars]
+    atr_series = rolling_average(true_ranges(bars), 14)
+    atr = last_number(atr_series)
+    close = closes[-1]
+    rsi_series = rsi_values(closes, 14)
+    rsi = last_number(rsi_series)
+    previous_rsi = previous_number(rsi_series)
+    macd = macd_values(closes)
+    donchian = donchian_values(bars)
+    supertrend = supertrend_values(bars)
+    mfi_series = mfi_values(bars, 14)
+    mfi = last_number(mfi_series)
+    previous_mfi = previous_number(mfi_series)
+
+    score = 0
+    checks: list[str] = []
+    atr_pct = atr / close if atr is not None and close else None
+    if atr_pct is not None:
+        if atr_pct >= 0.08:
+            score += 16
+            checks.append("atr-wide")
+        elif atr_pct >= 0.045:
+            score += 10
+            checks.append("atr-active")
+    if rsi is not None:
+        if rsi >= 78:
+            score += 14
+            checks.append("rsi-overheated")
+        elif rsi >= 62:
+            score += 7
+            checks.append("rsi-hot")
+        if previous_rsi is not None and rsi < previous_rsi and rsi > 55:
+            score += 8
+            checks.append("rsi-fading")
+    if macd["state"] == "bearish":
+        score += 18
+        checks.append("macd-bearish")
+    elif macd["state"] == "momentum-decay":
+        score += 13
+        checks.append("macd-decay")
+    if donchian["state"] == "below-mid":
+        score += 14
+        checks.append("donchian-lost-mid")
+    elif donchian["state"] == "near-upper":
+        score += 6
+        checks.append("donchian-upper-risk")
+    if supertrend["direction"] == "down":
+        score += 18
+        checks.append("supertrend-down")
+    elif supertrend["direction"] == "up":
+        score -= 6
+        checks.append("supertrend-up")
+    if mfi is not None:
+        if mfi >= 82:
+            score += 10
+            checks.append("mfi-overheated")
+        if previous_mfi is not None and mfi < previous_mfi and mfi > 55:
+            score += 8
+            checks.append("mfi-fading")
+
+    score = int(clamp(score, 0, 100))
+    if score >= 65:
+        label = "short-confirming"
+    elif score >= 42:
+        label = "wait-pullback"
+    elif supertrend["direction"] == "up":
+        label = "trend-still-up"
+    else:
+        label = "low-confirmation"
+
+    return {
+        "close": close,
+        "atr": {"period": 14, "value": atr, "pct": atr_pct},
+        "rsi": {"period": 14, "value": rsi, "previous": previous_rsi},
+        "macd": macd,
+        "donchian": donchian,
+        "supertrend": supertrend,
+        "mfi": {"period": 14, "value": mfi, "previous": previous_mfi},
+        "short_bias": {"score": score, "label": label, "checks": checks},
+    }
 
 
 def long_potential_score(
@@ -702,6 +994,70 @@ def render_simulations(results: list[dict[str, Any]], as_json: bool = False) -> 
         )
 
 
+def run_indicators(client: BinanceClient, args: argparse.Namespace) -> dict[str, Any]:
+    symbol = args.symbol.upper()
+    bars = fetch_bars(client, symbol, args.interval, args.klines)
+    result = technical_confirmation(bars)
+    result["symbol"] = symbol
+    result["interval"] = args.interval
+    result["klines"] = len(bars)
+    result["open_time"] = bars[0].open_time
+    result["close_time"] = bars[-1].open_time
+
+    if not args.no_enrich:
+        funding: float | None
+        oi_change: float | None
+        oi_value: float | None
+        try:
+            funding = funding_rate(client, symbol)
+        except Exception:
+            funding = None
+        try:
+            oi_change, oi_value = open_interest_change(client, symbol)
+        except Exception:
+            oi_change, oi_value = None, None
+        result["derivatives"] = {
+            "funding_rate": funding,
+            "oi_change_24h": oi_change,
+            "oi_value": oi_value,
+        }
+    return result
+
+
+def render_indicators(result: dict[str, Any], as_json: bool = False) -> None:
+    if as_json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return
+
+    bias = result["short_bias"]
+    print(f"{result['symbol']} technical confirmation ({result['interval']}, {result['klines']} klines)")
+    print(f"close        {price_text(result['close'])}")
+    print(f"ATR(14)      {price_text(result['atr']['value'])}  {pct(result['atr']['pct'])}")
+    print(f"RSI(14)      {result['rsi']['value']:.2f}" if result["rsi"]["value"] is not None else "RSI(14)      --")
+    print(
+        "MACD         "
+        f"{result['macd']['macd']:.6f} / signal {result['macd']['signal']:.6f} / hist {result['macd']['histogram']:.6f} "
+        f"({result['macd']['state']})"
+        if result["macd"]["macd"] is not None and result["macd"]["signal"] is not None and result["macd"]["histogram"] is not None
+        else "MACD         --"
+    )
+    print(
+        "Donchian(20) "
+        f"upper {price_text(result['donchian']['upper'])} / mid {price_text(result['donchian']['mid'])} / "
+        f"lower {price_text(result['donchian']['lower'])} ({result['donchian']['state']})"
+    )
+    print(
+        "SuperTrend   "
+        f"{price_text(result['supertrend']['value'])} ({result['supertrend']['direction']})"
+    )
+    print(f"MFI(14)      {result['mfi']['value']:.2f}" if result["mfi"]["value"] is not None else "MFI(14)      --")
+    if "derivatives" in result:
+        derivatives = result["derivatives"]
+        print(f"Funding      {pct(derivatives.get('funding_rate'), 4)}")
+        print(f"OI 24h       {pct(derivatives.get('oi_change_24h'), 1)}")
+    print(f"short bias   {bias['score']}/100  {bias['label']}  {', '.join(bias['checks']) or 'no-checks'}")
+
+
 def decimal_down(value: Decimal, step: Decimal) -> Decimal:
     if step == 0:
         return value
@@ -893,6 +1249,13 @@ def build_parser() -> argparse.ArgumentParser:
     add_strategy_args(sim)
     sim.add_argument("--json", action="store_true", help="print JSON")
 
+    indicators = sub.add_parser("indicators", help="compute technical confirmation indicators for one symbol")
+    indicators.add_argument("symbol", help="symbol, e.g. ALLOUSDT")
+    indicators.add_argument("--interval", default="1h", help="kline interval")
+    indicators.add_argument("--klines", type=int, default=120, help="number of klines used for indicator windows")
+    indicators.add_argument("--no-enrich", action="store_true", help="skip funding and open-interest enrichment")
+    indicators.add_argument("--json", action="store_true", help="print JSON")
+
     plan = sub.add_parser("plan", help="create a dry-run ladder order plan for one symbol")
     plan.add_argument("symbol", help="symbol, e.g. PLAYUSDT")
     plan.add_argument("--anchor", type=str, help="manual anchor price; defaults to latest price")
@@ -929,6 +1292,8 @@ def main(argv: list[str] | None = None) -> int:
             if not args.auto and not args.symbol:
                 raise RuntimeError("simulate needs at least one symbol, or use --auto")
             render_simulations(run_simulate(client, args), as_json=args.json)
+        elif args.command == "indicators":
+            render_indicators(run_indicators(client, args), as_json=args.json)
         elif args.command == "plan":
             render_plan(args.symbol, run_plan(client, args), as_json=args.json)
         elif args.command == "order":

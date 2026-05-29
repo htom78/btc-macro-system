@@ -513,10 +513,10 @@
     .side-panel {
       min-height: 680px;
       display: grid;
-      grid-template-rows: auto auto auto auto 1fr;
+      grid-template-rows: auto auto auto auto auto 1fr;
     }
 
-    .metrics, .strategy-box, .ladder-box {
+    .metrics, .strategy-box, .technical-box, .ladder-box {
       padding: 18px;
       border-bottom: 1px solid var(--line);
       display: grid;
@@ -646,6 +646,44 @@
     .strategy-pnl {
       font: 850 18px/1 var(--mono);
       white-space: nowrap;
+    }
+
+    .technical-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .technical-card {
+      min-height: 62px;
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .technical-card span {
+      display: block;
+      color: var(--muted);
+      font: 750 11px/1.15 var(--mono);
+    }
+
+    .technical-card strong {
+      display: block;
+      margin-top: 7px;
+      font: 850 15px/1.15 var(--mono);
+      overflow-wrap: anywhere;
+    }
+
+    .technical-card strong.is-danger { color: var(--red); }
+    .technical-card strong.is-warn { color: var(--amber); }
+    .technical-card strong.is-ok { color: var(--green); }
+
+    .technical-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
     }
 
     .dryrun-box {
@@ -822,7 +860,7 @@
         width: min(100vw - 20px, 860px);
         padding-top: 18px;
       }
-      .topbar, .stage, .chart-head, .knobs, .metric-grid, .carry-strip, .assist-grid {
+      .topbar, .stage, .chart-head, .knobs, .metric-grid, .carry-strip, .assist-grid, .technical-grid {
         grid-template-columns: 1fr;
       }
       .sample-panel, .chart-panel {
@@ -997,6 +1035,11 @@
           <p class="section-title">Strategy Compare</p>
           <div class="strategy-grid" id="strategyCompare"></div>
         </section>
+        <section class="technical-box">
+          <p class="section-title">Technical Confirm</p>
+          <div class="technical-grid" id="technicalGrid"></div>
+          <p class="technical-note" id="technicalNote">等待 K 线数据</p>
+        </section>
         <section class="ladder-box">
           <p class="section-title">价格阶梯</p>
           <div class="ladder-list" id="ladderList"></div>
@@ -1106,6 +1149,8 @@
       planMaxLoss: document.getElementById("planMaxLoss"),
       nextAction: document.getElementById("nextAction"),
       strategyCompare: document.getElementById("strategyCompare"),
+      technicalGrid: document.getElementById("technicalGrid"),
+      technicalNote: document.getElementById("technicalNote"),
       orderPlan: document.getElementById("orderPlan"),
       cliCommand: document.getElementById("cliCommand"),
       tradeSteps: document.getElementById("tradeSteps"),
@@ -1470,7 +1515,10 @@
           open: Number(k[1]),
           high: Number(k[2]),
           low: Number(k[3]),
-          close: Number(k[4])
+          close: Number(k[4]),
+          volume: Number(k[5]),
+          quoteVolume: Number(k[7]),
+          trades: Number(k[8])
         }));
       } catch (err) {
         state.bars = syntheticBars(sample);
@@ -1492,10 +1540,280 @@
           open: i ? bars[i - 1].close : start,
           high: close * (1 + spread),
           low: close * (1 - spread),
-          close: Math.max(0.000001, close)
+          close: Math.max(0.000001, close),
+          volume: 1000000 * (1 + t * 3 + Math.abs(Math.sin(i * 0.27))),
+          quoteVolume: 1000000 * close,
+          trades: Math.round(2000 + t * 9000)
         });
       }
       return bars;
+    }
+
+    function rollingAverage(values, period) {
+      return values.map((_, index) => {
+        if (index < period - 1) return null;
+        const slice = values.slice(index - period + 1, index + 1);
+        return slice.reduce((sum, value) => sum + value, 0) / period;
+      });
+    }
+
+    function emaSeries(values, period) {
+      const result = Array(values.length).fill(null);
+      if (values.length < period) return result;
+      let previous = values.slice(0, period).reduce((sum, value) => sum + value, 0) / period;
+      result[period - 1] = previous;
+      const multiplier = 2 / (period + 1);
+      for (let index = period; index < values.length; index += 1) {
+        previous = (values[index] - previous) * multiplier + previous;
+        result[index] = previous;
+      }
+      return result;
+    }
+
+    function rmaSeries(values, period) {
+      const result = Array(values.length).fill(null);
+      if (values.length < period) return result;
+      let previous = values.slice(0, period).reduce((sum, value) => sum + value, 0) / period;
+      result[period - 1] = previous;
+      for (let index = period; index < values.length; index += 1) {
+        previous = ((previous * (period - 1)) + values[index]) / period;
+        result[index] = previous;
+      }
+      return result;
+    }
+
+    function lastNumber(values) {
+      for (let index = values.length - 1; index >= 0; index -= 1) {
+        const value = values[index];
+        if (Number.isFinite(value)) return value;
+      }
+      return null;
+    }
+
+    function previousNumber(values) {
+      let seen = false;
+      for (let index = values.length - 1; index >= 0; index -= 1) {
+        const value = values[index];
+        if (!Number.isFinite(value)) continue;
+        if (seen) return value;
+        seen = true;
+      }
+      return null;
+    }
+
+    function trueRanges(bars) {
+      return bars.map((bar, index) => {
+        if (index === 0) return bar.high - bar.low;
+        const previousClose = bars[index - 1].close;
+        return Math.max(bar.high - bar.low, Math.abs(bar.high - previousClose), Math.abs(bar.low - previousClose));
+      });
+    }
+
+    function rsiSeries(closes, period = 14) {
+      const changes = closes.map((close, index) => index ? close - closes[index - 1] : 0);
+      const gains = changes.slice(1).map((change) => Math.max(0, change));
+      const losses = changes.slice(1).map((change) => Math.max(0, -change));
+      const avgGains = rmaSeries(gains, period);
+      const avgLosses = rmaSeries(losses, period);
+      const result = [null];
+      avgGains.forEach((gain, index) => {
+        const loss = avgLosses[index];
+        if (!Number.isFinite(gain) || !Number.isFinite(loss)) result.push(null);
+        else if (loss === 0) result.push(100);
+        else {
+          const rs = gain / loss;
+          result.push(100 - (100 / (1 + rs)));
+        }
+      });
+      return result.slice(0, closes.length);
+    }
+
+    function macdTechnical(closes) {
+      const fast = emaSeries(closes, 12);
+      const slow = emaSeries(closes, 26);
+      const macdLine = fast.map((value, index) => Number.isFinite(value) && Number.isFinite(slow[index]) ? value - slow[index] : null);
+      const dense = macdLine.filter((value) => Number.isFinite(value));
+      const signalDense = emaSeries(dense, 9);
+      const signalLine = Array(macdLine.length).fill(null);
+      let denseIndex = 0;
+      macdLine.forEach((value, index) => {
+        if (!Number.isFinite(value)) return;
+        signalLine[index] = signalDense[denseIndex];
+        denseIndex += 1;
+      });
+      const histogram = macdLine.map((value, index) => Number.isFinite(value) && Number.isFinite(signalLine[index]) ? value - signalLine[index] : null);
+      const hist = lastNumber(histogram);
+      const prevHist = previousNumber(histogram);
+      let state = "warming-up";
+      if (Number.isFinite(hist) && hist < 0) state = "bearish";
+      else if (Number.isFinite(hist) && Number.isFinite(prevHist) && hist < prevHist) state = "momentum-decay";
+      else if (Number.isFinite(hist)) state = "bullish";
+      return {
+        macd: lastNumber(macdLine),
+        signal: lastNumber(signalLine),
+        histogram: hist,
+        previousHistogram: prevHist,
+        state
+      };
+    }
+
+    function donchianTechnical(bars, period = 20) {
+      if (bars.length < period) return { period, upper: null, lower: null, mid: null, position: null, state: "warming-up" };
+      const window = bars.slice(-period);
+      const upper = Math.max(...window.map((bar) => bar.high));
+      const lower = Math.min(...window.map((bar) => bar.low));
+      const mid = (upper + lower) / 2;
+      const close = bars[bars.length - 1].close;
+      const position = upper > lower ? (close - lower) / (upper - lower) : 0.5;
+      const state = close < mid ? "below-mid" : position > 0.82 ? "near-upper" : "inside-channel";
+      return { period, upper, lower, mid, position, state };
+    }
+
+    function superTrendTechnical(bars, period = 10, multiplier = 3) {
+      if (bars.length < period + 2) return { period, multiplier, value: null, direction: "warming-up" };
+      const atr = rollingAverage(trueRanges(bars), period);
+      const upper = Array(bars.length).fill(null);
+      const lower = Array(bars.length).fill(null);
+      const trend = Array(bars.length).fill(null);
+      let direction = "up";
+      bars.forEach((bar, index) => {
+        if (!Number.isFinite(atr[index])) return;
+        const hl2 = (bar.high + bar.low) / 2;
+        const basicUpper = hl2 + multiplier * atr[index];
+        const basicLower = hl2 - multiplier * atr[index];
+        if (index === 0 || !Number.isFinite(upper[index - 1]) || !Number.isFinite(lower[index - 1])) {
+          upper[index] = basicUpper;
+          lower[index] = basicLower;
+          trend[index] = basicLower;
+          direction = "up";
+          return;
+        }
+        const previousClose = bars[index - 1].close;
+        upper[index] = basicUpper < upper[index - 1] || previousClose > upper[index - 1] ? basicUpper : upper[index - 1];
+        lower[index] = basicLower > lower[index - 1] || previousClose < lower[index - 1] ? basicLower : lower[index - 1];
+        if (trend[index - 1] === upper[index - 1]) {
+          if (bar.close <= upper[index]) {
+            trend[index] = upper[index];
+            direction = "down";
+          } else {
+            trend[index] = lower[index];
+            direction = "up";
+          }
+        } else if (bar.close >= lower[index]) {
+          trend[index] = lower[index];
+          direction = "up";
+        } else {
+          trend[index] = upper[index];
+          direction = "down";
+        }
+      });
+      return { period, multiplier, value: lastNumber(trend), direction };
+    }
+
+    function mfiSeries(bars, period = 14) {
+      const result = Array(bars.length).fill(null);
+      const typical = bars.map((bar) => (bar.high + bar.low + bar.close) / 3);
+      const flow = bars.map((bar, index) => typical[index] * (bar.volume || 0));
+      for (let index = period; index < bars.length; index += 1) {
+        let positive = 0;
+        let negative = 0;
+        for (let inner = index - period + 1; inner <= index; inner += 1) {
+          if (typical[inner] > typical[inner - 1]) positive += flow[inner];
+          else if (typical[inner] < typical[inner - 1]) negative += flow[inner];
+        }
+        result[index] = negative === 0 ? 100 : 100 - (100 / (1 + positive / negative));
+      }
+      return result;
+    }
+
+    function technicalConfirmation(bars) {
+      if (!bars.length) return null;
+      const closes = bars.map((bar) => bar.close);
+      const close = closes[closes.length - 1];
+      const atr = lastNumber(rollingAverage(trueRanges(bars), 14));
+      const atrPct = Number.isFinite(atr) && close ? atr / close : null;
+      const rsiValues = rsiSeries(closes, 14);
+      const rsi = lastNumber(rsiValues);
+      const previousRsi = previousNumber(rsiValues);
+      const macd = macdTechnical(closes);
+      const donchian = donchianTechnical(bars);
+      const supertrend = superTrendTechnical(bars);
+      const mfiValues = mfiSeries(bars, 14);
+      const mfi = lastNumber(mfiValues);
+      const previousMfi = previousNumber(mfiValues);
+      let score = 0;
+      const checks = [];
+      if (Number.isFinite(atrPct)) {
+        if (atrPct >= 0.08) { score += 16; checks.push("ATR 宽"); }
+        else if (atrPct >= 0.045) { score += 10; checks.push("ATR 活跃"); }
+      }
+      if (Number.isFinite(rsi)) {
+        if (rsi >= 78) { score += 14; checks.push("RSI 过热"); }
+        else if (rsi >= 62) { score += 7; checks.push("RSI 偏热"); }
+        if (Number.isFinite(previousRsi) && rsi < previousRsi && rsi > 55) { score += 8; checks.push("RSI 回落"); }
+      }
+      if (macd.state === "bearish") { score += 18; checks.push("MACD 转弱"); }
+      else if (macd.state === "momentum-decay") { score += 13; checks.push("MACD 衰减"); }
+      if (donchian.state === "below-mid") { score += 14; checks.push("通道中线跌破"); }
+      else if (donchian.state === "near-upper") { score += 6; checks.push("通道上沿"); }
+      if (supertrend.direction === "down") { score += 18; checks.push("SuperTrend 转空"); }
+      else if (supertrend.direction === "up") { score -= 6; checks.push("SuperTrend 仍多"); }
+      if (Number.isFinite(mfi)) {
+        if (mfi >= 82) { score += 10; checks.push("MFI 过热"); }
+        if (Number.isFinite(previousMfi) && mfi < previousMfi && mfi > 55) { score += 8; checks.push("MFI 回落"); }
+      }
+      score = Math.round(clamp(score, 0, 100));
+      const label = score >= 65 ? "short-confirming" : score >= 42 ? "wait-pullback" : supertrend.direction === "up" ? "trend-still-up" : "low-confirmation";
+      return {
+        close,
+        atr: { value: atr, pct: atrPct },
+        rsi: { value: rsi, previous: previousRsi },
+        macd,
+        donchian,
+        supertrend,
+        mfi: { value: mfi, previous: previousMfi },
+        bias: { score, label, checks }
+      };
+    }
+
+    function indicatorClass(kind, value) {
+      if (!Number.isFinite(value)) return "";
+      if (kind === "bias") return value >= 65 ? "is-ok" : value >= 42 ? "is-warn" : "is-danger";
+      if (kind === "rsi") return value >= 78 ? "is-ok" : value >= 62 ? "is-warn" : "";
+      if (kind === "mfi") return value >= 82 ? "is-ok" : value >= 65 ? "is-warn" : "";
+      if (kind === "atr") return value >= 0.08 ? "is-danger" : value >= 0.045 ? "is-warn" : "";
+      return "";
+    }
+
+    function renderTechnicalConfirm() {
+      const tech = technicalConfirmation(state.bars);
+      if (!tech) {
+        els.technicalGrid.innerHTML = "";
+        els.technicalNote.textContent = "等待 K 线数据";
+        return;
+      }
+      const biasText = `${tech.bias.score}/100`;
+      const macdText = tech.macd.state === "momentum-decay" ? "动能衰减" : tech.macd.state === "bearish" ? "偏空" : tech.macd.state === "bullish" ? "偏多" : "--";
+      const donchianText = tech.donchian.state === "below-mid" ? "跌破中线" : tech.donchian.state === "near-upper" ? "靠近上沿" : "通道内";
+      const superText = tech.supertrend.direction === "down" ? "转空" : tech.supertrend.direction === "up" ? "仍多" : "--";
+      const cards = [
+        ["空头确认", biasText, indicatorClass("bias", tech.bias.score)],
+        ["ATR 14", Number.isFinite(tech.atr.pct) ? pct(tech.atr.pct, 2) : "--", indicatorClass("atr", tech.atr.pct)],
+        ["RSI 14", Number.isFinite(tech.rsi.value) ? tech.rsi.value.toFixed(1) : "--", indicatorClass("rsi", tech.rsi.value)],
+        ["MACD", macdText, tech.macd.state === "bearish" ? "is-ok" : tech.macd.state === "momentum-decay" ? "is-warn" : ""],
+        ["Donchian 20", donchianText, tech.donchian.state === "below-mid" ? "is-ok" : tech.donchian.state === "near-upper" ? "is-warn" : ""],
+        ["MFI 14", Number.isFinite(tech.mfi.value) ? tech.mfi.value.toFixed(1) : "--", indicatorClass("mfi", tech.mfi.value)]
+      ];
+      els.technicalGrid.innerHTML = cards.map(([title, value, cls]) => {
+        return `<div class="technical-card"><span>${title}</span><strong class="${cls}">${value}</strong></div>`;
+      }).join("");
+      const label = {
+        "short-confirming": "技术面开始配合做空，但仍要等阶梯/回落确认。",
+        "wait-pullback": "技术面偏热或动能衰减，适合等待回落确认。",
+        "trend-still-up": "趋势仍偏多，追空容易被挤。",
+        "low-confirmation": "技术确认不足，先观察。"
+      }[tech.bias.label] || "技术确认不足，先观察。";
+      els.technicalNote.textContent = `${label} ${tech.bias.checks.join(" / ") || "暂无强确认"}`;
     }
 
     function buildLevels() {
@@ -1676,6 +1994,7 @@
           <span class="level-state">${label}</span>
         </div>`;
       }).join("");
+      renderTechnicalConfirm();
       renderAssistant(price);
       els.eventLog.innerHTML = state.events.map((event) => {
         return `<li><code>T+${event.tick}</code><span>${event.text}</span></li>`;
@@ -1815,6 +2134,7 @@
       const symbol = state.selected.symbol;
       const notional = Math.round(c.notional);
       return [
+        `python3 tools/binance_smallcap_cli.py indicators ${symbol} --interval 1h --klines 120 --json`,
         `python3 tools/binance_smallcap_cli.py simulate ${symbol} --strategy both --step-pct ${els.stepPct.value} --layers ${els.layers.value} --confirm-pct ${els.confirmPct.value} --stop-pct ${els.stopPct.value}`,
         `python3 tools/binance_smallcap_cli.py order ${symbol} --notional ${notional} --step-pct ${els.stepPct.value} --layers ${els.layers.value} --stop-pct ${els.stopPct.value}`
       ].join("\n");
@@ -1861,6 +2181,10 @@
       els.cliCommand.textContent = cliCommandText();
 
       const pressure = state.selected && state.selected.pressureLabel ? state.selected.pressureLabel : "等待衍生品状态";
+      const tech = technicalConfirmation(state.bars);
+      const technicalStep = tech
+        ? `技术确认：空头确认 ${tech.bias.score}/100，${tech.bias.checks.join(" / ") || "暂无强确认"}。`
+        : "技术确认：等待 K 线数据。";
       const modeText = {
         alert: "只提醒：触发阶梯后只记录信号，不模拟开空。",
         confirm: `回落确认：触发后等价格从峰值回落 ${els.confirmPct.value}% 再模拟开空。`,
@@ -1874,6 +2198,7 @@
         : "当前没有持仓，先观察提醒层和衍生品状态。";
       const steps = [
         `先看拥挤状态：${pressure}。${state.selected && state.selected.pressureNote ? state.selected.pressureNote : ""}`,
+        technicalStep,
         modeText,
         `每一层计划：按 ${c.notional.toFixed(0)} USDT 名义金额估算数量；SELL 开空价，同时准备 BUY reduce-only stop；单层估算亏损约 ${accountPct((c.stop + c.friction) * c.unitRisk)}。`,
         `组合止损线 ${formatPrice(stop)}，用于检查极端情形下所有阶梯打满后的账户损失。`,
