@@ -36,3 +36,25 @@ python3 tools/binance_smallcap_cli.py plan PLAYUSDT --notional 20
 ```
 
 See `docs/binance-smallcap-cli.md`. The CLI defaults to dry-run / simulation mode; live order submission requires explicit flags and Binance Futures API credentials.
+
+## AI-SaaS 信号台（`saas-signals/`）
+
+BTC 之外的扩展子栏目：把 **Datadog (DDOG) / Snowflake (SNOW)** 尽调里「要盯的三条硬信号」做成可逐季更新的跟踪系统。线上：<https://htom78.github.io/btc-macro-system/saas-signals/>。
+
+三条信号，每条给 `基线 / 守住线 / 证伪线 / 状态灯`：
+
+1. **营收增速维持** —— 不滑向指引隐含的减速
+2. **毛利率方向** —— AI mix 上升却不降毛利（SNOW 守 75% 是关键证伪点）
+3. **NRR 净留存** —— 用量飞轮的体温计
+
+财报后逐季更新（自动写历史 + 更新看板状态，push 触发 Pages 部署）：
+
+```bash
+python3 saas-signals/scripts/update_signal.py \
+  --ticker SNOW --signal grossmargin --value "74.2%" --status amber \
+  --asof 2026-08-26 --source "Q2 FY27" --note "..."
+python3 saas-signals/scripts/update_signal.py --show   # 看当前状态
+```
+
+数据接口：`saas-signals/data/signals.json`（看板源）· `saas-signals/data/observations.jsonl`（观测历史）。
+下一季节点：DDOG Q2 FY26 = 2026-08-06，SNOW Q2 FY27 = 2026-08-26。详见 `saas-signals/README.md`。研究与跟踪用途，不构成投资建议。
