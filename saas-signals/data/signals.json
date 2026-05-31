@@ -1,0 +1,39 @@
+{
+  "title": "AI-SaaS 信号台",
+  "subtitle": "DDOG / SNOW · 三条硬信号逐季跟踪",
+  "updated": "2026-05-31",
+  "source_note": "基线来自 2026-05 财报季 deep-research 尽调（见 meitou-ai-software-stocks 研究）。研究口径，非买卖建议。",
+  "companies": {
+    "DDOG": { "name": "Datadog", "next_earnings": "2026-08-06", "accent": "#6957a8" },
+    "SNOW": { "name": "Snowflake", "next_earnings": "2026-08-26", "accent": "#2d66a5" }
+  },
+  "signals": [
+    {
+      "id": "growth",
+      "name": "营收增速维持",
+      "question": "增速不滑向指引隐含的减速",
+      "by": {
+        "DDOG": { "baseline": "+32%", "hold": "≥ +29%（指引下限）", "falsify": "< 25%（GAAP 口径已现）", "latest": "+32%", "status": "green", "asof": "2026-05-07", "note": "非 AI 客户加速 mid-20s，基本盘广" },
+        "SNOW": { "baseline": "+34%", "hold": "≥ +30%（指引）", "falsify": "< 28%", "latest": "+34%", "status": "green", "asof": "2026-05-28", "note": "产品营收三季连续加速" }
+      }
+    },
+    {
+      "id": "grossmargin",
+      "name": "毛利率方向",
+      "question": "AI mix 上升却不降毛利",
+      "by": {
+        "DDOG": { "baseline": "79–80%", "hold": "守 79%", "falsify": "< 78%", "latest": "79%", "status": "amber", "asof": "2026-05-07", "note": "AI/GPU workload 轻微侵蚀" },
+        "SNOW": { "baseline": "~75%", "hold": "守 75%（关键证伪点）", "falsify": "< 74%", "latest": "75.1%", "status": "amber", "asof": "2026-05-28", "note": "AI 产品毛利更低，靠 AWS 降本撑" }
+      }
+    },
+    {
+      "id": "nrr",
+      "name": "NRR 净留存",
+      "question": "用量飞轮的体温计",
+      "by": {
+        "DDOG": { "baseline": "low-120%", "hold": "续爬", "falsify": "< 115%", "latest": "~121%", "status": "green", "asof": "2026-05-07", "note": "low-120% 区间" },
+        "SNOW": { "baseline": "126%", "hold": "破 / 守 126%", "falsify": "< 120%", "latest": "126%", "status": "green", "asof": "2026-05-28", "note": "5 季来首次回升" }
+      }
+    }
+  ]
+}

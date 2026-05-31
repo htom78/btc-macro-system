@@ -1,0 +1,6 @@
+{"date":"2026-05-07","ticker":"DDOG","signal":"growth","value":"+32%","status":"green","source":"Q1 FY26 财报","note":"非AI客户加速mid-20s,基本盘广"}
+{"date":"2026-05-07","ticker":"DDOG","signal":"grossmargin","value":"79%","status":"amber","source":"Q1 FY26 财报","note":"AI/GPU workload轻微侵蚀,环比从~81%下滑"}
+{"date":"2026-05-07","ticker":"DDOG","signal":"nrr","value":"~121%","status":"green","source":"Q1 FY26 财报","note":"low-120%区间"}
+{"date":"2026-05-28","ticker":"SNOW","signal":"growth","value":"+34%","status":"green","source":"Q1 FY27 财报","note":"产品营收三季连续加速,$1.334B"}
+{"date":"2026-05-28","ticker":"SNOW","signal":"grossmargin","value":"75.1%","status":"amber","source":"Q1 FY27 财报","note":"AI产品毛利更低,靠AWS带宽降本撑75%"}
+{"date":"2026-05-28","ticker":"SNOW","signal":"nrr","value":"126%","status":"green","source":"Q1 FY27 财报","note":"5季来首次回升(此前连三季125%)"}
