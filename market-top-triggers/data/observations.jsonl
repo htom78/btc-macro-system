@@ -1,0 +1,5 @@
+{"date":"2026-05-28","kind":"hard","id":"fed","value":"未加息;核心PCE+3.3%回升","status":"amber","source":"BEA 4月PCE","note":"加息预期升温但未兑现"}
+{"date":"2026-05-06","kind":"hard","id":"credit","value":"私募信贷$1.5-2T被FSB预警;公开HY利差待核","status":"amber","source":"FSB报告","note":"信用脆弱性早期信号"}
+{"date":"2026-05-31","kind":"hard","id":"earnings","value":"2026仍预期两位数盈利增长","status":"green","source":"摩根士丹利2026展望","note":"基本面触发未现"}
+{"date":"2026-05-29","kind":"hard","id":"realrate","value":"TLT底部震荡,未突破","status":"green","source":"行情","note":"Dalio:3年内供需或失衡"}
+{"date":"2026-05-31","kind":"hard","id":"breadth","value":"集中度~48%,指数靠少数大盘股","status":"amber","source":"视频/BofA(待核)","note":"广度偏窄=顶部结构特征"}

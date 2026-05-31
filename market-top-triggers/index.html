@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>美股见顶 · 硬触发跟踪</title>
+<style>
+  :root{
+    color-scheme:light;
+    --paper:#f4f0e8;--paper-2:#fffaf0;--ink:#151714;--muted:#65635d;
+    --line:rgba(21,23,20,.16);--line-strong:rgba(21,23,20,.28);
+    --panel:rgba(255,250,240,.82);--amber:#c76f16;--amber-deep:#8e4f12;--green:#168369;--red:#bd4545;--blue:#2d66a5;--violet:#6957a8;
+    --mono:"SFMono-Regular","Cascadia Mono","Menlo",monospace;
+    --serif:"Iowan Old Style","Songti SC","Noto Serif CJK SC",Georgia,serif;
+    --sans:"Avenir Next","PingFang SC","Hiragino Sans GB",sans-serif;
+  }
+  *{box-sizing:border-box} html{background:var(--paper)}
+  body{margin:0;min-height:100vh;color:var(--ink);font-family:var(--sans);line-height:1.55;
+    background:linear-gradient(115deg,rgba(189,69,69,.06) 0 14%,transparent 14% 100%),
+      linear-gradient(90deg,rgba(21,23,20,.035) 1px,transparent 1px) 0 0/44px 44px,
+      linear-gradient(rgba(21,23,20,.03) 1px,transparent 1px) 0 0/44px 44px,var(--paper)}
+  a{color:inherit}
+  .shell{width:min(1100px,calc(100vw - 32px));margin:0 auto;padding:24px 0 40px}
+  .topline{display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line);padding-bottom:16px}
+  .brand{display:inline-grid;grid-template-columns:38px auto;gap:10px;align-items:center;text-decoration:none}
+  .mark{width:38px;aspect-ratio:1;display:grid;place-items:center;border:1px solid rgba(21,23,20,.22);border-radius:8px;
+    background:linear-gradient(135deg,rgba(189,69,69,.85),rgba(255,250,240,.88) 46%,rgba(199,111,22,.82));box-shadow:inset 0 1px 0 rgba(255,255,255,.66);font:800 15px/1 var(--mono)}
+  .brand b{display:block;font-size:14px} .brand span span{display:block;color:var(--muted);font:11px/1.2 var(--mono);margin-top:2px}
+  .nav{display:flex;gap:8px;flex-wrap:wrap}
+  .nav a{display:inline-flex;align-items:center;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:0 13px;background:rgba(255,250,240,.76);font-size:13px;font-weight:760;text-decoration:none;transition:all .16s}
+  .nav a:hover{transform:translateY(-1px);border-color:var(--line-strong);background:#fff}
+
+  .head{padding:26px 0 6px}
+  .eyebrow{margin:0 0 10px;color:var(--amber-deep);font:760 12px/1 var(--mono);text-transform:uppercase}
+  h1{margin:0;font:760 clamp(32px,5vw,54px)/.95 var(--serif)}
+  .lead{max-width:780px;margin:16px 0 0;color:#44433f;font-size:15px}
+  .disc{display:inline-block;margin-top:14px;border:1px solid rgba(189,69,69,.32);background:rgba(189,69,69,.07);border-radius:8px;padding:7px 13px;color:#8e3a3a;font-size:12.5px}
+  h2{margin:0;font:760 21px/1.1 var(--serif)}
+  .section{margin-top:24px} .section-head{margin-bottom:12px} .section-head p{margin:6px 0 0;color:var(--muted);font-size:13px}
+
+  .gauge{display:flex;align-items:center;gap:16px;border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:16px 20px;margin-top:6px;backdrop-filter:blur(10px)}
+  .gauge .big{font:790 34px/1 var(--mono)} .gauge .lab{color:var(--muted);font-size:13px}
+  .gauge .pips{display:flex;gap:7px;margin-left:auto;flex-wrap:wrap}
+  .pip{display:inline-flex;align-items:center;gap:6px;font:760 12px/1 var(--mono);border:1px solid var(--line);border-radius:20px;padding:5px 11px}
+
+  .hgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  .tcard{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:15px 17px;backdrop-filter:blur(10px);border-left:5px solid var(--green)}
+  .tcard.amber{border-left-color:var(--amber)} .tcard.red{border-left-color:var(--red)} .tcard.green{border-left-color:var(--green)}
+  .tcard .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+  .tcard h3{margin:0;font:760 17px/1.1 var(--serif)}
+  .badge{display:inline-flex;align-items:center;gap:6px;font:780 12px/1 var(--mono);padding:4px 9px;border-radius:6px}
+  .badge.green{background:rgba(22,131,105,.12);color:var(--green)} .badge.amber{background:rgba(199,111,22,.14);color:var(--amber-deep)} .badge.red{background:rgba(189,69,69,.14);color:var(--red)}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .dot.green{background:var(--green)} .dot.amber{background:var(--amber)} .dot.red{background:var(--red)}
+  .tcard .why{color:var(--muted);font-size:12.5px;margin:2px 0 9px}
+  .tcard .latest{font:700 14px/1.4 var(--ink);background:rgba(255,255,255,.5);border:1px solid rgba(21,23,20,.1);border-radius:6px;padding:8px 10px}
+  .tcard .watch{margin-top:8px;font:11.5px/1.5 var(--mono);color:#56544e} .tcard .watch b{color:var(--ink)}
+  .tcard .asof{color:var(--muted);font:11px/1 var(--mono);margin-top:6px}
+
+  .soft{border:1px dashed var(--line-strong);border-radius:8px;background:rgba(255,250,240,.5);padding:16px 20px;margin-top:12px}
+  .soft .row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid rgba(21,23,20,.08)}
+  .soft .row:last-child{border-bottom:0}
+  .soft .nm{font-weight:760;font-size:13.5px} .soft .vl{font:12px/1.4 var(--mono);color:var(--muted);text-align:right}
+  .soft .nt{display:block;color:#9a544f;font-size:11px;margin-top:2px}
+
+  .lower{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:14px;margin-top:12px}
+  .panel{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:16px 18px;backdrop-filter:blur(10px)}
+  table.hist{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+  table.hist th{text-align:left;color:var(--muted);font:700 11px/1 var(--mono);padding:6px 8px;border-bottom:1px solid var(--line)}
+  table.hist td{padding:6px 8px;border-bottom:1px solid rgba(21,23,20,.08);vertical-align:top}
+  table.hist td.d{font:700 11px/1 var(--mono);color:var(--muted);white-space:nowrap}
+  .sdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}
+  code{font:12px/1.5 var(--mono);background:rgba(21,23,20,.06);padding:1px 6px;border-radius:4px;word-break:break-all}
+  pre{font:11px/1.6 var(--mono);background:#181914;color:#f0ead8;border-radius:8px;padding:12px 14px;overflow:auto;margin:8px 0}
+  .panel ol{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--muted)} .panel li{margin:6px 0} .panel li b{color:var(--ink)}
+  .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:24px;padding-top:16px;color:var(--muted);font-size:12px}
+  .foot a{color:var(--ink);font-weight:760;text-decoration:none;border-bottom:1px solid rgba(21,23,20,.22)}
+  @media(max-width:780px){.hgrid,.lower{grid-template-columns:1fr}.topline{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <div class="topline">
+    <a class="brand" href="../">
+      <span class="mark">▲</span>
+      <span><b>美股见顶 · 硬触发</b><span>Market-top triggers</span></span>
+    </a>
+    <nav class="nav">
+      <a href="../">← 工作台首页</a>
+      <a href="data/triggers.json">triggers.json</a>
+      <a href="data/observations.jsonl">history</a>
+      <a href="https://github.com/htom78/btc-macro-system">GitHub</a>
+    </nav>
+  </div>
+
+  <header class="head">
+    <p class="eyebrow">只盯有择时价值的硬触发</p>
+    <h1 id="title">美股见顶 · 硬触发跟踪</h1>
+    <p class="lead" id="thesis"></p>
+    <span class="disc">⚠ 研究 / 跟踪用途，<b>非投资建议</b>。状态：<b style="color:var(--green)">green 未触发</b> · <b style="color:var(--amber-deep)">amber 临界/预警</b> · <b style="color:var(--red)">red 已触发</b>。</span>
+  </header>
+
+  <section class="section">
+    <div class="section-head"><h2>综合读数</h2></div>
+    <div class="gauge" id="gauge"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>硬触发 · 要盯的</h2>
+      <p>历史上真正能择时的少数信号。只有它们翻红（尤其美联储实际加息 / 信用利差扩大 / 盈利转负）才是实质风险。</p>
+    </div>
+    <div class="hgrid" id="hard"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>软指标 · 背景（不择时）</h2>
+      <p>估值/集中度/情绪类——已偏高多年、年年闪烁却长期不兑现。参考可以，据此择时无效。</p>
+    </div>
+    <div class="soft" id="soft"></div>
+  </section>
+
+  <section class="section">
+    <div class="lower">
+      <div class="panel">
+        <p class="eyebrow">History</p><h2>观测历史</h2>
+        <table class="hist" id="hist"><thead><tr><th>日期</th><th>触发</th><th>读数</th><th>来源/备注</th></tr></thead><tbody></tbody></table>
+      </div>
+      <aside class="panel">
+        <p class="eyebrow">How to update</p><h2>怎么更新</h2>
+        <ol>
+          <li>盯到某硬触发有变化时跑：</li>
+        </ol>
+        <pre>python3 market-top-triggers/\nscripts/update_trigger.py \\\n  --id credit \\\n  --value "HY OAS 扩至 420bp" \\\n  --status red --asof 2026-08-15 \\\n  --source FRED --note "信用报警"</pre>
+        <ol start="2">
+          <li><code>id</code>: fed/credit/earnings/realrate/breadth　<code>status</code>: green/amber/red</li>
+          <li><b>git push</b> 触发 Pages 部署。<code>--show</code> 看当前。</li>
+        </ol>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>仅作研究与策略跟踪，不构成投资建议。基于《刘翔·美股见顶10个信号》deep-research 核查。</span>
+    <span id="updated"></span>
+  </footer>
+</main>
+
+<script>
+  const STLAB = { green:"未触发", amber:"临界", red:"已触发" };
+  const NM = { fed:"美联储加息", credit:"信用利差", earnings:"盈利增速", realrate:"实际利率", breadth:"市场广度" };
+  async function load(){
+    let d, obs=[];
+    try{ d = await (await fetch("data/triggers.json",{cache:"no-store"})).json(); }
+    catch(e){ document.getElementById("hard").innerHTML="<p style='color:var(--red)'>triggers.json 读取失败</p>"; return; }
+    try{ const t=await (await fetch("data/observations.jsonl",{cache:"no-store"})).text();
+      obs=t.trim().split("\n").filter(Boolean).map(l=>JSON.parse(l)); }catch(e){}
+
+    document.getElementById("title").textContent = d.title;
+    document.getElementById("thesis").textContent = d.thesis;
+    document.getElementById("updated").textContent = "更新 " + (d.updated||"");
+
+    // gauge
+    const cnt={green:0,amber:0,red:0}; d.hard.forEach(t=>cnt[t.status]++);
+    const overall = cnt.red>0 ? "已触发" : (cnt.amber>=3 ? "多项预警" : cnt.amber>0 ? "局部预警" : "正常");
+    document.getElementById("gauge").innerHTML =
+      `<div><div class="big">${cnt.red} <span style="font-size:15px;color:var(--muted)">红</span></div><div class="lab">${d.hard.length} 个硬触发 · ${overall}</div></div>
+       <div class="pips">
+         <span class="pip"><span class="dot red"></span>已触发 ${cnt.red}</span>
+         <span class="pip"><span class="dot amber"></span>临界 ${cnt.amber}</span>
+         <span class="pip"><span class="dot green"></span>未触发 ${cnt.green}</span>
+       </div>`;
+
+    // hard
+    document.getElementById("hard").innerHTML = d.hard.map(t=>`
+      <div class="tcard ${t.status}">
+        <div class="top"><h3>${t.name}</h3>
+          <span class="badge ${t.status}"><span class="dot ${t.status}"></span>${STLAB[t.status]}</span></div>
+        <div class="why">${t.why}</div>
+        <div class="latest">${t.latest}</div>
+        <div class="watch">盯：<b>${t.watch}</b></div>
+        <div class="asof">截至 ${t.asof}</div>
+      </div>`).join("");
+
+    // soft
+    document.getElementById("soft").innerHTML = d.soft.map(s=>`
+      <div class="row"><div class="nm">${s.name}<span class="nt">${s.note}</span></div>
+      <div class="vl">${s.latest}</div></div>`).join("");
+
+    // history
+    document.querySelector("#hist tbody").innerHTML = obs.slice().reverse().map(o=>`
+      <tr><td class="d">${o.date}</td>
+      <td>${NM[o.id]||o.id}</td>
+      <td><span class="sdot" style="background:var(--${o.status})"></span>${o.value}</td>
+      <td style="color:var(--muted)">${o.source||""}${o.note?" · "+o.note:""}</td></tr>`).join("");
+  }
+  load();
+</script>
+</body>
+</html>
