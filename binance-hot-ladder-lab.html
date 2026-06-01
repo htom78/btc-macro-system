@@ -513,10 +513,10 @@
     .side-panel {
       min-height: 680px;
       display: grid;
-      grid-template-rows: auto auto auto auto auto 1fr;
+      grid-template-rows: auto auto auto auto auto auto 1fr;
     }
 
-    .metrics, .strategy-box, .technical-box, .ladder-box {
+    .metrics, .strategy-box, .technical-box, .ladder-box, .observation-box {
       padding: 18px;
       border-bottom: 1px solid var(--line);
       display: grid;
@@ -685,6 +685,61 @@
       font-size: 12px;
       line-height: 1.45;
     }
+
+    .observation-grid {
+      display: grid;
+      gap: 9px;
+    }
+
+    .observation-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+      min-height: 74px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .observation-card.is-live {
+      border-color: rgba(23, 143, 106, 0.48);
+      background: rgba(23, 143, 106, 0.075);
+    }
+
+    .observation-card.is-watch {
+      border-color: rgba(190, 106, 24, 0.42);
+      background: rgba(190, 106, 24, 0.075);
+    }
+
+    .observation-card.is-risk {
+      border-color: rgba(198, 63, 63, 0.42);
+      background: rgba(198, 63, 63, 0.065);
+    }
+
+    .observation-card b {
+      display: block;
+      font: 850 13px/1.15 var(--mono);
+    }
+
+    .observation-card span,
+    .observation-card small {
+      color: var(--muted);
+      font: 700 11px/1.4 var(--mono);
+    }
+
+    .observation-state {
+      min-width: 58px;
+      text-align: right;
+      font: 850 12px/1.2 var(--mono);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .observation-card.is-live .observation-state { color: var(--green); }
+    .observation-card.is-watch .observation-state { color: var(--amber); }
+    .observation-card.is-risk .observation-state { color: var(--red); }
 
     .dryrun-box {
       display: grid;
@@ -906,7 +961,7 @@
           <p class="source-note" id="sourceNote">正在连接 Binance Futures API...</p>
         </div>
         <div class="search-wrap">
-          <input class="search-input" id="symbolSearch" placeholder="搜索 symbol，例如 ALLO / PLAY / NIL">
+          <input class="search-input" id="symbolSearch" placeholder="搜索 symbol，例如 LAB / ALLO / PLAY / NIL">
           <div class="button-row">
             <button class="seg-btn" id="refreshBtn">刷新样本池</button>
           </div>
@@ -1040,6 +1095,11 @@
           <div class="technical-grid" id="technicalGrid"></div>
           <p class="technical-note" id="technicalNote">等待 K 线数据</p>
         </section>
+        <section class="observation-box">
+          <p class="section-title">Observation Playbook</p>
+          <div class="observation-grid" id="observationGrid"></div>
+          <p class="technical-note" id="observationNote">等待样本</p>
+        </section>
         <section class="ladder-box">
           <p class="section-title">价格阶梯</p>
           <div class="ladder-list" id="ladderList"></div>
@@ -1088,11 +1148,12 @@
       "ETCUSDT", "FILUSDT", "ATOMUSDT", "INJUSDT", "HBARUSDT", "XLMUSDT", "MATICUSDT",
       "POLUSDT", "ICPUSDT", "TAOUSDT", "WLDUSDT", "ENAUSDT", "TRUMPUSDT"
     ]);
-    const focusSymbols = ["ALLOUSDT"];
+    const focusSymbols = ["ALLOUSDT", "LABUSDT"];
     const initialSymbol = (new URLSearchParams(window.location.search).get("symbol") || focusSymbols[0]).toUpperCase();
 
     const fallbackRows = [
       { symbol: "ALLOUSDT", pct24: 183.18, quoteVolume: 979290955, last: 0.25597, high24: 0.3491, low24: 0.08947, count: 13202551 },
+      { symbol: "LABUSDT", pct24: 83.59, quoteVolume: 1545392592, last: 13.6951, high24: 16.2, low24: 6.7381, count: 5100000 },
       { symbol: "PLAYUSDT", pct24: 43.88, quoteVolume: 232433968, last: 0.1088, high24: 0.139, low24: 0.07584, count: 2984241 },
       { symbol: "SAGAUSDT", pct24: 36.99, quoteVolume: 74547664, last: 0.02611, high24: 0.02737, low24: 0.01946, count: 753517 },
       { symbol: "XANUSDT", pct24: 32.41, quoteVolume: 210828765, last: 0.012211, high24: 0.013488, low24: 0.008686, count: 2717560 },
@@ -1151,6 +1212,8 @@
       strategyCompare: document.getElementById("strategyCompare"),
       technicalGrid: document.getElementById("technicalGrid"),
       technicalNote: document.getElementById("technicalNote"),
+      observationGrid: document.getElementById("observationGrid"),
+      observationNote: document.getElementById("observationNote"),
       orderPlan: document.getElementById("orderPlan"),
       cliCommand: document.getElementById("cliCommand"),
       tradeSteps: document.getElementById("tradeSteps"),
@@ -1323,16 +1386,20 @@
 
     async function enrichSample(row) {
       const symbol = encodeURIComponent(row.symbol);
-      const [fundingRes, oiHistRes, oiNowRes] = await Promise.allSettled([
-        getJson(`/fapi/v1/fundingRate?symbol=${symbol}&limit=3`),
+      const [fundingRes, oiHistRes, oiNowRes, globalLsRes, topPositionRes, takerRes] = await Promise.allSettled([
+        getJson(`/fapi/v1/premiumIndex?symbol=${symbol}`),
         getJson(`/futures/data/openInterestHist?symbol=${symbol}&period=1h&limit=24`),
-        getJson(`/fapi/v1/openInterest?symbol=${symbol}`)
+        getJson(`/fapi/v1/openInterest?symbol=${symbol}`),
+        getJson(`/futures/data/globalLongShortAccountRatio?symbol=${symbol}&period=15m&limit=8`),
+        getJson(`/futures/data/topLongShortPositionRatio?symbol=${symbol}&period=15m&limit=8`),
+        getJson(`/futures/data/takerlongshortRatio?symbol=${symbol}&period=15m&limit=8`)
       ]);
 
+      const premium = fundingRes.status === "fulfilled" && !Array.isArray(fundingRes.value) ? fundingRes.value : null;
       const fundingRows = fundingRes.status === "fulfilled" && Array.isArray(fundingRes.value) ? fundingRes.value : [];
       const lastFunding = fundingRows[fundingRows.length - 1];
-      const fundingRate = lastFunding ? Number(lastFunding.fundingRate) : null;
-      const fundingTime = lastFunding ? Number(lastFunding.fundingTime) : null;
+      const fundingRate = premium ? Number(premium.lastFundingRate) : lastFunding ? Number(lastFunding.fundingRate) : null;
+      const fundingTime = premium ? Number(premium.nextFundingTime) : lastFunding ? Number(lastFunding.fundingTime) : null;
 
       const oiRows = oiHistRes.status === "fulfilled" && Array.isArray(oiHistRes.value) ? oiHistRes.value : [];
       const firstOi = oiRows.length ? Number(oiRows[0].sumOpenInterestValue) : null;
@@ -1343,6 +1410,10 @@
       const oiValue = Number.isFinite(lastOi) ? lastOi : estimatedOiValue;
       const oiChange = Number.isFinite(histOiChange) ? histOiChange : null;
       const profile = pressureProfile(row, fundingRate, oiChange);
+      const ratioLast = (settled) => {
+        const rows = settled.status === "fulfilled" && Array.isArray(settled.value) ? settled.value : [];
+        return rows.length ? rows[rows.length - 1] : null;
+      };
 
       return {
         ...row,
@@ -1351,6 +1422,9 @@
         oiChange,
         oiValue,
         currentOiUnits,
+        globalLongShort: ratioLast(globalLsRes),
+        topPosition: ratioLast(topPositionRes),
+        takerLongShort: ratioLast(takerRes),
         pressureScore: profile.score,
         pressureLabel: profile.label,
         pressureClass: profile.className,
@@ -1400,11 +1474,11 @@
           pressureNote: "正在读取资金费率与 OI。"
         }));
         renderSamples();
-        els.sourceNote.textContent = `Live: 找到 ${hotRows.length} 个热样本，ALLOUSDT 固定观察中，正在补充 Funding / OI...`;
+        els.sourceNote.textContent = `Live: 找到 ${hotRows.length} 个热样本，ALLOUSDT / LABUSDT 固定观察中，正在补充 Funding / OI...`;
         state.samples = (await Promise.all(baseRows.map(enrichSample)))
           .sort(compareSamples);
         state.live = true;
-        els.sourceNote.textContent = `Live: ${new Date().toLocaleString()}，ALLOUSDT 固定观察；同时筛选 24h 涨幅、成交额、交易笔数，并补充 Funding / OI。`;
+        els.sourceNote.textContent = `Live: ${new Date().toLocaleString()}，ALLOUSDT / LABUSDT 固定观察；同时筛选 24h 涨幅、成交额、交易笔数，并补充 Funding / OI。`;
       } catch (err) {
         state.samples = fallbackRows.map((row) => ({
           ...row,
@@ -1816,6 +1890,129 @@
       els.technicalNote.textContent = `${label} ${tech.bias.checks.join(" / ") || "暂无强确认"}`;
     }
 
+    const observationPresets = {
+      LABUSDT: {
+        rebound: [14.2, 14.8],
+        breakRetest: [13.2, 13.8],
+        reclaim: [14.8, 16.2],
+        squeezeTrigger: 15.0,
+        name: "LAB 暴涨换手"
+      },
+      ALLOUSDT: {
+        rebound: [0.205, 0.218],
+        breakRetest: [0.23, 0.235],
+        reclaim: [0.218, 0.245],
+        squeezeTrigger: 0.205,
+        name: "ALLO 跌破后反抽"
+      }
+    };
+
+    function zoneLabel(zone) {
+      return `${formatPrice(zone[0])}-${formatPrice(zone[1])}`;
+    }
+
+    function defaultObservationPreset(sample) {
+      const high = Number.isFinite(sample.high24) ? sample.high24 : sample.last * 1.18;
+      const low = Number.isFinite(sample.low24) ? sample.low24 : sample.last * 0.82;
+      const span = Math.max(high - low, sample.last * 0.04);
+      const reboundLow = high - span * 0.34;
+      const reboundHigh = high - span * 0.18;
+      const retestLow = high - span * 0.48;
+      const retestHigh = high - span * 0.40;
+      return {
+        rebound: [reboundLow, reboundHigh].sort((a, b) => a - b),
+        breakRetest: [retestLow, retestHigh].sort((a, b) => a - b),
+        reclaim: [reboundHigh, high].sort((a, b) => a - b),
+        squeezeTrigger: reboundHigh,
+        name: "自动区间"
+      };
+    }
+
+    function selectedObservationPreset() {
+      if (!state.selected) return null;
+      return observationPresets[state.selected.symbol] || defaultObservationPreset(state.selected);
+    }
+
+    function ratioNumber(row, key) {
+      if (!row || row[key] === undefined) return null;
+      const value = Number(row[key]);
+      return Number.isFinite(value) ? value : null;
+    }
+
+    function renderObservationPlans(price) {
+      if (!state.selected || !Number.isFinite(price)) {
+        els.observationGrid.innerHTML = "";
+        els.observationNote.textContent = "等待样本";
+        return;
+      }
+
+      const preset = selectedObservationPreset();
+      const tech = technicalConfirmation(state.bars);
+      const funding = state.selected.fundingRate;
+      const oiChange = state.selected.oiChange;
+      const globalShort = ratioNumber(state.selected.globalLongShort, "shortAccount");
+      const topLong = ratioNumber(state.selected.topPosition, "longAccount");
+      const takerRatio = ratioNumber(state.selected.takerLongShort, "buySellRatio");
+      const shortCrowded = Number.isFinite(funding) && funding <= -0.0007;
+      const oiNotFalling = !Number.isFinite(oiChange) || oiChange > -0.08;
+      const bearishEnough = tech && (tech.macd.state === "bearish" || tech.donchian.state === "below-mid" || tech.supertrend.direction === "down");
+      const improving = tech && tech.macd.state !== "bearish" && tech.donchian.state !== "below-mid";
+      const inZone = (zone) => price >= zone[0] && price <= zone[1];
+      const above = (level) => price >= level;
+      const below = (level) => price < level;
+
+      const reboundLive = inZone(preset.rebound) && bearishEnough;
+      const breakLive = below(preset.breakRetest[0]) || (inZone(preset.breakRetest) && bearishEnough);
+      const reclaimLive = above(preset.reclaim[0]) && improving;
+      const squeezeLive = shortCrowded && oiNotFalling && (above(preset.squeezeTrigger) || (Number.isFinite(takerRatio) && takerRatio > 1.15));
+
+      const cards = [
+        {
+          title: "反抽失败做空",
+          state: reboundLive ? "触发" : price < preset.rebound[0] ? "等反抽" : "等转弱",
+          cls: reboundLive ? "is-live" : inZone(preset.rebound) ? "is-watch" : "",
+          detail: `观察 ${zoneLabel(preset.rebound)}，进入区间后看 5m/15m 或本页技术项是否转弱。`,
+          command: `若失败，止损优先看 ${formatPrice(preset.reclaim[0])} 上方。`
+        },
+        {
+          title: "破位回踩失败",
+          state: breakLive ? "确认" : price > preset.breakRetest[1] ? "等跌破" : "等回踩",
+          cls: breakLive ? "is-live" : inZone(preset.breakRetest) ? "is-watch" : "",
+          detail: `跌破后回踩 ${zoneLabel(preset.breakRetest)} 失败，才把它当成顺势空观察。`,
+          command: `重新站回 ${formatPrice(preset.breakRetest[1])} 则破位空质量下降。`
+        },
+        {
+          title: "重新转强",
+          state: reclaimLive ? "减弱" : price >= preset.reclaim[0] ? "观察" : "未站回",
+          cls: reclaimLive ? "is-risk" : price >= preset.reclaim[0] ? "is-watch" : "",
+          detail: `重新站上 ${zoneLabel(preset.reclaim)} 且结构改善，说明空头节奏被破坏。`,
+          command: `站稳 ${formatPrice(preset.reclaim[1])} 后不再按原做空模型处理。`
+        },
+        {
+          title: "挤空风险",
+          state: squeezeLive ? "警报" : shortCrowded ? "偏高" : "正常",
+          cls: squeezeLive ? "is-risk" : shortCrowded ? "is-watch" : "",
+          detail: `Funding ${fundingLabel(funding)}，OI ${oiLabel(oiChange)}，账户空头 ${Number.isFinite(globalShort) ? pct(globalShort, 1) : "--"}。`,
+          command: `资金费率极负且价格不跌时，追空容易被拉爆。`
+        }
+      ];
+
+      els.observationGrid.innerHTML = cards.map((card) => {
+        return `<div class="observation-card ${card.cls}">
+          <span>
+            <b>${card.title}</b>
+            <small>${card.detail}</small><br>
+            <small>${card.command}</small>
+          </span>
+          <span class="observation-state">${card.state}</span>
+        </div>`;
+      }).join("");
+
+      const topText = Number.isFinite(topLong) ? `大户多头 ${pct(topLong, 1)}` : "大户方向 --";
+      const takerText = Number.isFinite(takerRatio) ? `主动买卖比 ${takerRatio.toFixed(2)}` : "主动买卖比 --";
+      els.observationNote.textContent = `${preset.name}：${topText}，${takerText}。这些卡片是观察条件，不是自动入场指令。`;
+    }
+
     function buildLevels() {
       const c = cfg();
       const anchor = state.bars[0] ? state.bars[0].close : (state.selected ? state.selected.last : 1);
@@ -1995,6 +2192,7 @@
         </div>`;
       }).join("");
       renderTechnicalConfirm();
+      renderObservationPlans(price);
       renderAssistant(price);
       els.eventLog.innerHTML = state.events.map((event) => {
         return `<li><code>T+${event.tick}</code><span>${event.text}</span></li>`;
