@@ -1,0 +1,31 @@
+{
+  "id": "source-slug-yyyy-mm-dd",
+  "topic_id": "ai-physical-bottlenecks",
+  "title": "Source title",
+  "source_type": "article | x_thread | filing | earnings_call | dataset",
+  "url": "https://example.com/source",
+  "author": "Author or publisher",
+  "published_at": "YYYY-MM-DD",
+  "input_summary": "One paragraph summary of what the source says.",
+  "market_signal": "What market narrative or evidence this source adds.",
+  "extracted_claims": [
+    "Claim that can be tested or falsified."
+  ],
+  "investment_translation": [
+    {
+      "thesis_id": "ai-power-miner-hosting",
+      "impact": "positive | negative | mixed | neutral",
+      "rationale": "Why this source changes or does not change the thesis."
+    }
+  ],
+  "red_flags": [
+    "What could be hype, missing evidence, or a mistaken inference?"
+  ],
+  "case_decision": {
+    "label": "no_change | upgrade_watch | downgrade | build_model | reject",
+    "action": "Concrete next action."
+  },
+  "next_actions": [
+    "Primary-source check or model update required next."
+  ]
+}

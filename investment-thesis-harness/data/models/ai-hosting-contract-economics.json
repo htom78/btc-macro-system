@@ -1,0 +1,520 @@
+{
+  "topic_id": "ai-physical-bottlenecks",
+  "title": "AI Hosting Contract Economics",
+  "as_of": "2026-05-28",
+  "model_type": "headline_to_normalized_cash_math",
+  "warning": "This model annualizes disclosed headline contract values and MW figures, then flags comparability breaks. It still does not estimate net present value, free cash flow, tax, dilution, uptime penalties, customer credit risk, or project-finance waterfall economics.",
+  "contracts": [
+    {
+      "ticker": "APLD",
+      "name": "Applied Digital",
+      "contract": "Polaris Forge 3 hyperscaler lease",
+      "basis": "colocation lease / take-or-pay",
+      "status": "annualized_headline_math",
+      "contract_value_usd": 7500000000,
+      "critical_it_load_mw": 300,
+      "term_years": 15,
+      "derived": {
+        "headline_value_per_mw_usd": 25000000,
+        "annual_value_per_mw_usd": 1666667
+      },
+      "interpretation": "The annualized headline value is roughly $1.7M per MW per year before project capex, financing, operating costs, customer options, and delivery risk. This supports the power-scarcity thesis, but not yet an equity valuation.",
+      "known_adjustments": [
+        "15-year take-or-pay base term",
+        "300 MW critical IT load and about 430 MW utility power",
+        "initial operations anticipated in August 2027",
+        "renewal options could change headline value but should not be counted in base-case yield"
+      ],
+      "missing_inputs": [
+        "project capex and financing stack",
+        "power cost and pass-through terms",
+        "tenant improvement obligations",
+        "RFS schedule and delay penalties",
+        "equity dilution or project-level debt terms"
+      ],
+      "source_url": "https://ir.applieddigital.com/news-events/press-releases/detail/152/applied-digital-reaches-significant-milestone-surpassing-1"
+    },
+    {
+      "ticker": "APLD",
+      "name": "Applied Digital",
+      "contract": "Polaris Forge 1 CoreWeave leases",
+      "basis": "colocation lease / hyperscaler tenant",
+      "status": "annualized_headline_math",
+      "contract_value_usd": 11000000000,
+      "critical_it_load_mw": 400,
+      "term_years": 15,
+      "derived": {
+        "headline_value_per_mw_usd": 27500000,
+        "annual_value_per_mw_usd": 1833333
+      },
+      "interpretation": "The CoreWeave leases imply about $1.8M per MW per year on disclosed headline math. The read-through is strongest for demand validation and weakest for shareholder return until project financing and cost sharing are modeled.",
+      "known_adjustments": [
+        "400 MW total critical IT capacity across three long-term leases",
+        "approximately $11B anticipated contracted lease revenue",
+        "initial 250 MW was reported over approximately 15-year lease terms",
+        "third 150 MW lease is expected to reach full capacity in 2027"
+      ],
+      "missing_inputs": [
+        "project capex and debt terms",
+        "cash margin after power and operating costs",
+        "CoreWeave concentration exposure",
+        "lease escalators and option economics",
+        "equity financing needed before full campus delivery"
+      ],
+      "source_url": "https://ir.applieddigital.com/news-events/press-releases/detail/128/applied-digital-finalizes-additional-150mw-lease-with"
+    },
+    {
+      "ticker": "CORZ",
+      "name": "Core Scientific",
+      "contract": "CoreWeave HPC hosting contracts",
+      "basis": "hosting / infrastructure conversion",
+      "status": "annualized_headline_math_with_capex_credit_flag",
+      "contract_value_usd": 8700000000,
+      "critical_it_load_mw": 500,
+      "term_years": 12,
+      "derived": {
+        "headline_value_per_mw_usd": 17400000,
+        "annual_value_per_mw_usd": 1450000
+      },
+      "interpretation": "The annualized headline value is about $1.45M per MW per year, but Core Scientific explicitly notes capex credits and customer-funded modifications. This is more directly cash-yield-like than GPU cloud revenue, but still needs netting.",
+      "known_adjustments": [
+        "approximately 500 MW critical IT load across six sites",
+        "$8.7B potential cumulative revenue over 12-year contract terms",
+        "capex credits can offset hosting payments at no more than 50% of monthly fees until repaid",
+        "footnote says cumulative revenue is before capex credits capped at $1.5M per MW"
+      ],
+      "missing_inputs": [
+        "capex credits by year",
+        "power cost responsibility",
+        "site-level opex",
+        "financing cost",
+        "customer concentration discount"
+      ],
+      "source_url": "https://investors.corescientific.com/news-events/press-releases/detail/95/core-scientific-announces-exercise-of-final-contract-option-by-coreweave-for-delivery-of-approximately-120-mw-of-additional-digital-infrastructure-to-host-high-performance-computing-operations"
+    },
+    {
+      "ticker": "IREN",
+      "name": "IREN Limited",
+      "contract": "Microsoft AI Cloud contract",
+      "basis": "GPU cloud services, not pure colocation",
+      "status": "annualized_but_not_comparable",
+      "contract_value_usd": 9700000000,
+      "critical_it_load_mw": 200,
+      "term_years": 5,
+      "derived": {
+        "headline_value_per_mw_usd": 48500000,
+        "annual_value_per_mw_usd": 9700000
+      },
+      "interpretation": "The annualized headline value is roughly $9.7M per MW per year, but this is GPU cloud revenue attached to GB300 infrastructure, not a landlord-style lease. It should be modeled like a compute-services business with hardware depreciation and financing risk.",
+      "known_adjustments": [
+        "five-year Microsoft GPU cloud services term",
+        "about $9.7B total contract value including 20% prepayment",
+        "200 MW critical IT load at Childress Horizon 1-4",
+        "about $5.8B Dell GPU and ancillary equipment purchase"
+      ],
+      "missing_inputs": [
+        "GPU fleet depreciation schedule",
+        "gross margin by GPU cloud service type",
+        "financing cost and prepayment treatment",
+        "server refresh and residual value assumptions",
+        "NVIDIA warrant economics"
+      ],
+      "source_url": "https://iren.gcs-web.com/news-releases/news-release-details/iren-secures-97bn-ai-cloud-contract-microsoft"
+    },
+    {
+      "ticker": "RIOT",
+      "name": "Riot Platforms",
+      "contract": "AMD Rockdale lease",
+      "basis": "early data center lease",
+      "status": "needs_revenue_disclosure",
+      "contract_value_usd": null,
+      "critical_it_load_mw": 25,
+      "term_years": null,
+      "derived": {
+        "headline_value_per_mw_usd": null,
+        "annual_value_per_mw_usd": null
+      },
+      "interpretation": "Lease validates tenant interest, but the initial 25 MW scale and lack of disclosed revenue keep it below APLD/CORZ/IREN for now.",
+      "known_adjustments": [
+        "initial 25 MW scale is too small to anchor a platform valuation alone",
+        "tenant identity is valuable signal, but contract economics are undisclosed"
+      ],
+      "missing_inputs": [
+        "lease revenue",
+        "lease term",
+        "expansion timing to 200 MW",
+        "Riot capex obligations",
+        "tenant power/cooling cost responsibility"
+      ],
+      "source_url": "https://www.globenewswire.com/news-release/2026/01/16/3220348/0/en/riot-announces-fee-simple-acquisition-of-land-and-first-data-center-lease-with-amd-at-the-rockdale-site.html"
+    },
+    {
+      "ticker": "CLSK",
+      "name": "CleanSpark",
+      "contract": "AI/HPC power inventory",
+      "basis": "power option without named AI tenant",
+      "status": "no_contract_model",
+      "contract_value_usd": null,
+      "critical_it_load_mw": null,
+      "term_years": null,
+      "derived": {
+        "headline_value_per_mw_usd": null,
+        "annual_value_per_mw_usd": null
+      },
+      "interpretation": "The asset is a power option until a named tenant, lease, LOI, or project financing package appears.",
+      "known_adjustments": [
+        "power inventory may be valuable, but the market needs tenant and financing evidence"
+      ],
+      "missing_inputs": [
+        "named AI/HPC tenant",
+        "binding lease or LOI",
+        "critical IT load allocation",
+        "project financing",
+        "expected RFS date"
+      ],
+      "source_url": "https://investors.cleanspark.com/news/news-details/2026/CleanSpark-Reports-Second-Fiscal-Quarter-2026-Results/default.aspx"
+    }
+  ],
+  "valuation_bridge": {
+    "title": "From Headline Revenue to Position Discipline",
+    "method": "Annualize disclosed contract revenue, normalize by critical IT MW, then separate lease/hosting economics from GPU cloud service economics. Treat every percentage below as a screening sensitivity, not a final valuation.",
+    "screening_cases": [
+      {
+        "ticker": "APLD",
+        "contract_ref": "Polaris Forge 3 hyperscaler lease",
+        "business_model": "colocation lease",
+        "headline_annual_revenue_usd": 500000000,
+        "headline_annual_revenue_per_mw_usd": 1666667,
+        "sensitivity": {
+          "project_cost_per_mw_usd": [10000000, 12500000, 15000000],
+          "cash_margin_after_power_opex_financing": [0.45, 0.6, 0.7],
+          "screening_net_yield_range": "5.0% to 11.7%"
+        },
+        "read": "APLD only becomes positionable if project financing lets the equity retain enough of the headline lease spread. The key unknown is not demand; it is funded delivery and shareholder capture.",
+        "position_gate": "No tactical position until campus-level capex, debt cost, equity dilution, and RFS penalty terms are reviewed."
+      },
+      {
+        "ticker": "APLD",
+        "contract_ref": "Polaris Forge 1 CoreWeave leases",
+        "business_model": "colocation lease",
+        "headline_annual_revenue_usd": 733333333,
+        "headline_annual_revenue_per_mw_usd": 1833333,
+        "sensitivity": {
+          "project_cost_per_mw_usd": [10000000, 12500000, 15000000],
+          "cash_margin_after_power_opex_financing": [0.45, 0.6, 0.7],
+          "screening_net_yield_range": "5.5% to 12.8%"
+        },
+        "read": "The CoreWeave leases are the cleaner proof of repeatability, but the equity still needs financing discipline. More MW does not automatically mean more per-share value.",
+        "position_gate": "Require evidence that later facilities are financed without excessive dilution and that lease economics survive construction delays."
+      },
+      {
+        "ticker": "CORZ",
+        "contract_ref": "CoreWeave HPC hosting contracts",
+        "business_model": "hosting / converted mining infrastructure",
+        "headline_annual_revenue_usd": 725000000,
+        "headline_annual_revenue_per_mw_usd": 1450000,
+        "sensitivity": {
+          "capex_credit_cap_per_mw_usd": 1500000,
+          "monthly_fee_credit_cap": 0.5,
+          "screening_net_yield_range": "not comparable until credit amortization schedule is known"
+        },
+        "read": "CORZ has strong contracted demand and may need less landlord-style development risk, but capex credits and CoreWeave concentration make headline revenue too generous.",
+        "position_gate": "Build a payment waterfall: monthly hosting fee, power cost, capex credit offset, company-funded capex, and debt service."
+      },
+      {
+        "ticker": "IREN",
+        "contract_ref": "Microsoft AI Cloud contract",
+        "business_model": "GPU cloud services",
+        "headline_annual_revenue_usd": 1940000000,
+        "headline_annual_revenue_per_mw_usd": 9700000,
+        "sensitivity": {
+          "gpu_and_equipment_purchase_usd": 5800000000,
+          "equipment_cost_per_mw_usd": 29000000,
+          "five_year_revenue_to_equipment_cost": "1.67x before operating cost, financing, tax, refresh and residual value"
+        },
+        "read": "IREN is the strongest validation signal but belongs in a separate GPU cloud bucket. Its annual revenue per MW looks huge because the company is supplying compute capacity, not just powered shell.",
+        "position_gate": "No comparison to APLD/CORZ until GPU depreciation, gross margin, prepayment accounting, financing cost, and utilization risk are modeled."
+      }
+    ],
+    "current_conclusion": {
+      "label": "research_complete_enough_for_watchlist_not_position",
+      "summary": "The thesis is now investable enough to keep APLD, IREN, and CORZ on a priority watchlist. It is not yet complete enough for automatic buying because the shareholder-capture layer is still missing.",
+      "next_build": "Add company-level valuation bridge: enterprise value, net debt, contracted MW, EV/MW, annualized revenue/MW, estimated net yield, and dilution-adjusted per-share capture."
+    }
+  },
+  "company_valuation_bridge": {
+    "title": "Company-Level Miner / AI Hosting Valuation Bridge",
+    "as_of": "2026-05-28",
+    "model_type": "market_cap_screening",
+    "warning": "This is a market-cap screening model, not a full DCF. Enterprise value, net debt, restricted cash, warrants, construction financing, taxes, and dilution still need to be added before any position-size decision.",
+    "market_data_source": "web.finance snapshot, latest trade time 2026-05-28 00:15 UTC",
+    "method": [
+      "Use current market capitalization as a rough equity-value denominator.",
+      "For contracted names, divide market cap by disclosed annualized contract revenue.",
+      "For uncontracted power-option names, estimate annual revenue if 300 MW / 600 MW / 700 MW were leased at the observed APLD-CORZ annual revenue-per-MW range.",
+      "Use cash-margin scenarios only as a screen; they are not net income and do not include dilution or debt amortization."
+    ],
+    "lease_revenue_per_mw_assumption_usd": {
+      "low": 1450000,
+      "base": 1666667,
+      "high": 1833333,
+      "basis": "Low approximates CORZ annualized CoreWeave hosting revenue per MW; base approximates APLD Polaris Forge 3; high approximates APLD CoreWeave leases."
+    },
+    "companies": [
+      {
+        "ticker": "APLD",
+        "name": "Applied Digital",
+        "market_cap_usd": 13811505446,
+        "model_bucket": "contracted_colocation_developer",
+        "contracted_or_screened_mw": 1200,
+        "annualized_revenue_usd": 2066666667,
+        "annualized_revenue_per_mw_usd": 1722222,
+        "market_cap_to_annualized_revenue": 6.68,
+        "market_cap_per_mw_usd": 11509588,
+        "cash_margin_scenarios": [
+          {
+            "case": "bear",
+            "margin_after_power_opex_financing": 0.45,
+            "screened_cash_usd": 930000000,
+            "screened_cash_yield_on_market_cap": 0.0673
+          },
+          {
+            "case": "base",
+            "margin_after_power_opex_financing": 0.6,
+            "screened_cash_usd": 1240000000,
+            "screened_cash_yield_on_market_cap": 0.0898
+          },
+          {
+            "case": "bull",
+            "margin_after_power_opex_financing": 0.7,
+            "screened_cash_usd": 1446666667,
+            "screened_cash_yield_on_market_cap": 0.1047
+          }
+        ],
+        "read": "Best contracted pure-play AI factory developer in the set, but current equity value already prices a lot of successful delivery. It only gets interesting if financing is non-destructive and project-level margins survive construction delays.",
+        "decision": "priority_watchlist_no_buy_without_financing_model",
+        "next_required_inputs": [
+          "Net debt and restricted cash",
+          "Campus-level capex per MW",
+          "Debt cost, collateral and maturity schedule",
+          "Share count after financing",
+          "RFS penalties and tenant options"
+        ]
+      },
+      {
+        "ticker": "IREN",
+        "name": "IREN Limited",
+        "market_cap_usd": 22640526500,
+        "model_bucket": "gpu_cloud_services",
+        "contracted_or_screened_mw": 200,
+        "annualized_revenue_usd": 1940000000,
+        "annualized_revenue_per_mw_usd": 9700000,
+        "market_cap_to_annualized_revenue": 11.67,
+        "market_cap_per_mw_usd": 113202633,
+        "gpu_and_equipment_purchase_usd": 5800000000,
+        "five_year_contract_revenue_usd": 9700000000,
+        "revenue_to_equipment_purchase": 1.67,
+        "cash_margin_scenarios": [
+          {
+            "case": "bear",
+            "gross_cash_margin_before_gpu_recovery": 0.35,
+            "five_year_gross_cash_usd": 3395000000,
+            "gross_cash_after_equipment_purchase_usd": -2405000000
+          },
+          {
+            "case": "base",
+            "gross_cash_margin_before_gpu_recovery": 0.45,
+            "five_year_gross_cash_usd": 4365000000,
+            "gross_cash_after_equipment_purchase_usd": -1435000000
+          },
+          {
+            "case": "bull",
+            "gross_cash_margin_before_gpu_recovery": 0.6,
+            "five_year_gross_cash_usd": 5820000000,
+            "gross_cash_after_equipment_purchase_usd": 20000000
+          }
+        ],
+        "read": "The Microsoft contract is very strong validation, but the economics are hardware-heavy. On a simple equipment-recovery screen, IREN needs high gross cash margin, residual GPU value, cheap financing, or follow-on contracts to justify treating the current market cap as cheap.",
+        "decision": "strong_validation_but_valuation_crowded",
+        "next_required_inputs": [
+          "GPU useful life and residual value",
+          "Financing cost and prepayment accounting",
+          "Expected utilization and service gross margin",
+          "NVIDIA warrant dilution",
+          "Follow-on contract pipeline beyond Microsoft"
+        ]
+      },
+      {
+        "ticker": "CORZ",
+        "name": "Core Scientific",
+        "market_cap_usd": 8783179200,
+        "model_bucket": "contracted_hosting_conversion",
+        "contracted_or_screened_mw": 500,
+        "annualized_revenue_usd": 725000000,
+        "annualized_revenue_per_mw_usd": 1450000,
+        "capex_credit_cap_usd": 750000000,
+        "credit_adjusted_total_revenue_usd": 7950000000,
+        "credit_adjusted_annual_revenue_usd": 662500000,
+        "market_cap_to_annualized_revenue": 12.11,
+        "market_cap_to_credit_adjusted_annual_revenue": 13.26,
+        "market_cap_per_mw_usd": 17566358,
+        "cash_margin_scenarios": [
+          {
+            "case": "bear",
+            "margin_after_power_opex_credit_drag": 0.45,
+            "screened_cash_usd": 298125000,
+            "screened_cash_yield_on_market_cap": 0.0339
+          },
+          {
+            "case": "base",
+            "margin_after_power_opex_credit_drag": 0.6,
+            "screened_cash_usd": 397500000,
+            "screened_cash_yield_on_market_cap": 0.0453
+          },
+          {
+            "case": "bull",
+            "margin_after_power_opex_credit_drag": 0.7,
+            "screened_cash_usd": 463750000,
+            "screened_cash_yield_on_market_cap": 0.0528
+          }
+        ],
+        "read": "Most modelable contracted hosting name. The problem is not evidence; it is whether the CoreWeave revenue stream remains attractive after capex credits, power cost, customer concentration and balance-sheet discount.",
+        "decision": "modelable_but_not_cheap_on_credit_adjusted_screen",
+        "next_required_inputs": [
+          "Monthly capex-credit amortization schedule",
+          "Power cost pass-through mechanics",
+          "Company-funded conversion capex",
+          "Debt and lease liabilities",
+          "CoreWeave concentration discount"
+        ]
+      },
+      {
+        "ticker": "RIOT",
+        "name": "Riot Platforms",
+        "market_cap_usd": 9364997133,
+        "model_bucket": "power_option_with_small_initial_lease",
+        "contracted_or_screened_mw": 25,
+        "approved_power_mw": 1700,
+        "market_cap_per_approved_power_mw_usd": 5508822,
+        "current_named_ai_mw": 25,
+        "named_ai_mw_as_percent_of_approved_power": 0.0147,
+        "option_scenarios": [
+          {
+            "case": "current_amd_25mw",
+            "screened_mw": 25,
+            "potential_annual_revenue_low_usd": 36250000,
+            "potential_annual_revenue_base_usd": 41666675,
+            "potential_annual_revenue_high_usd": 45833325,
+            "market_cap_to_base_revenue": 224.76
+          },
+          {
+            "case": "amd_expands_to_200mw",
+            "screened_mw": 200,
+            "potential_annual_revenue_low_usd": 290000000,
+            "potential_annual_revenue_base_usd": 333333400,
+            "potential_annual_revenue_high_usd": 366666600,
+            "market_cap_to_base_revenue": 28.09
+          },
+          {
+            "case": "rockdale_700mw_converted",
+            "screened_mw": 700,
+            "potential_annual_revenue_low_usd": 1015000000,
+            "potential_annual_revenue_base_usd": 1166666900,
+            "potential_annual_revenue_high_usd": 1283333100,
+            "market_cap_to_base_revenue": 8.03
+          }
+        ],
+        "read": "RIOT has real power optionality, but the current named AI lease is too small to justify an AI hosting valuation. The stock needs AMD expansion, another tenant, or financing evidence before the model can graduate from option value.",
+        "decision": "wait_for_200mw_plus_binding_ai_revenue",
+        "next_required_inputs": [
+          "AMD lease revenue and term",
+          "AMD expansion decision",
+          "Rockdale conversion capex",
+          "Corsicana AI/HPC LOI or lease",
+          "BTC treasury and mining contribution sensitivity"
+        ]
+      },
+      {
+        "ticker": "CLSK",
+        "name": "CleanSpark",
+        "market_cap_usd": 4110779490,
+        "model_bucket": "cheap_power_option_without_tenant",
+        "contracted_or_screened_mw": 0,
+        "controlled_power_mw": 1800,
+        "market_cap_per_controlled_power_mw_usd": 2283766,
+        "option_scenarios": [
+          {
+            "case": "texas_300mw_tenant",
+            "screened_mw": 300,
+            "potential_annual_revenue_low_usd": 435000000,
+            "potential_annual_revenue_base_usd": 500000100,
+            "potential_annual_revenue_high_usd": 549999900,
+            "market_cap_to_base_revenue": 8.22
+          },
+          {
+            "case": "texas_600mw_expansion",
+            "screened_mw": 600,
+            "potential_annual_revenue_low_usd": 870000000,
+            "potential_annual_revenue_base_usd": 1000000200,
+            "potential_annual_revenue_high_usd": 1099999800,
+            "market_cap_to_base_revenue": 4.11
+          },
+          {
+            "case": "full_1800mw_option",
+            "screened_mw": 1800,
+            "potential_annual_revenue_low_usd": 2610000000,
+            "potential_annual_revenue_base_usd": 3000000600,
+            "potential_annual_revenue_high_usd": 3299999400,
+            "market_cap_to_base_revenue": 1.37
+          }
+        ],
+        "read": "CLSK is the cheapest power-option screen in the set, but it has the weakest AI revenue proof. The upside is large only if a named AI tenant converts power inventory into contracted revenue.",
+        "decision": "research_only_until_named_ai_tenant",
+        "next_required_inputs": [
+          "Named AI/HPC tenant or LOI",
+          "Binding lease economics",
+          "Texas site conversion capex",
+          "Grid and interconnect timeline",
+          "BTC mining downside case"
+        ]
+      }
+    ],
+    "ranking": [
+      {
+        "rank": 1,
+        "ticker": "CORZ",
+        "reason": "Most modelable contracted hosting economics, but not obviously cheap after capex-credit adjustment."
+      },
+      {
+        "rank": 2,
+        "ticker": "APLD",
+        "reason": "Best contracted growth story, but financing and dilution decide whether shareholders capture the value."
+      },
+      {
+        "rank": 3,
+        "ticker": "IREN",
+        "reason": "Strongest validation signal, but GPU cloud economics are capital-heavy and valuation is crowded."
+      },
+      {
+        "rank": 4,
+        "ticker": "CLSK",
+        "reason": "Cheapest power option, but no named AI tenant yet."
+      },
+      {
+        "rank": 5,
+        "ticker": "RIOT",
+        "reason": "Large power base and AMD signal, but current named AI MW is tiny versus market cap."
+      }
+    ],
+    "decision": {
+      "label": "no_buy_signal_after_screening",
+      "summary": "After screening all five names, none clears an automatic buy threshold. CORZ is the first model to refine, APLD is the first financing diligence target, IREN requires a separate GPU cloud model, and RIOT/CLSK remain option-value watches until larger binding AI contracts appear.",
+      "position_rule": "Allow watchlist only. Starter probe requires ticker-specific missing inputs to be resolved and a price that leaves room for execution risk."
+    }
+  },
+  "decision": {
+    "label": "build_net_yield_model_before_position",
+    "summary": "APLD and CORZ are comparable as lease/hosting infrastructure names after annualization. IREN is the strongest customer-validation signal but is not directly comparable because its revenue includes GPU cloud services and hardware economics. RIOT and CLSK remain watch-only until revenue, tenant, and financing detail improves.",
+    "next_required_model": "Convert annualized headline revenue into net annual cash yield after capex, power, opex, financing, capex credits, depreciation, and dilution; keep GPU cloud revenue separate from colocation lease revenue."
+  }
+}

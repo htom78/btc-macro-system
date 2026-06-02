@@ -1,0 +1,90 @@
+{
+  "topic_id": "ai-physical-bottlenecks",
+  "title": "Core / Tactical Portfolio Discipline",
+  "as_of": "2026-05-28",
+  "principle": "BTC 和 MSTR 可以作为长期信仰仓；AI 物理瓶颈资产默认只能进入研究仓或战术仓，不能自动升级为长期仓。",
+  "core_holdings": [
+    {
+      "ticker": "BTC",
+      "role": "core_long",
+      "current_snapshot": {
+        "price_usd": 74158,
+        "latest_trade_utc": "2026-05-28",
+        "source": "web.finance snapshot"
+      },
+      "rule": "长期持有，不因单篇文章、单条产业链叙事或短期 MA 信号改变核心仓逻辑。"
+    },
+    {
+      "ticker": "MSTR",
+      "role": "core_or_satellite_btc_leverage",
+      "current_snapshot": {
+        "price_usd": 154.2,
+        "market_cap_usd": 51489384600,
+        "latest_trade_utc": "2026-05-28T00:15:00Z",
+        "source": "web.finance snapshot"
+      },
+      "rule": "可视为 BTC 杠杆表达，但必须单独监控溢价、债务结构、股本稀释和 BTC 回撤放大效应。"
+    }
+  ],
+  "tactical_buckets": [
+    {
+      "name": "research_only",
+      "max_portfolio_weight": 0,
+      "use_for": "叙事强但证据不足、没有绑定客户、没有价格纪律的标的。",
+      "examples": ["CLSK before named AI customer", "CPO microcaps after social-media spike"]
+    },
+    {
+      "name": "starter_probe",
+      "max_portfolio_weight": 0.005,
+      "use_for": "已有一级证据，但估值拥挤或执行风险高，只能用来迫使自己持续跟踪。",
+      "entry_gate": "至少两条一级证据 + 明确失效条件 + 价格不在短期社媒脉冲后追高。"
+    },
+    {
+      "name": "tactical_position",
+      "max_portfolio_weight": 0.02,
+      "use_for": "合同、产能、融资和估值都能闭环，且有明确催化剂窗口。",
+      "entry_gate": "资产卡 priority >= 75，且完成合同经济性和估值复核。"
+    },
+    {
+      "name": "theme_basket_cap",
+      "max_portfolio_weight": 0.08,
+      "use_for": "整个 AI 物理瓶颈主题的上限。",
+      "entry_gate": "除 BTC/MSTR 外，所有 AI bottleneck 单票合计不得突破主题上限。"
+    }
+  ],
+  "asset_actions": [
+    {
+      "ticker": "APLD",
+      "action": "deep_dive_before_probe",
+      "position_rule": "不追高；先完成项目融资、RFS 时间表和单位经济性复核。若复核通过，最多 starter_probe。"
+    },
+    {
+      "ticker": "IREN",
+      "action": "deep_dive_before_probe",
+      "position_rule": "微软合同和 NVIDIA 合作是强验证，但估值拥挤；先拆 AI Cloud ARR、GPU delivery 和 BTC beta。"
+    },
+    {
+      "ticker": "CORZ",
+      "action": "contract_model_required",
+      "position_rule": "优先建 CoreWeave 合同模型，扣除 capex credits 和电力成本后再判断是否有 tactical_position 条件。"
+    },
+    {
+      "ticker": "RIOT",
+      "action": "wait_for_expansion",
+      "position_rule": "只观察 AMD 25MW 是否扩到更大规模；没有扩容或更多租户前不升级。"
+    },
+    {
+      "ticker": "CLSK",
+      "action": "research_only",
+      "position_rule": "目前更像 power inventory option；等 named tenant、LOI、lease 或 financing evidence。"
+    }
+  ],
+  "kill_switches": [
+    "AI hosting 合同被证明是非绑定、可取消或经济性显著低于 headline。",
+    "融资条款导致重大稀释，且单位经济性无法覆盖资本成本。",
+    "BTC 大幅回撤导致矿企股价行为重新完全由 BTC beta 主导。",
+    "核心客户信用或付款能力受损。",
+    "主题在中文/英文社媒中极度拥挤，而没有新增一级证据。"
+  ],
+  "next_decision_required": "先完成 APLD / IREN / CORZ 三个合同经济性模型，再决定是否允许任何 starter_probe。"
+}

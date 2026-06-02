@@ -1,0 +1,1586 @@
+{
+  "topic": {
+    "id": "ai-physical-bottlenecks",
+    "title": "AI Physical Bottlenecks",
+    "subtitle": "From AI narratives to tradable physical constraints",
+    "as_of": "2026-05-28",
+    "research_question": "AI 基础设施扩张时，哪些沉默但不可替代的物理环节会被市场重新定价？",
+    "source_notes": [
+      {
+        "title": "PANews: Serenity vs Leopold",
+        "url": "https://www.panewslab.com/zh/articles/019e69f3-28a3-72ca-9edc-409b4fbb4a50",
+        "use": "Narrative input: AI physical bottleneck investing."
+      },
+      {
+        "title": "BruceBlue X Article",
+        "url": "https://x.com/BruceBlue/status/2058901845402325243",
+        "use": "Narrative input: Serenity chokepoint method."
+      },
+      {
+        "title": "NVIDIA Silicon Photonics",
+        "url": "https://www.nvidia.com/en-us/networking/products/silicon-photonics/",
+        "use": "Primary evidence for CPO direction."
+      },
+      {
+        "title": "IEA Key Questions on Energy and AI",
+        "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary",
+        "use": "Primary evidence for AI electricity and grid bottlenecks."
+      }
+    ],
+    "theses": [
+      {
+        "id": "ai-power-miner-hosting",
+        "title": "AI Power Constraint / BTC Miner Hosting",
+        "status": "watch",
+        "investment_question": "如果 AI 数据中心的真正瓶颈转向电力、并网、土地和冷却，拥有电力接入与站点资源的 BTC 矿企是否会从 BTC beta 变成 AI hosting 折价资产？",
+        "market_mispricing": "市场通常把矿企当作高 beta BTC 代理资产，但 AI hosting 合同可能把部分公司改造成电力和数据中心资产。",
+        "candidate_assets": [
+          {
+            "ticker": "IREN",
+            "name": "IREN Limited",
+            "role": "BTC miner / AI data center hosting pivot",
+            "tradability_note": "Liquid U.S.-listed equity, still BTC-sensitive."
+          },
+          {
+            "ticker": "CORZ",
+            "name": "Core Scientific",
+            "role": "Mining and AI hosting infrastructure",
+            "tradability_note": "Contract quality and post-bankruptcy capital structure matter."
+          },
+          {
+            "ticker": "CLSK",
+            "name": "CleanSpark",
+            "role": "Power-heavy mining platform",
+            "tradability_note": "High BTC exposure; AI optionality needs proof."
+          },
+          {
+            "ticker": "APLD",
+            "name": "Applied Digital",
+            "role": "Data center / AI infrastructure exposure",
+            "tradability_note": "Execution and financing risk are central."
+          }
+        ],
+        "claims": [
+          "AI data center electricity demand is growing faster than grid connection and equipment delivery cycles.",
+          "Power-secured sites become scarce assets if compute demand persists.",
+          "Some BTC miners can convert part of their footprint into AI hosting at higher and more stable economics."
+        ],
+        "evidence": [
+          {
+            "type": "primary",
+            "strength": 5,
+            "title": "IEA projects data center electricity consumption roughly doubling from 2025 to 2030, with AI-focused data centers growing faster.",
+            "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary"
+          },
+          {
+            "type": "primary",
+            "strength": 4,
+            "title": "Goldman Sachs estimates data center power demand can rise materially by 2030 and highlights grid bottlenecks.",
+            "url": "https://www.goldmansachs.com/insights/articles/ai-to-drive-165-increase-in-data-center-power-demand-by-2030"
+          },
+          {
+            "type": "filing",
+            "strength": 3,
+            "title": "Situational Awareness LP 13F shows long exposure to power, storage, CoreWeave, and BTC miner-related assets.",
+            "url": "https://www.sec.gov/Archives/edgar/data/2045724/000204572426000008/0002045724-26-000008.txt"
+          }
+        ],
+        "counter_evidence": [
+          "Miner AI hosting economics may be overstated if contracts are non-binding or capex-heavy.",
+          "BTC price drawdowns can dominate the equity before AI revenue becomes meaningful.",
+          "Power assets may be stranded if interconnection, cooling, or customer credit quality is weak.",
+          "Market may already have repriced the best-known AI hosting pivots."
+        ],
+        "watch_triggers": [
+          "Signed AI hosting contracts with creditworthy counterparties, duration, MW, and unit economics disclosed.",
+          "Capex financing terms and dilution risk.",
+          "BTC price drawdown resilience relative to pure miners.",
+          "Gross margin shift from self-mining to contracted hosting."
+        ],
+        "scores": {
+          "demand_strength": 4.7,
+          "bottleneck_power": 4.2,
+          "evidence_quality": 4.0,
+          "market_mispricing": 3.3,
+          "catalyst_clarity": 3.8,
+          "tradability": 4.0,
+          "risk_control": 2.8
+        },
+        "investability_score": 78.1,
+        "decision": {
+          "label": "active_candidate",
+          "description": "可进入主动跟踪或小仓试错候选，但仍需价格和仓位纪律。"
+        },
+        "evidence_summary": {
+          "evidence_count": 3,
+          "counter_evidence_count": 4,
+          "avg_evidence_strength": 4.0,
+          "has_primary_evidence": true
+        }
+      },
+      {
+        "id": "cpo-silicon-photonics",
+        "title": "CPO / Silicon Photonics Bottleneck",
+        "status": "watch",
+        "investment_question": "如果 AI 集群互联从铜缆和可插拔光模块继续走向 CPO，最上游的光源、SOI、外延设备和对准组件是否会被重新定价？",
+        "market_mispricing": "市场更容易定价 GPU、HBM 和光模块成品，较少系统定价上游材料、设备和光源环节，尤其是非美中小市值公司。",
+        "candidate_assets": [
+          {
+            "ticker": "SIVE.ST",
+            "name": "Sivers Semiconductors",
+            "role": "External laser source / photonics supplier",
+            "tradability_note": "Small-cap, high volatility, foreign listing."
+          },
+          {
+            "ticker": "SOI.PA",
+            "name": "Soitec",
+            "role": "Photonics-SOI substrate supplier",
+            "tradability_note": "Larger and more liquid than many Serenity-style microcaps."
+          },
+          {
+            "ticker": "ALRIB.PA",
+            "name": "Riber",
+            "role": "MBE equipment supplier",
+            "tradability_note": "Niche equipment exposure; liquidity must be checked."
+          },
+          {
+            "ticker": "3363.TW",
+            "name": "FOCI / 波若威",
+            "role": "Optical alignment / fiber array exposure",
+            "tradability_note": "Taiwan listing; local liquidity and access matter."
+          }
+        ],
+        "claims": [
+          "AI scale-out networking power and bandwidth constraints push more optical integration into the package.",
+          "CPO adoption creates upstream bottlenecks outside the visible GPU/HBM trade.",
+          "Specialized suppliers may see nonlinear demand if CPO moves from roadmap to volume deployment."
+        ],
+        "evidence": [
+          {
+            "type": "primary",
+            "strength": 5,
+            "title": "NVIDIA describes CPO switches with integrated silicon photonics for agentic AI and million-GPU clusters.",
+            "url": "https://www.nvidia.com/en-us/networking/products/silicon-photonics/"
+          },
+          {
+            "type": "primary",
+            "strength": 4,
+            "title": "Soitec fiscal 2026 release says Photonics-SOI grew with AI cloud infrastructure and CPO traction.",
+            "url": "https://www.soitec.com/home/group/newsroom/press-releases/content/2026/05/27/soitec-reports-fiscal-2026-full-year-results"
+          },
+          {
+            "type": "primary",
+            "strength": 3,
+            "title": "Sivers announced collaboration with Jabil on energy-efficient 1.6T optical transceiver module.",
+            "url": "https://www.sivers-semiconductors.com/press/sivers-semiconductors-collaborates-with-jabil-on-energy-efficient-1-6t-pluggable-optical-transceiver-module/"
+          }
+        ],
+        "counter_evidence": [
+          "CPO may take longer to ramp than market narratives expect.",
+          "Advanced copper, linear pluggable optics, or alternative optical architectures could delay the bottleneck.",
+          "Some suppliers may be technically relevant but lack pricing power, gross margin conversion, or customer concentration resilience.",
+          "Many names are low-liquidity and can become pump-and-dump-like after social media attention."
+        ],
+        "watch_triggers": [
+          "NVIDIA / Broadcom / TSMC roadmap confirmations moving from demo to volume dates.",
+          "Customer design wins, capacity expansion, backlog, or margin inflection at upstream suppliers.",
+          "Sharp divergence between optical upstream stocks and mainstream semiconductor indices.",
+          "Evidence that CPO bill of materials is consolidating around named suppliers."
+        ],
+        "scores": {
+          "demand_strength": 4.5,
+          "bottleneck_power": 4.0,
+          "evidence_quality": 3.8,
+          "market_mispricing": 3.5,
+          "catalyst_clarity": 3.4,
+          "tradability": 2.4,
+          "risk_control": 2.6
+        },
+        "investability_score": 72.0,
+        "decision": {
+          "label": "watchlist",
+          "description": "研究方向成立，等待更好价格、催化剂或关键证据。"
+        },
+        "evidence_summary": {
+          "evidence_count": 3,
+          "counter_evidence_count": 4,
+          "avg_evidence_strength": 4.0,
+          "has_primary_evidence": true
+        }
+      },
+      {
+        "id": "humanoid-rare-earths",
+        "title": "Humanoid Robotics / Rare Earth Supply Chain",
+        "status": "research",
+        "investment_question": "如果人形机器人长期放量，稀土磁材、减速器、执行器和亚洲硬件供应链是否会成为比机器人整机更好的投资入口？",
+        "market_mispricing": "市场更愿意交易机器人整机和 AI 软件叙事，较少提前定价长期材料和精密硬件瓶颈。",
+        "candidate_assets": [
+          {
+            "ticker": "LYC.AX",
+            "name": "Lynas Rare Earths",
+            "role": "Rare earth processing outside China",
+            "tradability_note": "Relatively liquid but commodity-cycle exposed."
+          },
+          {
+            "ticker": "MP",
+            "name": "MP Materials",
+            "role": "U.S. rare earth mining and processing exposure",
+            "tradability_note": "Policy and execution risk."
+          },
+          {
+            "ticker": "6324.T",
+            "name": "Harmonic Drive Systems",
+            "role": "Precision reducers",
+            "tradability_note": "Japan listing; valuation sensitivity."
+          },
+          {
+            "ticker": "002050.SZ",
+            "name": "Sanhua Intelligent Controls",
+            "role": "Actuator / thermal and control components",
+            "tradability_note": "China A-share access and policy risk."
+          }
+        ],
+        "claims": [
+          "Humanoid robots require tight integration of AI software with precision hardware and magnetic materials.",
+          "Rare earth and actuator supply chains could become geopolitical bottlenecks.",
+          "Hardware suppliers may capture more durable value than many robot OEM narratives."
+        ],
+        "evidence": [
+          {
+            "type": "primary",
+            "strength": 4,
+            "title": "Morgan Stanley estimates humanoids could approach 1 billion units by 2050 in a high-adoption scenario.",
+            "url": "https://www.morganstanley.com/insights/articles/humanoid-robot-market-5-trillion-by-2050"
+          },
+          {
+            "type": "news",
+            "strength": 3,
+            "title": "Tesla Optimus production was reported as affected by rare earth magnet restrictions, highlighting supply chain sensitivity.",
+            "url": "https://www.cnbc.com/2025/04/23/teslas-optimus-hit-by-chinas-rare-earth-restrictions-says-musk.html"
+          }
+        ],
+        "counter_evidence": [
+          "The adoption curve is far out and highly uncertain.",
+          "Robot form factors may reduce rare earth intensity or avoid humanoid designs.",
+          "Commodity supply responses can dilute scarcity economics over long horizons.",
+          "Current valuations may already price a very optimistic robot future."
+        ],
+        "watch_triggers": [
+          "OEM production commitments moving from demos to multi-year procurement.",
+          "Rare earth export controls or processing capacity announcements.",
+          "Unit economics: bill of materials, actuator count, magnet mass per robot.",
+          "Customer evidence for non-Tesla industrial humanoid deployments."
+        ],
+        "scores": {
+          "demand_strength": 3.2,
+          "bottleneck_power": 3.8,
+          "evidence_quality": 2.7,
+          "market_mispricing": 3.0,
+          "catalyst_clarity": 2.2,
+          "tradability": 3.2,
+          "risk_control": 2.5
+        },
+        "investability_score": 60.0,
+        "decision": {
+          "label": "watchlist",
+          "description": "研究方向成立，等待更好价格、催化剂或关键证据。"
+        },
+        "evidence_summary": {
+          "evidence_count": 2,
+          "counter_evidence_count": 4,
+          "avg_evidence_strength": 3.5,
+          "has_primary_evidence": true
+        }
+      },
+      {
+        "id": "ai-infra-relative-value",
+        "title": "AI Infrastructure Relative Value",
+        "status": "research",
+        "investment_question": "如果 AI 的真实落地速度受电网、土地、数据中心、存储和散热约束，是否存在做多物理基建/存储/矿企、低配或对冲拥挤半导体 beta 的相对价值机会？",
+        "market_mispricing": "市场可能把芯片出货曲线线性外推，却低估电网接入、数据中心建设和存储供给的长周期；但这个错配可能长期存在，时间点很难交易。",
+        "candidate_assets": [
+          {
+            "ticker": "SNDK",
+            "name": "SanDisk",
+            "role": "Storage / memory infrastructure exposure",
+            "tradability_note": "Needs standalone valuation and cycle analysis."
+          },
+          {
+            "ticker": "CRWV",
+            "name": "CoreWeave",
+            "role": "AI cloud infrastructure",
+            "tradability_note": "High narrative intensity; valuation sensitivity."
+          },
+          {
+            "ticker": "IREN",
+            "name": "IREN Limited",
+            "role": "Power-secured BTC miner / AI hosting option",
+            "tradability_note": "BTC beta and AI hosting economics must be separated."
+          },
+          {
+            "ticker": "SMH",
+            "name": "VanEck Semiconductor ETF",
+            "role": "Semiconductor beta hedge candidate",
+            "tradability_note": "Hedging needs options cost, expiry, and sizing discipline."
+          }
+        ],
+        "claims": [
+          "AI demand may remain strong while physical infrastructure throttles near-term deployment.",
+          "Storage, power-secured sites, and AI cloud infrastructure can capture scarcity economics before broad chip beta does.",
+          "A relative-value lens may reduce dependence on one high-beta microcap story."
+        ],
+        "evidence": [
+          {
+            "type": "filing",
+            "strength": 4,
+            "title": "Situational Awareness LP Q1 2026 13F discloses long exposure to CoreWeave, SanDisk, miners and large put positions on semiconductor beta.",
+            "url": "https://www.sec.gov/Archives/edgar/data/2045724/000204572426000008/0002045724-26-000008.txt"
+          },
+          {
+            "type": "primary",
+            "strength": 5,
+            "title": "IEA highlights electricity, grid connection and equipment constraints around AI data center growth.",
+            "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary"
+          },
+          {
+            "type": "narrative",
+            "strength": 2,
+            "title": "PANews frames Leopold's strategy as infrastructure arbitrage against slower physical buildout.",
+            "url": "https://www.panewslab.com/zh/articles/019e69f3-28a3-72ca-9edc-409b4fbb4a50"
+          }
+        ],
+        "counter_evidence": [
+          "Semiconductor leaders can keep beating earnings longer than physical bottleneck investors can hold puts.",
+          "13F put notional is not the same as net short exposure, premium paid, or expected loss.",
+          "CoreWeave, storage and miner equities may already embed aggressive AI infrastructure expectations.",
+          "This thesis is complex and can fail through timing even if the physical constraint is directionally correct."
+        ],
+        "watch_triggers": [
+          "Semi capex guidance diverging from grid/data center deployment reality.",
+          "Storage pricing, backlog and margin inflection at storage suppliers.",
+          "AI hosting contract disclosures from power-secured miners.",
+          "Option implied volatility and put-spread cost on semiconductor beta.",
+          "Evidence that data center interconnection queues are worsening or improving."
+        ],
+        "scores": {
+          "demand_strength": 4.4,
+          "bottleneck_power": 4.1,
+          "evidence_quality": 3.0,
+          "market_mispricing": 2.0,
+          "catalyst_clarity": 1.5,
+          "tradability": 2.5,
+          "risk_control": 1.2
+        },
+        "investability_score": 57.5,
+        "decision": {
+          "label": "research_backlog",
+          "description": "概念值得保留，但证据、时点或可交易性不足。"
+        },
+        "evidence_summary": {
+          "evidence_count": 3,
+          "counter_evidence_count": 4,
+          "avg_evidence_strength": 3.67,
+          "has_primary_evidence": true
+        }
+      }
+    ],
+    "generated_at": "2026-05-28T03:00:56.128858+00:00",
+    "weights": {
+      "demand_strength": 0.17,
+      "bottleneck_power": 0.18,
+      "evidence_quality": 0.18,
+      "market_mispricing": 0.15,
+      "catalyst_clarity": 0.12,
+      "tradability": 0.1,
+      "risk_control": 0.1
+    },
+    "cases": [
+      {
+        "id": "bruceblue-serenity-chokepoint-2026-05-25",
+        "topic_id": "ai-physical-bottlenecks",
+        "title": "BruceBlue: Serenity Chokepoint Method",
+        "source_type": "x_article",
+        "url": "https://x.com/BruceBlue/status/2058901845402325243",
+        "author": "BruceBlue",
+        "published_at": "2026-05-25T13:23:47Z",
+        "captured_at": "2026-05-28",
+        "input_summary": "文章把 Serenity 的价值从收益率和身份叙事中剥离出来，提炼为一种自下而上的供应链逆向工程方法：从 AI 集群、CPO、人形机器人等大趋势往下拆，寻找被少数公司控制、机构覆盖不足、但对系统运行不可替代的物理节点。",
+        "market_signal": "这是一条方法论信号，不是直接买入信号。它提示 AI 投资的 alpha 可能从显性龙头转向物理瓶颈资产，但文章中的收益率、身份与部分标的表现需要独立验证。",
+        "extracted_claims": [
+          "Serenity 的核心不是推荐股票，而是 Chokepoint Theory：寻找 AI 系统中沉默但不可替代的物理开关。",
+          "CPO / 硅光子路线可能把价值从 GPU 和光模块成品扩散到外部光源、SOI、MBE、高纯材料和光学对准。",
+          "人形机器人如果长期放量，稀土磁材、减速器、执行器等硬件供应链可能比整机叙事更有投资含义。",
+          "大型机构覆盖范围、市值门槛和区域分工会制造中小市值跨市场资产的信息真空。",
+          "微盘和低流动性资产在社媒传播后会同时具备重估机会和踩踏风险。"
+        ],
+        "investment_translation": [
+          {
+            "thesis_id": "cpo-silicon-photonics",
+            "impact": "strengthen_watchlist",
+            "rationale": "文章提供了较完整的 CPO 上游拆链路径，但仍需要用官方路线图、客户订单、产能和毛利证明来替代社媒声量。"
+          },
+          {
+            "thesis_id": "humanoid-rare-earths",
+            "impact": "keep_research",
+            "rationale": "机器人和稀土逻辑方向成立，但时间跨度过长，投资上必须等更近端的产量承诺、BOM 数据和供应合同。"
+          },
+          {
+            "thesis_id": "ai-power-miner-hosting",
+            "impact": "indirect_support",
+            "rationale": "文章本身不主讲电力和矿企，但与 Leopold 的物理瓶颈框架互补，说明 AI 投资应从软件叙事转向物理约束。"
+          }
+        ],
+        "red_flags": [
+          "收益率截图和身份背景不能作为投资证据，只能作为流量来源和叙事传播强度。",
+          "文章列出的多个标的已经被社媒传播重定价，进入时点可能从信息差变成流动性接力。",
+          "CPO 被当作唯一技术路径时存在路线依赖风险，先进铜缆、LPO/LRO 或其他互联方案都可能影响节奏。",
+          "跨市场小票的可交易性、点差、仓位上限和退出通道必须先于故事本身。"
+        ],
+        "case_decision": {
+          "label": "convert_to_watchlist_inputs",
+          "action": "不直接跟单；把文章转成 CPO、机器人稀土、AI 物理瓶颈三条 watchlist 的证据和反证任务。",
+          "position_bias": "research_only_until_price_and_primary_evidence_confirm"
+        },
+        "next_actions": [
+          "为 SIVE.ST、SOI.PA、ALRIB.PA、3363.TW 建立单独资产卡，补充市值、流动性、近四季收入、毛利、订单和客户证据。",
+          "对 CPO 路线建立反证表：先进铜缆、LPO/LRO、传统 pluggable optics、客户自研光引擎。",
+          "把 Serenity 已经传播过的标的单独标记为 crowded，只有回撤或基本面新增证据才进入候选。",
+          "下一轮加入价格和成交量数据，区分“产业真瓶颈”和“社媒交易拥挤”。"
+        ]
+      },
+      {
+        "id": "panews-serenity-leopold-physical-limits-2026-05-27",
+        "topic_id": "ai-physical-bottlenecks",
+        "title": "PANews: Serenity vs Leopold AI Physical Limits",
+        "source_type": "article",
+        "url": "https://www.panewslab.com/zh/articles/019e69f3-28a3-72ca-9edc-409b4fbb4a50",
+        "author": "Jae / PANews",
+        "published_at": "2026-05-27T15:00:00Z",
+        "captured_at": "2026-05-28",
+        "input_summary": "文章把两类 AI 投资猎手放在同一个框架里：Serenity 从微观层面寻找 CPO、光源、衬底、材料等卡脖子环节；Leopold 从宏观层面押注电网、土地、数据中心、存储和 BTC 矿企等物理瓶颈。核心观点是 AI alpha 正从显性芯片龙头转向芯片背后的物理约束。",
+        "market_signal": "这篇比单独的 Serenity 文章更接近投资框架信号。它不仅提示微观供应链重估，也提示一种组合层面的相对价值判断：做多物理约束资产，警惕半导体板块估值与真实基建速度错配。",
+        "extracted_claims": [
+          "初代 AI 多头逻辑是买入英伟达，但当 H100 供不应求成为共识后，显性 alpha 会衰减。",
+          "Serenity 的紫苏叶理论对应微观卡点：市值小、流动性弱、但在特定工艺或材料环节不可替代的供应商。",
+          "CPO 可能是 AI 集群规模扩大后的关键路线，相关价值可能向 Sivers、Raspberry Pi、Soitec、NCI 等上游资产扩散。",
+          "Leopold 的框架强调 AGI/AI 发展的真正瓶颈不是模型，而是电网、土地、数据中心、散热和高带宽存储。",
+          "Situational Awareness LP 的 13F 被文章解读为：做多存储、CoreWeave、矿企和物理基础设施，同时用 put 对冲或做空半导体板块。",
+          "BTC 矿企可能被市场误定价为纯 BTC beta，但在 AI 数据中心短缺环境下也可能是折价的电力和站点资产。",
+          "两种策略共同风险是时间差、流动性和拥挤：微盘股怕踩踏，半导体空头怕估值持续更久。"
+        ],
+        "investment_translation": [
+          {
+            "thesis_id": "ai-power-miner-hosting",
+            "impact": "raise_priority",
+            "rationale": "PANews 明确把 Leopold 的矿企多头解释为 AI 算力中心折价替代品，这使矿企 AI hosting 成为最值得优先拆解的可交易 thesis。"
+          },
+          {
+            "thesis_id": "cpo-silicon-photonics",
+            "impact": "confirm_existing_watchlist",
+            "rationale": "文章复述了 CPO 从铜线到光进铜退的瓶颈逻辑，但没有提供新的一级证据；仍应保持 watchlist，而不是直接上调为买入。"
+          },
+          {
+            "thesis_id": "humanoid-rare-earths",
+            "impact": "not_material",
+            "rationale": "本文主要讨论 AI 算力基础设施，没有给机器人和稀土 thesis 增加实质新证据。"
+          },
+          {
+            "thesis_id": "ai-infra-relative-value",
+            "impact": "create_backlog",
+            "rationale": "文章隐含一条新的组合级 thesis：多物理基建和存储，空或低配拥挤半导体 beta。这个思路需要单独建模期权成本、时间差和财报轧空风险。"
+          }
+        ],
+        "red_flags": [
+          "文章对 Serenity 收益、身份和部分历史标的表现仍主要依赖二级叙事，不能直接当作证据。",
+          "13F 中 put 的披露价值是名义底层资产价值，不等同于真实净空头敞口、权利金成本或最大亏损。",
+          "Leopold 的物理瓶颈判断可以长期正确，但半导体估值回撤的时间点可能长期错误。",
+          "矿企转 AI hosting 需要区分真实绑定合同、融资能力、并网质量、冷却条件和客户信用，不能只看电力故事。",
+          "当中文媒体开始集中传播时，部分小票可能已经从研究真空切换到拥挤交易。"
+        ],
+        "case_decision": {
+          "label": "promote_miner_hosting_review",
+          "action": "把矿企 AI hosting 提升为下一轮优先研究；CPO 继续 watchlist；新增一个 AI 基建相对价值 thesis 到 backlog。",
+          "position_bias": "core_long_btc_mstr_only; all_other_ai_bottleneck_assets_research_or_tactical"
+        },
+        "next_actions": [
+          "把 IREN、CORZ、CLSK、RIOT、APLD 分别建资产卡，优先验证 AI hosting 合同、MW、客户、期限、capex 和融资稀释。",
+          "从 SEC 13F 重新拆 Situational Awareness LP：区分普通股、call、put、名义价值和真实可推断风险敞口。",
+          "为 ai-infra-relative-value 建立 thesis 草稿：做多物理基建/存储/矿企，警惕半导体拥挤估值，但先不进入执行。",
+          "把 Serenity 相关 CPO 标的标记为 crowded，等待一级证据或显著回撤后再评估。",
+          "在报告中保留一个规则：BTC / MSTR 可作为长期信仰仓，其余 AI 物理瓶颈资产默认只属于研究仓或战术仓。"
+        ]
+      }
+    ],
+    "asset_cards": [
+      {
+        "ticker": "APLD",
+        "name": "Applied Digital",
+        "decision": "priority_deep_dive",
+        "priority_score": 84,
+        "market_snapshot": {
+          "price_usd": 48.98,
+          "market_cap_usd": 13811505446,
+          "latest_trade_utc": "2026-05-28T00:15:00Z",
+          "source": "web.finance snapshot",
+          "note": "Quote snapshot only; verify live price before position sizing."
+        },
+        "thesis_read": "最像真正的数据中心开发商，而不只是矿企转型故事。合同可见度强，但估值、融资和建设执行风险也最高。",
+        "contract_status": "Strong contracted AI factory pipeline; CoreWeave and investment-grade hyperscaler leases.",
+        "power_and_capacity": "Reported 1,200 MW net contracted critical IT load across four AI Factory campuses and about 1,670 MW gross utility power.",
+        "key_facts": [
+          "Polaris Forge 3 adds a 300 MW critical IT load lease with a U.S. investment-grade hyperscaler.",
+          "Applied Digital says total contracted lease revenue is about $31B across four AI Factory campuses, or $73B if renewal options are exercised.",
+          "Polaris Forge 1 lease agreements with CoreWeave cover 400 MW of critical IT capacity."
+        ],
+        "evidence": [
+          {
+            "type": "primary",
+            "strength": 5,
+            "title": "May 2026 lease announcement: 300 MW critical IT load, $7.5B base-term revenue, 1.2 GW total contracted capacity.",
+            "url": "https://www.nasdaq.com/press-release/applied-digital-reaches-significant-milestone-surpassing-1-gw-contracted-capacity-us"
+          },
+          {
+            "type": "primary",
+            "strength": 5,
+            "title": "August 2025 CoreWeave lease announcement: 400 MW across Polaris Forge 1 and about $11B anticipated contracted lease revenue.",
+            "url": "https://ir.applieddigital.com/news-events/press-releases/detail/128/applied-digital-finalizes-additional-150mw-lease-with"
+          }
+        ],
+        "red_flags": [
+          "Large contracted revenue is not the same as free cash flow; financing and construction execution remain central.",
+          "Valuation already reflects a major AI infrastructure rerating.",
+          "Customer concentration and project financing terms must be checked campus by campus."
+        ],
+        "next_checks": [
+          "Project-level financing: debt cost, equity dilution, collateral and covenants.",
+          "RFS dates and delay penalties for each AI Factory campus.",
+          "Revenue recognition and margin once the first large leases ramp."
+        ],
+        "scores": {
+          "contract_visibility": 5,
+          "power_control": 4,
+          "ai_revenue_visibility": 5,
+          "btc_beta_contamination": 1,
+          "financing_risk": 4,
+          "execution_risk": 4,
+          "valuation_crowding": 4
+        },
+        "group_title": "AI Power / Miner Hosting Asset Cards",
+        "thesis_id": "ai-power-miner-hosting",
+        "as_of": "2026-05-28"
+      },
+      {
+        "ticker": "IREN",
+        "name": "IREN Limited",
+        "decision": "priority_deep_dive",
+        "priority_score": 82,
+        "market_snapshot": {
+          "price_usd": 67.84,
+          "market_cap_usd": 22640526500,
+          "latest_trade_utc": "2026-05-28T00:15:00Z",
+          "source": "web.finance snapshot",
+          "note": "Quote snapshot only; verify live price before position sizing."
+        },
+        "thesis_read": "从 BTC miner 叙事中明显跳到了 AI Cloud / AI factory 叙事。微软合同和 NVIDIA 战略合作是强验证，但估值已经很拥挤。",
+        "contract_status": "Strong hyperscaler and platform validation; Microsoft cloud contract plus NVIDIA strategic partnership.",
+        "power_and_capacity": "Management references multi-GW secured power and a global pipeline; NVIDIA partnership targets up to 5 GW of AI infrastructure over time.",
+        "key_facts": [
+          "IREN announced a $9.7B AI Cloud contract with Microsoft.",
+          "NVIDIA and IREN announced a strategic partnership to support deployment of up to 5 GW of DSX-aligned AI infrastructure.",
+          "NVIDIA received a five-year right to purchase up to 30M IREN shares at $70, up to $2.1B, subject to conditions."
+        ],
+        "evidence": [
+          {
+            "type": "primary",
+            "strength": 5,
+            "title": "NVIDIA and IREN strategic partnership for up to 5 GW of AI infrastructure.",
+            "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-and-IREN-Announce-Strategic-Partnership-to-Accelerate-Deployment-of-up-to-5-Gigawatts-of-AI-Infrastructure/default.aspx"
+          },
+          {
+            "type": "primary",
+            "strength": 5,
+            "title": "IREN announced $9.7B AI Cloud contract with Microsoft.",
+            "url": "https://iren.gcs-web.com/news-releases/news-release-details/iren-secures-97bn-ai-cloud-contract-microsoft"
+          }
+        ],
+        "red_flags": [
+          "At current market cap, much of the AI Cloud success may already be priced.",
+          "GPU procurement, liquid cooling, and data center delivery are execution-heavy.",
+          "Customer and vendor concentration can create circular AI infrastructure risk."
+        ],
+        "next_checks": [
+          "Separate BTC mining revenue from AI Cloud ARR and contracted backlog.",
+          "Track GPU delivery cadence and data hall energization.",
+          "Read latest 10-K/6-K risk factors on power, cooling, financing and customer concentration."
+        ],
+        "scores": {
+          "contract_visibility": 5,
+          "power_control": 5,
+          "ai_revenue_visibility": 5,
+          "btc_beta_contamination": 3,
+          "financing_risk": 3,
+          "execution_risk": 4,
+          "valuation_crowding": 5
+        },
+        "group_title": "AI Power / Miner Hosting Asset Cards",
+        "thesis_id": "ai-power-miner-hosting",
+        "as_of": "2026-05-28"
+      },
+      {
+        "ticker": "CORZ",
+        "name": "Core Scientific",
+        "decision": "contracted_watch",
+        "priority_score": 78,
+        "market_snapshot": {
+          "price_usd": 27.2,
+          "market_cap_usd": 8783179200,
+          "latest_trade_utc": "2026-05-28T00:15:00Z",
+          "source": "web.finance snapshot",
+          "note": "Quote snapshot only; verify live price before position sizing."
+        },
+        "thesis_read": "最清晰的矿企转 HPC hosting 案例之一。CoreWeave 合同是真验证，但客户集中、项目交付和历史资本结构仍需折价。",
+        "contract_status": "CoreWeave HPC hosting contracts; substantial committed critical IT load.",
+        "power_and_capacity": "Contracts position Core Scientific to deliver about 500 MW of critical IT load to CoreWeave by the second half of 2026; Q4 2025 update says about 350 MW energized and about 590 MW expected by early 2027.",
+        "key_facts": [
+          "CoreWeave exercised a final option for about 120 MW incremental critical IT load.",
+          "Core Scientific said CoreWeave contracts represented about $8.7B projected cumulative revenue over 12-year terms before capex credits.",
+          "Q4 2025 results reported continued execution with about 350 MW energized and about 590 MW targeted by early 2027."
+        ],
+        "evidence": [
+          {
+            "type": "primary",
+            "strength": 5,
+            "title": "CoreWeave final option exercise brings expected Core Scientific HPC infrastructure to about 500 MW critical IT load.",
+            "url": "https://investors.corescientific.com/news-events/press-releases/detail/95/core-scientific-announces-exercise-of-final-contract-option-by-coreweave-for-delivery-of-approximately-120-mw-of-additional-digital-infrastructure-to-host-high-performance-computing-operations"
+          },
+          {
+            "type": "primary",
+            "strength": 4,
+            "title": "Q4 2025 results: about 350 MW energized and about 590 MW expected by early 2027.",
+            "url": "https://www.businesswire.com/news/home/20260302157124/en/Core-Scientific-Announces-Fourth-Quarter-Fiscal-Year-2025-Results"
+          }
+        ],
+        "red_flags": [
+          "Customer concentration in CoreWeave is high.",
+          "Capex credits and hosting economics must be modeled net, not headline cumulative revenue.",
+          "Former bankruptcy and balance sheet history require extra margin of safety."
+        ],
+        "next_checks": [
+          "Calculate net revenue after capex credits and power costs.",
+          "Track energized MW versus RFS commitments.",
+          "Check whether any CoreWeave acquisition or strategic transaction status changes shareholder economics."
+        ],
+        "scores": {
+          "contract_visibility": 5,
+          "power_control": 4,
+          "ai_revenue_visibility": 4,
+          "btc_beta_contamination": 3,
+          "financing_risk": 4,
+          "execution_risk": 4,
+          "valuation_crowding": 3
+        },
+        "group_title": "AI Power / Miner Hosting Asset Cards",
+        "thesis_id": "ai-power-miner-hosting",
+        "as_of": "2026-05-28"
+      },
+      {
+        "ticker": "RIOT",
+        "name": "Riot Platforms",
+        "decision": "early_transition_watch",
+        "priority_score": 68,
+        "market_snapshot": {
+          "price_usd": 26.94,
+          "market_cap_usd": 9364997133,
+          "latest_trade_utc": "2026-05-28T00:15:00Z",
+          "source": "web.finance snapshot",
+          "note": "Quote snapshot only; verify live price before position sizing."
+        },
+        "thesis_read": "电力和土地资源很强，且已有 AMD 租赁验证，但相对 IREN/APLD/CORZ，AI/HPC revenue visibility 仍早期。",
+        "contract_status": "First AMD data center lease at Rockdale; potential expansion but still early.",
+        "power_and_capacity": "Rockdale has 700 MW interconnection; Riot says it owns 1.7 GW approved power capacity across two Texas facilities.",
+        "key_facts": [
+          "Riot signed an AMD data center lease for initial 25 MW critical IT load, with possible expansion up to 200 MW.",
+          "Riot acquired 200 acres at Rockdale and intends to convert the full 700 MW gross power capacity for data center tenants.",
+          "Riot launched a formal AI/HPC review for the remaining 600 MW at Corsicana in 2025."
+        ],
+        "evidence": [
+          {
+            "type": "primary",
+            "strength": 4,
+            "title": "Riot announced Rockdale land acquisition and first data center lease with AMD.",
+            "url": "https://www.globenewswire.com/news-release/2026/01/16/3220348/0/en/riot-announces-fee-simple-acquisition-of-land-and-first-data-center-lease-with-amd-at-the-rockdale-site.html"
+          },
+          {
+            "type": "primary",
+            "strength": 3,
+            "title": "Riot launched formal AI/HPC evaluation for about 600 MW at Corsicana.",
+            "url": "https://www.businesswire.com/news/home/20250121261484/en/Riot-Platforms-Launches-Formal-Evaluation-of-Potential-AIHPC-Uses-for-Remaining-600-MW-of-Power-Capacity-at-Corsicana-Facility"
+          }
+        ],
+        "red_flags": [
+          "Initial AMD lease is small relative to total power portfolio.",
+          "Conversion of bitcoin mining facilities to AI/HPC is not guaranteed to be economical.",
+          "BTC treasury and mining economics still dominate near-term equity behavior."
+        ],
+        "next_checks": [
+          "Watch for expansion beyond the first 25 MW AMD lease.",
+          "Check lease economics, tenant capex requirements and Riot's required buildout capital.",
+          "Track whether Corsicana produces signed LOIs or binding leases."
+        ],
+        "scores": {
+          "contract_visibility": 3,
+          "power_control": 5,
+          "ai_revenue_visibility": 2,
+          "btc_beta_contamination": 4,
+          "financing_risk": 3,
+          "execution_risk": 4,
+          "valuation_crowding": 3
+        },
+        "group_title": "AI Power / Miner Hosting Asset Cards",
+        "thesis_id": "ai-power-miner-hosting",
+        "as_of": "2026-05-28"
+      },
+      {
+        "ticker": "CLSK",
+        "name": "CleanSpark",
+        "decision": "power_inventory_watch",
+        "priority_score": 61,
+        "market_snapshot": {
+          "price_usd": 18.04,
+          "market_cap_usd": 4110779490,
+          "latest_trade_utc": "2026-05-28T00:15:00Z",
+          "source": "web.finance snapshot",
+          "note": "Quote snapshot only; verify live price before position sizing."
+        },
+        "thesis_read": "更像电力/土地期权，而不是已验证 AI hosting 资产。优势是 power inventory 和低市值，弱点是缺少明确 AI 客户合同。",
+        "contract_status": "No major signed AI hosting customer identified in this pass; management is building AI/HPC development capability.",
+        "power_and_capacity": "Company says it controls more than 1.8 GW of power, land and data centers; Texas initiatives add large potential AI/HPC development capacity.",
+        "key_facts": [
+          "Q2 FY2026 release says CleanSpark controls more than 1.8 GW of power, land and data centers.",
+          "January 2026 Texas transaction targets 300 MW demand load with potential further expansion to 600 MW.",
+          "Management frames the Houston region sites as approaching a gigawatt of total potential capacity."
+        ],
+        "evidence": [
+          {
+            "type": "primary",
+            "strength": 3,
+            "title": "Q2 FY2026 release: more than 1.8 GW of power, land and data centers; AI/HPC strategy discussed.",
+            "url": "https://investors.cleanspark.com/news/news-details/2026/CleanSpark-Reports-Second-Fiscal-Quarter-2026-Results/default.aspx"
+          },
+          {
+            "type": "primary",
+            "strength": 3,
+            "title": "Texas acquisition targets 300 MW demand load and potential total expansion to 600 MW.",
+            "url": "https://investors.cleanspark.com/news/news-details/2026/CleanSpark-Expands-Texas-Footprint-with-Major-Power-Acquisition-Near-Houston-to-Support-Scaled-AI-and-HPC-Development/default.aspx"
+          }
+        ],
+        "red_flags": [
+          "Power inventory is not the same as a signed AI customer.",
+          "Company has limited experience in non-bitcoin data center development relative to more contracted peers.",
+          "BTC beta and mining economics can swamp the AI optionality."
+        ],
+        "next_checks": [
+          "Wait for named tenant, LOI, lease, or project financing evidence.",
+          "Track AI data center team hires and permits/interconnect progress.",
+          "Compare market cap per controlled MW against RIOT, IREN, APLD and CORZ."
+        ],
+        "scores": {
+          "contract_visibility": 1,
+          "power_control": 4,
+          "ai_revenue_visibility": 1,
+          "btc_beta_contamination": 5,
+          "financing_risk": 3,
+          "execution_risk": 5,
+          "valuation_crowding": 2
+        },
+        "group_title": "AI Power / Miner Hosting Asset Cards",
+        "thesis_id": "ai-power-miner-hosting",
+        "as_of": "2026-05-28"
+      }
+    ],
+    "portfolio_rules": [
+      {
+        "topic_id": "ai-physical-bottlenecks",
+        "title": "Core / Tactical Portfolio Discipline",
+        "as_of": "2026-05-28",
+        "principle": "BTC 和 MSTR 可以作为长期信仰仓；AI 物理瓶颈资产默认只能进入研究仓或战术仓，不能自动升级为长期仓。",
+        "core_holdings": [
+          {
+            "ticker": "BTC",
+            "role": "core_long",
+            "current_snapshot": {
+              "price_usd": 74158,
+              "latest_trade_utc": "2026-05-28",
+              "source": "web.finance snapshot"
+            },
+            "rule": "长期持有，不因单篇文章、单条产业链叙事或短期 MA 信号改变核心仓逻辑。"
+          },
+          {
+            "ticker": "MSTR",
+            "role": "core_or_satellite_btc_leverage",
+            "current_snapshot": {
+              "price_usd": 154.2,
+              "market_cap_usd": 51489384600,
+              "latest_trade_utc": "2026-05-28T00:15:00Z",
+              "source": "web.finance snapshot"
+            },
+            "rule": "可视为 BTC 杠杆表达，但必须单独监控溢价、债务结构、股本稀释和 BTC 回撤放大效应。"
+          }
+        ],
+        "tactical_buckets": [
+          {
+            "name": "research_only",
+            "max_portfolio_weight": 0,
+            "use_for": "叙事强但证据不足、没有绑定客户、没有价格纪律的标的。",
+            "examples": [
+              "CLSK before named AI customer",
+              "CPO microcaps after social-media spike"
+            ]
+          },
+          {
+            "name": "starter_probe",
+            "max_portfolio_weight": 0.005,
+            "use_for": "已有一级证据，但估值拥挤或执行风险高，只能用来迫使自己持续跟踪。",
+            "entry_gate": "至少两条一级证据 + 明确失效条件 + 价格不在短期社媒脉冲后追高。"
+          },
+          {
+            "name": "tactical_position",
+            "max_portfolio_weight": 0.02,
+            "use_for": "合同、产能、融资和估值都能闭环，且有明确催化剂窗口。",
+            "entry_gate": "资产卡 priority >= 75，且完成合同经济性和估值复核。"
+          },
+          {
+            "name": "theme_basket_cap",
+            "max_portfolio_weight": 0.08,
+            "use_for": "整个 AI 物理瓶颈主题的上限。",
+            "entry_gate": "除 BTC/MSTR 外，所有 AI bottleneck 单票合计不得突破主题上限。"
+          }
+        ],
+        "asset_actions": [
+          {
+            "ticker": "APLD",
+            "action": "deep_dive_before_probe",
+            "position_rule": "不追高；先完成项目融资、RFS 时间表和单位经济性复核。若复核通过，最多 starter_probe。"
+          },
+          {
+            "ticker": "IREN",
+            "action": "deep_dive_before_probe",
+            "position_rule": "微软合同和 NVIDIA 合作是强验证，但估值拥挤；先拆 AI Cloud ARR、GPU delivery 和 BTC beta。"
+          },
+          {
+            "ticker": "CORZ",
+            "action": "contract_model_required",
+            "position_rule": "优先建 CoreWeave 合同模型，扣除 capex credits 和电力成本后再判断是否有 tactical_position 条件。"
+          },
+          {
+            "ticker": "RIOT",
+            "action": "wait_for_expansion",
+            "position_rule": "只观察 AMD 25MW 是否扩到更大规模；没有扩容或更多租户前不升级。"
+          },
+          {
+            "ticker": "CLSK",
+            "action": "research_only",
+            "position_rule": "目前更像 power inventory option；等 named tenant、LOI、lease 或 financing evidence。"
+          }
+        ],
+        "kill_switches": [
+          "AI hosting 合同被证明是非绑定、可取消或经济性显著低于 headline。",
+          "融资条款导致重大稀释，且单位经济性无法覆盖资本成本。",
+          "BTC 大幅回撤导致矿企股价行为重新完全由 BTC beta 主导。",
+          "核心客户信用或付款能力受损。",
+          "主题在中文/英文社媒中极度拥挤，而没有新增一级证据。"
+        ],
+        "next_decision_required": "先完成 APLD / IREN / CORZ 三个合同经济性模型，再决定是否允许任何 starter_probe。"
+      }
+    ],
+    "contract_models": [
+      {
+        "topic_id": "ai-physical-bottlenecks",
+        "title": "AI Hosting Contract Economics",
+        "as_of": "2026-05-28",
+        "model_type": "headline_to_normalized_cash_math",
+        "warning": "This model annualizes disclosed headline contract values and MW figures, then flags comparability breaks. It still does not estimate net present value, free cash flow, tax, dilution, uptime penalties, customer credit risk, or project-finance waterfall economics.",
+        "contracts": [
+          {
+            "ticker": "APLD",
+            "name": "Applied Digital",
+            "contract": "Polaris Forge 3 hyperscaler lease",
+            "basis": "colocation lease / take-or-pay",
+            "status": "annualized_headline_math",
+            "contract_value_usd": 7500000000,
+            "critical_it_load_mw": 300,
+            "term_years": 15,
+            "derived": {
+              "headline_value_per_mw_usd": 25000000,
+              "annual_value_per_mw_usd": 1666667
+            },
+            "interpretation": "The annualized headline value is roughly $1.7M per MW per year before project capex, financing, operating costs, customer options, and delivery risk. This supports the power-scarcity thesis, but not yet an equity valuation.",
+            "known_adjustments": [
+              "15-year take-or-pay base term",
+              "300 MW critical IT load and about 430 MW utility power",
+              "initial operations anticipated in August 2027",
+              "renewal options could change headline value but should not be counted in base-case yield"
+            ],
+            "missing_inputs": [
+              "project capex and financing stack",
+              "power cost and pass-through terms",
+              "tenant improvement obligations",
+              "RFS schedule and delay penalties",
+              "equity dilution or project-level debt terms"
+            ],
+            "source_url": "https://ir.applieddigital.com/news-events/press-releases/detail/152/applied-digital-reaches-significant-milestone-surpassing-1"
+          },
+          {
+            "ticker": "APLD",
+            "name": "Applied Digital",
+            "contract": "Polaris Forge 1 CoreWeave leases",
+            "basis": "colocation lease / hyperscaler tenant",
+            "status": "annualized_headline_math",
+            "contract_value_usd": 11000000000,
+            "critical_it_load_mw": 400,
+            "term_years": 15,
+            "derived": {
+              "headline_value_per_mw_usd": 27500000,
+              "annual_value_per_mw_usd": 1833333
+            },
+            "interpretation": "The CoreWeave leases imply about $1.8M per MW per year on disclosed headline math. The read-through is strongest for demand validation and weakest for shareholder return until project financing and cost sharing are modeled.",
+            "known_adjustments": [
+              "400 MW total critical IT capacity across three long-term leases",
+              "approximately $11B anticipated contracted lease revenue",
+              "initial 250 MW was reported over approximately 15-year lease terms",
+              "third 150 MW lease is expected to reach full capacity in 2027"
+            ],
+            "missing_inputs": [
+              "project capex and debt terms",
+              "cash margin after power and operating costs",
+              "CoreWeave concentration exposure",
+              "lease escalators and option economics",
+              "equity financing needed before full campus delivery"
+            ],
+            "source_url": "https://ir.applieddigital.com/news-events/press-releases/detail/128/applied-digital-finalizes-additional-150mw-lease-with"
+          },
+          {
+            "ticker": "CORZ",
+            "name": "Core Scientific",
+            "contract": "CoreWeave HPC hosting contracts",
+            "basis": "hosting / infrastructure conversion",
+            "status": "annualized_headline_math_with_capex_credit_flag",
+            "contract_value_usd": 8700000000,
+            "critical_it_load_mw": 500,
+            "term_years": 12,
+            "derived": {
+              "headline_value_per_mw_usd": 17400000,
+              "annual_value_per_mw_usd": 1450000
+            },
+            "interpretation": "The annualized headline value is about $1.45M per MW per year, but Core Scientific explicitly notes capex credits and customer-funded modifications. This is more directly cash-yield-like than GPU cloud revenue, but still needs netting.",
+            "known_adjustments": [
+              "approximately 500 MW critical IT load across six sites",
+              "$8.7B potential cumulative revenue over 12-year contract terms",
+              "capex credits can offset hosting payments at no more than 50% of monthly fees until repaid",
+              "footnote says cumulative revenue is before capex credits capped at $1.5M per MW"
+            ],
+            "missing_inputs": [
+              "capex credits by year",
+              "power cost responsibility",
+              "site-level opex",
+              "financing cost",
+              "customer concentration discount"
+            ],
+            "source_url": "https://investors.corescientific.com/news-events/press-releases/detail/95/core-scientific-announces-exercise-of-final-contract-option-by-coreweave-for-delivery-of-approximately-120-mw-of-additional-digital-infrastructure-to-host-high-performance-computing-operations"
+          },
+          {
+            "ticker": "IREN",
+            "name": "IREN Limited",
+            "contract": "Microsoft AI Cloud contract",
+            "basis": "GPU cloud services, not pure colocation",
+            "status": "annualized_but_not_comparable",
+            "contract_value_usd": 9700000000,
+            "critical_it_load_mw": 200,
+            "term_years": 5,
+            "derived": {
+              "headline_value_per_mw_usd": 48500000,
+              "annual_value_per_mw_usd": 9700000
+            },
+            "interpretation": "The annualized headline value is roughly $9.7M per MW per year, but this is GPU cloud revenue attached to GB300 infrastructure, not a landlord-style lease. It should be modeled like a compute-services business with hardware depreciation and financing risk.",
+            "known_adjustments": [
+              "five-year Microsoft GPU cloud services term",
+              "about $9.7B total contract value including 20% prepayment",
+              "200 MW critical IT load at Childress Horizon 1-4",
+              "about $5.8B Dell GPU and ancillary equipment purchase"
+            ],
+            "missing_inputs": [
+              "GPU fleet depreciation schedule",
+              "gross margin by GPU cloud service type",
+              "financing cost and prepayment treatment",
+              "server refresh and residual value assumptions",
+              "NVIDIA warrant economics"
+            ],
+            "source_url": "https://iren.gcs-web.com/news-releases/news-release-details/iren-secures-97bn-ai-cloud-contract-microsoft"
+          },
+          {
+            "ticker": "RIOT",
+            "name": "Riot Platforms",
+            "contract": "AMD Rockdale lease",
+            "basis": "early data center lease",
+            "status": "needs_revenue_disclosure",
+            "contract_value_usd": null,
+            "critical_it_load_mw": 25,
+            "term_years": null,
+            "derived": {
+              "headline_value_per_mw_usd": null,
+              "annual_value_per_mw_usd": null
+            },
+            "interpretation": "Lease validates tenant interest, but the initial 25 MW scale and lack of disclosed revenue keep it below APLD/CORZ/IREN for now.",
+            "known_adjustments": [
+              "initial 25 MW scale is too small to anchor a platform valuation alone",
+              "tenant identity is valuable signal, but contract economics are undisclosed"
+            ],
+            "missing_inputs": [
+              "lease revenue",
+              "lease term",
+              "expansion timing to 200 MW",
+              "Riot capex obligations",
+              "tenant power/cooling cost responsibility"
+            ],
+            "source_url": "https://www.globenewswire.com/news-release/2026/01/16/3220348/0/en/riot-announces-fee-simple-acquisition-of-land-and-first-data-center-lease-with-amd-at-the-rockdale-site.html"
+          },
+          {
+            "ticker": "CLSK",
+            "name": "CleanSpark",
+            "contract": "AI/HPC power inventory",
+            "basis": "power option without named AI tenant",
+            "status": "no_contract_model",
+            "contract_value_usd": null,
+            "critical_it_load_mw": null,
+            "term_years": null,
+            "derived": {
+              "headline_value_per_mw_usd": null,
+              "annual_value_per_mw_usd": null
+            },
+            "interpretation": "The asset is a power option until a named tenant, lease, LOI, or project financing package appears.",
+            "known_adjustments": [
+              "power inventory may be valuable, but the market needs tenant and financing evidence"
+            ],
+            "missing_inputs": [
+              "named AI/HPC tenant",
+              "binding lease or LOI",
+              "critical IT load allocation",
+              "project financing",
+              "expected RFS date"
+            ],
+            "source_url": "https://investors.cleanspark.com/news/news-details/2026/CleanSpark-Reports-Second-Fiscal-Quarter-2026-Results/default.aspx"
+          }
+        ],
+        "valuation_bridge": {
+          "title": "From Headline Revenue to Position Discipline",
+          "method": "Annualize disclosed contract revenue, normalize by critical IT MW, then separate lease/hosting economics from GPU cloud service economics. Treat every percentage below as a screening sensitivity, not a final valuation.",
+          "screening_cases": [
+            {
+              "ticker": "APLD",
+              "contract_ref": "Polaris Forge 3 hyperscaler lease",
+              "business_model": "colocation lease",
+              "headline_annual_revenue_usd": 500000000,
+              "headline_annual_revenue_per_mw_usd": 1666667,
+              "sensitivity": {
+                "project_cost_per_mw_usd": [
+                  10000000,
+                  12500000,
+                  15000000
+                ],
+                "cash_margin_after_power_opex_financing": [
+                  0.45,
+                  0.6,
+                  0.7
+                ],
+                "screening_net_yield_range": "5.0% to 11.7%"
+              },
+              "read": "APLD only becomes positionable if project financing lets the equity retain enough of the headline lease spread. The key unknown is not demand; it is funded delivery and shareholder capture.",
+              "position_gate": "No tactical position until campus-level capex, debt cost, equity dilution, and RFS penalty terms are reviewed."
+            },
+            {
+              "ticker": "APLD",
+              "contract_ref": "Polaris Forge 1 CoreWeave leases",
+              "business_model": "colocation lease",
+              "headline_annual_revenue_usd": 733333333,
+              "headline_annual_revenue_per_mw_usd": 1833333,
+              "sensitivity": {
+                "project_cost_per_mw_usd": [
+                  10000000,
+                  12500000,
+                  15000000
+                ],
+                "cash_margin_after_power_opex_financing": [
+                  0.45,
+                  0.6,
+                  0.7
+                ],
+                "screening_net_yield_range": "5.5% to 12.8%"
+              },
+              "read": "The CoreWeave leases are the cleaner proof of repeatability, but the equity still needs financing discipline. More MW does not automatically mean more per-share value.",
+              "position_gate": "Require evidence that later facilities are financed without excessive dilution and that lease economics survive construction delays."
+            },
+            {
+              "ticker": "CORZ",
+              "contract_ref": "CoreWeave HPC hosting contracts",
+              "business_model": "hosting / converted mining infrastructure",
+              "headline_annual_revenue_usd": 725000000,
+              "headline_annual_revenue_per_mw_usd": 1450000,
+              "sensitivity": {
+                "capex_credit_cap_per_mw_usd": 1500000,
+                "monthly_fee_credit_cap": 0.5,
+                "screening_net_yield_range": "not comparable until credit amortization schedule is known"
+              },
+              "read": "CORZ has strong contracted demand and may need less landlord-style development risk, but capex credits and CoreWeave concentration make headline revenue too generous.",
+              "position_gate": "Build a payment waterfall: monthly hosting fee, power cost, capex credit offset, company-funded capex, and debt service."
+            },
+            {
+              "ticker": "IREN",
+              "contract_ref": "Microsoft AI Cloud contract",
+              "business_model": "GPU cloud services",
+              "headline_annual_revenue_usd": 1940000000,
+              "headline_annual_revenue_per_mw_usd": 9700000,
+              "sensitivity": {
+                "gpu_and_equipment_purchase_usd": 5800000000,
+                "equipment_cost_per_mw_usd": 29000000,
+                "five_year_revenue_to_equipment_cost": "1.67x before operating cost, financing, tax, refresh and residual value"
+              },
+              "read": "IREN is the strongest validation signal but belongs in a separate GPU cloud bucket. Its annual revenue per MW looks huge because the company is supplying compute capacity, not just powered shell.",
+              "position_gate": "No comparison to APLD/CORZ until GPU depreciation, gross margin, prepayment accounting, financing cost, and utilization risk are modeled."
+            }
+          ],
+          "current_conclusion": {
+            "label": "research_complete_enough_for_watchlist_not_position",
+            "summary": "The thesis is now investable enough to keep APLD, IREN, and CORZ on a priority watchlist. It is not yet complete enough for automatic buying because the shareholder-capture layer is still missing.",
+            "next_build": "Add company-level valuation bridge: enterprise value, net debt, contracted MW, EV/MW, annualized revenue/MW, estimated net yield, and dilution-adjusted per-share capture."
+          }
+        },
+        "company_valuation_bridge": {
+          "title": "Company-Level Miner / AI Hosting Valuation Bridge",
+          "as_of": "2026-05-28",
+          "model_type": "market_cap_screening",
+          "warning": "This is a market-cap screening model, not a full DCF. Enterprise value, net debt, restricted cash, warrants, construction financing, taxes, and dilution still need to be added before any position-size decision.",
+          "market_data_source": "web.finance snapshot, latest trade time 2026-05-28 00:15 UTC",
+          "method": [
+            "Use current market capitalization as a rough equity-value denominator.",
+            "For contracted names, divide market cap by disclosed annualized contract revenue.",
+            "For uncontracted power-option names, estimate annual revenue if 300 MW / 600 MW / 700 MW were leased at the observed APLD-CORZ annual revenue-per-MW range.",
+            "Use cash-margin scenarios only as a screen; they are not net income and do not include dilution or debt amortization."
+          ],
+          "lease_revenue_per_mw_assumption_usd": {
+            "low": 1450000,
+            "base": 1666667,
+            "high": 1833333,
+            "basis": "Low approximates CORZ annualized CoreWeave hosting revenue per MW; base approximates APLD Polaris Forge 3; high approximates APLD CoreWeave leases."
+          },
+          "companies": [
+            {
+              "ticker": "APLD",
+              "name": "Applied Digital",
+              "market_cap_usd": 13811505446,
+              "model_bucket": "contracted_colocation_developer",
+              "contracted_or_screened_mw": 1200,
+              "annualized_revenue_usd": 2066666667,
+              "annualized_revenue_per_mw_usd": 1722222,
+              "market_cap_to_annualized_revenue": 6.68,
+              "market_cap_per_mw_usd": 11509588,
+              "cash_margin_scenarios": [
+                {
+                  "case": "bear",
+                  "margin_after_power_opex_financing": 0.45,
+                  "screened_cash_usd": 930000000,
+                  "screened_cash_yield_on_market_cap": 0.0673
+                },
+                {
+                  "case": "base",
+                  "margin_after_power_opex_financing": 0.6,
+                  "screened_cash_usd": 1240000000,
+                  "screened_cash_yield_on_market_cap": 0.0898
+                },
+                {
+                  "case": "bull",
+                  "margin_after_power_opex_financing": 0.7,
+                  "screened_cash_usd": 1446666667,
+                  "screened_cash_yield_on_market_cap": 0.1047
+                }
+              ],
+              "read": "Best contracted pure-play AI factory developer in the set, but current equity value already prices a lot of successful delivery. It only gets interesting if financing is non-destructive and project-level margins survive construction delays.",
+              "decision": "priority_watchlist_no_buy_without_financing_model",
+              "next_required_inputs": [
+                "Net debt and restricted cash",
+                "Campus-level capex per MW",
+                "Debt cost, collateral and maturity schedule",
+                "Share count after financing",
+                "RFS penalties and tenant options"
+              ]
+            },
+            {
+              "ticker": "IREN",
+              "name": "IREN Limited",
+              "market_cap_usd": 22640526500,
+              "model_bucket": "gpu_cloud_services",
+              "contracted_or_screened_mw": 200,
+              "annualized_revenue_usd": 1940000000,
+              "annualized_revenue_per_mw_usd": 9700000,
+              "market_cap_to_annualized_revenue": 11.67,
+              "market_cap_per_mw_usd": 113202633,
+              "gpu_and_equipment_purchase_usd": 5800000000,
+              "five_year_contract_revenue_usd": 9700000000,
+              "revenue_to_equipment_purchase": 1.67,
+              "cash_margin_scenarios": [
+                {
+                  "case": "bear",
+                  "gross_cash_margin_before_gpu_recovery": 0.35,
+                  "five_year_gross_cash_usd": 3395000000,
+                  "gross_cash_after_equipment_purchase_usd": -2405000000
+                },
+                {
+                  "case": "base",
+                  "gross_cash_margin_before_gpu_recovery": 0.45,
+                  "five_year_gross_cash_usd": 4365000000,
+                  "gross_cash_after_equipment_purchase_usd": -1435000000
+                },
+                {
+                  "case": "bull",
+                  "gross_cash_margin_before_gpu_recovery": 0.6,
+                  "five_year_gross_cash_usd": 5820000000,
+                  "gross_cash_after_equipment_purchase_usd": 20000000
+                }
+              ],
+              "read": "The Microsoft contract is very strong validation, but the economics are hardware-heavy. On a simple equipment-recovery screen, IREN needs high gross cash margin, residual GPU value, cheap financing, or follow-on contracts to justify treating the current market cap as cheap.",
+              "decision": "strong_validation_but_valuation_crowded",
+              "next_required_inputs": [
+                "GPU useful life and residual value",
+                "Financing cost and prepayment accounting",
+                "Expected utilization and service gross margin",
+                "NVIDIA warrant dilution",
+                "Follow-on contract pipeline beyond Microsoft"
+              ]
+            },
+            {
+              "ticker": "CORZ",
+              "name": "Core Scientific",
+              "market_cap_usd": 8783179200,
+              "model_bucket": "contracted_hosting_conversion",
+              "contracted_or_screened_mw": 500,
+              "annualized_revenue_usd": 725000000,
+              "annualized_revenue_per_mw_usd": 1450000,
+              "capex_credit_cap_usd": 750000000,
+              "credit_adjusted_total_revenue_usd": 7950000000,
+              "credit_adjusted_annual_revenue_usd": 662500000,
+              "market_cap_to_annualized_revenue": 12.11,
+              "market_cap_to_credit_adjusted_annual_revenue": 13.26,
+              "market_cap_per_mw_usd": 17566358,
+              "cash_margin_scenarios": [
+                {
+                  "case": "bear",
+                  "margin_after_power_opex_credit_drag": 0.45,
+                  "screened_cash_usd": 298125000,
+                  "screened_cash_yield_on_market_cap": 0.0339
+                },
+                {
+                  "case": "base",
+                  "margin_after_power_opex_credit_drag": 0.6,
+                  "screened_cash_usd": 397500000,
+                  "screened_cash_yield_on_market_cap": 0.0453
+                },
+                {
+                  "case": "bull",
+                  "margin_after_power_opex_credit_drag": 0.7,
+                  "screened_cash_usd": 463750000,
+                  "screened_cash_yield_on_market_cap": 0.0528
+                }
+              ],
+              "read": "Most modelable contracted hosting name. The problem is not evidence; it is whether the CoreWeave revenue stream remains attractive after capex credits, power cost, customer concentration and balance-sheet discount.",
+              "decision": "modelable_but_not_cheap_on_credit_adjusted_screen",
+              "next_required_inputs": [
+                "Monthly capex-credit amortization schedule",
+                "Power cost pass-through mechanics",
+                "Company-funded conversion capex",
+                "Debt and lease liabilities",
+                "CoreWeave concentration discount"
+              ]
+            },
+            {
+              "ticker": "RIOT",
+              "name": "Riot Platforms",
+              "market_cap_usd": 9364997133,
+              "model_bucket": "power_option_with_small_initial_lease",
+              "contracted_or_screened_mw": 25,
+              "approved_power_mw": 1700,
+              "market_cap_per_approved_power_mw_usd": 5508822,
+              "current_named_ai_mw": 25,
+              "named_ai_mw_as_percent_of_approved_power": 0.0147,
+              "option_scenarios": [
+                {
+                  "case": "current_amd_25mw",
+                  "screened_mw": 25,
+                  "potential_annual_revenue_low_usd": 36250000,
+                  "potential_annual_revenue_base_usd": 41666675,
+                  "potential_annual_revenue_high_usd": 45833325,
+                  "market_cap_to_base_revenue": 224.76
+                },
+                {
+                  "case": "amd_expands_to_200mw",
+                  "screened_mw": 200,
+                  "potential_annual_revenue_low_usd": 290000000,
+                  "potential_annual_revenue_base_usd": 333333400,
+                  "potential_annual_revenue_high_usd": 366666600,
+                  "market_cap_to_base_revenue": 28.09
+                },
+                {
+                  "case": "rockdale_700mw_converted",
+                  "screened_mw": 700,
+                  "potential_annual_revenue_low_usd": 1015000000,
+                  "potential_annual_revenue_base_usd": 1166666900,
+                  "potential_annual_revenue_high_usd": 1283333100,
+                  "market_cap_to_base_revenue": 8.03
+                }
+              ],
+              "read": "RIOT has real power optionality, but the current named AI lease is too small to justify an AI hosting valuation. The stock needs AMD expansion, another tenant, or financing evidence before the model can graduate from option value.",
+              "decision": "wait_for_200mw_plus_binding_ai_revenue",
+              "next_required_inputs": [
+                "AMD lease revenue and term",
+                "AMD expansion decision",
+                "Rockdale conversion capex",
+                "Corsicana AI/HPC LOI or lease",
+                "BTC treasury and mining contribution sensitivity"
+              ]
+            },
+            {
+              "ticker": "CLSK",
+              "name": "CleanSpark",
+              "market_cap_usd": 4110779490,
+              "model_bucket": "cheap_power_option_without_tenant",
+              "contracted_or_screened_mw": 0,
+              "controlled_power_mw": 1800,
+              "market_cap_per_controlled_power_mw_usd": 2283766,
+              "option_scenarios": [
+                {
+                  "case": "texas_300mw_tenant",
+                  "screened_mw": 300,
+                  "potential_annual_revenue_low_usd": 435000000,
+                  "potential_annual_revenue_base_usd": 500000100,
+                  "potential_annual_revenue_high_usd": 549999900,
+                  "market_cap_to_base_revenue": 8.22
+                },
+                {
+                  "case": "texas_600mw_expansion",
+                  "screened_mw": 600,
+                  "potential_annual_revenue_low_usd": 870000000,
+                  "potential_annual_revenue_base_usd": 1000000200,
+                  "potential_annual_revenue_high_usd": 1099999800,
+                  "market_cap_to_base_revenue": 4.11
+                },
+                {
+                  "case": "full_1800mw_option",
+                  "screened_mw": 1800,
+                  "potential_annual_revenue_low_usd": 2610000000,
+                  "potential_annual_revenue_base_usd": 3000000600,
+                  "potential_annual_revenue_high_usd": 3299999400,
+                  "market_cap_to_base_revenue": 1.37
+                }
+              ],
+              "read": "CLSK is the cheapest power-option screen in the set, but it has the weakest AI revenue proof. The upside is large only if a named AI tenant converts power inventory into contracted revenue.",
+              "decision": "research_only_until_named_ai_tenant",
+              "next_required_inputs": [
+                "Named AI/HPC tenant or LOI",
+                "Binding lease economics",
+                "Texas site conversion capex",
+                "Grid and interconnect timeline",
+                "BTC mining downside case"
+              ]
+            }
+          ],
+          "ranking": [
+            {
+              "rank": 1,
+              "ticker": "CORZ",
+              "reason": "Most modelable contracted hosting economics, but not obviously cheap after capex-credit adjustment."
+            },
+            {
+              "rank": 2,
+              "ticker": "APLD",
+              "reason": "Best contracted growth story, but financing and dilution decide whether shareholders capture the value."
+            },
+            {
+              "rank": 3,
+              "ticker": "IREN",
+              "reason": "Strongest validation signal, but GPU cloud economics are capital-heavy and valuation is crowded."
+            },
+            {
+              "rank": 4,
+              "ticker": "CLSK",
+              "reason": "Cheapest power option, but no named AI tenant yet."
+            },
+            {
+              "rank": 5,
+              "ticker": "RIOT",
+              "reason": "Large power base and AMD signal, but current named AI MW is tiny versus market cap."
+            }
+          ],
+          "decision": {
+            "label": "no_buy_signal_after_screening",
+            "summary": "After screening all five names, none clears an automatic buy threshold. CORZ is the first model to refine, APLD is the first financing diligence target, IREN requires a separate GPU cloud model, and RIOT/CLSK remain option-value watches until larger binding AI contracts appear.",
+            "position_rule": "Allow watchlist only. Starter probe requires ticker-specific missing inputs to be resolved and a price that leaves room for execution risk."
+          }
+        },
+        "decision": {
+          "label": "build_net_yield_model_before_position",
+          "summary": "APLD and CORZ are comparable as lease/hosting infrastructure names after annualization. IREN is the strongest customer-validation signal but is not directly comparable because its revenue includes GPU cloud services and hardware economics. RIOT and CLSK remain watch-only until revenue, tenant, and financing detail improves.",
+          "next_required_model": "Convert annualized headline revenue into net annual cash yield after capex, power, opex, financing, capex credits, depreciation, and dilution; keep GPU cloud revenue separate from colocation lease revenue."
+        }
+      }
+    ]
+  },
+  "snapshot": {
+    "as_of": "2026-05-28",
+    "generated_at": "2026-05-28T03:00:56.128858+00:00",
+    "topic_id": "ai-physical-bottlenecks",
+    "topic_title": "AI Physical Bottlenecks",
+    "thesis_count": 4,
+    "theses": [
+      {
+        "id": "ai-power-miner-hosting",
+        "title": "AI Power Constraint / BTC Miner Hosting",
+        "score": 78.1,
+        "decision": "active_candidate",
+        "status": "watch",
+        "candidate_assets": [
+          "IREN",
+          "CORZ",
+          "CLSK",
+          "APLD"
+        ],
+        "evidence_summary": {
+          "evidence_count": 3,
+          "counter_evidence_count": 4,
+          "avg_evidence_strength": 4.0,
+          "has_primary_evidence": true
+        }
+      },
+      {
+        "id": "cpo-silicon-photonics",
+        "title": "CPO / Silicon Photonics Bottleneck",
+        "score": 72.0,
+        "decision": "watchlist",
+        "status": "watch",
+        "candidate_assets": [
+          "SIVE.ST",
+          "SOI.PA",
+          "ALRIB.PA",
+          "3363.TW"
+        ],
+        "evidence_summary": {
+          "evidence_count": 3,
+          "counter_evidence_count": 4,
+          "avg_evidence_strength": 4.0,
+          "has_primary_evidence": true
+        }
+      },
+      {
+        "id": "humanoid-rare-earths",
+        "title": "Humanoid Robotics / Rare Earth Supply Chain",
+        "score": 60.0,
+        "decision": "watchlist",
+        "status": "research",
+        "candidate_assets": [
+          "LYC.AX",
+          "MP",
+          "6324.T",
+          "002050.SZ"
+        ],
+        "evidence_summary": {
+          "evidence_count": 2,
+          "counter_evidence_count": 4,
+          "avg_evidence_strength": 3.5,
+          "has_primary_evidence": true
+        }
+      },
+      {
+        "id": "ai-infra-relative-value",
+        "title": "AI Infrastructure Relative Value",
+        "score": 57.5,
+        "decision": "research_backlog",
+        "status": "research",
+        "candidate_assets": [
+          "SNDK",
+          "CRWV",
+          "IREN",
+          "SMH"
+        ],
+        "evidence_summary": {
+          "evidence_count": 3,
+          "counter_evidence_count": 4,
+          "avg_evidence_strength": 3.67,
+          "has_primary_evidence": true
+        }
+      }
+    ],
+    "cases": [
+      {
+        "id": "bruceblue-serenity-chokepoint-2026-05-25",
+        "title": "BruceBlue: Serenity Chokepoint Method",
+        "source_type": "x_article",
+        "case_decision": "convert_to_watchlist_inputs"
+      },
+      {
+        "id": "panews-serenity-leopold-physical-limits-2026-05-27",
+        "title": "PANews: Serenity vs Leopold AI Physical Limits",
+        "source_type": "article",
+        "case_decision": "promote_miner_hosting_review"
+      }
+    ],
+    "asset_cards": [
+      {
+        "ticker": "APLD",
+        "name": "Applied Digital",
+        "decision": "priority_deep_dive",
+        "priority_score": 84,
+        "thesis_id": "ai-power-miner-hosting"
+      },
+      {
+        "ticker": "IREN",
+        "name": "IREN Limited",
+        "decision": "priority_deep_dive",
+        "priority_score": 82,
+        "thesis_id": "ai-power-miner-hosting"
+      },
+      {
+        "ticker": "CORZ",
+        "name": "Core Scientific",
+        "decision": "contracted_watch",
+        "priority_score": 78,
+        "thesis_id": "ai-power-miner-hosting"
+      },
+      {
+        "ticker": "RIOT",
+        "name": "Riot Platforms",
+        "decision": "early_transition_watch",
+        "priority_score": 68,
+        "thesis_id": "ai-power-miner-hosting"
+      },
+      {
+        "ticker": "CLSK",
+        "name": "CleanSpark",
+        "decision": "power_inventory_watch",
+        "priority_score": 61,
+        "thesis_id": "ai-power-miner-hosting"
+      }
+    ],
+    "portfolio_rules": [
+      {
+        "title": "Core / Tactical Portfolio Discipline",
+        "principle": "BTC 和 MSTR 可以作为长期信仰仓；AI 物理瓶颈资产默认只能进入研究仓或战术仓，不能自动升级为长期仓。",
+        "next_decision_required": "先完成 APLD / IREN / CORZ 三个合同经济性模型，再决定是否允许任何 starter_probe。"
+      }
+    ],
+    "contract_models": [
+      {
+        "title": "AI Hosting Contract Economics",
+        "model_type": "headline_to_normalized_cash_math",
+        "decision": "build_net_yield_model_before_position",
+        "company_valuation_decision": "no_buy_signal_after_screening"
+      }
+    ]
+  }
+}

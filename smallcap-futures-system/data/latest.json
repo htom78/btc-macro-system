@@ -1,0 +1,2408 @@
+{
+  "title": "强势小币合约策略系统",
+  "updated_at": "2026-06-02T02:28:36+00:00",
+  "universe": {
+    "limit": 12,
+    "focus": [
+      "ALLOUSDT",
+      "LABUSDT"
+    ],
+    "min_pct": 10.0,
+    "min_quote_volume": 20000000
+  },
+  "models": {
+    "rush_fade_short": "高位冲高回落做空",
+    "fake_break_long": "假跌破反杀做多",
+    "whale_long_squeeze": "大户多头挤空",
+    "crowded_reversal": "高 Funding/OI 拥挤反转"
+  },
+  "data_health": {
+    "errors": 0,
+    "error_items": [],
+    "candidate_count": 13
+  },
+  "candidates": [
+    {
+      "symbol": "ESPORTSUSDT",
+      "pct24": 43.883,
+      "quote_volume": 144124735.94914,
+      "trades": 1591810,
+      "last": 0.0541,
+      "high24": 0.0757,
+      "low24": 0.0319,
+      "mark": 0.05390518,
+      "index": 0.05277074,
+      "pressure_score": 100,
+      "pressure_label": "squeeze-risk",
+      "derivatives": {
+        "funding_rate": 0.00947712,
+        "open_interest": 268081825.0,
+        "oi_change_1h": 0.016188145605380733,
+        "oi_change_4h": 0.06003455437918337,
+        "oi_value_change_24h": 0.6516725932649381
+      },
+      "ratios": {
+        "global_long_account": 0.5946,
+        "global_short_account": 0.4054,
+        "top_long_position": 0.5753,
+        "top_short_position": 0.4247,
+        "taker_buy_sell_ratio": 0.9853
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.054,
+        "best_ask": 0.0541,
+        "mid": 0.05405,
+        "spread_bps": 18.501387604070835,
+        "bid_depth_1pct_usdt": 30422.271,
+        "ask_depth_1pct_usdt": 23804.0511,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.0541,
+          "last_closed": 0.0538,
+          "high": 0.0554,
+          "low": 0.0531,
+          "high_20": 0.0757,
+          "low_20": 0.0525,
+          "mid_20": 0.0641,
+          "structure": "below-mid",
+          "rsi_14": 9.375000000000014,
+          "atr_pct": 0.0566411407446527,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.002019820263199747,
+            "previous_histogram": -0.002156202129516313
+          },
+          "last8": [
+            0.0616,
+            0.0609,
+            0.0573,
+            0.058,
+            0.0586,
+            0.054,
+            0.0538,
+            0.0541
+          ]
+        },
+        "15m": {
+          "close": 0.054,
+          "last_closed": 0.0586,
+          "high": 0.0589,
+          "low": 0.0525,
+          "high_20": 0.0757,
+          "low_20": 0.0505,
+          "mid_20": 0.0631,
+          "structure": "below-mid",
+          "rsi_14": 50.90497737556561,
+          "atr_pct": 0.1042328042328042,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.00108847828572125,
+            "previous_histogram": -0.00035123773618620565
+          },
+          "last8": [
+            0.0705,
+            0.0723,
+            0.0711,
+            0.0716,
+            0.0664,
+            0.0609,
+            0.0586,
+            0.054
+          ]
+        },
+        "1h": {
+          "close": 0.054,
+          "last_closed": 0.0609,
+          "high": 0.061,
+          "low": 0.0525,
+          "high_20": 0.0757,
+          "low_20": 0.0319,
+          "mid_20": 0.0538,
+          "structure": "above-mid",
+          "rsi_14": 61.269430051813465,
+          "atr_pct": 0.15978835978835984,
+          "macd": {
+            "state": "momentum-decay",
+            "histogram": 0.0012327756040064163,
+            "previous_histogram": 0.0020472555197206905
+          },
+          "last8": [
+            0.055,
+            0.0568,
+            0.0527,
+            0.0532,
+            0.0569,
+            0.0723,
+            0.0609,
+            0.054
+          ]
+        }
+      },
+      "scenarios": [
+        "rush_fade_candidate",
+        "crowded_reversal_candidate"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 53,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.0757 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.0757,
+            "support_estimate": 0.06694,
+            "deep_support_estimate": 0.06037
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 100,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.06694 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.0757,
+            "support_estimate": 0.06694,
+            "deep_support_estimate": 0.06037
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "confirm_wait",
+          "direction": "short",
+          "confidence": 100,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.0757,
+            "mid_15m": 0.0631
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 0,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.0631 下方并停留",
+          "key_levels": {
+            "range_low": 0.0505,
+            "range_mid": 0.0631,
+            "range_high": 0.0757
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "VICUSDT",
+      "pct24": 32.27,
+      "quote_volume": 174673833.88088,
+      "trades": 2501870,
+      "last": 0.05472,
+      "high24": 0.07135,
+      "low24": 0.0408,
+      "mark": 0.05468,
+      "index": 0.05535645,
+      "pressure_score": 83,
+      "pressure_label": "short-crowded",
+      "derivatives": {
+        "funding_rate": -0.0086336,
+        "open_interest": 46501807.0,
+        "oi_change_1h": 0.063027287721942,
+        "oi_change_4h": 0.0731579006194365,
+        "oi_value_change_24h": 0.6506595734084553
+      },
+      "ratios": {
+        "global_long_account": 0.4736,
+        "global_short_account": 0.5264,
+        "top_long_position": 0.6325,
+        "top_short_position": 0.3675,
+        "taker_buy_sell_ratio": 0.9559
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.05469,
+        "best_ask": 0.05472,
+        "mid": 0.054705000000000004,
+        "spread_bps": 5.483959418699444,
+        "bid_depth_1pct_usdt": 13819.84344,
+        "ask_depth_1pct_usdt": 11773.31702,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.0547,
+          "last_closed": 0.05503,
+          "high": 0.05549,
+          "low": 0.0546,
+          "high_20": 0.05861,
+          "low_20": 0.0529,
+          "mid_20": 0.055755,
+          "structure": "below-mid",
+          "rsi_14": 43.14845024469821,
+          "atr_pct": 0.027944633063463058,
+          "macd": {
+            "state": "momentum-decay",
+            "histogram": 8.705282936471732e-05,
+            "previous_histogram": 0.00013615574919472275
+          },
+          "last8": [
+            0.05512,
+            0.0568,
+            0.05586,
+            0.05708,
+            0.05603,
+            0.05488,
+            0.05503,
+            0.0547
+          ]
+        },
+        "15m": {
+          "close": 0.05474,
+          "last_closed": 0.05603,
+          "high": 0.05606,
+          "low": 0.05458,
+          "high_20": 0.06196,
+          "low_20": 0.0529,
+          "mid_20": 0.05743,
+          "structure": "below-mid",
+          "rsi_14": 36.37640449438202,
+          "atr_pct": 0.042930215564486646,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.0002657704363296946,
+            "previous_histogram": -0.0002456016588192145
+          },
+          "last8": [
+            0.05746,
+            0.05706,
+            0.05644,
+            0.0535,
+            0.05468,
+            0.0568,
+            0.05603,
+            0.05474
+          ]
+        },
+        "1h": {
+          "close": 0.05466,
+          "last_closed": 0.0568,
+          "high": 0.05806,
+          "low": 0.05458,
+          "high_20": 0.07135,
+          "low_20": 0.05238,
+          "mid_20": 0.061865,
+          "structure": "below-mid",
+          "rsi_14": 36.93809401489853,
+          "atr_pct": 0.09868799330928867,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.0010982740569967222,
+            "previous_histogram": -0.0009285582540014608
+          },
+          "last8": [
+            0.05778,
+            0.05866,
+            0.05682,
+            0.06056,
+            0.05727,
+            0.05706,
+            0.0568,
+            0.05466
+          ]
+        }
+      },
+      "scenarios": [
+        "rush_fade_candidate"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 56,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.07135 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.07135,
+            "support_estimate": 0.06523999999999999,
+            "deep_support_estimate": 0.0606575
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 100,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.06524 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.07135,
+            "support_estimate": 0.06523999999999999,
+            "deep_support_estimate": 0.0606575
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 0,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.07135,
+            "mid_15m": 0.05743
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 0,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.05743 下方并停留",
+          "key_levels": {
+            "range_low": 0.0529,
+            "range_mid": 0.05743,
+            "range_high": 0.06196
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "HOMEUSDT",
+      "pct24": 23.028,
+      "quote_volume": 363653937.952702,
+      "trades": 8564795,
+      "last": 0.046101,
+      "high24": 0.052983,
+      "low24": 0.034599,
+      "mark": 0.04616796,
+      "index": 0.04655332,
+      "pressure_score": 60,
+      "pressure_label": "short-crowded",
+      "derivatives": {
+        "funding_rate": -0.00337968,
+        "open_interest": 470331808.0,
+        "oi_change_1h": -0.010123226082930259,
+        "oi_change_4h": -0.014601475035016076,
+        "oi_value_change_24h": 0.1504061778885799
+      },
+      "ratios": {
+        "global_long_account": 0.4556,
+        "global_short_account": 0.5444,
+        "top_long_position": 0.3249,
+        "top_short_position": 0.6751,
+        "taker_buy_sell_ratio": 0.7566
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.04615,
+        "best_ask": 0.046151,
+        "mid": 0.0461505,
+        "spread_bps": 0.21668237613915348,
+        "bid_depth_1pct_usdt": 669.820462,
+        "ask_depth_1pct_usdt": 635.4998079999999,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.046101,
+          "last_closed": 0.046331,
+          "high": 0.046393,
+          "low": 0.045663,
+          "high_20": 0.049274,
+          "low_20": 0.043264,
+          "mid_20": 0.046269,
+          "structure": "below-mid",
+          "rsi_14": 44.150069476609545,
+          "atr_pct": 0.0317594598195886,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.0001382613010816507,
+            "previous_histogram": -0.00016719063972554294
+          },
+          "last8": [
+            0.048228,
+            0.048367,
+            0.048632,
+            0.044935,
+            0.044157,
+            0.0459,
+            0.046331,
+            0.046101
+          ]
+        },
+        "15m": {
+          "close": 0.046137,
+          "last_closed": 0.044157,
+          "high": 0.046393,
+          "low": 0.043845,
+          "high_20": 0.0525,
+          "low_20": 0.043264,
+          "mid_20": 0.047881999999999994,
+          "structure": "below-mid",
+          "rsi_14": 37.423880742436786,
+          "atr_pct": 0.055181927117683674,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.00041541527694557165,
+            "previous_histogram": -0.0004484632151036708
+          },
+          "last8": [
+            0.04693,
+            0.046388,
+            0.047479,
+            0.048043,
+            0.047497,
+            0.048367,
+            0.044157,
+            0.046137
+          ]
+        },
+        "1h": {
+          "close": 0.046101,
+          "last_closed": 0.048367,
+          "high": 0.048949,
+          "low": 0.043264,
+          "high_20": 0.052983,
+          "low_20": 0.034599,
+          "mid_20": 0.043791,
+          "structure": "above-mid",
+          "rsi_14": 49.80623220499842,
+          "atr_pct": 0.09593222334811458,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.0006766565542719581,
+            "previous_histogram": -0.00048658825116151654
+          },
+          "last8": [
+            0.051136,
+            0.049058,
+            0.049459,
+            0.0513,
+            0.047126,
+            0.046388,
+            0.048367,
+            0.046101
+          ]
+        }
+      },
+      "scenarios": [
+        "watch"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 51,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.052983 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.052983,
+            "support_estimate": 0.0493062,
+            "deep_support_estimate": 0.0465486
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 100,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.0493062 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.052983,
+            "support_estimate": 0.0493062,
+            "deep_support_estimate": 0.0465486
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 0,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.052983,
+            "mid_15m": 0.047881999999999994
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 0,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.047882 下方并停留",
+          "key_levels": {
+            "range_low": 0.043264,
+            "range_mid": 0.047881999999999994,
+            "range_high": 0.0525
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "AERGOUSDT",
+      "pct24": 16.886,
+      "quote_volume": 43001332.70562,
+      "trades": 791866,
+      "last": 0.056,
+      "high24": 0.0642,
+      "low24": 0.04623,
+      "mark": 0.05592,
+      "index": 0.05758327,
+      "pressure_score": 57,
+      "pressure_label": "short-crowded",
+      "derivatives": {
+        "funding_rate": -0.01566499,
+        "open_interest": 38971694.0,
+        "oi_change_1h": 0.06071023198180425,
+        "oi_change_4h": 0.3207211336647804,
+        "oi_value_change_24h": 1.5199542046508605
+      },
+      "ratios": {
+        "global_long_account": 0.7188,
+        "global_short_account": 0.2812,
+        "top_long_position": 0.6371,
+        "top_short_position": 0.3629,
+        "taker_buy_sell_ratio": 0.9377
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.0559,
+        "best_ask": 0.05594,
+        "mid": 0.05592,
+        "spread_bps": 7.153075822603429,
+        "bid_depth_1pct_usdt": 12314.82287,
+        "ask_depth_1pct_usdt": 9363.0885,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.05592,
+          "last_closed": 0.05597,
+          "high": 0.05698,
+          "low": 0.05577,
+          "high_20": 0.05759,
+          "low_20": 0.05253,
+          "mid_20": 0.05506,
+          "structure": "above-mid",
+          "rsi_14": 60.56622851365013,
+          "atr_pct": 0.023669016963008386,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.00011072201906901422,
+            "previous_histogram": 0.00010650736927321394
+          },
+          "last8": [
+            0.0545,
+            0.05477,
+            0.0546,
+            0.05697,
+            0.05477,
+            0.05554,
+            0.05597,
+            0.05592
+          ]
+        },
+        "15m": {
+          "close": 0.05596,
+          "last_closed": 0.05477,
+          "high": 0.05698,
+          "low": 0.05456,
+          "high_20": 0.05759,
+          "low_20": 0.05116,
+          "mid_20": 0.054375,
+          "structure": "above-mid",
+          "rsi_14": 69.937369519833,
+          "atr_pct": 0.0336720106198305,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.00023561889040576913,
+            "previous_histogram": 0.00017473384921458992
+          },
+          "last8": [
+            0.0549,
+            0.05574,
+            0.05372,
+            0.05396,
+            0.0534,
+            0.05477,
+            0.05477,
+            0.05596
+          ]
+        },
+        "1h": {
+          "close": 0.05592,
+          "last_closed": 0.05477,
+          "high": 0.05759,
+          "low": 0.05422,
+          "high_20": 0.0642,
+          "low_20": 0.04663,
+          "mid_20": 0.05541499999999999,
+          "structure": "above-mid",
+          "rsi_14": 50.867052023121374,
+          "atr_pct": 0.0383072756999796,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.00014976662365029218,
+            "previous_histogram": 3.428054161574805e-05
+          },
+          "last8": [
+            0.05166,
+            0.05181,
+            0.05174,
+            0.05214,
+            0.05281,
+            0.05574,
+            0.05477,
+            0.05592
+          ]
+        }
+      },
+      "scenarios": [
+        "watch"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 8,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.0642 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.0642,
+            "support_estimate": 0.06060599999999999,
+            "deep_support_estimate": 0.0579105
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 100,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.060606 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.0642,
+            "support_estimate": 0.06060599999999999,
+            "deep_support_estimate": 0.0579105
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 0,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.0642,
+            "mid_15m": 0.054375
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 37,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.054375 下方并停留",
+          "key_levels": {
+            "range_low": 0.05116,
+            "range_mid": 0.054375,
+            "range_high": 0.05759
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "LABUSDT",
+      "pct24": 90.296,
+      "quote_volume": 1806104275.64784,
+      "trades": 17354552,
+      "last": 17.4338,
+      "high24": 17.8888,
+      "low24": 9.1031,
+      "mark": 17.4222115,
+      "index": 17.61546213,
+      "pressure_score": 87,
+      "pressure_label": "short-crowded",
+      "derivatives": {
+        "funding_rate": -0.00166035,
+        "open_interest": 8773434.0,
+        "oi_change_1h": 0.006010493039604992,
+        "oi_change_4h": -0.002658897286228812,
+        "oi_value_change_24h": 0.30370443569979444
+      },
+      "ratios": {
+        "global_long_account": 0.265,
+        "global_short_account": 0.735,
+        "top_long_position": 0.529,
+        "top_short_position": 0.471,
+        "taker_buy_sell_ratio": 0.9327
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 17.3822,
+        "best_ask": 17.3839,
+        "mid": 17.38305,
+        "spread_bps": 0.9779641662421673,
+        "bid_depth_1pct_usdt": 712.4911999999999,
+        "ask_depth_1pct_usdt": 1199.8761,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 17.4312,
+          "last_closed": 17.3705,
+          "high": 17.6479,
+          "low": 17.1348,
+          "high_20": 17.8888,
+          "low_20": 15.9183,
+          "mid_20": 16.90355,
+          "structure": "above-mid",
+          "rsi_14": 77.31356693620849,
+          "atr_pct": 0.021116487349448928,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.10089546390455395,
+            "previous_histogram": 0.055295733934352304
+          },
+          "last8": [
+            16.28,
+            16.2012,
+            16.0822,
+            16.0553,
+            16.1905,
+            16.4206,
+            17.3705,
+            17.4312
+          ]
+        },
+        "15m": {
+          "close": 17.4132,
+          "last_closed": 16.1905,
+          "high": 17.8888,
+          "low": 16.13,
+          "high_20": 17.8888,
+          "low_20": 14.82,
+          "mid_20": 16.3544,
+          "structure": "above-mid",
+          "rsi_14": 72.93825445999363,
+          "atr_pct": 0.03422157575041593,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.06556311279634403,
+            "previous_histogram": -0.0027723004618944724
+          },
+          "last8": [
+            16.4291,
+            16.2679,
+            16.4204,
+            16.0512,
+            16.2511,
+            16.2012,
+            16.1905,
+            17.4132
+          ]
+        },
+        "1h": {
+          "close": 17.4132,
+          "last_closed": 16.2012,
+          "high": 17.8888,
+          "low": 15.98,
+          "high_20": 17.8888,
+          "low_20": 10.2724,
+          "mid_20": 14.0806,
+          "structure": "above-mid",
+          "rsi_14": 70.44379491958601,
+          "atr_pct": 0.07633699886129078,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.0210063582921598,
+            "previous_histogram": -0.03592330279554634
+          },
+          "last8": [
+            15.1512,
+            14.5655,
+            15.4061,
+            15.6954,
+            15.6493,
+            16.2679,
+            16.2012,
+            17.4132
+          ]
+        }
+      },
+      "scenarios": [
+        "whale_long_squeeze_candidate"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "watch",
+          "direction": "short",
+          "confidence": 79,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 17.8888 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 17.8888,
+            "support_estimate": 16.13166,
+            "deep_support_estimate": 14.813805
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "alert",
+          "direction": "long",
+          "confidence": 82,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 16.13166 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 17.8888,
+            "support_estimate": 16.13166,
+            "deep_support_estimate": 14.813805
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 0,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 17.8888,
+            "mid_15m": 16.3544
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 33,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 16.3544 下方并停留",
+          "key_levels": {
+            "range_low": 14.82,
+            "range_mid": 16.3544,
+            "range_high": 17.8888
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "EPICUSDT",
+      "pct24": 32.839,
+      "quote_volume": 60659833.62476,
+      "trades": 1336430,
+      "last": 0.3402,
+      "high24": 0.3826,
+      "low24": 0.2504,
+      "mark": 0.34038169,
+      "index": 0.34103775,
+      "pressure_score": 100,
+      "pressure_label": "oi-expansion",
+      "derivatives": {
+        "funding_rate": 5e-05,
+        "open_interest": 12221451.3,
+        "oi_change_1h": 0.010462228174606292,
+        "oi_change_4h": -0.025481703696494162,
+        "oi_value_change_24h": 0.5900298859692557
+      },
+      "ratios": {
+        "global_long_account": 0.5268,
+        "global_short_account": 0.4732,
+        "top_long_position": 0.6746,
+        "top_short_position": 0.3254,
+        "taker_buy_sell_ratio": 1.0118
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.3398,
+        "best_ask": 0.34,
+        "mid": 0.3399,
+        "spread_bps": 5.884083553987452,
+        "bid_depth_1pct_usdt": 8693.7662,
+        "ask_depth_1pct_usdt": 8435.79772,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.34,
+          "last_closed": 0.3484,
+          "high": 0.3499,
+          "low": 0.3377,
+          "high_20": 0.3517,
+          "low_20": 0.3201,
+          "mid_20": 0.3359,
+          "structure": "above-mid",
+          "rsi_14": 63.207547169811356,
+          "atr_pct": 0.021344537815126078,
+          "macd": {
+            "state": "momentum-decay",
+            "histogram": 0.0026238028060825043,
+            "previous_histogram": 0.0029465374120794608
+          },
+          "last8": [
+            0.3308,
+            0.334,
+            0.3375,
+            0.3367,
+            0.3388,
+            0.3418,
+            0.3484,
+            0.34
+          ]
+        },
+        "15m": {
+          "close": 0.34,
+          "last_closed": 0.3388,
+          "high": 0.3517,
+          "low": 0.3357,
+          "high_20": 0.381,
+          "low_20": 0.3201,
+          "mid_20": 0.35055000000000003,
+          "structure": "below-mid",
+          "rsi_14": 22.103658536585385,
+          "atr_pct": 0.04000000000000003,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.0025343183408590517,
+            "previous_histogram": -0.003389431613526183
+          },
+          "last8": [
+            0.3338,
+            0.3342,
+            0.3337,
+            0.3272,
+            0.3298,
+            0.334,
+            0.3388,
+            0.34
+          ]
+        },
+        "1h": {
+          "close": 0.3399,
+          "last_closed": 0.334,
+          "high": 0.3517,
+          "low": 0.3313,
+          "high_20": 0.3826,
+          "low_20": 0.2725,
+          "mid_20": 0.32755,
+          "structure": "above-mid",
+          "rsi_14": 65.1649235720032,
+          "atr_pct": 0.07474887571974952,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.0027360832746291357,
+            "previous_histogram": -0.00184461664616304
+          },
+          "last8": [
+            0.3447,
+            0.3456,
+            0.36,
+            0.3766,
+            0.3571,
+            0.3342,
+            0.334,
+            0.3399
+          ]
+        }
+      },
+      "scenarios": [
+        "rush_fade_candidate"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 70,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.3826 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.3826,
+            "support_estimate": 0.35616,
+            "deep_support_estimate": 0.33633
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 44,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.35616 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.3826,
+            "support_estimate": 0.35616,
+            "deep_support_estimate": 0.33633
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 49,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.3826,
+            "mid_15m": 0.35055000000000003
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 0,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.35055 下方并停留",
+          "key_levels": {
+            "range_low": 0.3201,
+            "range_mid": 0.35055000000000003,
+            "range_high": 0.381
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "PIEVERSEUSDT",
+      "pct24": 32.196,
+      "quote_volume": 43192011.8819,
+      "trades": 560022,
+      "last": 0.9296,
+      "high24": 0.949,
+      "low24": 0.7003,
+      "mark": 0.93,
+      "index": 0.92803405,
+      "pressure_score": 100,
+      "pressure_label": "squeeze-risk",
+      "derivatives": {
+        "funding_rate": 0.00047477,
+        "open_interest": 16389664.0,
+        "oi_change_1h": 0.006426832225096657,
+        "oi_change_4h": 0.0136937062367668,
+        "oi_value_change_24h": 0.4644445773794905
+      },
+      "ratios": {
+        "global_long_account": 0.5929,
+        "global_short_account": 0.4071,
+        "top_long_position": 0.5964,
+        "top_short_position": 0.4036,
+        "taker_buy_sell_ratio": 0.7273
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.9299,
+        "best_ask": 0.9302,
+        "mid": 0.93005,
+        "spread_bps": 3.2256330304830705,
+        "bid_depth_1pct_usdt": 15505.2536,
+        "ask_depth_1pct_usdt": 10744.1998,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.9306,
+          "last_closed": 0.9233,
+          "high": 0.9314,
+          "low": 0.9207,
+          "high_20": 0.9314,
+          "low_20": 0.879,
+          "mid_20": 0.9052,
+          "structure": "above-mid",
+          "rsi_14": 73.46938775510206,
+          "atr_pct": 0.011405851831383752,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.0012719610283635115,
+            "previous_histogram": 0.000767013258961364
+          },
+          "last8": [
+            0.9181,
+            0.9148,
+            0.9116,
+            0.9112,
+            0.9183,
+            0.9183,
+            0.9233,
+            0.9306
+          ]
+        },
+        "15m": {
+          "close": 0.93,
+          "last_closed": 0.9183,
+          "high": 0.9317,
+          "low": 0.9148,
+          "high_20": 0.9317,
+          "low_20": 0.8641,
+          "mid_20": 0.8978999999999999,
+          "structure": "above-mid",
+          "rsi_14": 61.53846153846156,
+          "atr_pct": 0.01940092165898617,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.0008940381005311006,
+            "previous_histogram": 0.00015578791440942416
+          },
+          "last8": [
+            0.8942,
+            0.8862,
+            0.9035,
+            0.9155,
+            0.9244,
+            0.9148,
+            0.9183,
+            0.93
+          ]
+        },
+        "1h": {
+          "close": 0.93,
+          "last_closed": 0.9148,
+          "high": 0.9317,
+          "low": 0.9054,
+          "high_20": 0.949,
+          "low_20": 0.7243,
+          "mid_20": 0.83665,
+          "structure": "above-mid",
+          "rsi_14": 71.16027784924106,
+          "atr_pct": 0.05758064516129031,
+          "macd": {
+            "state": "momentum-decay",
+            "histogram": 0.004680121624737597,
+            "previous_histogram": 0.004844433685956787
+          },
+          "last8": [
+            0.8838,
+            0.9049,
+            0.8657,
+            0.8985,
+            0.9186,
+            0.8862,
+            0.9148,
+            0.93
+          ]
+        }
+      },
+      "scenarios": [
+        "watch"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "watch",
+          "direction": "short",
+          "confidence": 37,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.949 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.949,
+            "support_estimate": 0.89926,
+            "deep_support_estimate": 0.861955
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 45,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.89926 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.949,
+            "support_estimate": 0.89926,
+            "deep_support_estimate": 0.861955
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 65,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.949,
+            "mid_15m": 0.8978999999999999
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 10,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.8979 下方并停留",
+          "key_levels": {
+            "range_low": 0.8641,
+            "range_mid": 0.8978999999999999,
+            "range_high": 0.9317
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "SKYAIUSDT",
+      "pct24": 22.984,
+      "quote_volume": 35785543.64242,
+      "trades": 697866,
+      "last": 0.21034,
+      "high24": 0.21199,
+      "low24": 0.16469,
+      "mark": 0.21069718,
+      "index": 0.21018207,
+      "pressure_score": 97,
+      "pressure_label": "crowding-watch",
+      "derivatives": {
+        "funding_rate": 0.00030554,
+        "open_interest": 117129149.0,
+        "oi_change_1h": -0.00010511861496931285,
+        "oi_change_4h": -0.002345143677654482,
+        "oi_value_change_24h": 0.16119448213361842
+      },
+      "ratios": {
+        "global_long_account": 0.4497,
+        "global_short_account": 0.5503,
+        "top_long_position": 0.7354,
+        "top_short_position": 0.2646,
+        "taker_buy_sell_ratio": 0.6778
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.21052,
+        "best_ask": 0.21055,
+        "mid": 0.210535,
+        "spread_bps": 1.424941221173415,
+        "bid_depth_1pct_usdt": 5133.37084,
+        "ask_depth_1pct_usdt": 2159.90715,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.21089,
+          "last_closed": 0.20782,
+          "high": 0.21199,
+          "low": 0.2073,
+          "high_20": 0.21199,
+          "low_20": 0.19598,
+          "mid_20": 0.203985,
+          "structure": "above-mid",
+          "rsi_14": 71.32253711201082,
+          "atr_pct": 0.015702160232484105,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.00037315161114682234,
+            "previous_histogram": 9.286033105133343e-05
+          },
+          "last8": [
+            0.20986,
+            0.20903,
+            0.20332,
+            0.20136,
+            0.20321,
+            0.20444,
+            0.20782,
+            0.21089
+          ]
+        },
+        "15m": {
+          "close": 0.21098,
+          "last_closed": 0.20321,
+          "high": 0.21199,
+          "low": 0.20264,
+          "high_20": 0.21199,
+          "low_20": 0.19464,
+          "mid_20": 0.20331500000000002,
+          "structure": "above-mid",
+          "rsi_14": 70.21534728541103,
+          "atr_pct": 0.02001205259807972,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.0008899466952758661,
+            "previous_histogram": 0.0005510309714831505
+          },
+          "last8": [
+            0.19827,
+            0.19898,
+            0.19766,
+            0.20137,
+            0.2075,
+            0.20903,
+            0.20321,
+            0.21098
+          ]
+        },
+        "1h": {
+          "close": 0.21081,
+          "last_closed": 0.20903,
+          "high": 0.21199,
+          "low": 0.20046,
+          "high_20": 0.21199,
+          "low_20": 0.16469,
+          "mid_20": 0.18834,
+          "structure": "above-mid",
+          "rsi_14": 81.33016627078385,
+          "atr_pct": 0.04467462237492122,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.001745178390378672,
+            "previous_histogram": 0.0015779351072024517
+          },
+          "last8": [
+            0.19871,
+            0.19665,
+            0.19636,
+            0.19765,
+            0.19957,
+            0.19898,
+            0.20903,
+            0.21081
+          ]
+        }
+      },
+      "scenarios": [
+        "watch"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 20,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.21199 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.21199,
+            "support_estimate": 0.20253000000000002,
+            "deep_support_estimate": 0.19543500000000003
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 49,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.20253 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.21199,
+            "support_estimate": 0.20253000000000002,
+            "deep_support_estimate": 0.19543500000000003
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 34,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.21199,
+            "mid_15m": 0.20331500000000002
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 5,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.203315 下方并停留",
+          "key_levels": {
+            "range_low": 0.19464,
+            "range_mid": 0.20331500000000002,
+            "range_high": 0.21199
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "ALLOUSDT",
+      "pct24": -40.625,
+      "quote_volume": 227832884.38316,
+      "trades": 5210464,
+      "last": 0.16701,
+      "high24": 0.28229,
+      "low24": 0.16526,
+      "mark": 0.16727,
+      "index": 0.1674227,
+      "pressure_score": 19,
+      "pressure_label": "short-crowded",
+      "derivatives": {
+        "funding_rate": -0.00020916,
+        "open_interest": 75452828.0,
+        "oi_change_1h": 0.005525553746068557,
+        "oi_change_4h": 0.006494234314801561,
+        "oi_value_change_24h": -0.4134898765258782
+      },
+      "ratios": {
+        "global_long_account": 0.487,
+        "global_short_account": 0.513,
+        "top_long_position": 0.5409,
+        "top_short_position": 0.4591,
+        "taker_buy_sell_ratio": 0.7607
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.16731,
+        "best_ask": 0.16732,
+        "mid": 0.167315,
+        "spread_bps": 0.5976750440791322,
+        "bid_depth_1pct_usdt": 7201.96411,
+        "ask_depth_1pct_usdt": 7728.44893,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.16725,
+          "last_closed": 0.16748,
+          "high": 0.16772,
+          "low": 0.16647,
+          "high_20": 0.17724,
+          "low_20": 0.16539,
+          "mid_20": 0.171315,
+          "structure": "below-mid",
+          "rsi_14": 35.72511369378471,
+          "atr_pct": 0.01560965193252185,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.0004479589061795748,
+            "previous_histogram": -0.0003902686294899394
+          },
+          "last8": [
+            0.17158,
+            0.172,
+            0.17059,
+            0.16909,
+            0.16992,
+            0.16979,
+            0.16748,
+            0.16725
+          ]
+        },
+        "15m": {
+          "close": 0.16711,
+          "last_closed": 0.16992,
+          "high": 0.17115,
+          "low": 0.16539,
+          "high_20": 0.18244,
+          "low_20": 0.16539,
+          "mid_20": 0.173915,
+          "structure": "below-mid",
+          "rsi_14": 19.990829894543737,
+          "atr_pct": 0.02223941458577323,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.0005928713835894894,
+            "previous_histogram": -0.00036947280317735495
+          },
+          "last8": [
+            0.17411,
+            0.17439,
+            0.1727,
+            0.17237,
+            0.1755,
+            0.172,
+            0.16992,
+            0.16711
+          ]
+        },
+        "1h": {
+          "close": 0.16727,
+          "last_closed": 0.172,
+          "high": 0.17216,
+          "low": 0.16539,
+          "high_20": 0.19493,
+          "low_20": 0.16526,
+          "mid_20": 0.180095,
+          "structure": "below-mid",
+          "rsi_14": 33.487426035502935,
+          "atr_pct": 0.05038047980595957,
+          "macd": {
+            "state": "momentum-decay",
+            "histogram": 0.0016668090016173087,
+            "previous_histogram": 0.001933404849243009
+          },
+          "last8": [
+            0.1861,
+            0.18522,
+            0.17988,
+            0.1802,
+            0.17332,
+            0.17439,
+            0.172,
+            0.16727
+          ]
+        }
+      },
+      "scenarios": [
+        "watch"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 5,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.28229 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.28229,
+            "support_estimate": 0.258884,
+            "deep_support_estimate": 0.24132949999999997
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 43,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.258884 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.28229,
+            "support_estimate": 0.258884,
+            "deep_support_estimate": 0.24132949999999997
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 0,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.28229,
+            "mid_15m": 0.173915
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 0,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.173915 下方并停留",
+          "key_levels": {
+            "range_low": 0.16539,
+            "range_mid": 0.173915,
+            "range_high": 0.18244
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "SIRENUSDT",
+      "pct24": 15.516,
+      "quote_volume": 58383427.53083,
+      "trades": 1110065,
+      "last": 0.5971,
+      "high24": 0.6739,
+      "low24": 0.5113,
+      "mark": 0.5978917,
+      "index": 0.59569967,
+      "pressure_score": 94,
+      "pressure_label": "oi-expansion",
+      "derivatives": {
+        "funding_rate": 0.00047262,
+        "open_interest": 15197800.0,
+        "oi_change_1h": -0.007179456674041407,
+        "oi_change_4h": -0.02540970146950372,
+        "oi_value_change_24h": 0.2258765499164046
+      },
+      "ratios": {
+        "global_long_account": 0.6722,
+        "global_short_account": 0.3278,
+        "top_long_position": 0.6707,
+        "top_short_position": 0.3293,
+        "taker_buy_sell_ratio": 0.8544
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.5985,
+        "best_ask": 0.5986,
+        "mid": 0.59855,
+        "spread_bps": 1.6707042018208835,
+        "bid_depth_1pct_usdt": 10772.8648,
+        "ask_depth_1pct_usdt": 9104.73692,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.5986,
+          "last_closed": 0.598,
+          "high": 0.5989,
+          "low": 0.5946,
+          "high_20": 0.6166,
+          "low_20": 0.5801,
+          "mid_20": 0.5983499999999999,
+          "structure": "above-mid",
+          "rsi_14": 48.630136986301395,
+          "atr_pct": 0.010023387905111937,
+          "macd": {
+            "state": "bullish",
+            "histogram": 8.119608832775349e-05,
+            "previous_histogram": -0.00040215633769735346
+          },
+          "last8": [
+            0.593,
+            0.5918,
+            0.5891,
+            0.5819,
+            0.5886,
+            0.5914,
+            0.598,
+            0.5986
+          ]
+        },
+        "15m": {
+          "close": 0.5986,
+          "last_closed": 0.5886,
+          "high": 0.5989,
+          "low": 0.5874,
+          "high_20": 0.6249,
+          "low_20": 0.5767,
+          "mid_20": 0.6008,
+          "structure": "below-mid",
+          "rsi_14": 48.51351351351353,
+          "atr_pct": 0.01978425850794712,
+          "macd": {
+            "state": "bullish",
+            "histogram": 0.0007006209519857592,
+            "previous_histogram": 0.00026224750879339735
+          },
+          "last8": [
+            0.5877,
+            0.6025,
+            0.5973,
+            0.6038,
+            0.6023,
+            0.5918,
+            0.5886,
+            0.5986
+          ]
+        },
+        "1h": {
+          "close": 0.5976,
+          "last_closed": 0.5918,
+          "high": 0.5989,
+          "low": 0.5801,
+          "high_20": 0.6739,
+          "low_20": 0.519,
+          "mid_20": 0.59645,
+          "structure": "above-mid",
+          "rsi_14": 56.000000000000014,
+          "atr_pct": 0.05910546949703581,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.006887469640071954,
+            "previous_histogram": -0.006496741525582675
+          },
+          "last8": [
+            0.6192,
+            0.619,
+            0.6168,
+            0.6008,
+            0.5943,
+            0.6025,
+            0.5918,
+            0.5976
+          ]
+        }
+      },
+      "scenarios": [
+        "watch"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 30,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.6739 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.6739,
+            "support_estimate": 0.6413800000000001,
+            "deep_support_estimate": 0.61699
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 40,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.64138 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.6739,
+            "support_estimate": 0.6413800000000001,
+            "deep_support_estimate": 0.61699
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 42,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.6739,
+            "mid_15m": 0.6008
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 0,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.6008 下方并停留",
+          "key_levels": {
+            "range_low": 0.5767,
+            "range_mid": 0.6008,
+            "range_high": 0.6249
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "UBUSDT",
+      "pct24": 11.808,
+      "quote_volume": 46711333.41379,
+      "trades": 1306700,
+      "last": 0.18937,
+      "high24": 0.19923,
+      "low24": 0.158,
+      "mark": 0.18939659,
+      "index": 0.18915311,
+      "pressure_score": 57,
+      "pressure_label": "crowding-watch",
+      "derivatives": {
+        "funding_rate": 5e-05,
+        "open_interest": 78166255.0,
+        "oi_change_1h": -0.0009517743855110838,
+        "oi_change_4h": 0.005277016602377449,
+        "oi_value_change_24h": 0.10563003779110303
+      },
+      "ratios": {
+        "global_long_account": 0.4615,
+        "global_short_account": 0.5385,
+        "top_long_position": 0.5469,
+        "top_short_position": 0.4531,
+        "taker_buy_sell_ratio": 0.9019
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.18948,
+        "best_ask": 0.18952,
+        "mid": 0.1895,
+        "spread_bps": 2.110817941951688,
+        "bid_depth_1pct_usdt": 1618.51113,
+        "ask_depth_1pct_usdt": 2656.52308,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.18952,
+          "last_closed": 0.18926,
+          "high": 0.1905,
+          "low": 0.18884,
+          "high_20": 0.19688,
+          "low_20": 0.18726,
+          "mid_20": 0.19207000000000002,
+          "structure": "below-mid",
+          "rsi_14": 33.88214904679366,
+          "atr_pct": 0.011743954652354852,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.0006032998150641859,
+            "previous_histogram": -0.000628929276774092
+          },
+          "last8": [
+            0.19365,
+            0.19183,
+            0.19042,
+            0.18969,
+            0.19031,
+            0.19035,
+            0.18926,
+            0.18952
+          ]
+        },
+        "15m": {
+          "close": 0.18952,
+          "last_closed": 0.19031,
+          "high": 0.19081,
+          "low": 0.18871,
+          "high_20": 0.19923,
+          "low_20": 0.18265,
+          "mid_20": 0.19094,
+          "structure": "below-mid",
+          "rsi_14": 38.31806282722511,
+          "atr_pct": 0.022447687390701302,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.000993285639612799,
+            "previous_histogram": -0.0008099428478756847
+          },
+          "last8": [
+            0.19404,
+            0.19268,
+            0.19371,
+            0.19488,
+            0.19603,
+            0.19183,
+            0.19031,
+            0.18952
+          ]
+        },
+        "1h": {
+          "close": 0.1896,
+          "last_closed": 0.19183,
+          "high": 0.193,
+          "low": 0.18726,
+          "high_20": 0.19923,
+          "low_20": 0.16263,
+          "mid_20": 0.18092999999999998,
+          "structure": "above-mid",
+          "rsi_14": 73.77215189873417,
+          "atr_pct": 0.034361814345991566,
+          "macd": {
+            "state": "momentum-decay",
+            "histogram": 0.0016138007817737194,
+            "previous_histogram": 0.002090431853796492
+          },
+          "last8": [
+            0.18593,
+            0.18562,
+            0.18841,
+            0.19666,
+            0.19152,
+            0.19268,
+            0.19183,
+            0.1896
+          ]
+        }
+      },
+      "scenarios": [
+        "watch"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 35,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.19923 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.19923,
+            "support_estimate": 0.190984,
+            "deep_support_estimate": 0.1847995
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 38,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.190984 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.19923,
+            "support_estimate": 0.190984,
+            "deep_support_estimate": 0.1847995
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 13,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.19923,
+            "mid_15m": 0.19094
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 0,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.19094 下方并停留",
+          "key_levels": {
+            "range_low": 0.18265,
+            "range_mid": 0.19094,
+            "range_high": 0.19923
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "NOMUSDT",
+      "pct24": 14.773,
+      "quote_volume": 44207637.409037,
+      "trades": 753167,
+      "last": 0.002657,
+      "high24": 0.002949,
+      "low24": 0.002276,
+      "mark": 0.00265739,
+      "index": 0.00266056,
+      "pressure_score": 61,
+      "pressure_label": "crowding-watch",
+      "derivatives": {
+        "funding_rate": 5e-05,
+        "open_interest": 1126737413.0,
+        "oi_change_1h": -0.006606118170153774,
+        "oi_change_4h": 0.002594755785450875,
+        "oi_value_change_24h": 0.10677665913982648
+      },
+      "ratios": {
+        "global_long_account": 0.6697,
+        "global_short_account": 0.3303,
+        "top_long_position": 0.6447,
+        "top_short_position": 0.3553,
+        "taker_buy_sell_ratio": 0.4869
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.002656,
+        "best_ask": 0.002658,
+        "mid": 0.002657,
+        "spread_bps": 7.527286413249023,
+        "bid_depth_1pct_usdt": 31759.009278,
+        "ask_depth_1pct_usdt": 16335.517115,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.002657,
+          "last_closed": 0.002652,
+          "high": 0.002672,
+          "low": 0.00264,
+          "high_20": 0.002864,
+          "low_20": 0.00257,
+          "mid_20": 0.002717,
+          "structure": "below-mid",
+          "rsi_14": 45.22144522144525,
+          "atr_pct": 0.020269906984246487,
+          "macd": {
+            "state": "bearish",
+            "histogram": -1.3908352542142736e-05,
+            "previous_histogram": -1.634920137636458e-05
+          },
+          "last8": [
+            0.002708,
+            0.002715,
+            0.00271,
+            0.00266,
+            0.002627,
+            0.002572,
+            0.002652,
+            0.002657
+          ]
+        },
+        "15m": {
+          "close": 0.002657,
+          "last_closed": 0.002627,
+          "high": 0.002707,
+          "low": 0.00257,
+          "high_20": 0.002864,
+          "low_20": 0.002547,
+          "mid_20": 0.0027054999999999996,
+          "structure": "below-mid",
+          "rsi_14": 51.95530726256985,
+          "atr_pct": 0.028845636862196922,
+          "macd": {
+            "state": "momentum-decay",
+            "histogram": 1.8698647721851176e-06,
+            "previous_histogram": 4.722527612669461e-06
+          },
+          "last8": [
+            0.00267,
+            0.002691,
+            0.002717,
+            0.002737,
+            0.002782,
+            0.002715,
+            0.002627,
+            0.002657
+          ]
+        },
+        "1h": {
+          "close": 0.002657,
+          "last_closed": 0.002715,
+          "high": 0.002736,
+          "low": 0.00257,
+          "high_20": 0.002949,
+          "low_20": 0.002366,
+          "mid_20": 0.0026575,
+          "structure": "below-mid",
+          "rsi_14": 42.818791946308735,
+          "atr_pct": 0.060298940803269,
+          "macd": {
+            "state": "bearish",
+            "histogram": -2.0342328062663707e-05,
+            "previous_histogram": -1.7432600091312882e-05
+          },
+          "last8": [
+            0.002685,
+            0.002789,
+            0.002788,
+            0.002636,
+            0.002599,
+            0.002691,
+            0.002715,
+            0.002657
+          ]
+        }
+      },
+      "scenarios": [
+        "watch"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 35,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.002949 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.002949,
+            "support_estimate": 0.0028144,
+            "deep_support_estimate": 0.0027134499999999996
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 31,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.0028144 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.002949,
+            "support_estimate": 0.0028144,
+            "deep_support_estimate": 0.0027134499999999996
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 23,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.002949,
+            "mid_15m": 0.0027054999999999996
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 0,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.0027055 下方并停留",
+          "key_levels": {
+            "range_low": 0.002547,
+            "range_mid": 0.0027054999999999996,
+            "range_high": 0.002864
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "TAUSDT",
+      "pct24": 13.615,
+      "quote_volume": 22817134.66796,
+      "trades": 715015,
+      "last": 0.09021,
+      "high24": 0.0968,
+      "low24": 0.07735,
+      "mark": 0.09019833,
+      "index": 0.09019662,
+      "pressure_score": 46,
+      "pressure_label": "crowding-watch",
+      "derivatives": {
+        "funding_rate": 5e-05,
+        "open_interest": 92085974.0,
+        "oi_change_1h": 0.0008533452003056663,
+        "oi_change_4h": 0.00017794322983033517,
+        "oi_value_change_24h": -0.024773086222938834
+      },
+      "ratios": {
+        "global_long_account": 0.6917,
+        "global_short_account": 0.3083,
+        "top_long_position": 0.6583,
+        "top_short_position": 0.3417,
+        "taker_buy_sell_ratio": 0.7883
+      },
+      "execution": {
+        "ok": true,
+        "best_bid": 0.09021,
+        "best_ask": 0.09025,
+        "mid": 0.09023,
+        "spread_bps": 4.433115371827371,
+        "bid_depth_1pct_usdt": 6326.10052,
+        "ask_depth_1pct_usdt": 5886.05401,
+        "thin_book": true
+      },
+      "klines": {
+        "5m": {
+          "close": 0.09022,
+          "last_closed": 0.09022,
+          "high": 0.09039,
+          "low": 0.09,
+          "high_20": 0.09571,
+          "low_20": 0.08956,
+          "mid_20": 0.092635,
+          "structure": "below-mid",
+          "rsi_14": 20.588235294117524,
+          "atr_pct": 0.014361718972669975,
+          "macd": {
+            "state": "bearish",
+            "histogram": -0.0005885319118009862,
+            "previous_histogram": -0.0006064173358171961
+          },
+          "last8": [
+            0.09384,
+            0.09387,
+            0.09199,
+            0.09018,
+            0.09034,
+            0.09006,
+            0.09022,
+            0.09022
+          ]
+        },
+        "15m": {
+          "close": 0.09022,
+          "last_closed": 0.09034,
+          "high": 0.09064,
+          "low": 0.08968,
+          "high_20": 0.09571,
+          "low_20": 0.08896,
+          "mid_20": 0.092335,
+          "structure": "below-mid",
+          "rsi_14": 52.39755884917172,
+          "atr_pct": 0.01821737340469329,
+          "macd": {
+            "state": "bearish",
+            "histogram": -7.491327316801926e-05,
+            "previous_histogram": 0.00012102884347894968
+          },
+          "last8": [
+            0.09021,
+            0.09186,
+            0.09444,
+            0.09408,
+            0.09445,
+            0.09387,
+            0.09034,
+            0.09022
+          ]
+        },
+        "1h": {
+          "close": 0.09023,
+          "last_closed": 0.09387,
+          "high": 0.094,
+          "low": 0.08956,
+          "high_20": 0.0968,
+          "low_20": 0.08176,
+          "mid_20": 0.08928,
+          "structure": "above-mid",
+          "rsi_14": 65.751211631664,
+          "atr_pct": 0.04494070708190179,
+          "macd": {
+            "state": "momentum-decay",
+            "histogram": 0.0003647432641491425,
+            "previous_histogram": 0.0005668941122236389
+          },
+          "last8": [
+            0.08811,
+            0.08929,
+            0.0896,
+            0.08967,
+            0.08956,
+            0.09186,
+            0.09387,
+            0.09023
+          ]
+        }
+      },
+      "scenarios": [
+        "watch"
+      ],
+      "strategy_states": [
+        {
+          "model": "rush_fade_short",
+          "label": "高位冲高回落做空",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 26,
+          "reason": "急涨后观察二次冲高失败",
+          "invalidation": "重新站回 24h 高点附近 0.0968 且 OI 继续扩张",
+          "key_levels": {
+            "high24": 0.0968,
+            "support_estimate": 0.09290999999999999,
+            "deep_support_estimate": 0.0899925
+          }
+        },
+        {
+          "model": "whale_long_squeeze",
+          "label": "大户多头挤空",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 31,
+          "reason": "负资金费率、散户空头拥挤，价格仍守支撑；若突破前高才是挤空确认",
+          "invalidation": "跌破支撑估算 0.09291 后反抽失败",
+          "key_levels": {
+            "squeeze_trigger": 0.0968,
+            "support_estimate": 0.09290999999999999,
+            "deep_support_estimate": 0.0899925
+          }
+        },
+        {
+          "model": "crowded_reversal",
+          "label": "高 Funding/OI 拥挤反转",
+          "status": "idle",
+          "direction": "short",
+          "confidence": 5,
+          "reason": "Funding/OI 拥挤，只有价格结构转弱后才允许观察反转",
+          "invalidation": "高 funding 但价格继续稳步抬升，说明趋势强于拥挤",
+          "key_levels": {
+            "high24": 0.0968,
+            "mid_15m": 0.092335
+          }
+        },
+        {
+          "model": "fake_break_long",
+          "label": "假跌破反杀做多",
+          "status": "idle",
+          "direction": "long",
+          "confidence": 0,
+          "reason": "跌破/靠近区间下沿后收回，观察追空是否被套",
+          "invalidation": "重新跌回 15m 中轨 0.092335 下方并停留",
+          "key_levels": {
+            "range_low": 0.08896,
+            "range_mid": 0.092335,
+            "range_high": 0.09571
+          }
+        }
+      ]
+    }
+  ],
+  "disclaimer": "Research system only. It is not financial advice and does not place orders.",
+  "maturity": {
+    "score": 100,
+    "checks": [
+      {
+        "id": "public_data_only",
+        "ok": true,
+        "note": "只使用 Binance Futures 公共接口"
+      },
+      {
+        "id": "state_machine",
+        "ok": true,
+        "note": "每个策略输出状态而不是直接喊单"
+      },
+      {
+        "id": "jsonl_history",
+        "ok": true,
+        "note": "信号事件可追踪"
+      },
+      {
+        "id": "forward_outcomes",
+        "ok": true,
+        "note": "已有前测结果样本"
+      },
+      {
+        "id": "risk_first",
+        "ok": true,
+        "note": "默认不接私钥、不自动下单"
+      },
+      {
+        "id": "coverage",
+        "ok": true,
+        "note": "候选覆盖至少 10 个标的"
+      },
+      {
+        "id": "execution_risk",
+        "ok": true,
+        "note": "已记录 top-20 深度和 spread 风险"
+      }
+    ]
+  }
+}

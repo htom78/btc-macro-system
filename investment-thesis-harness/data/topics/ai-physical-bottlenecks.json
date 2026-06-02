@@ -1,0 +1,342 @@
+{
+  "id": "ai-physical-bottlenecks",
+  "title": "AI Physical Bottlenecks",
+  "subtitle": "From AI narratives to tradable physical constraints",
+  "as_of": "2026-05-28",
+  "research_question": "AI 基础设施扩张时，哪些沉默但不可替代的物理环节会被市场重新定价？",
+  "source_notes": [
+    {
+      "title": "PANews: Serenity vs Leopold",
+      "url": "https://www.panewslab.com/zh/articles/019e69f3-28a3-72ca-9edc-409b4fbb4a50",
+      "use": "Narrative input: AI physical bottleneck investing."
+    },
+    {
+      "title": "BruceBlue X Article",
+      "url": "https://x.com/BruceBlue/status/2058901845402325243",
+      "use": "Narrative input: Serenity chokepoint method."
+    },
+    {
+      "title": "NVIDIA Silicon Photonics",
+      "url": "https://www.nvidia.com/en-us/networking/products/silicon-photonics/",
+      "use": "Primary evidence for CPO direction."
+    },
+    {
+      "title": "IEA Key Questions on Energy and AI",
+      "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary",
+      "use": "Primary evidence for AI electricity and grid bottlenecks."
+    }
+  ],
+  "theses": [
+    {
+      "id": "cpo-silicon-photonics",
+      "title": "CPO / Silicon Photonics Bottleneck",
+      "status": "watch",
+      "investment_question": "如果 AI 集群互联从铜缆和可插拔光模块继续走向 CPO，最上游的光源、SOI、外延设备和对准组件是否会被重新定价？",
+      "market_mispricing": "市场更容易定价 GPU、HBM 和光模块成品，较少系统定价上游材料、设备和光源环节，尤其是非美中小市值公司。",
+      "candidate_assets": [
+        {
+          "ticker": "SIVE.ST",
+          "name": "Sivers Semiconductors",
+          "role": "External laser source / photonics supplier",
+          "tradability_note": "Small-cap, high volatility, foreign listing."
+        },
+        {
+          "ticker": "SOI.PA",
+          "name": "Soitec",
+          "role": "Photonics-SOI substrate supplier",
+          "tradability_note": "Larger and more liquid than many Serenity-style microcaps."
+        },
+        {
+          "ticker": "ALRIB.PA",
+          "name": "Riber",
+          "role": "MBE equipment supplier",
+          "tradability_note": "Niche equipment exposure; liquidity must be checked."
+        },
+        {
+          "ticker": "3363.TW",
+          "name": "FOCI / 波若威",
+          "role": "Optical alignment / fiber array exposure",
+          "tradability_note": "Taiwan listing; local liquidity and access matter."
+        }
+      ],
+      "claims": [
+        "AI scale-out networking power and bandwidth constraints push more optical integration into the package.",
+        "CPO adoption creates upstream bottlenecks outside the visible GPU/HBM trade.",
+        "Specialized suppliers may see nonlinear demand if CPO moves from roadmap to volume deployment."
+      ],
+      "evidence": [
+        {
+          "type": "primary",
+          "strength": 5,
+          "title": "NVIDIA describes CPO switches with integrated silicon photonics for agentic AI and million-GPU clusters.",
+          "url": "https://www.nvidia.com/en-us/networking/products/silicon-photonics/"
+        },
+        {
+          "type": "primary",
+          "strength": 4,
+          "title": "Soitec fiscal 2026 release says Photonics-SOI grew with AI cloud infrastructure and CPO traction.",
+          "url": "https://www.soitec.com/home/group/newsroom/press-releases/content/2026/05/27/soitec-reports-fiscal-2026-full-year-results"
+        },
+        {
+          "type": "primary",
+          "strength": 3,
+          "title": "Sivers announced collaboration with Jabil on energy-efficient 1.6T optical transceiver module.",
+          "url": "https://www.sivers-semiconductors.com/press/sivers-semiconductors-collaborates-with-jabil-on-energy-efficient-1-6t-pluggable-optical-transceiver-module/"
+        }
+      ],
+      "counter_evidence": [
+        "CPO may take longer to ramp than market narratives expect.",
+        "Advanced copper, linear pluggable optics, or alternative optical architectures could delay the bottleneck.",
+        "Some suppliers may be technically relevant but lack pricing power, gross margin conversion, or customer concentration resilience.",
+        "Many names are low-liquidity and can become pump-and-dump-like after social media attention."
+      ],
+      "watch_triggers": [
+        "NVIDIA / Broadcom / TSMC roadmap confirmations moving from demo to volume dates.",
+        "Customer design wins, capacity expansion, backlog, or margin inflection at upstream suppliers.",
+        "Sharp divergence between optical upstream stocks and mainstream semiconductor indices.",
+        "Evidence that CPO bill of materials is consolidating around named suppliers."
+      ],
+      "scores": {
+        "demand_strength": 4.5,
+        "bottleneck_power": 4.0,
+        "evidence_quality": 3.8,
+        "market_mispricing": 3.5,
+        "catalyst_clarity": 3.4,
+        "tradability": 2.4,
+        "risk_control": 2.6
+      }
+    },
+    {
+      "id": "ai-power-miner-hosting",
+      "title": "AI Power Constraint / BTC Miner Hosting",
+      "status": "watch",
+      "investment_question": "如果 AI 数据中心的真正瓶颈转向电力、并网、土地和冷却，拥有电力接入与站点资源的 BTC 矿企是否会从 BTC beta 变成 AI hosting 折价资产？",
+      "market_mispricing": "市场通常把矿企当作高 beta BTC 代理资产，但 AI hosting 合同可能把部分公司改造成电力和数据中心资产。",
+      "candidate_assets": [
+        {
+          "ticker": "IREN",
+          "name": "IREN Limited",
+          "role": "BTC miner / AI data center hosting pivot",
+          "tradability_note": "Liquid U.S.-listed equity, still BTC-sensitive."
+        },
+        {
+          "ticker": "CORZ",
+          "name": "Core Scientific",
+          "role": "Mining and AI hosting infrastructure",
+          "tradability_note": "Contract quality and post-bankruptcy capital structure matter."
+        },
+        {
+          "ticker": "CLSK",
+          "name": "CleanSpark",
+          "role": "Power-heavy mining platform",
+          "tradability_note": "High BTC exposure; AI optionality needs proof."
+        },
+        {
+          "ticker": "APLD",
+          "name": "Applied Digital",
+          "role": "Data center / AI infrastructure exposure",
+          "tradability_note": "Execution and financing risk are central."
+        }
+      ],
+      "claims": [
+        "AI data center electricity demand is growing faster than grid connection and equipment delivery cycles.",
+        "Power-secured sites become scarce assets if compute demand persists.",
+        "Some BTC miners can convert part of their footprint into AI hosting at higher and more stable economics."
+      ],
+      "evidence": [
+        {
+          "type": "primary",
+          "strength": 5,
+          "title": "IEA projects data center electricity consumption roughly doubling from 2025 to 2030, with AI-focused data centers growing faster.",
+          "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary"
+        },
+        {
+          "type": "primary",
+          "strength": 4,
+          "title": "Goldman Sachs estimates data center power demand can rise materially by 2030 and highlights grid bottlenecks.",
+          "url": "https://www.goldmansachs.com/insights/articles/ai-to-drive-165-increase-in-data-center-power-demand-by-2030"
+        },
+        {
+          "type": "filing",
+          "strength": 3,
+          "title": "Situational Awareness LP 13F shows long exposure to power, storage, CoreWeave, and BTC miner-related assets.",
+          "url": "https://www.sec.gov/Archives/edgar/data/2045724/000204572426000008/0002045724-26-000008.txt"
+        }
+      ],
+      "counter_evidence": [
+        "Miner AI hosting economics may be overstated if contracts are non-binding or capex-heavy.",
+        "BTC price drawdowns can dominate the equity before AI revenue becomes meaningful.",
+        "Power assets may be stranded if interconnection, cooling, or customer credit quality is weak.",
+        "Market may already have repriced the best-known AI hosting pivots."
+      ],
+      "watch_triggers": [
+        "Signed AI hosting contracts with creditworthy counterparties, duration, MW, and unit economics disclosed.",
+        "Capex financing terms and dilution risk.",
+        "BTC price drawdown resilience relative to pure miners.",
+        "Gross margin shift from self-mining to contracted hosting."
+      ],
+      "scores": {
+        "demand_strength": 4.7,
+        "bottleneck_power": 4.2,
+        "evidence_quality": 4.0,
+        "market_mispricing": 3.3,
+        "catalyst_clarity": 3.8,
+        "tradability": 4.0,
+        "risk_control": 2.8
+      }
+    },
+    {
+      "id": "humanoid-rare-earths",
+      "title": "Humanoid Robotics / Rare Earth Supply Chain",
+      "status": "research",
+      "investment_question": "如果人形机器人长期放量，稀土磁材、减速器、执行器和亚洲硬件供应链是否会成为比机器人整机更好的投资入口？",
+      "market_mispricing": "市场更愿意交易机器人整机和 AI 软件叙事，较少提前定价长期材料和精密硬件瓶颈。",
+      "candidate_assets": [
+        {
+          "ticker": "LYC.AX",
+          "name": "Lynas Rare Earths",
+          "role": "Rare earth processing outside China",
+          "tradability_note": "Relatively liquid but commodity-cycle exposed."
+        },
+        {
+          "ticker": "MP",
+          "name": "MP Materials",
+          "role": "U.S. rare earth mining and processing exposure",
+          "tradability_note": "Policy and execution risk."
+        },
+        {
+          "ticker": "6324.T",
+          "name": "Harmonic Drive Systems",
+          "role": "Precision reducers",
+          "tradability_note": "Japan listing; valuation sensitivity."
+        },
+        {
+          "ticker": "002050.SZ",
+          "name": "Sanhua Intelligent Controls",
+          "role": "Actuator / thermal and control components",
+          "tradability_note": "China A-share access and policy risk."
+        }
+      ],
+      "claims": [
+        "Humanoid robots require tight integration of AI software with precision hardware and magnetic materials.",
+        "Rare earth and actuator supply chains could become geopolitical bottlenecks.",
+        "Hardware suppliers may capture more durable value than many robot OEM narratives."
+      ],
+      "evidence": [
+        {
+          "type": "primary",
+          "strength": 4,
+          "title": "Morgan Stanley estimates humanoids could approach 1 billion units by 2050 in a high-adoption scenario.",
+          "url": "https://www.morganstanley.com/insights/articles/humanoid-robot-market-5-trillion-by-2050"
+        },
+        {
+          "type": "news",
+          "strength": 3,
+          "title": "Tesla Optimus production was reported as affected by rare earth magnet restrictions, highlighting supply chain sensitivity.",
+          "url": "https://www.cnbc.com/2025/04/23/teslas-optimus-hit-by-chinas-rare-earth-restrictions-says-musk.html"
+        }
+      ],
+      "counter_evidence": [
+        "The adoption curve is far out and highly uncertain.",
+        "Robot form factors may reduce rare earth intensity or avoid humanoid designs.",
+        "Commodity supply responses can dilute scarcity economics over long horizons.",
+        "Current valuations may already price a very optimistic robot future."
+      ],
+      "watch_triggers": [
+        "OEM production commitments moving from demos to multi-year procurement.",
+        "Rare earth export controls or processing capacity announcements.",
+        "Unit economics: bill of materials, actuator count, magnet mass per robot.",
+        "Customer evidence for non-Tesla industrial humanoid deployments."
+      ],
+      "scores": {
+        "demand_strength": 3.2,
+        "bottleneck_power": 3.8,
+        "evidence_quality": 2.7,
+        "market_mispricing": 3.0,
+        "catalyst_clarity": 2.2,
+        "tradability": 3.2,
+        "risk_control": 2.5
+      }
+    },
+    {
+      "id": "ai-infra-relative-value",
+      "title": "AI Infrastructure Relative Value",
+      "status": "research",
+      "investment_question": "如果 AI 的真实落地速度受电网、土地、数据中心、存储和散热约束，是否存在做多物理基建/存储/矿企、低配或对冲拥挤半导体 beta 的相对价值机会？",
+      "market_mispricing": "市场可能把芯片出货曲线线性外推，却低估电网接入、数据中心建设和存储供给的长周期；但这个错配可能长期存在，时间点很难交易。",
+      "candidate_assets": [
+        {
+          "ticker": "SNDK",
+          "name": "SanDisk",
+          "role": "Storage / memory infrastructure exposure",
+          "tradability_note": "Needs standalone valuation and cycle analysis."
+        },
+        {
+          "ticker": "CRWV",
+          "name": "CoreWeave",
+          "role": "AI cloud infrastructure",
+          "tradability_note": "High narrative intensity; valuation sensitivity."
+        },
+        {
+          "ticker": "IREN",
+          "name": "IREN Limited",
+          "role": "Power-secured BTC miner / AI hosting option",
+          "tradability_note": "BTC beta and AI hosting economics must be separated."
+        },
+        {
+          "ticker": "SMH",
+          "name": "VanEck Semiconductor ETF",
+          "role": "Semiconductor beta hedge candidate",
+          "tradability_note": "Hedging needs options cost, expiry, and sizing discipline."
+        }
+      ],
+      "claims": [
+        "AI demand may remain strong while physical infrastructure throttles near-term deployment.",
+        "Storage, power-secured sites, and AI cloud infrastructure can capture scarcity economics before broad chip beta does.",
+        "A relative-value lens may reduce dependence on one high-beta microcap story."
+      ],
+      "evidence": [
+        {
+          "type": "filing",
+          "strength": 4,
+          "title": "Situational Awareness LP Q1 2026 13F discloses long exposure to CoreWeave, SanDisk, miners and large put positions on semiconductor beta.",
+          "url": "https://www.sec.gov/Archives/edgar/data/2045724/000204572426000008/0002045724-26-000008.txt"
+        },
+        {
+          "type": "primary",
+          "strength": 5,
+          "title": "IEA highlights electricity, grid connection and equipment constraints around AI data center growth.",
+          "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary"
+        },
+        {
+          "type": "narrative",
+          "strength": 2,
+          "title": "PANews frames Leopold's strategy as infrastructure arbitrage against slower physical buildout.",
+          "url": "https://www.panewslab.com/zh/articles/019e69f3-28a3-72ca-9edc-409b4fbb4a50"
+        }
+      ],
+      "counter_evidence": [
+        "Semiconductor leaders can keep beating earnings longer than physical bottleneck investors can hold puts.",
+        "13F put notional is not the same as net short exposure, premium paid, or expected loss.",
+        "CoreWeave, storage and miner equities may already embed aggressive AI infrastructure expectations.",
+        "This thesis is complex and can fail through timing even if the physical constraint is directionally correct."
+      ],
+      "watch_triggers": [
+        "Semi capex guidance diverging from grid/data center deployment reality.",
+        "Storage pricing, backlog and margin inflection at storage suppliers.",
+        "AI hosting contract disclosures from power-secured miners.",
+        "Option implied volatility and put-spread cost on semiconductor beta.",
+        "Evidence that data center interconnection queues are worsening or improving."
+      ],
+      "scores": {
+        "demand_strength": 4.4,
+        "bottleneck_power": 4.1,
+        "evidence_quality": 3.0,
+        "market_mispricing": 2.0,
+        "catalyst_clarity": 1.5,
+        "tradability": 2.5,
+        "risk_control": 1.2
+      }
+    }
+  ]
+}

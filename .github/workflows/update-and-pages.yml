@@ -42,6 +42,12 @@ jobs:
       - name: Generate report
         run: python3 btc-macro-system/run.py --force
 
+      - name: Validate investment thesis harness
+        run: python3 investment-thesis-harness/scripts/validate.py
+
+      - name: Generate investment thesis harness
+        run: python3 investment-thesis-harness/run.py
+
       - name: Commit updated history
         if: github.event_name != 'push'
         run: |
@@ -49,10 +55,12 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add btc-macro-system/outputs/report.html btc-macro-system/outputs/latest.json
           git add -f btc-macro-system/data/history/observations.jsonl
+          git add investment-thesis-harness/outputs/report.html investment-thesis-harness/outputs/latest.json
+          git add -f investment-thesis-harness/data/history/thesis_snapshots.jsonl
           if git diff --cached --quiet; then
             echo "No report changes to commit."
           else
-            git commit -m "Update BTC macro report"
+            git commit -m "Update research reports"
             git push
           fi
 
@@ -63,9 +71,12 @@ jobs:
           cp home.html _site/index.html
           cp btc-macro-system/outputs/report.html _site/macro-report.html
           cp btc-macro-system/outputs/latest.json _site/latest.json
+          cp investment-thesis-harness/outputs/report.html _site/investment-research.html
+          cp investment-thesis-harness/outputs/latest.json _site/investment-latest.json
           cp -R everydayzen-macro _site/everydayzen-macro
           cp -R saas-signals _site/saas-signals
           cp -R market-top-triggers _site/market-top-triggers
+          cp -R smallcap-futures-system _site/smallcap-futures-system
           cp price-ladder-short-demo.html _site/price-ladder-short-demo.html
           cp price-ladder-short-theory.html _site/price-ladder-short-theory.html
           cp binance-hot-ladder-lab.html _site/binance-hot-ladder-lab.html
@@ -75,6 +86,9 @@ jobs:
           cp btc-ma95-hybrid-strategy.html _site/btc-ma95-hybrid-strategy.html
           if [ -f btc-macro-system/data/history/observations.jsonl ]; then
             cp btc-macro-system/data/history/observations.jsonl _site/observations.jsonl
+          fi
+          if [ -f investment-thesis-harness/data/history/thesis_snapshots.jsonl ]; then
+            cp investment-thesis-harness/data/history/thesis_snapshots.jsonl _site/thesis-snapshots.jsonl
           fi
           touch _site/.nojekyll
 

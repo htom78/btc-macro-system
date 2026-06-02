@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1600, initial-scale=1">
+  <title>中国宏观：外贸、外储与资金出海</title>
+  <style>
+    :root {
+      --paper: #f7f3ea;
+      --ink: #171717;
+      --muted: #6f6a60;
+      --line: #d7cdbb;
+      --red: #b94b45;
+      --blue: #2c638a;
+      --green: #4d7b59;
+      --gold: #b48635;
+      --soft-red: #f2d9d5;
+      --soft-blue: #dce9ef;
+      --soft-green: #e0eadc;
+      --soft-gold: #efe2c5;
+      --white: #fffdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 1600px;
+      min-height: 2600px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    .poster {
+      position: relative;
+      width: 1600px;
+      height: 2600px;
+      padding: 92px 104px 84px;
+      background:
+        linear-gradient(90deg, rgba(215, 205, 187, .35) 1px, transparent 1px) 0 0 / 80px 80px,
+        linear-gradient(0deg, rgba(215, 205, 187, .32) 1px, transparent 1px) 0 0 / 80px 80px,
+        radial-gradient(circle at 14% 11%, rgba(180, 134, 53, .16), transparent 23%),
+        radial-gradient(circle at 84% 22%, rgba(44, 99, 138, .12), transparent 22%),
+        var(--paper);
+    }
+
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 30px;
+      font-weight: 600;
+    }
+
+    .seal {
+      width: 72px;
+      height: 72px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      font-size: 25px;
+      font-weight: 800;
+      line-height: 1.08;
+      color: var(--ink);
+      background: rgba(255, 253, 248, .72);
+    }
+
+    h1 {
+      max-width: 1280px;
+      margin: 34px 0 24px;
+      font-size: 90px;
+      line-height: 1.08;
+      font-weight: 860;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      width: 1180px;
+      margin: 0;
+      color: #3a3834;
+      font-size: 38px;
+      line-height: 1.52;
+      font-weight: 520;
+    }
+
+    .ribbon {
+      position: absolute;
+      top: 92px;
+      right: 104px;
+      width: 208px;
+      padding: 24px 18px;
+      border: 2px solid var(--line);
+      background: rgba(255, 253, 248, .82);
+      text-align: center;
+    }
+
+    .ribbon .small {
+      color: var(--muted);
+      font-size: 23px;
+      font-weight: 600;
+    }
+
+    .ribbon .big {
+      margin-top: 8px;
+      color: var(--red);
+      font-size: 42px;
+      font-weight: 900;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 34px;
+      margin-top: 74px;
+    }
+
+    .panel {
+      min-height: 356px;
+      border: 2px solid var(--line);
+      background: rgba(255, 253, 248, .78);
+      padding: 38px 42px 34px;
+    }
+
+    .panel.strong {
+      border-top: 12px solid var(--blue);
+    }
+
+    .panel.weak {
+      border-top: 12px solid var(--red);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .panel-title h2 {
+      margin: 0;
+      font-size: 42px;
+      line-height: 1.16;
+      font-weight: 840;
+    }
+
+    .panel-title span {
+      color: var(--muted);
+      font-size: 24px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .metric {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 22px;
+      align-items: center;
+      margin: 18px 0;
+    }
+
+    .metric .value {
+      padding: 16px 20px;
+      border-radius: 999px;
+      text-align: center;
+      color: var(--white);
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 880;
+    }
+
+    .metric.blue .value {
+      background: var(--blue);
+    }
+
+    .metric.red .value {
+      background: var(--red);
+    }
+
+    .metric.green .value {
+      background: var(--green);
+    }
+
+    .metric.gold .value {
+      background: var(--gold);
+    }
+
+    .metric p {
+      margin: 0;
+      color: #34312d;
+      font-size: 27px;
+      line-height: 1.35;
+      font-weight: 650;
+    }
+
+    .map {
+      position: relative;
+      margin-top: 42px;
+      padding: 54px 50px 48px;
+      border: 2px solid var(--line);
+      background: rgba(255, 253, 248, .82);
+    }
+
+    .map h2 {
+      margin: 0 0 30px;
+      font-size: 50px;
+      line-height: 1.16;
+      font-weight: 860;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: 310px 78px 330px 78px 420px;
+      align-items: center;
+      gap: 0;
+      margin-top: 24px;
+    }
+
+    .node {
+      min-height: 272px;
+      padding: 34px 30px;
+      border: 2px solid var(--line);
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .node.blue {
+      background: var(--soft-blue);
+    }
+
+    .node.green {
+      background: var(--soft-green);
+    }
+
+    .node.gold {
+      background: var(--soft-gold);
+    }
+
+    .node.red {
+      background: var(--soft-red);
+    }
+
+    .node .label {
+      color: var(--muted);
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .node .main {
+      margin-top: 12px;
+      font-size: 42px;
+      line-height: 1.16;
+      font-weight: 890;
+    }
+
+    .node .sub {
+      margin-top: 18px;
+      color: #3c3934;
+      font-size: 24px;
+      line-height: 1.35;
+      font-weight: 620;
+    }
+
+    .arrow {
+      position: relative;
+      height: 272px;
+      display: grid;
+      place-items: center;
+    }
+
+    .arrow::before {
+      content: "";
+      width: 72px;
+      border-top: 4px solid #4b4740;
+    }
+
+    .arrow::after {
+      content: "";
+      position: absolute;
+      right: 14px;
+      border-left: 16px solid #4b4740;
+      border-top: 11px solid transparent;
+      border-bottom: 11px solid transparent;
+    }
+
+    .leak-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 30px;
+    }
+
+    .leak {
+      min-height: 220px;
+      padding: 28px 30px;
+      border: 2px dashed rgba(185, 75, 69, .65);
+      background: rgba(242, 217, 213, .5);
+    }
+
+    .leak h3,
+    .control h3 {
+      margin: 0 0 12px;
+      font-size: 34px;
+      line-height: 1.22;
+      font-weight: 860;
+    }
+
+    .leak p,
+    .control p {
+      margin: 0;
+      color: #3c3934;
+      font-size: 26px;
+      line-height: 1.45;
+      font-weight: 620;
+    }
+
+    .control {
+      min-height: 220px;
+      padding: 28px 30px;
+      border: 2px dashed rgba(77, 123, 89, .68);
+      background: rgba(224, 234, 220, .55);
+    }
+
+    .thesis {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 34px;
+      margin-top: 42px;
+    }
+
+    .large-quote {
+      min-height: 394px;
+      padding: 48px 54px;
+      background: #1c1b18;
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .large-quote .mark {
+      color: var(--gold);
+      font-size: 36px;
+      font-weight: 900;
+      margin-bottom: 24px;
+    }
+
+    .large-quote p {
+      margin: 0;
+      font-size: 48px;
+      line-height: 1.34;
+      font-weight: 830;
+    }
+
+    .explain {
+      min-height: 394px;
+      padding: 44px 44px;
+      border: 2px solid var(--line);
+      background: rgba(255, 253, 248, .82);
+    }
+
+    .explain h2 {
+      margin: 0 0 26px;
+      font-size: 42px;
+      line-height: 1.18;
+      font-weight: 860;
+    }
+
+    .explain ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .explain li {
+      position: relative;
+      margin: 0 0 20px;
+      padding-left: 34px;
+      color: #34312d;
+      font-size: 27px;
+      line-height: 1.38;
+      font-weight: 640;
+    }
+
+    .explain li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 13px;
+      width: 14px;
+      height: 14px;
+      background: var(--gold);
+      transform: rotate(45deg);
+    }
+
+    .bottom {
+      position: absolute;
+      left: 104px;
+      right: 104px;
+      bottom: 84px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      align-items: end;
+      border-top: 2px solid var(--line);
+      padding-top: 28px;
+      color: var(--muted);
+      font-size: 22px;
+      line-height: 1.45;
+      font-weight: 620;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--ink);
+      font-size: 30px;
+      font-weight: 860;
+      white-space: nowrap;
+    }
+
+    .brand .dot {
+      width: 18px;
+      height: 18px;
+      background: var(--red);
+      transform: rotate(45deg);
+    }
+
+    .footnote {
+      max-width: 930px;
+    }
+  </style>
+</head>
+<body>
+  <main class="poster" aria-label="中国宏观信息图">
+    <div class="kicker">
+      <div class="seal">动<br>中</div>
+      <span>宏观观察 / 外贸、外储、资金出海</span>
+    </div>
+
+    <section>
+      <h1>中国不是没钱了，<br>而是钱开始想离开原来的位置。</h1>
+      <p class="lead">生产和出口仍然强，居民与民间资本的信心却偏弱。真正的矛盾，不是外汇够不够，而是国内资产还能不能让人愿意长期持有。</p>
+    </section>
+
+    <aside class="ribbon">
+      <div class="small">核心判断</div>
+      <div class="big">强外贸<br>弱心气</div>
+    </aside>
+
+    <section class="split">
+      <div class="panel strong">
+        <div class="panel-title">
+          <h2>身体还在奔跑</h2>
+          <span>生产 / 出口</span>
+        </div>
+        <div class="metric blue">
+          <div class="value">+5.0%</div>
+          <p>一季度 GDP 仍在目标附近，宏观机器没有停。</p>
+        </div>
+        <div class="metric green">
+          <div class="value">+10.6%</div>
+          <p>4月出口交货值强，外需继续托住工业。</p>
+        </div>
+        <div class="metric gold">
+          <div class="value">顺差大</div>
+          <p>外贸还在创造美元，但美元不一定沉淀成外储。</p>
+        </div>
+      </div>
+
+      <div class="panel weak">
+        <div class="panel-title">
+          <h2>心气没有跟上</h2>
+          <span>消费 / 投资</span>
+        </div>
+        <div class="metric red">
+          <div class="value">+0.2%</div>
+          <p>4月社零接近停滞，居民消费仍然谨慎。</p>
+        </div>
+        <div class="metric red">
+          <div class="value">-5.2%</div>
+          <p>1-4月民间投资下滑，企业风险偏好偏低。</p>
+        </div>
+        <div class="metric red">
+          <div class="value">-13.7%</div>
+          <p>房地产开发投资继续拖累资产负债表预期。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="map">
+      <h2>外贸顺差，不会自动变成外汇储备</h2>
+      <div class="flow">
+        <div class="node blue">
+          <div>
+            <div class="label">第一步</div>
+            <div class="main">出口赚美元</div>
+          </div>
+          <div class="sub">外贸强，企业拿到外汇收入，人民币面临升值压力。</div>
+        </div>
+        <div class="arrow"></div>
+        <div class="node green">
+          <div>
+            <div class="label">第二步</div>
+            <div class="main">是否结汇</div>
+          </div>
+          <div class="sub">企业可以结汇，也可以留汇、还债、投海外、买资产。</div>
+        </div>
+        <div class="arrow"></div>
+        <div class="node gold">
+          <div>
+            <div class="label">第三步</div>
+            <div class="main">央行买入后，才变外储</div>
+          </div>
+          <div class="sub">外储还受美元、债券、黄金价格影响，不是贸易顺差的镜像。</div>
+        </div>
+      </div>
+
+      <div class="leak-wrap">
+        <div class="leak">
+          <h3>资金为什么想出去？</h3>
+          <p>房地产不再蓄水，股市回报不稳，民营部门预期偏弱。钱不是没有方向，而是在寻找更安全的资产坐标。</p>
+        </div>
+        <div class="control">
+          <h3>监管为什么会收口？</h3>
+          <p>跨境券商被查，不只是平台问题，也是在把居民海外配置重新压回可统计、可限额、可监管的通道。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="thesis">
+      <div class="large-quote">
+        <div class="mark">一句话看懂</div>
+        <p>出口在给经济续命，<br>但内需没有真正接棒；<br>外贸在创造外汇，<br>但外汇没有完全留在外储。</p>
+      </div>
+      <div class="explain">
+        <h2>人民币升值也不是万能药</h2>
+        <ul>
+          <li>它能降低进口成本，缓解美元债和外流预期。</li>
+          <li>但会压缩出口利润，也会让海外资产折人民币缩水。</li>
+          <li>真正的解法，是让国内资产重新具备长期吸引力。</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="bottom">
+      <div class="footnote">数据口径来自国家统计局、海关总署、外汇局公开信息；本图表达的是结构关系，不是短线汇率预测。时间点：2026年5月。</div>
+      <div class="brand"><span class="dot"></span><span>动中禅 EveryDayZen</span></div>
+    </footer>
+  </main>
+</body>
+</html>

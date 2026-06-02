@@ -400,7 +400,7 @@
 
     .route-grid {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
     }
 
@@ -641,7 +641,7 @@
         <span class="mark">₿</span>
         <span>
           <b>BTC 策略工作台</b>
-          <span>Macro / Ladder / MA95</span>
+          <span>Macro / Ladder / Research</span>
         </span>
       </a>
       <nav class="nav" aria-label="主导航">
@@ -651,6 +651,8 @@
         <a href="binance-hot-ladder-lab.html">小币做空</a>
         <a href="binance-upside-lab.html">小币潜力</a>
         <a href="saas-signals/">SaaS 信号</a>
+        <a href="investment-research.html">投资研究</a>
+        <a href="everydayzen-macro/">动中禅宏观</a>
       </nav>
     </div>
 
@@ -725,9 +727,9 @@
       <div class="section-head">
         <div>
           <p class="eyebrow">Main routes</p>
-          <h2>五个主要入口</h2>
+          <h2>七个主要入口</h2>
         </div>
-        <p>从“长期囤 BTC”到“小币多空候选筛选”，每个页面都负责一个独立问题，首页只负责把路径整理清楚。</p>
+        <p>从“长期囤 BTC”到“小币多空候选筛选”、AI 物理瓶颈研究和动中禅宏观文案，每个页面都负责一个独立问题，首页只负责把路径整理清楚。</p>
       </div>
 
       <div class="route-grid">
@@ -790,6 +792,45 @@
             <span class="tag">early watch</span>
             <span class="tag">breakout</span>
             <span class="tag">pullback buy</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-green" href="investment-research.html">
+          <div class="route-kicker"><span>Research</span><span class="route-index">06</span></div>
+          <div class="route-title">
+            <h3>投资 Thesis Harness</h3>
+            <p>把文章、X、财报和产业叙事转成证据、反证、评分、资产卡和 watchlist。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">AI bottlenecks</span>
+            <span class="tag">asset cards</span>
+            <span class="tag">thesis JSON</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-red" href="smallcap-futures-system/">
+          <div class="route-kicker"><span>Small-cap system</span><span class="route-index">07</span></div>
+          <div class="route-title">
+            <h3>强势小币策略系统</h3>
+            <p>跟踪 Binance 合约强势小币，把 Funding、OI、多空拥挤和真实后续走势接入策略状态机。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">Funding/OI</span>
+            <span class="tag">state machine</span>
+            <span class="tag">forward test</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-blue" href="everydayzen-macro/">
+          <div class="route-kicker"><span>EveryDayZen</span><span class="route-index">08</span></div>
+          <div class="route-title">
+            <h3>动中禅宏观观察</h3>
+            <p>把宏观判断整理成口播稿、大图和可复用的内容索引。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">copy</span>
+            <span class="tag">infographic</span>
+            <span class="tag">entries JSON</span>
           </div>
         </a>
       </div>
@@ -874,7 +915,7 @@
           </div>
           <div class="status-item">
             <span>小币合约策略模型</span>
-            <b><a href="binance-hot-ladder-lab.html">做空</a> / <a href="binance-upside-lab.html">潜力</a></b>
+            <b><a href="smallcap-futures-system/">系统</a> / <a href="binance-hot-ladder-lab.html">做空</a> / <a href="binance-upside-lab.html">潜力</a></b>
           </div>
           <div class="status-item">
             <span>AI-SaaS 信号台 · DDOG/SNOW</span>
@@ -888,13 +929,17 @@
             <span>公开数据接口</span>
             <b><a href="latest.json">latest</a> / <a href="observations.jsonl">history</a></b>
           </div>
+          <div class="status-item">
+            <span>投资研究接口</span>
+            <b><a href="investment-latest.json">latest</a> / <a href="thesis-snapshots.jsonl">history</a></b>
+          </div>
         </div>
       </aside>
     </section>
 
     <footer class="foot">
       <span>仅作研究和策略演示，不构成投资建议。</span>
-      <span><a href="https://github.com/htom78/btc-macro-system">GitHub</a> · <a href="macro-report.html">宏观报告</a> · <a href="latest.json">latest.json</a></span>
+      <span><a href="https://github.com/htom78/btc-macro-system">GitHub</a> · <a href="macro-report.html">宏观报告</a> · <a href="investment-research.html">投资研究</a> · <a href="everydayzen-macro/">动中禅宏观</a> · <a href="latest.json">latest.json</a></span>
     </footer>
   </main>
 

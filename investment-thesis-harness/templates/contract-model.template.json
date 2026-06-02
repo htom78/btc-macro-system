@@ -1,0 +1,36 @@
+{
+  "topic_id": "ai-physical-bottlenecks",
+  "title": "Contract or Valuation Model Title",
+  "as_of": "YYYY-MM-DD",
+  "model_type": "headline_math_only | headline_to_normalized_cash_math | net_yield_model",
+  "warning": "What this model does not yet prove.",
+  "contracts": [
+    {
+      "ticker": "TICKER",
+      "name": "Company name",
+      "contract": "Contract label",
+      "basis": "colocation lease | hosting | GPU cloud services | power option",
+      "status": "usable_headline_math | annualized_headline_math | annualized_but_not_comparable | needs_disclosure",
+      "contract_value_usd": 0,
+      "critical_it_load_mw": 0,
+      "term_years": 0,
+      "derived": {
+        "headline_value_per_mw_usd": 0,
+        "annual_value_per_mw_usd": 0
+      },
+      "interpretation": "Investment read after normalizing the contract.",
+      "known_adjustments": [
+        "Disclosed items that change the headline read."
+      ],
+      "missing_inputs": [
+        "Inputs required before position sizing."
+      ],
+      "source_url": "https://example.com/primary-source"
+    }
+  ],
+  "decision": {
+    "label": "build_net_yield_model_before_position",
+    "summary": "What this model currently allows or forbids.",
+    "next_required_model": "The next model needed."
+  }
+}

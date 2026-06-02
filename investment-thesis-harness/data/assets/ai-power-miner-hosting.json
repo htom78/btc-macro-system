@@ -1,0 +1,278 @@
+{
+  "topic_id": "ai-physical-bottlenecks",
+  "thesis_id": "ai-power-miner-hosting",
+  "as_of": "2026-05-28",
+  "title": "AI Power / Miner Hosting Asset Cards",
+  "assets": [
+    {
+      "ticker": "APLD",
+      "name": "Applied Digital",
+      "decision": "priority_deep_dive",
+      "priority_score": 84,
+      "market_snapshot": {
+        "price_usd": 48.98,
+        "market_cap_usd": 13811505446,
+        "latest_trade_utc": "2026-05-28T00:15:00Z",
+        "source": "web.finance snapshot",
+        "note": "Quote snapshot only; verify live price before position sizing."
+      },
+      "thesis_read": "最像真正的数据中心开发商，而不只是矿企转型故事。合同可见度强，但估值、融资和建设执行风险也最高。",
+      "contract_status": "Strong contracted AI factory pipeline; CoreWeave and investment-grade hyperscaler leases.",
+      "power_and_capacity": "Reported 1,200 MW net contracted critical IT load across four AI Factory campuses and about 1,670 MW gross utility power.",
+      "key_facts": [
+        "Polaris Forge 3 adds a 300 MW critical IT load lease with a U.S. investment-grade hyperscaler.",
+        "Applied Digital says total contracted lease revenue is about $31B across four AI Factory campuses, or $73B if renewal options are exercised.",
+        "Polaris Forge 1 lease agreements with CoreWeave cover 400 MW of critical IT capacity."
+      ],
+      "evidence": [
+        {
+          "type": "primary",
+          "strength": 5,
+          "title": "May 2026 lease announcement: 300 MW critical IT load, $7.5B base-term revenue, 1.2 GW total contracted capacity.",
+          "url": "https://www.nasdaq.com/press-release/applied-digital-reaches-significant-milestone-surpassing-1-gw-contracted-capacity-us"
+        },
+        {
+          "type": "primary",
+          "strength": 5,
+          "title": "August 2025 CoreWeave lease announcement: 400 MW across Polaris Forge 1 and about $11B anticipated contracted lease revenue.",
+          "url": "https://ir.applieddigital.com/news-events/press-releases/detail/128/applied-digital-finalizes-additional-150mw-lease-with"
+        }
+      ],
+      "red_flags": [
+        "Large contracted revenue is not the same as free cash flow; financing and construction execution remain central.",
+        "Valuation already reflects a major AI infrastructure rerating.",
+        "Customer concentration and project financing terms must be checked campus by campus."
+      ],
+      "next_checks": [
+        "Project-level financing: debt cost, equity dilution, collateral and covenants.",
+        "RFS dates and delay penalties for each AI Factory campus.",
+        "Revenue recognition and margin once the first large leases ramp."
+      ],
+      "scores": {
+        "contract_visibility": 5,
+        "power_control": 4,
+        "ai_revenue_visibility": 5,
+        "btc_beta_contamination": 1,
+        "financing_risk": 4,
+        "execution_risk": 4,
+        "valuation_crowding": 4
+      }
+    },
+    {
+      "ticker": "IREN",
+      "name": "IREN Limited",
+      "decision": "priority_deep_dive",
+      "priority_score": 82,
+      "market_snapshot": {
+        "price_usd": 67.84,
+        "market_cap_usd": 22640526500,
+        "latest_trade_utc": "2026-05-28T00:15:00Z",
+        "source": "web.finance snapshot",
+        "note": "Quote snapshot only; verify live price before position sizing."
+      },
+      "thesis_read": "从 BTC miner 叙事中明显跳到了 AI Cloud / AI factory 叙事。微软合同和 NVIDIA 战略合作是强验证，但估值已经很拥挤。",
+      "contract_status": "Strong hyperscaler and platform validation; Microsoft cloud contract plus NVIDIA strategic partnership.",
+      "power_and_capacity": "Management references multi-GW secured power and a global pipeline; NVIDIA partnership targets up to 5 GW of AI infrastructure over time.",
+      "key_facts": [
+        "IREN announced a $9.7B AI Cloud contract with Microsoft.",
+        "NVIDIA and IREN announced a strategic partnership to support deployment of up to 5 GW of DSX-aligned AI infrastructure.",
+        "NVIDIA received a five-year right to purchase up to 30M IREN shares at $70, up to $2.1B, subject to conditions."
+      ],
+      "evidence": [
+        {
+          "type": "primary",
+          "strength": 5,
+          "title": "NVIDIA and IREN strategic partnership for up to 5 GW of AI infrastructure.",
+          "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-and-IREN-Announce-Strategic-Partnership-to-Accelerate-Deployment-of-up-to-5-Gigawatts-of-AI-Infrastructure/default.aspx"
+        },
+        {
+          "type": "primary",
+          "strength": 5,
+          "title": "IREN announced $9.7B AI Cloud contract with Microsoft.",
+          "url": "https://iren.gcs-web.com/news-releases/news-release-details/iren-secures-97bn-ai-cloud-contract-microsoft"
+        }
+      ],
+      "red_flags": [
+        "At current market cap, much of the AI Cloud success may already be priced.",
+        "GPU procurement, liquid cooling, and data center delivery are execution-heavy.",
+        "Customer and vendor concentration can create circular AI infrastructure risk."
+      ],
+      "next_checks": [
+        "Separate BTC mining revenue from AI Cloud ARR and contracted backlog.",
+        "Track GPU delivery cadence and data hall energization.",
+        "Read latest 10-K/6-K risk factors on power, cooling, financing and customer concentration."
+      ],
+      "scores": {
+        "contract_visibility": 5,
+        "power_control": 5,
+        "ai_revenue_visibility": 5,
+        "btc_beta_contamination": 3,
+        "financing_risk": 3,
+        "execution_risk": 4,
+        "valuation_crowding": 5
+      }
+    },
+    {
+      "ticker": "CORZ",
+      "name": "Core Scientific",
+      "decision": "contracted_watch",
+      "priority_score": 78,
+      "market_snapshot": {
+        "price_usd": 27.2,
+        "market_cap_usd": 8783179200,
+        "latest_trade_utc": "2026-05-28T00:15:00Z",
+        "source": "web.finance snapshot",
+        "note": "Quote snapshot only; verify live price before position sizing."
+      },
+      "thesis_read": "最清晰的矿企转 HPC hosting 案例之一。CoreWeave 合同是真验证，但客户集中、项目交付和历史资本结构仍需折价。",
+      "contract_status": "CoreWeave HPC hosting contracts; substantial committed critical IT load.",
+      "power_and_capacity": "Contracts position Core Scientific to deliver about 500 MW of critical IT load to CoreWeave by the second half of 2026; Q4 2025 update says about 350 MW energized and about 590 MW expected by early 2027.",
+      "key_facts": [
+        "CoreWeave exercised a final option for about 120 MW incremental critical IT load.",
+        "Core Scientific said CoreWeave contracts represented about $8.7B projected cumulative revenue over 12-year terms before capex credits.",
+        "Q4 2025 results reported continued execution with about 350 MW energized and about 590 MW targeted by early 2027."
+      ],
+      "evidence": [
+        {
+          "type": "primary",
+          "strength": 5,
+          "title": "CoreWeave final option exercise brings expected Core Scientific HPC infrastructure to about 500 MW critical IT load.",
+          "url": "https://investors.corescientific.com/news-events/press-releases/detail/95/core-scientific-announces-exercise-of-final-contract-option-by-coreweave-for-delivery-of-approximately-120-mw-of-additional-digital-infrastructure-to-host-high-performance-computing-operations"
+        },
+        {
+          "type": "primary",
+          "strength": 4,
+          "title": "Q4 2025 results: about 350 MW energized and about 590 MW expected by early 2027.",
+          "url": "https://www.businesswire.com/news/home/20260302157124/en/Core-Scientific-Announces-Fourth-Quarter-Fiscal-Year-2025-Results"
+        }
+      ],
+      "red_flags": [
+        "Customer concentration in CoreWeave is high.",
+        "Capex credits and hosting economics must be modeled net, not headline cumulative revenue.",
+        "Former bankruptcy and balance sheet history require extra margin of safety."
+      ],
+      "next_checks": [
+        "Calculate net revenue after capex credits and power costs.",
+        "Track energized MW versus RFS commitments.",
+        "Check whether any CoreWeave acquisition or strategic transaction status changes shareholder economics."
+      ],
+      "scores": {
+        "contract_visibility": 5,
+        "power_control": 4,
+        "ai_revenue_visibility": 4,
+        "btc_beta_contamination": 3,
+        "financing_risk": 4,
+        "execution_risk": 4,
+        "valuation_crowding": 3
+      }
+    },
+    {
+      "ticker": "RIOT",
+      "name": "Riot Platforms",
+      "decision": "early_transition_watch",
+      "priority_score": 68,
+      "market_snapshot": {
+        "price_usd": 26.94,
+        "market_cap_usd": 9364997133,
+        "latest_trade_utc": "2026-05-28T00:15:00Z",
+        "source": "web.finance snapshot",
+        "note": "Quote snapshot only; verify live price before position sizing."
+      },
+      "thesis_read": "电力和土地资源很强，且已有 AMD 租赁验证，但相对 IREN/APLD/CORZ，AI/HPC revenue visibility 仍早期。",
+      "contract_status": "First AMD data center lease at Rockdale; potential expansion but still early.",
+      "power_and_capacity": "Rockdale has 700 MW interconnection; Riot says it owns 1.7 GW approved power capacity across two Texas facilities.",
+      "key_facts": [
+        "Riot signed an AMD data center lease for initial 25 MW critical IT load, with possible expansion up to 200 MW.",
+        "Riot acquired 200 acres at Rockdale and intends to convert the full 700 MW gross power capacity for data center tenants.",
+        "Riot launched a formal AI/HPC review for the remaining 600 MW at Corsicana in 2025."
+      ],
+      "evidence": [
+        {
+          "type": "primary",
+          "strength": 4,
+          "title": "Riot announced Rockdale land acquisition and first data center lease with AMD.",
+          "url": "https://www.globenewswire.com/news-release/2026/01/16/3220348/0/en/riot-announces-fee-simple-acquisition-of-land-and-first-data-center-lease-with-amd-at-the-rockdale-site.html"
+        },
+        {
+          "type": "primary",
+          "strength": 3,
+          "title": "Riot launched formal AI/HPC evaluation for about 600 MW at Corsicana.",
+          "url": "https://www.businesswire.com/news/home/20250121261484/en/Riot-Platforms-Launches-Formal-Evaluation-of-Potential-AIHPC-Uses-for-Remaining-600-MW-of-Power-Capacity-at-Corsicana-Facility"
+        }
+      ],
+      "red_flags": [
+        "Initial AMD lease is small relative to total power portfolio.",
+        "Conversion of bitcoin mining facilities to AI/HPC is not guaranteed to be economical.",
+        "BTC treasury and mining economics still dominate near-term equity behavior."
+      ],
+      "next_checks": [
+        "Watch for expansion beyond the first 25 MW AMD lease.",
+        "Check lease economics, tenant capex requirements and Riot's required buildout capital.",
+        "Track whether Corsicana produces signed LOIs or binding leases."
+      ],
+      "scores": {
+        "contract_visibility": 3,
+        "power_control": 5,
+        "ai_revenue_visibility": 2,
+        "btc_beta_contamination": 4,
+        "financing_risk": 3,
+        "execution_risk": 4,
+        "valuation_crowding": 3
+      }
+    },
+    {
+      "ticker": "CLSK",
+      "name": "CleanSpark",
+      "decision": "power_inventory_watch",
+      "priority_score": 61,
+      "market_snapshot": {
+        "price_usd": 18.04,
+        "market_cap_usd": 4110779490,
+        "latest_trade_utc": "2026-05-28T00:15:00Z",
+        "source": "web.finance snapshot",
+        "note": "Quote snapshot only; verify live price before position sizing."
+      },
+      "thesis_read": "更像电力/土地期权，而不是已验证 AI hosting 资产。优势是 power inventory 和低市值，弱点是缺少明确 AI 客户合同。",
+      "contract_status": "No major signed AI hosting customer identified in this pass; management is building AI/HPC development capability.",
+      "power_and_capacity": "Company says it controls more than 1.8 GW of power, land and data centers; Texas initiatives add large potential AI/HPC development capacity.",
+      "key_facts": [
+        "Q2 FY2026 release says CleanSpark controls more than 1.8 GW of power, land and data centers.",
+        "January 2026 Texas transaction targets 300 MW demand load with potential further expansion to 600 MW.",
+        "Management frames the Houston region sites as approaching a gigawatt of total potential capacity."
+      ],
+      "evidence": [
+        {
+          "type": "primary",
+          "strength": 3,
+          "title": "Q2 FY2026 release: more than 1.8 GW of power, land and data centers; AI/HPC strategy discussed.",
+          "url": "https://investors.cleanspark.com/news/news-details/2026/CleanSpark-Reports-Second-Fiscal-Quarter-2026-Results/default.aspx"
+        },
+        {
+          "type": "primary",
+          "strength": 3,
+          "title": "Texas acquisition targets 300 MW demand load and potential total expansion to 600 MW.",
+          "url": "https://investors.cleanspark.com/news/news-details/2026/CleanSpark-Expands-Texas-Footprint-with-Major-Power-Acquisition-Near-Houston-to-Support-Scaled-AI-and-HPC-Development/default.aspx"
+        }
+      ],
+      "red_flags": [
+        "Power inventory is not the same as a signed AI customer.",
+        "Company has limited experience in non-bitcoin data center development relative to more contracted peers.",
+        "BTC beta and mining economics can swamp the AI optionality."
+      ],
+      "next_checks": [
+        "Wait for named tenant, LOI, lease, or project financing evidence.",
+        "Track AI data center team hires and permits/interconnect progress.",
+        "Compare market cap per controlled MW against RIOT, IREN, APLD and CORZ."
+      ],
+      "scores": {
+        "contract_visibility": 1,
+        "power_control": 4,
+        "ai_revenue_visibility": 1,
+        "btc_beta_contamination": 5,
+        "financing_risk": 3,
+        "execution_risk": 5,
+        "valuation_crowding": 2
+      }
+    }
+  ]
+}

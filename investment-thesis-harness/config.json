@@ -1,0 +1,37 @@
+{
+  "version": "0.1",
+  "default_topic": "ai-physical-bottlenecks",
+  "history_path": "data/history/thesis_snapshots.jsonl",
+  "output_dir": "outputs",
+  "weights": {
+    "demand_strength": 0.17,
+    "bottleneck_power": 0.18,
+    "evidence_quality": 0.18,
+    "market_mispricing": 0.15,
+    "catalyst_clarity": 0.12,
+    "tradability": 0.10,
+    "risk_control": 0.10
+  },
+  "decision_bands": [
+    {
+      "min_score": 75,
+      "label": "active_candidate",
+      "description": "可进入主动跟踪或小仓试错候选，但仍需价格和仓位纪律。"
+    },
+    {
+      "min_score": 60,
+      "label": "watchlist",
+      "description": "研究方向成立，等待更好价格、催化剂或关键证据。"
+    },
+    {
+      "min_score": 45,
+      "label": "research_backlog",
+      "description": "概念值得保留，但证据、时点或可交易性不足。"
+    },
+    {
+      "min_score": 0,
+      "label": "avoid_for_now",
+      "description": "暂不进入投资跟踪，除非出现新的强证据。"
+    }
+  ]
+}

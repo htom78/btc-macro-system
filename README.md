@@ -24,6 +24,27 @@ The first version uses public, no-key data sources:
 
 It is an observation and research tool, not a trading signal or investment recommendation.
 
+## Investment Thesis Harness
+
+For AI physical bottleneck and asset-card research:
+
+```bash
+python3 investment-thesis-harness/run.py
+open investment-thesis-harness/outputs/report.html
+```
+
+The GitHub Pages workflow publishes this report as `investment-research.html`, with machine-readable output at `investment-latest.json` and history at `thesis-snapshots.jsonl`.
+
+## EveryDayZen Macro Notes
+
+Static content system for macro essays, voiceover scripts, and infographic assets:
+
+```bash
+open everydayzen-macro/index.html
+```
+
+The GitHub Pages workflow publishes it under `everydayzen-macro/`.
+
 ## Binance Small-Cap Futures CLI
 
 For the contract small-coin ladder idea:
@@ -36,6 +57,17 @@ python3 tools/binance_smallcap_cli.py plan PLAYUSDT --notional 20
 ```
 
 See `docs/binance-smallcap-cli.md`. The CLI defaults to dry-run / simulation mode; live order submission requires explicit flags and Binance Futures API credentials.
+
+## Strong Small-Cap Futures System
+
+For the multi-model small-cap futures strategy monitor:
+
+```bash
+python3 smallcap-futures-system/scripts/update_smallcap_system.py --limit 12 --focus ALLOUSDT,LABUSDT
+open smallcap-futures-system/index.html
+```
+
+The GitHub Pages workflow publishes it under `smallcap-futures-system/`. It uses Binance Futures public APIs only and keeps strategy states, event history, forward outcomes, and execution-risk snapshots for research; it is not an auto-trading system.
 
 ## AI-SaaS 信号台（`saas-signals/`）
 
