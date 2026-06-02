@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LABUSDT 盘口情景模拟器</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0c0e10;
+      --panel: #15181c;
+      --panel-2: #101316;
+      --ink: #f4f2eb;
+      --muted: #9da4aa;
+      --line: rgba(244, 242, 235, 0.14);
+      --line-strong: rgba(244, 242, 235, 0.26);
+      --green: #6fd16b;
+      --red: #ff645b;
+      --amber: #f2b84b;
+      --cyan: #42c7d7;
+      --blue: #5aa9ff;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+      --mono: "SFMono-Regular", "Cascadia Mono", Menlo, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 34px 34px,
+        linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px) 0 0 / 34px 34px,
+        radial-gradient(circle at 24% 0%, rgba(242,184,75,.1), transparent 34%),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.5;
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      width: min(1480px, calc(100vw - 28px));
+      margin: 0 auto;
+      padding: 20px 0 34px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 0 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: grid;
+      gap: 3px;
+    }
+
+    .brand small,
+    .fine,
+    .kicker {
+      color: var(--muted);
+      font: 700 12px/1.2 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 5.6vw, 72px);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .pill,
+    button,
+    select {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.045);
+      color: var(--ink);
+      font: 760 13px/1 var(--sans);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 11px;
+      color: #d7d9db;
+      text-decoration: none;
+    }
+
+    button,
+    select { cursor: pointer; }
+    button { padding: 0 11px; }
+    select { padding: 0 30px 0 10px; }
+    button:hover { border-color: var(--line-strong); background: rgba(255,255,255,.075); }
+    button.active { background: var(--ink); color: #0d0f11; border-color: var(--ink); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 14px;
+      padding: 18px 0 0;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+    }
+
+    .panel h2,
+    .panel h3 {
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    .panel h2 { font-size: 18px; }
+    .panel h3 { font-size: 15px; }
+
+    .content { padding: 16px; }
+
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+    }
+
+    .control {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(0,0,0,.16);
+    }
+
+    .control label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .control output {
+      color: var(--ink);
+      font-family: var(--mono);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--amber);
+    }
+
+    .presets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: minmax(180px, .58fr) minmax(0, 1fr);
+      gap: 14px;
+      min-height: 640px;
+    }
+
+    .ladder {
+      position: relative;
+      min-height: 640px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px) 0 0 / 42px 100%,
+        rgba(0,0,0,.19);
+      padding: 18px 10px;
+    }
+
+    .axis {
+      position: absolute;
+      top: 30px;
+      bottom: 30px;
+      left: 50%;
+      width: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(var(--red), var(--amber), var(--cyan), var(--blue), var(--red));
+      opacity: .78;
+    }
+
+    .zone {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      min-height: 40px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 8px;
+      background: color-mix(in srgb, currentColor 16%, transparent);
+      color: var(--amber);
+      text-align: center;
+      padding: 6px 7px;
+      font-weight: 860;
+      font-size: 13px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.09);
+    }
+
+    .zone.red { color: var(--red); }
+    .zone.amber { color: var(--amber); }
+    .zone.cyan { color: var(--cyan); }
+    .zone.green { color: var(--green); }
+    .zone.blue { color: var(--blue); }
+
+    .price-marker {
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 8px;
+      padding: 0 10px;
+      background: #f4f2eb;
+      color: #0d0f11;
+      font: 900 13px/1 var(--mono);
+      transform: translateY(-50%);
+      box-shadow: 0 10px 24px rgba(0,0,0,.32);
+      z-index: 4;
+    }
+
+    .price-marker::before {
+      content: "";
+      width: 8px;
+      aspect-ratio: 1;
+      border-radius: 999px;
+      background: var(--red);
+    }
+
+    .scenario {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      min-height: 100%;
+    }
+
+    .scenario-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(0,0,0,.16);
+      padding: 14px;
+    }
+
+    .scenario-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font: 850 12px/1 var(--mono);
+    }
+
+    .badge.green { color: var(--green); }
+    .badge.red { color: var(--red); }
+    .badge.amber { color: var(--amber); }
+    .badge.blue { color: var(--blue); }
+
+    .decision {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 38px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .scorebar {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid var(--line);
+      margin: 12px 0;
+    }
+
+    .scorebar i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green), var(--amber), var(--red));
+      transition: width 160ms ease;
+    }
+
+    .logic {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .logic-item {
+      min-height: 86px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(0,0,0,.16);
+    }
+
+    .logic-item b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .logic-item span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .playbook {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px;
+      background: rgba(0,0,0,.16);
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--amber);
+      font-size: 13px;
+    }
+
+    .step p { margin: 0; color: #d7d9db; font-size: 13px; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .case-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+      background: rgba(0,0,0,.18);
+      min-height: 230px;
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .case-card.active {
+      border-color: currentColor;
+      background: color-mix(in srgb, currentColor 12%, rgba(0,0,0,.2));
+      transform: translateY(-2px);
+    }
+
+    .case-card.green { color: var(--green); }
+    .case-card.red { color: var(--red); }
+    .case-card.amber { color: var(--amber); }
+    .case-card.blue { color: var(--blue); }
+
+    .case-card h3 { color: var(--ink); margin-bottom: 8px; }
+    .case-card.active h3 { color: currentColor; }
+    .case-card ul,
+    .rules ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 7px;
+    }
+
+    .case-card li,
+    .rules li {
+      color: #d7d9db;
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 7px;
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .formula {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .factor {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 112px;
+      padding: 10px;
+      background: rgba(0,0,0,.16);
+    }
+
+    .factor b {
+      display: block;
+      color: var(--amber);
+      margin-bottom: 7px;
+      font-size: 13px;
+    }
+
+    .factor span { color: var(--muted); font-size: 12px; }
+
+    .warning {
+      margin-top: 14px;
+      border: 1px solid rgba(255,100,91,.34);
+      color: #ffd3cf;
+      border-radius: 8px;
+      padding: 11px 12px;
+      background: rgba(255,100,91,.08);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1120px) {
+      .hero,
+      .bottom,
+      .sim-grid,
+      .board { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .ladder { min-height: 520px; }
+    }
+
+    @media (max-width: 720px) {
+      .topbar,
+      .panel-head { display: grid; }
+      .presets,
+      .logic,
+      .playbook,
+      .cards,
+      .formula { grid-template-columns: 1fr; }
+      .shell { width: min(100vw - 18px, 1480px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="pill" href="../home.html">返回首页</a>
+      <div class="brand">
+        <small>LABUSDT / Scenario Simulator</small>
+        <h1>高位逼空后的盘口模拟器</h1>
+      </div>
+      <div class="nav">
+        <span class="pill">15m / 1H / 4H</span>
+        <span class="pill">仅作盘面推演</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="kicker">Manual replay</div>
+              <h2>拖动参数，观察牌面如何切换</h2>
+            </div>
+            <span class="pill" id="stateLabel">等待输入</span>
+          </div>
+          <div class="content">
+            <div class="presets">
+              <button data-preset="squeeze">逼空延续</button>
+              <button data-preset="fakeTop">19.6 假突破风险</button>
+              <button data-preset="range">高位横盘控盘</button>
+              <button data-preset="breakdown">退潮失控</button>
+            </div>
+
+            <div class="sim-grid">
+              <form class="controls" id="controls">
+                <div class="control">
+                  <label for="price">当前价格 <output id="priceOut"></output></label>
+                  <input id="price" type="range" min="16" max="20.2" step="0.01" value="19.53">
+                </div>
+                <div class="control">
+                  <label for="lastHigh">最近高点 <output id="lastHighOut"></output></label>
+                  <input id="lastHigh" type="range" min="16.4" max="20.4" step="0.01" value="19.78">
+                </div>
+                <div class="control">
+                  <label for="oiTrend">OI 1h 变化 <output id="oiTrendOut"></output></label>
+                  <input id="oiTrend" type="range" min="-2" max="3" step="0.05" value="-0.4">
+                </div>
+                <div class="control">
+                  <label for="funding">Funding <output id="fundingOut"></output></label>
+                  <input id="funding" type="range" min="-0.45" max="0.08" step="0.005" value="-0.33">
+                </div>
+                <div class="control">
+                  <label for="shortCrowd">全局 Short 占比 <output id="shortCrowdOut"></output></label>
+                  <input id="shortCrowd" type="range" min="45" max="82" step="0.1" value="75">
+                </div>
+                <div class="control">
+                  <label for="topLong">Top Positions Long <output id="topLongOut"></output></label>
+                  <input id="topLong" type="range" min="40" max="62" step="0.1" value="51.5">
+                </div>
+                <div class="control">
+                  <label for="taker">Taker Buy/Sell <output id="takerOut"></output></label>
+                  <input id="taker" type="range" min="0.55" max="1.55" step="0.01" value="1.05">
+                </div>
+                <div class="control">
+                  <label for="moveType">最近动作</label>
+                  <select id="moveType">
+                    <option value="hold">站稳/缓慢推升</option>
+                    <option value="spikeReject">冲高快速回落</option>
+                    <option value="range">区间震荡</option>
+                    <option value="failedRetest">跌破后反抽失败</option>
+                  </select>
+                </div>
+              </form>
+
+              <div class="board">
+                <div class="ladder" aria-label="LABUSDT price ladder">
+                  <div class="axis"></div>
+                  <div class="zone red" data-zone="19.6">19.6<br>假突破高风险区</div>
+                  <div class="zone amber" data-zone="19">19.0<br>前高/逼空确认</div>
+                  <div class="zone amber" data-zone="18.75">18.6-18.9<br>压力带</div>
+                  <div class="zone cyan" data-zone="18.1">18.1<br>多空分水岭</div>
+                  <div class="zone green" data-zone="17.8">17.8<br>短线支撑</div>
+                  <div class="zone blue" data-zone="17">17.0<br>退潮确认</div>
+                  <div class="zone red" data-zone="16.4">16.4<br>结构破坏位</div>
+                  <div class="price-marker" id="marker"><span>当前</span><span id="markerPrice">--</span></div>
+                </div>
+
+                <div class="scenario">
+                  <div class="scenario-card">
+                    <div class="scenario-title">
+                      <span class="badge" id="scenarioBadge">--</span>
+                      <span class="fine" id="confidence">--</span>
+                    </div>
+                    <h2 class="decision" id="decision">读取中</h2>
+                    <div class="scorebar"><i id="scoreFill"></i></div>
+                    <p id="explain" class="fine"></p>
+                  </div>
+
+                  <div class="logic">
+                    <div class="logic-item">
+                      <b>价格位置</b>
+                      <span id="priceLogic"></span>
+                    </div>
+                    <div class="logic-item">
+                      <b>OI 变化</b>
+                      <span id="oiLogic"></span>
+                    </div>
+                    <div class="logic-item">
+                      <b>拥挤与资金费率</b>
+                      <span id="crowdLogic"></span>
+                    </div>
+                    <div class="logic-item">
+                      <b>Taker 有效性</b>
+                      <span id="takerLogic"></span>
+                    </div>
+                  </div>
+
+                  <div class="scenario-card">
+                    <h3>模拟交易策略</h3>
+                    <div class="playbook">
+                      <div class="step">
+                        <strong>1. 先定性</strong>
+                        <p id="strategyOne"></p>
+                      </div>
+                      <div class="step">
+                        <strong>2. 等触发</strong>
+                        <p id="strategyTwo"></p>
+                      </div>
+                      <div class="step">
+                        <strong>3. 管失效</strong>
+                        <p id="strategyThree"></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cards">
+              <article class="case-card green" data-case="squeeze">
+                <h3>1. 逼空延续牌</h3>
+                <ul>
+                  <li>18.6-18.9 放量站稳，继续逼近 19/19.6。</li>
+                  <li>OI 稳定或上行，空头账户仍拥挤。</li>
+                  <li>策略：只做小仓观察，不追高；跌回 18.6 下方减仓/止损。</li>
+                </ul>
+              </article>
+              <article class="case-card red" data-case="fakeTop">
+                <h3>2. 假突破派发牌</h3>
+                <ul>
+                  <li>冲 19/19.6 后快速回落，跌回 18.6 下方。</li>
+                  <li>反抽 18.6-18.9 失败，买盘不再推动价格。</li>
+                  <li>策略：等待反抽失败后的空头观察区，不在第一次下破时追空。</li>
+                </ul>
+              </article>
+              <article class="case-card amber" data-case="range">
+                <h3>3. 高位横盘控盘牌</h3>
+                <ul>
+                  <li>18.1-18.9 区间磨盘，Funding 深负，Short 拥挤。</li>
+                  <li>Top Positions 不转空，方向仍未摊牌。</li>
+                  <li>策略：等方向，不提前押注；区间内高抛低吸只做观摩。</li>
+                </ul>
+              </article>
+              <article class="case-card blue" data-case="breakdown">
+                <h3>4. 退潮失控牌</h3>
+                <ul>
+                  <li>跌破 18.1/17.8，反抽收不回关键位。</li>
+                  <li>OI 上行且 Taker Sell 有效，说明下跌被市场接受。</li>
+                  <li>策略：鲸多假设降级，转看派发/真实弱势。</li>
+                </ul>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="kicker">Decision map</div>
+              <h2>18.6 下破为何重要</h2>
+            </div>
+          </div>
+          <div class="content rules">
+            <ul>
+              <li><b>突破后的压力应变支撑。</b> 18.6-18.9 原来压住价格，站上后若是真突破，回踩这里应该有承接。</li>
+              <li><b>跌回 18.6 说明上方买盘可能被消耗。</b> 空头止损买盘结束，追多资金被套，19.6 上方就更像流动性尖顶。</li>
+              <li><b>第一次跌破不是追空点。</b> 真正的交易观察点是跌破后反抽 18.6-18.9 失败，或者进一步跌破 18.1 后反抽失败。</li>
+              <li><b>OI 的解释要跟价格一起看。</b> 价格跌破 18.6 但 OI 下滑，偏止盈退潮；价格跌破 18.6 且 OI 上升，才更接近派发增仓或空头重新掌控。</li>
+              <li><b>Funding 深负不是永远利多。</b> 当价格不再上涨，负 Funding 只能说明空头拥挤，不再自动说明会继续 squeeze。</li>
+            </ul>
+          </div>
+        </aside>
+      </section>
+
+      <section class="bottom">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>核心判断公式</h2>
+          </div>
+          <div class="content">
+            <div class="formula">
+              <div class="factor"><b>价格位置</b><span>在 19.6、18.6、18.1 哪个关键区间。</span></div>
+              <div class="factor"><b>OI 变化</b><span>是接力增仓、派发增仓，还是止盈退潮。</span></div>
+              <div class="factor"><b>Funding</b><span>深负提供燃料，但不是方向确认。</span></div>
+              <div class="factor"><b>多空拥挤</b><span>散户账户与 Top Positions 是否背离。</span></div>
+              <div class="factor"><b>Taker 有效性</b><span>主动买/卖是否真正推动价格。</span></div>
+            </div>
+            <div class="warning">风险提示：这是盘面推演工具，不连接交易所、不下单，也不构成投资建议。合约波动可能造成本金全部损失。</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>当前模拟结论</h2>
+          </div>
+          <div class="content rules">
+            <ul id="summaryList"></ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const inputs = {
+      price: document.querySelector("#price"),
+      lastHigh: document.querySelector("#lastHigh"),
+      oiTrend: document.querySelector("#oiTrend"),
+      funding: document.querySelector("#funding"),
+      shortCrowd: document.querySelector("#shortCrowd"),
+      topLong: document.querySelector("#topLong"),
+      taker: document.querySelector("#taker"),
+      moveType: document.querySelector("#moveType")
+    };
+
+    const out = {
+      price: document.querySelector("#priceOut"),
+      lastHigh: document.querySelector("#lastHighOut"),
+      oiTrend: document.querySelector("#oiTrendOut"),
+      funding: document.querySelector("#fundingOut"),
+      shortCrowd: document.querySelector("#shortCrowdOut"),
+      topLong: document.querySelector("#topLongOut"),
+      taker: document.querySelector("#takerOut")
+    };
+
+    const presets = {
+      squeeze: { price: 19.18, lastHigh: 19.45, oiTrend: 0.8, funding: -0.31, shortCrowd: 75, topLong: 51.8, taker: 1.22, moveType: "hold" },
+      fakeTop: { price: 18.45, lastHigh: 19.78, oiTrend: 0.25, funding: -0.34, shortCrowd: 75, topLong: 51.4, taker: 0.86, moveType: "spikeReject" },
+      range: { price: 18.42, lastHigh: 18.9, oiTrend: 0.1, funding: -0.27, shortCrowd: 73, topLong: 52, taker: 1.01, moveType: "range" },
+      breakdown: { price: 17.72, lastHigh: 19.78, oiTrend: 1.15, funding: -0.18, shortCrowd: 68, topLong: 49.8, taker: 0.74, moveType: "failedRetest" }
+    };
+
+    const zoneTop = 20.2;
+    const zoneBottom = 16;
+
+    function fmtPrice(value) {
+      return Number(value).toFixed(2);
+    }
+
+    function fmtPct(value) {
+      return `${Number(value).toFixed(2)}%`;
+    }
+
+    function markerPosition(price) {
+      const clamped = Math.max(zoneBottom, Math.min(zoneTop, price));
+      return 30 + ((zoneTop - clamped) / (zoneTop - zoneBottom)) * (640 - 60);
+    }
+
+    function zonePosition(price) {
+      return 30 + ((zoneTop - price) / (zoneTop - zoneBottom)) * (640 - 60) - 20;
+    }
+
+    function readState() {
+      return {
+        price: Number(inputs.price.value),
+        lastHigh: Number(inputs.lastHigh.value),
+        oiTrend: Number(inputs.oiTrend.value),
+        funding: Number(inputs.funding.value),
+        shortCrowd: Number(inputs.shortCrowd.value),
+        topLong: Number(inputs.topLong.value),
+        taker: Number(inputs.taker.value),
+        moveType: inputs.moveType.value
+      };
+    }
+
+    function classify(s) {
+      const deepNegativeFunding = s.funding <= -0.18;
+      const veryCrowdedShort = s.shortCrowd >= 72;
+      const topNotShort = s.topLong >= 50.5;
+      const buyEffective = s.taker >= 1.12;
+      const sellEffective = s.taker <= 0.85;
+      const oiRising = s.oiTrend >= 0.35;
+      const oiFalling = s.oiTrend <= -0.25;
+      const rejectedFrom196 = s.lastHigh >= 19.55 && s.price < 18.6;
+      const nearTopRejected = s.lastHigh >= 19.55 && s.price < 19 && s.moveType === "spikeReject";
+
+      if (s.price < 18.1 && (s.moveType === "failedRetest" || sellEffective || oiRising)) {
+        return {
+          key: "breakdown",
+          title: "退潮失控牌",
+          badge: "弱势确认",
+          confidence: Math.min(94, 62 + Math.max(0, 18.1 - s.price) * 12 + (oiRising ? 10 : 0) + (sellEffective ? 10 : 0)),
+          explain: "价格跌破 18.1/17.8 后无法收回，鲸多控盘假设降级；此时负 Funding 不再是利多，而是拥挤交易可能反向踩踏的背景。",
+          strategy: [
+            "先把鲸多/逼空假设降级，转为真实弱势或派发观察。",
+            "等反抽 18.1 或 17.8 失败，且 OI 不降/上升、Taker Sell 有效。",
+            "重新站上 18.1，尤其快速收回 18.6，空头观察失效。"
+          ]
+        };
+      }
+
+      if (rejectedFrom196 || (nearTopRejected && (oiRising || !oiFalling))) {
+        return {
+          key: "fakeTop",
+          title: "假突破派发牌",
+          badge: "空头观察",
+          confidence: Math.min(96, 68 + (rejectedFrom196 ? 16 : 0) + (sellEffective ? 8 : 0) + (oiRising ? 6 : 0)),
+          explain: "19.6 上方冲高后跌回 18.6 下方，说明原压力带没有变成支撑；上方更像扫空止损和诱多后的流动性尖顶。",
+          strategy: [
+            "先停止追多，标记 19.6 上方为假突破风险区。",
+            "等反抽 18.6-18.9 失败再观察空头，不在第一次下破时追。",
+            "重新站上 18.9 并挑战 19.6，假突破派发判断失效。"
+          ]
+        };
+      }
+
+      if (s.price >= 18.6 && deepNegativeFunding && veryCrowdedShort && topNotShort && (buyEffective || oiRising || s.price >= 19)) {
+        return {
+          key: "squeeze",
+          title: s.price >= 19.55 ? "逼空延续但接近假突破区" : "逼空延续牌",
+          badge: s.price >= 19.55 ? "谨慎延续" : "多头观察",
+          confidence: Math.min(92, 58 + (s.price - 18.6) * 9 + (oiRising ? 8 : 0) + (buyEffective ? 8 : 0)),
+          explain: "价格站在 18.6-18.9 上方，Funding 深负且空头账户拥挤，说明空头燃料仍在；越靠近 19.6，越要防止冲高后快速回落。",
+          strategy: [
+            "只把它当作小仓观察多头延续，不做无确认追高。",
+            "看 19/19.6 能否站稳，同时要求 OI 稳定或回升。",
+            "跌回 18.6 下方先减仓/离场，等待假突破确认。"
+          ]
+        };
+      }
+
+      if (s.price >= 18.1 && s.price < 18.9 && deepNegativeFunding && veryCrowdedShort && topNotShort) {
+        return {
+          key: "range",
+          title: "高位横盘控盘牌",
+          badge: "等待摊牌",
+          confidence: Math.min(88, 58 + (veryCrowdedShort ? 8 : 0) + (topNotShort ? 8 : 0) + (Math.abs(s.oiTrend) < 0.35 ? 7 : 0)),
+          explain: "价格在 18.1-18.9 内磨盘，空头拥挤但没有被继续挤爆，也没有形成有效下跌；这是等待方向的区间。",
+          strategy: [
+            "不提前押注方向，把 18.1 和 18.9 当作触发边界。",
+            "上破 18.9 看逼空延续；下破 18.1 看退潮失控。",
+            "区间内只做记录和复盘，不把震荡误判为趋势。"
+          ]
+        };
+      }
+
+      return {
+        key: "range",
+        title: "信号不足，保持观察",
+        badge: "无交易",
+        confidence: 42,
+        explain: "当前参数没有形成明确的延续、派发或退潮信号；最容易犯错的是把单一指标当作方向。",
+        strategy: [
+          "先只标注位置，不急着做方向判断。",
+          "等待价格触及 18.6/18.1/19.6 后再看 OI 与 Taker。",
+          "任何方向都需要关键位收复或失守来确认。"
+        ]
+      };
+    }
+
+    function updateOutputs(s) {
+      out.price.value = fmtPrice(s.price);
+      out.lastHigh.value = fmtPrice(s.lastHigh);
+      out.oiTrend.value = fmtPct(s.oiTrend);
+      out.funding.value = `${fmtPct(s.funding)} / 8h`;
+      out.shortCrowd.value = fmtPct(s.shortCrowd);
+      out.topLong.value = fmtPct(s.topLong);
+      out.taker.value = s.taker.toFixed(2);
+      document.querySelector("#markerPrice").textContent = fmtPrice(s.price);
+      document.querySelector("#marker").style.top = `${markerPosition(s.price)}px`;
+      document.querySelectorAll(".zone").forEach((zone) => {
+        zone.style.top = `${zonePosition(Number(zone.dataset.zone))}px`;
+      });
+    }
+
+    function updateView() {
+      const s = readState();
+      const result = classify(s);
+      updateOutputs(s);
+
+      document.querySelector("#stateLabel").textContent = result.title;
+      document.querySelector("#scenarioBadge").textContent = result.badge;
+      document.querySelector("#scenarioBadge").className = `badge ${result.key === "fakeTop" ? "red" : result.key === "breakdown" ? "blue" : result.key === "squeeze" ? "green" : "amber"}`;
+      document.querySelector("#decision").textContent = result.title;
+      document.querySelector("#confidence").textContent = `确认度 ${Math.round(result.confidence)}%`;
+      document.querySelector("#scoreFill").style.width = `${result.confidence}%`;
+      document.querySelector("#explain").textContent = result.explain;
+
+      document.querySelector("#priceLogic").textContent = s.price >= 19.6 ? "位于 19.6 假突破风险区。" : s.price >= 18.6 ? "位于 18.6-19 压力/确认带上方。" : s.price >= 18.1 ? "仍在 18.1-18.6 之间，方向未彻底摊牌。" : "已跌破 18.1，多头结构受损。";
+      document.querySelector("#oiLogic").textContent = s.oiTrend >= 0.35 ? "OI 上升，说明有新增持仓，需要判断是接力还是派发。" : s.oiTrend <= -0.25 ? "OI 回落，更像止损/止盈后的退潮。" : "OI 基本稳定，方向确认度有限。";
+      document.querySelector("#crowdLogic").textContent = s.funding <= -0.18 && s.shortCrowd >= 72 ? "深负 Funding + 空头拥挤，仍有 squeeze / 逼空燃料。" : "拥挤度或资金费率不足，不宜过度套用逼空逻辑。";
+      document.querySelector("#takerLogic").textContent = s.taker >= 1.12 ? "主动买盘占优，若价格同步上行则有效。" : s.taker <= 0.85 ? "主动卖盘占优，若价格跌破关键位则偏弱。" : "主动买卖接近平衡，等待价格确认。";
+
+      document.querySelector("#strategyOne").textContent = result.strategy[0];
+      document.querySelector("#strategyTwo").textContent = result.strategy[1];
+      document.querySelector("#strategyThree").textContent = result.strategy[2];
+
+      document.querySelectorAll(".case-card").forEach((card) => {
+        card.classList.toggle("active", card.dataset.case === result.key);
+      });
+
+      const summary = [
+        `当前价格 ${fmtPrice(s.price)}，最近高点 ${fmtPrice(s.lastHigh)}。`,
+        `OI 1h ${fmtPct(s.oiTrend)}，Funding ${fmtPct(s.funding)}，Short 占比 ${fmtPct(s.shortCrowd)}。`,
+        `当前归类：${result.title}。`,
+        `模拟动作：${result.strategy[1]}`,
+        "这不是下单建议，只用于把盘面拆成可验证假设。"
+      ];
+      document.querySelector("#summaryList").innerHTML = summary.map((item) => `<li>${item}</li>`).join("");
+    }
+
+    document.querySelectorAll("input, select").forEach((el) => {
+      el.addEventListener("input", updateView);
+      el.addEventListener("change", updateView);
+    });
+
+    document.querySelectorAll("[data-preset]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const preset = presets[button.dataset.preset];
+        Object.entries(preset).forEach(([key, value]) => {
+          inputs[key].value = value;
+        });
+        document.querySelectorAll("[data-preset]").forEach((item) => item.classList.toggle("active", item === button));
+        updateView();
+      });
+    });
+
+    updateView();
+  </script>
+</body>
+</html>

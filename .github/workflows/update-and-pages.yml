@@ -77,6 +77,7 @@ jobs:
           cp -R saas-signals _site/saas-signals
           cp -R market-top-triggers _site/market-top-triggers
           cp -R smallcap-futures-system _site/smallcap-futures-system
+          cp -R lab-scenario-simulator _site/lab-scenario-simulator
           cp price-ladder-short-demo.html _site/price-ladder-short-demo.html
           cp price-ladder-short-theory.html _site/price-ladder-short-theory.html
           cp binance-hot-ladder-lab.html _site/binance-hot-ladder-lab.html
