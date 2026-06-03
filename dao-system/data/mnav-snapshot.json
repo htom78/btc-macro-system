@@ -1,0 +1,27 @@
+{
+  "source": "sanitized mNAV snapshot",
+  "ts": "2026-05-26T05:53:04+00:00",
+  "btc_price": 76799.0,
+  "mstr_price": 159.88999938964844,
+  "basic_shares": 351109540.0,
+  "diluted_shares": 351109540.0,
+  "holdings_btc": 843738.0,
+  "btc_nav_usd": 64798234662.0,
+  "mcap_basic_usd": 56138904136.29974,
+  "mcap_diluted_usd": 56138904136.29974,
+  "mnav_basic": 0.8663647154761394,
+  "mnav_diluted": 0.8663647154761394,
+  "snapshot_source": "live",
+  "btc_yield_ytd_pct": 13.3,
+  "btc_yield_seen_at": "2026-05-26T00:00:00+00:00",
+  "recent_filings": [
+    {
+      "accession": "0001193125-26-227918",
+      "seen_at": "2026-05-26T05:53:04+00:00",
+      "kind": "other",
+      "link": "https://www.sec.gov/Archives/edgar/data/1050446/000119312526227918/0001193125-26-227918-index.htm",
+      "amount_usd": null
+    }
+  ],
+  "recent_btc_sale_filings": []
+}

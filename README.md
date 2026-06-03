@@ -23,7 +23,7 @@ For free hosted updates, this repo includes a GitHub Actions workflow that runs 
 
 - **天 / Macro liquidity**: reuses `btc-macro-system/outputs/latest.json`.
 - **地 / Market structure**: BTC MA95/MA200, RSI/drawdown, and ETF-flow seed data.
-- **人 / Treasury reflexivity**: local MSTR mNAV monitor DB or CSV fallback, including mNAV, BTC yield, and filing redlines.
+- **人 / Treasury reflexivity**: local MSTR mNAV monitor DB, CSV fallback, or sanitized public snapshot, including mNAV, BTC yield, and filing redlines.
 
 Build the state JSON:
 
@@ -32,7 +32,7 @@ python3 dao-system/scripts/build_dao.py
 open dao-system/index.html
 ```
 
-The page reads `dao-system/data/dao-latest.json`. On GitHub Actions, mNAV data gracefully degrades if the private local DB is unavailable. Locally, the default DB path is `/Volumes/PortableSSD/Codes/mstr-mnav-monitor/data.db`, or set `MSTR_MNAV_DB=/path/to/data.db`.
+The page reads `dao-system/data/dao-latest.json`. On GitHub Actions, mNAV data falls back to `dao-system/data/mnav-snapshot.json` when the private local DB is unavailable. Locally, the default DB path is `/Volumes/PortableSSD/Codes/mstr-mnav-monitor/data.db`, or set `MSTR_MNAV_DB=/path/to/data.db`.
 
 The first version uses public, no-key data sources:
 

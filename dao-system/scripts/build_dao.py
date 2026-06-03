@@ -22,6 +22,7 @@ DAO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MACRO = ROOT / "btc-macro-system" / "outputs" / "latest.json"
 DEFAULT_MNAV_DB = Path("/Volumes/PortableSSD/Codes/mstr-mnav-monitor/data.db")
 DEFAULT_MNAV_CSV = Path("/Users/tom/Downloads/mstr-mnav-history-20260522.csv")
+DEFAULT_MNAV_SNAPSHOT = DAO_ROOT / "data" / "mnav-snapshot.json"
 DEFAULT_MARKET = DAO_ROOT / "data" / "market-structure.json"
 DEFAULT_OUT = DAO_ROOT / "data" / "dao-latest.json"
 
@@ -247,6 +248,21 @@ def read_mnav_from_csv(path: Path) -> tuple[dict[str, Any] | None, str | None]:
         "recent_filings": [],
         "recent_btc_sale_filings": [],
     }, None
+
+
+def read_mnav_from_snapshot(path: Path) -> tuple[dict[str, Any] | None, str | None]:
+    if not path.exists():
+        return None, "mNAV snapshot not found"
+    try:
+        data = read_json(path)
+    except (OSError, json.JSONDecodeError) as exc:
+        return None, f"mNAV snapshot read error: {exc}"
+    if not data.get("ts"):
+        return None, "mNAV snapshot missing ts"
+    data["source"] = data.get("source") or "sanitized mNAV snapshot"
+    data.setdefault("recent_filings", [])
+    data.setdefault("recent_btc_sale_filings", [])
+    return data, None
 
 
 def to_float(value: Any) -> float | None:
@@ -490,6 +506,10 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         csv_path = Path(os.environ.get("MSTR_MNAV_CSV", args.mnav_csv))
         mnav, csv_error = read_mnav_from_csv(csv_path)
         mnav_error = f"{mnav_error}; {csv_error}" if mnav_error and csv_error else mnav_error or csv_error
+    if not mnav:
+        snapshot_path = Path(os.environ.get("MSTR_MNAV_SNAPSHOT", args.mnav_snapshot))
+        mnav, snapshot_error = read_mnav_from_snapshot(snapshot_path)
+        mnav_error = f"{mnav_error}; {snapshot_error}" if mnav_error and snapshot_error else mnav_error or snapshot_error
 
     axes = [
         score_macro(macro),
@@ -523,6 +543,7 @@ def main() -> int:
     parser.add_argument("--market", default=str(DEFAULT_MARKET))
     parser.add_argument("--mnav-db", default=str(DEFAULT_MNAV_DB))
     parser.add_argument("--mnav-csv", default=str(DEFAULT_MNAV_CSV))
+    parser.add_argument("--mnav-snapshot", default=str(DEFAULT_MNAV_SNAPSHOT))
     parser.add_argument("--out", default=str(DEFAULT_OUT))
     args = parser.parse_args()
 
