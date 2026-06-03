@@ -90,6 +90,49 @@
     .market-panel { padding: 24px; }
     .price-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; align-items: end; }
     .hero-number { font-family: var(--mono); font-size: clamp(42px, 7vw, 86px); font-weight: 760; letter-spacing: 0; line-height: 0.95; margin-top: 10px; }
+    .live-quote { margin-top: 18px; }
+    .live-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .live-status {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent-deep);
+      white-space: nowrap;
+    }
+    .live-subline {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      min-height: 28px;
+      margin-top: 8px;
+      font-family: var(--mono);
+      color: #4b4d4d;
+      font-size: 12px;
+    }
+    .live-change { color: var(--muted); }
+    .live-change.up { color: var(--good); }
+    .live-change.down { color: var(--bad); }
+    .live-refresh {
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.62);
+      color: #343637;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 5px 9px;
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+    .live-refresh:hover { transform: translateY(-1px); border-color: rgba(247,147,26,0.48); background: rgba(255,255,255,0.9); }
+    .live-refresh:disabled { cursor: wait; opacity: 0.62; transform: none; }
     .regime { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .pill {
       display: inline-flex;
@@ -106,7 +149,7 @@
     }
     .market-strip {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       border-top: 1px solid var(--line);
       margin-top: 22px;
       padding-top: 14px;
@@ -249,8 +292,21 @@
         </div>
         <span class="meta-chip">as of 2026-06-02</span>
       </div>
-      <div class="hero-number">$71,326</div>
+      <div class="live-quote" aria-live="polite">
+        <div class="live-label">
+          <span>实时现货价 / Live spot BTC-USD</span>
+          <span class="live-status" data-live-btc-status>connecting</span>
+        </div>
+        <div class="hero-number" data-live-btc-price data-fallback="$71,326">$71,326</div>
+        <div class="live-subline">
+          <span data-live-btc-source data-static-label="日线宏观参考 / daily macro reference">日线宏观参考 / daily macro reference</span>
+          <span data-live-btc-age>as of 2026-06-02</span>
+          <span class="live-change" data-live-btc-change hidden></span>
+          <button class="live-refresh" type="button" data-live-btc-refresh>刷新 / refresh</button>
+        </div>
+      </div>
       <div class="market-strip">
+        <span><span class="metric-label">日线参考 / daily ref</span><span class="metric-value">$71,326</span></span>
         <span><span class="metric-label">30日 / 30d</span><span class="metric-value">-9.3%</span></span>
         <span><span class="metric-label">90日 / 90d</span><span class="metric-value">4.5%</span></span>
         <span><span class="metric-label">1年 / 1y</span><span class="metric-value">-32.5%</span></span>
@@ -360,5 +416,141 @@
     <p class="note">计算方式：宏观指标按相邻观察点变化，BTC 用对应窗口收益，并测试不同滞后。Method: macro observation-to-observation changes versus BTC returns over matching shifted windows.</p>
   </section>
 </main>
+<script>
+(() => {
+  const priceEl = document.querySelector("[data-live-btc-price]");
+  if (!priceEl) return;
+
+  const statusEl = document.querySelector("[data-live-btc-status]");
+  const sourceEl = document.querySelector("[data-live-btc-source]");
+  const ageEl = document.querySelector("[data-live-btc-age]");
+  const changeEl = document.querySelector("[data-live-btc-change]");
+  const refreshEl = document.querySelector("[data-live-btc-refresh]");
+  const staticSource = sourceEl ? sourceEl.dataset.staticLabel : "daily macro reference";
+
+  const money = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  });
+  const pct = new Intl.NumberFormat("en-US", {
+    signDisplay: "always",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  const time = new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  const providers = [
+    {
+      name: "Coinbase spot",
+      url: "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+      read(data) {
+        return {
+          price: Number(data && data.data && data.data.amount),
+          at: Date.now(),
+          change24h: null,
+        };
+      },
+    },
+    {
+      name: "CoinGecko spot",
+      url: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true",
+      read(data) {
+        const quote = data && data.bitcoin ? data.bitcoin : {};
+        return {
+          price: Number(quote.usd),
+          at: Number(quote.last_updated_at) * 1000,
+          change24h: Number(quote.usd_24h_change),
+        };
+      },
+    },
+  ];
+
+  function setText(el, value) {
+    if (el) el.textContent = value;
+  }
+
+  async function fetchProvider(provider) {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await fetch(provider.url, {
+        cache: "no-store",
+        signal: controller.signal,
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      const quote = provider.read(data);
+      if (!Number.isFinite(quote.price) || quote.price <= 0) {
+        throw new Error("invalid price");
+      }
+      return { provider, quote };
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
+
+  function applyQuote(provider, quote) {
+    priceEl.textContent = money.format(quote.price);
+    setText(statusEl, "live");
+    setText(sourceEl, provider.name);
+    setText(ageEl, `updated ${time.format(new Date(quote.at || Date.now()))}`);
+
+    if (changeEl && Number.isFinite(quote.change24h)) {
+      changeEl.hidden = false;
+      changeEl.textContent = `24h ${pct.format(quote.change24h)}%`;
+      changeEl.classList.toggle("up", quote.change24h >= 0);
+      changeEl.classList.toggle("down", quote.change24h < 0);
+    } else if (changeEl) {
+      changeEl.hidden = true;
+      changeEl.textContent = "";
+      changeEl.classList.remove("up", "down");
+    }
+  }
+
+  function applyFallback() {
+    priceEl.textContent = priceEl.dataset.fallback || priceEl.textContent;
+    setText(statusEl, "fallback");
+    setText(sourceEl, staticSource);
+    setText(ageEl, "实时源暂不可用 / live feed unavailable");
+    if (changeEl) {
+      changeEl.hidden = true;
+      changeEl.textContent = "";
+      changeEl.classList.remove("up", "down");
+    }
+  }
+
+  async function updateLivePrice() {
+    setText(statusEl, "updating");
+    if (refreshEl) refreshEl.disabled = true;
+    try {
+      for (const provider of providers) {
+        try {
+          const result = await fetchProvider(provider);
+          applyQuote(result.provider, result.quote);
+          return;
+        } catch (error) {
+          continue;
+        }
+      }
+      applyFallback();
+    } finally {
+      if (refreshEl) refreshEl.disabled = false;
+    }
+  }
+
+  if (refreshEl) {
+    refreshEl.addEventListener("click", updateLivePrice);
+  }
+
+  updateLivePrice();
+  window.setInterval(updateLivePrice, 60 * 1000);
+})();
+</script>
 </body>
 </html>
