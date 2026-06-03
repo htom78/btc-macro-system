@@ -40,6 +40,7 @@ jobs:
           python-version: "3.12"
 
       - name: Generate report and Dao state
+        if: github.event_name != 'push'
         run: |
           python3 btc-macro-system/run.py --force
           python3 dao-system/scripts/build_dao.py
