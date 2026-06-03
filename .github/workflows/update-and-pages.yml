@@ -75,6 +75,7 @@ jobs:
           cp -R dao-system _site/dao-system
           cp btc-macro-system/outputs/report.html _site/macro-report.html
           cp btc-macro-system/outputs/latest.json _site/latest.json
+          cp investment-thesis-rerun.html _site/investment-thesis-rerun.html
           cp investment-thesis-harness/outputs/report.html _site/investment-research.html
           cp investment-thesis-harness/outputs/latest.json _site/investment-latest.json
           cp -R everydayzen-macro _site/everydayzen-macro
