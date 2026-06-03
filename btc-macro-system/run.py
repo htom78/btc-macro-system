@@ -5,6 +5,7 @@ import argparse
 import bisect
 import csv
 import html
+import io
 import json
 import math
 import shutil
@@ -86,25 +87,65 @@ def parse_date(value: str) -> date:
     return datetime.strptime(value, "%Y-%m-%d").date()
 
 
+def parse_fred_csv(series_id: str, text: str) -> list[Point]:
+    points: list[Point] = []
+    reader = csv.DictReader(io.StringIO(text))
+    for row in reader:
+        raw_value = row.get(series_id, "")
+        if raw_value in ("", "."):
+            continue
+        try:
+            points.append(Point(parse_date(row["observation_date"]), float(raw_value)))
+        except (KeyError, ValueError):
+            continue
+    return points
+
+
+def read_fred_cache(series_id: str) -> list[Point]:
+    cache_path = RAW_DIR / f"{series_id}.csv"
+    return parse_fred_csv(series_id, cache_path.read_text(encoding="utf-8-sig"))
+
+
+def write_fred_cache(series_id: str, points: list[Point]) -> None:
+    cache_path = RAW_DIR / f"{series_id}.csv"
+    with cache_path.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["observation_date", series_id])
+        for point in points:
+            writer.writerow([point.date.isoformat(), f"{point.value:.12g}"])
+
+
+def merge_points(*series: list[Point]) -> list[Point]:
+    by_day: dict[date, float] = {}
+    for points in series:
+        for point in points:
+            by_day[point.date] = point.value
+    return [Point(day, by_day[day]) for day in sorted(by_day)]
+
+
+def with_fred_start(url: str, start: date) -> str:
+    separator = "&" if "?" in url else "?"
+    return f"{url}{separator}cosd={start.isoformat()}"
+
+
 def fetch_fred_series(series_id: str, url_template: str, force: bool = False) -> list[Point]:
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     cache_path = RAW_DIR / f"{series_id}.csv"
     if force or not cache_path.exists():
-        data = http_get(url_template.format(series_id=series_id))
+        cached = read_fred_cache(series_id) if cache_path.exists() else []
+        url = url_template.format(series_id=series_id)
+        if cached:
+            refresh_start = cached[-1].date - timedelta(days=45)
+            url = with_fred_start(url, refresh_start)
+        data = http_get(url)
+        fetched = parse_fred_csv(series_id, data.decode("utf-8-sig"))
+        if cached:
+            points = merge_points(cached, fetched)
+            write_fred_cache(series_id, points)
+            return points
         cache_path.write_bytes(data)
 
-    points: list[Point] = []
-    with cache_path.open("r", encoding="utf-8-sig", newline="") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            raw_value = row.get(series_id, "")
-            if raw_value in ("", "."):
-                continue
-            try:
-                points.append(Point(parse_date(row["observation_date"]), float(raw_value)))
-            except (KeyError, ValueError):
-                continue
-    return points
+    return read_fred_cache(series_id)
 
 
 def parse_coingecko_prices(payload: dict[str, Any]) -> list[Point]:
@@ -1388,8 +1429,16 @@ def main() -> int:
             print(f"fetch FRED {series_id}", flush=True)
             macro_series[series_id] = filter_since(fetch_fred_series(series_id, fred_url, force=args.force), start)
         except Exception as exc:
-            fetch_errors[series_id] = str(exc)
-            macro_series[series_id] = []
+            try:
+                cached = filter_since(read_fred_cache(series_id), start)
+            except Exception:
+                cached = []
+            if cached:
+                fetch_errors[series_id] = f"{exc}; using cached data through {cached[-1].date}"
+                macro_series[series_id] = cached
+            else:
+                fetch_errors[series_id] = str(exc)
+                macro_series[series_id] = []
 
     print(f"fetch BTC {config['btc'].get('source', 'unknown')}", flush=True)
     btc = filter_since(fetch_btc_prices_with_fallback(config["btc"], force=args.force), start)
