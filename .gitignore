@@ -1,6 +1,7 @@
 .omx/
 __pycache__/
 *.pyc
+_site/
 btc-macro-system/data/raw/
 btc-macro-system/data/history/*.jsonl
 btc-macro-system/logs/*.log
