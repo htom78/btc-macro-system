@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSTR × BTC × mNAV — 业务模型解读</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a2533;
+    --muted: #5a6877;
+    --line: #e6ebf0;
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --accent: #2980b9;
+    --accent-dark: #1a5d8a;
+    --warn: #c0392b;
+    --ok: #27ae60;
+    --hi: #e67e22;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+    --mono: "SF Mono", "JetBrains Mono", "Consolas", "Menlo", monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav.top {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(250,251,252,0.92);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 24px;
+    display: flex; gap: 4px; align-items: center; flex-wrap: wrap;
+    font-size: 13px;
+  }
+  nav.top a {
+    color: var(--muted); text-decoration: none;
+    padding: 6px 12px; border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  nav.top a:hover { color: var(--accent); background: #eef4fa; }
+  nav.top .home { color: var(--accent); font-weight: 600; margin-right: auto; }
+
+  main { max-width: 880px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  .hero {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    color: white;
+    padding: 56px 44px;
+    border-radius: 12px;
+    margin-bottom: 32px;
+    box-shadow: 0 8px 24px rgba(41,128,185,0.15);
+  }
+  .hero h1 { font-size: 30px; line-height: 1.4; margin-bottom: 14px; font-weight: 700; }
+  .hero h1 small { font-weight: 400; opacity: 0.85; }
+  .hero p.lead { font-size: 16px; opacity: 0.94; line-height: 1.75; }
+  .hero strong { color: #ffeaa7; font-weight: 600; }
+
+  section {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 32px 36px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+  section h2 {
+    font-size: 22px; color: var(--ink); margin-bottom: 18px;
+    padding-left: 14px; border-left: 4px solid var(--accent);
+    line-height: 1.3;
+  }
+  section h3 {
+    font-size: 16px; color: var(--ink);
+    margin: 24px 0 10px; font-weight: 600;
+  }
+  section p { color: #3a4655; margin-bottom: 12px; }
+  section p code, section li code {
+    background: #f4f8fb; padding: 2px 6px; border-radius: 4px;
+    font-family: var(--mono); font-size: 13px; color: var(--accent-dark);
+  }
+
+  .formula {
+    background: #f4f8fb;
+    border: 1px solid #d8e6f0;
+    border-radius: 10px;
+    padding: 28px 24px;
+    text-align: center;
+    margin: 20px 0;
+    font-family: var(--mono);
+    color: var(--ink);
+  }
+  .formula .big {
+    font-size: 19px; font-weight: 600;
+    color: var(--accent-dark); margin-bottom: 10px; display: block;
+  }
+  .formula .small { color: var(--muted); font-size: 13px; }
+
+  .states {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin: 20px 0;
+  }
+  .states .state {
+    padding: 18px 16px; border-radius: 8px;
+    border: 1px solid var(--line);
+  }
+  .states .state .v {
+    font-size: 22px; font-weight: 700; margin-bottom: 4px;
+    font-family: var(--mono);
+  }
+  .states .state .label {
+    font-size: 12px; font-weight: 700; color: var(--muted);
+    margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .states .state .desc { font-size: 13px; color: #3a4655; line-height: 1.65; }
+  .state.eq { background: #f0f4f8; }
+  .state.eq .v { color: var(--muted); }
+  .state.gt { background: #fef5ed; border-color: #f9c896; }
+  .state.gt .v { color: var(--hi); }
+  .state.lt { background: #fef0ef; border-color: #f4b8b3; }
+  .state.lt .v { color: var(--warn); }
+
+  .flywheel { margin: 28px 0 20px; text-align: center; }
+  .flywheel svg { max-width: 100%; height: auto; }
+
+  ol.steps {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    margin: 22px 0 8px;
+  }
+  ol.steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 16px 18px 16px 60px;
+    margin-bottom: 10px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+  }
+  ol.steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 14px; top: 14px;
+    width: 30px; height: 30px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    text-align: center; line-height: 30px;
+    font-weight: 700; font-size: 14px;
+  }
+  ol.steps li strong { color: var(--ink); }
+  ol.steps li .desc {
+    color: #5a6877; font-size: 14px;
+    margin-top: 6px; line-height: 1.7;
+  }
+
+  table.thresholds {
+    width: 100%; border-collapse: collapse;
+    margin: 18px 0 4px; font-size: 14px;
+  }
+  table.thresholds th {
+    text-align: left; padding: 12px 14px;
+    background: #f4f8fb;
+    border-bottom: 2px solid var(--accent);
+    font-weight: 600; font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.6px;
+  }
+  table.thresholds td {
+    padding: 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.thresholds tr:last-child td { border-bottom: 0; }
+  table.thresholds td.range {
+    font-family: var(--mono); font-weight: 600;
+    color: var(--ink); white-space: nowrap;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 4px;
+    font-size: 12px; font-weight: 700;
+  }
+  .badge.b1 { background: #fef0ef; color: var(--warn); }
+  .badge.b2 { background: #fef5ed; color: var(--hi); }
+  .badge.b3 { background: #fef9e7; color: #b8860b; }
+  .badge.b4 { background: #f0f4f8; color: var(--muted); }
+
+  .risks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .risk {
+    background: #fef5ed;
+    border-left: 4px solid var(--hi);
+    padding: 16px 18px;
+    border-radius: 6px;
+  }
+  .risk h4 {
+    font-size: 14px; color: var(--warn);
+    margin-bottom: 8px; font-weight: 700;
+  }
+  .risk p {
+    font-size: 13px; color: #5a4a3a;
+    margin: 0; line-height: 1.7;
+  }
+
+  .risk-inline {
+    background: #fff5e6; border: 1px solid #f3c98b;
+    padding: 16px 20px; border-radius: 8px; margin-top: 22px;
+  }
+  .risk-inline h4 {
+    font-size: 14px; color: #b86c1f;
+    margin-bottom: 6px; font-weight: 700;
+  }
+  .risk-inline p { font-size: 13px; color: #5a4a3a; margin: 0; line-height: 1.7; }
+
+  /* mNAV percentile coordinate system */
+  table.percentile {
+    width: 100%; border-collapse: collapse;
+    margin: 18px 0 4px; font-size: 14px;
+  }
+  table.percentile th {
+    text-align: left; padding: 12px 14px;
+    background: #f4f8fb;
+    border-bottom: 2px solid var(--accent);
+    font-weight: 600; font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.6px;
+  }
+  table.percentile td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.percentile tr:last-child td { border-bottom: 0; }
+  table.percentile td.range {
+    font-family: var(--mono); font-weight: 700;
+    color: var(--ink); white-space: nowrap;
+  }
+  table.percentile td.pos {
+    font-family: var(--mono); font-size: 13px;
+    color: var(--muted);
+  }
+  table.percentile .here {
+    background: #fef0ef;
+    border-left: 3px solid var(--warn);
+  }
+  table.percentile .here td.range { color: var(--warn); }
+  table.percentile .here td.pos {
+    color: var(--warn); font-weight: 600;
+  }
+
+  /* Hard rules box */
+  .hard-rules {
+    background: #0e1116;
+    color: #e6e8eb;
+    padding: 24px 28px;
+    border-radius: 10px;
+    margin: 24px 0 12px;
+    font-family: var(--mono); font-size: 14px;
+    line-height: 2.1;
+  }
+  .hard-rules .title {
+    color: #c7a957;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.3em;
+    margin-bottom: 14px;
+  }
+  .hard-rules .rule {
+    display: grid;
+    grid-template-columns: 130px 24px 1fr;
+    align-items: baseline;
+    padding: 4px 0;
+  }
+  .hard-rules .rule .cond {
+    color: #5ea0ff; font-weight: 600;
+  }
+  .hard-rules .rule .arrow { color: #c7a957; text-align: center; }
+  .hard-rules .rule .act { color: #e6e8eb; }
+  .hard-rules .rule.danger .cond { color: #e07b6b; }
+  .hard-rules .rule.opportunity .cond { color: #7ec990; }
+
+  .counterintuitive {
+    background: #fff5e6;
+    border-left: 4px solid var(--hi);
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin: 18px 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #5a4a3a;
+  }
+  .counterintuitive strong { color: var(--warn); }
+
+  /* Resource layers */
+  .layer {
+    margin: 24px 0 18px;
+    padding: 18px 20px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent);
+  }
+  .layer .layer-head {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 10px;
+  }
+  .layer .layer-num {
+    background: var(--accent); color: white;
+    width: 28px; height: 28px; border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; font-family: var(--mono);
+    flex-shrink: 0;
+  }
+  .layer .layer-title {
+    font-size: 15px; font-weight: 700; color: var(--ink);
+  }
+  .layer .layer-takeaway {
+    font-size: 13px; color: var(--muted);
+    margin: 2px 0 12px;
+    font-style: italic;
+  }
+  .layer ul.refs {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .layer ul.refs li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #d8e0e8;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #3a4655;
+  }
+  .layer ul.refs li:last-child { border-bottom: 0; }
+  .layer ul.refs li a {
+    color: var(--accent); text-decoration: none;
+    font-weight: 500;
+  }
+  .layer ul.refs li a:hover { text-decoration: underline; }
+  .layer ul.refs li .tag {
+    display: inline-block;
+    font-family: var(--mono); font-size: 11px;
+    padding: 1px 7px; border-radius: 3px;
+    background: #e6ebf0; color: var(--muted);
+    margin-right: 6px;
+  }
+  .layer ul.refs li .tag.must { background: #fef0ef; color: var(--warn); }
+  .layer ul.refs li .tag.recommended { background: #fef5ed; color: var(--hi); }
+  .layer ul.refs li .tag.zh { background: #eafaf1; color: var(--ok); }
+  .layer ul.refs li .note {
+    color: var(--muted); font-size: 12.5px;
+    margin-top: 2px;
+  }
+
+  .min-path {
+    background: #1a2533;
+    color: #e6e8eb;
+    padding: 22px 26px;
+    border-radius: 10px;
+    margin: 24px 0 8px;
+  }
+  .min-path .title {
+    color: #c7a957; font-size: 13px;
+    font-weight: 700; letter-spacing: 0.3em;
+    margin-bottom: 14px;
+  }
+  .min-path ol {
+    margin: 0; padding-left: 22px;
+    font-size: 14px; line-height: 2;
+  }
+  .min-path ol li::marker { color: #c7a957; font-weight: 700; }
+  .min-path ol li a {
+    color: #5ea0ff; text-decoration: none;
+  }
+  .min-path ol li a:hover { text-decoration: underline; }
+  .min-path .summary {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #2c3a4a;
+    font-size: 13px; color: #95a5a6;
+  }
+
+  ul.sources {
+    list-style: none; padding: 0;
+  }
+  ul.sources li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px; line-height: 1.7;
+  }
+  ul.sources li:last-child { border-bottom: 0; }
+  ul.sources li strong { color: var(--ink); }
+  ul.sources li code {
+    background: #f4f8fb; padding: 2px 7px; border-radius: 3px;
+    font-family: var(--mono); font-size: 12px; color: var(--accent-dark);
+  }
+
+  footer {
+    text-align: center;
+    padding: 36px 24px 24px;
+    color: var(--muted);
+    font-size: 13px; line-height: 1.85;
+  }
+  footer a {
+    color: var(--accent); text-decoration: none;
+    font-weight: 500;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 720px) {
+    main { padding: 20px 16px 60px; }
+    .hero { padding: 36px 24px; }
+    .hero h1 { font-size: 22px; }
+    section { padding: 24px 20px; }
+    .states { grid-template-columns: 1fr; }
+    nav.top { padding: 8px 14px; gap: 2px; font-size: 12px; }
+    nav.top a { padding: 4px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <a href="./" class="home">← 返回 dashboard</a>
+  <a href="#mnav">mNAV 定义</a>
+  <a href="#flywheel">业务飞轮</a>
+  <a href="#thresholds">阈值含义</a>
+  <a href="#percentiles">历史坐标 · 硬规则</a>
+  <a href="#risks">风险</a>
+  <a href="#sources">数据源</a>
+  <a href="#research">深度研究资源</a>
+  <a href="#mindset">心法</a>
+</nav>
+
+<main>
+
+<div class="hero">
+  <h1>MSTR × BTC × mNAV<br><small>—— 一张监控背后的业务模型解读</small></h1>
+  <p class="lead">
+    Strategy Inc.(前 MicroStrategy)持有约 <strong>82 万枚比特币</strong>,
+    它的股价对其 BTC 净值的溢价或折价被称为 <strong>mNAV</strong>。
+    这是 dashboard 监控的核心信号。本页用 5 分钟讲清原理。
+  </p>
+</div>
+
+<section id="mnav">
+<h2>1. mNAV 是什么</h2>
+<p>
+  <strong>mNAV (modified Net Asset Value)</strong> = MSTR 市值 ÷ 它持有的 BTC 净值。
+  公式直接定义在 <code>monitor.py</code> 里:
+</p>
+
+<div class="formula">
+  <span class="big">mNAV = MSTR 市值 ÷ (BTC 持仓 × BTC 价格)</span>
+  <span class="small">= (股价 × 流通股数) ÷ (BTC 数量 × BTC 现货价)</span>
+</div>
+
+<p>三种取值的业务含义完全不同:</p>
+
+<div class="states">
+  <div class="state eq">
+    <div class="label">平价</div>
+    <div class="v">= 1.00</div>
+    <div class="desc">股票市值正好等于其持有 BTC 的净值,无溢价无折价。</div>
+  </div>
+  <div class="state gt">
+    <div class="label">溢价</div>
+    <div class="v">&gt; 1.00</div>
+    <div class="desc">市场愿为"通过 MSTR 间接持 BTC"多付钱 —— 公司经营飞轮的预期被定价。</div>
+  </div>
+  <div class="state lt">
+    <div class="label">折价</div>
+    <div class="v">&lt; 1.00</div>
+    <div class="desc">间接持 BTC 比直接持还便宜 —— 飞轮停转、市场质疑、或系统性流动性挤压。</div>
+  </div>
+</div>
+
+<h3>基本 vs 摊薄</h3>
+<p>
+  dashboard 同时显示 <code>mNAV 基本</code> 和 <code>mNAV 摊薄</code>。<strong>摊薄股数</strong>来自 SEC XBRL 的
+  <code>WeightedAverageNumberOfDilutedSharesOutstanding</code>,反映"全部可转债 / 优先股潜在转股"的真实稀释。
+  两数有差距时,摊薄更保守:数值更大,更难触发"折价"判断。
+</p>
+</section>
+
+<section id="flywheel">
+<h2>2. MSTR 的 BTC 飞轮</h2>
+<p>
+  MSTR 不是普通公司。它所有的融资动作都服务于一个目的:<strong>持续增加每股对应的 BTC 持仓量(BTC per share)</strong>。
+  这个机制只有在 <code>mNAV &gt; 1</code> 时才能正向运转,叫做 <strong>BTC Yield</strong>。
+</p>
+
+<div class="flywheel">
+  <svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MSTR BTC 飞轮 5 步循环图" style="width:100%;max-width:460px">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#2980b9"/>
+      </marker>
+    </defs>
+
+    <text x="240" y="232" text-anchor="middle" font-family="system-ui" font-size="15" fill="#5a6877" font-weight="700">BTC 飞轮</text>
+    <text x="240" y="252" text-anchor="middle" font-family="system-ui" font-size="11" fill="#95a5a6">(自我强化循环)</text>
+
+    <g>
+      <circle cx="240" cy="62" r="52" fill="#fef5ed" stroke="#e67e22" stroke-width="2.2"/>
+      <text x="240" y="50" text-anchor="middle" font-family="system-ui" font-size="14" fill="#c0392b" font-weight="700">①</text>
+      <text x="240" y="68" text-anchor="middle" font-family="system-ui" font-size="11" fill="#1a2533">mNAV &gt; 1</text>
+      <text x="240" y="82" text-anchor="middle" font-family="system-ui" font-size="11" fill="#1a2533">市场给溢价</text>
+    </g>
+
+    <g>
+      <circle cx="402" cy="178" r="52" fill="#f0f8ff" stroke="#2980b9" stroke-width="2.2"/>
+      <text x="402" y="166" text-anchor="middle" font-family="system-ui" font-size="14" fill="#2980b9" font-weight="700">②</text>
+      <text x="402" y="184" text-anchor="middle" font-family="system-ui" font-size="11" fill="#1a2533">ATM 增发</text>
+      <text x="402" y="198" text-anchor="middle" font-family="system-ui" font-size="11" fill="#1a2533">+ Convert / STRC</text>
+    </g>
+
+    <g>
+      <circle cx="340" cy="378" r="52" fill="#fff8e7" stroke="#b8860b" stroke-width="2.2"/>
+      <text x="340" y="368" text-anchor="middle" font-family="system-ui" font-size="14" fill="#b8860b" font-weight="700">③</text>
+      <text x="340" y="386" text-anchor="middle" font-family="system-ui" font-size="11" fill="#1a2533">融到现金</text>
+      <text x="340" y="400" text-anchor="middle" font-family="system-ui" font-size="11" fill="#1a2533">全部买 BTC</text>
+    </g>
+
+    <g>
+      <circle cx="140" cy="378" r="52" fill="#eafaf1" stroke="#27ae60" stroke-width="2.2"/>
+      <text x="140" y="368" text-anchor="middle" font-family="system-ui" font-size="14" fill="#27ae60" font-weight="700">④</text>
+      <text x="140" y="386" text-anchor="middle" font-family="system-ui" font-size="11" fill="#1a2533">每股 BTC ↑</text>
+      <text x="140" y="400" text-anchor="middle" font-family="system-ui" font-size="11" fill="#1a2533">(BTC Yield)</text>
+    </g>
+
+    <g>
+      <circle cx="78" cy="178" r="52" fill="#f4f8fb" stroke="#1a5d8a" stroke-width="2.2"/>
+      <text x="78" y="166" text-anchor="middle" font-family="system-ui" font-size="14" fill="#1a5d8a" font-weight="700">⑤</text>
+      <text x="78" y="184" text-anchor="middle" font-family="system-ui" font-size="11" fill="#1a2533">股价反映 →</text>
+      <text x="78" y="198" text-anchor="middle" font-family="system-ui" font-size="11" fill="#1a2533">mNAV 维持高位</text>
+    </g>
+
+    <!-- clockwise curved arrows between nodes
+         设计原则: 每条弧的 end-tangent (P2 - P1) 必须朝向目标圆心,
+         否则箭头会"擦边"看起来戳错方向。 -->
+    <path d="M 285 90  Q 320 100 360 142" stroke="#2980b9" stroke-width="2.2" fill="none" marker-end="url(#arrow)" opacity="0.75"/>
+    <path d="M 410 230 Q 430 305 380 348" stroke="#2980b9" stroke-width="2.2" fill="none" marker-end="url(#arrow)" opacity="0.75"/>
+    <path d="M 290 395 Q 240 415 190 395" stroke="#2980b9" stroke-width="2.2" fill="none" marker-end="url(#arrow)" opacity="0.75"/>
+    <path d="M 100 348 Q  50 305  70 230" stroke="#2980b9" stroke-width="2.2" fill="none" marker-end="url(#arrow)" opacity="0.75"/>
+    <path d="M 120 138 Q 110 115 190 90"  stroke="#2980b9" stroke-width="2.2" fill="none" marker-end="url(#arrow)" opacity="0.75"/>
+  </svg>
+</div>
+
+<ol class="steps">
+  <li>
+    <strong>市场给 MSTR 溢价</strong>(<code>mNAV &gt; 1</code>)
+    <div class="desc">投资者愿为"通过 MSTR 间接持 BTC + 拿到飞轮 option"多付钱。溢价幅度反映对管理能力和未来 BTC Yield 的预期。</div>
+  </li>
+  <li>
+    <strong>公司按高估值融资</strong>
+    <div class="desc">三种工具混用:<strong>ATM (At-The-Market) 增发</strong> 按市价卖新股;<strong>Convertible Notes</strong> 零息或极低息可转债(转股价高于现价);<strong>STRC 永续优先股</strong> 派息但无到期日。利率都因 convert option 的价值被压得很低。</div>
+  </li>
+  <li>
+    <strong>融到的现金全部买 BTC</strong>
+    <div class="desc">通常 24-48 小时内完成买入,价格通过 SEC 8-K 法定公告披露。这是 dashboard 实时监控 8-K 流水的根本原因。</div>
+  </li>
+  <li>
+    <strong>每股 BTC 数(BTC per share)上升</strong>
+    <div class="desc">因为 <code>mNAV &gt; 1</code>,增发筹得的钱能买的 BTC 数量 &gt; 因增发被稀释的旧股东对应的 BTC 份额。净效果:全体股东的"每股 BTC"上升,这个增长率就是 <strong>BTC Yield</strong> —— MSTR 的核心 KPI,而不是传统 EPS。</div>
+  </li>
+  <li>
+    <strong>股价反映新的每股 BTC,mNAV 维持高位</strong>
+    <div class="desc">市场看到每股 BTC 上升,继续给溢价。回到第 ① 步,飞轮可再转一圈。Saylor 在公开讲话中把这称为"Bitcoin 公司的永动机"。</div>
+  </li>
+</ol>
+
+<div class="risk-inline">
+  <h4>⚠️ 飞轮断点条件 — 主引擎 vs 备用引擎</h4>
+  <p>
+    一旦 <code>mNAV ≤ 1.00</code>,ATM 增发筹的钱能买的 BTC <strong>等于或小于</strong>被稀释的份额,
+    每股 BTC 数 <strong>停止上升甚至反向下降</strong>。
+    <strong>但这只覆盖 $MSTR ATM 这一条融资线</strong> ——
+    Strategy 已经搭建了多通道证券化矩阵,其余通道并不直接依赖 mNAV,公司不会立刻断现金流。
+  </p>
+  <p style="margin-top:14px;">完整融资矩阵跟 mNAV 的依赖关系:</p>
+  <table class="thresholds" style="margin-top:8px;">
+    <thead>
+      <tr><th>融资工具</th><th>类型</th><th>mNAV 依赖</th><th>mNAV &lt; 1 时</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="range">$MSTR ATM</td><td>普通股按市价增发</td><td>强</td><td>停转(反向稀释每股 BTC)</td></tr>
+      <tr><td class="range">Convertible</td><td>可转债(零息/低息)</td><td>中</td><td>看转股价 vs 现价,通常仍能新发</td></tr>
+      <tr><td class="range">$STRK</td><td>累积优先股</td><td>弱</td><td>仍可发,股价信号影响需求</td></tr>
+      <tr><td class="range">$STRF / $STRD</td><td>定期优先股</td><td>弱</td><td>仍可发,主要看 yield 竞争力</td></tr>
+      <tr><td class="range">$STRC</td><td>永续优先股</td><td>无</td><td>完全独立,只看 11.5% yield 市场需求</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:14px;">
+    所以 <code>mNAV ≤ 1.00</code> = <strong>主引擎熄火</strong>,不是全线停转。
+    真正的"全线停转"信号是 <strong>$STRC 价格大幅偏离 par ($100)</strong> 或 <strong>STRC yield 突然飙升</strong>
+    (2026-03 实测 11.5% yield / 30D 波动 3% / 价格 $99.78-$100.02 / 流通规模 $3.8B,处于健康区间)。
+  </p>
+  <p style="margin-top:10px; font-size:12px; color:#7a6855;">
+    数据来源:Strategy 官方 STRC dashboard(@Strategy 2026-03-10 推);多通道融资矩阵 framing 出处:Jesse Myers (@Croesus_BTC) onceinaspecies.com。
+  </p>
+</div>
+</section>
+
+<section id="thresholds">
+<h2>3. dashboard 三阈值的业务含义</h2>
+<p>
+  <code>suggest.py</code> 的 <code>THRESHOLDS</code> 把 mNAV 切成 4 个区,每个区对应飞轮的不同状态:
+</p>
+
+<table class="thresholds">
+<thead>
+  <tr><th>mNAV 区间</th><th>等级</th><th>飞轮状态</th></tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="range">≥ 1.50</td>
+    <td><span class="badge b4">高溢价</span></td>
+    <td>飞轮被市场充分定价,新发证券需求强。对老股东而言此时买点贵。</td>
+  </tr>
+  <tr>
+    <td class="range">1.20 – 1.50</td>
+    <td><span class="badge b3">P2 观察</span></td>
+    <td>溢价在压缩,飞轮仍能转。等更深折价。</td>
+  </tr>
+  <tr>
+    <td class="range">1.00 – 1.20</td>
+    <td><span class="badge b2">P1 入场</span></td>
+    <td>溢价接近平价,飞轮估值有压力。再低一步飞轮就停转。</td>
+  </tr>
+  <tr>
+    <td class="range">&lt; 1.00</td>
+    <td><span class="badge b1">P1 极端</span></td>
+    <td>折价区。买 MSTR ≈ 用低于市价买 BTC + 免费拿到飞轮重启 option(若 BTC 回升)。但也可能是市场提前 price-in 了某种风险。</td>
+  </tr>
+</tbody>
+</table>
+</section>
+
+<section id="percentiles">
+<h2>4. mNAV 历史坐标系 + 反人性硬规则</h2>
+<p>
+  第 3 节的「<code>suggest.py</code> 三阈值」是<strong>系统层</strong>的告警触发器。
+  这一节是<strong>个人 IPS 层</strong>的硬规则 ——
+  它把 mNAV 当作一把"<strong>市场情绪坐标系</strong>",不是当公允值。
+  数据基于本 dashboard 数据库过去 12 个月的实测分布:
+</p>
+
+<table class="percentile">
+<thead>
+  <tr>
+    <th style="width:18%">mNAV 区间</th>
+    <th style="width:18%">历史位置</th>
+    <th style="width:25%">市场状态</th>
+    <th>飞轮工作方式</th>
+  </tr>
+</thead>
+<tbody>
+  <tr class="here">
+    <td class="range">&lt; 0.85</td>
+    <td class="pos">P5 以下</td>
+    <td><span class="badge b1">极端恐慌</span></td>
+    <td>飞轮停转,发新股<strong>会真稀释</strong>。罕见但出现 = 重锤窗口。</td>
+  </tr>
+  <tr>
+    <td class="range">0.85 – 1.00</td>
+    <td class="pos">P5 – P25</td>
+    <td><span class="badge b1">冷漠 / 弱势</span></td>
+    <td>飞轮快停,加仓窗口刚打开。当前(0.97)位于此区间。</td>
+  </tr>
+  <tr>
+    <td class="range">1.00 – 1.30</td>
+    <td class="pos">P25 – P50</td>
+    <td><span class="badge b4">中性</span></td>
+    <td>飞轮缓慢转动。</td>
+  </tr>
+  <tr>
+    <td class="range">1.30 – 1.80</td>
+    <td class="pos">P50 – P75</td>
+    <td><span class="badge b3">健康牛市</span></td>
+    <td>飞轮高效运转,Saylor 大量 ATM 发股买 BTC。</td>
+  </tr>
+  <tr>
+    <td class="range">1.80 – 2.50</td>
+    <td class="pos">P75 – P90</td>
+    <td><span class="badge b2">偏热</span></td>
+    <td>散户开始追高 + 期权 gamma squeeze 开启,做市商被动买盘。</td>
+  </tr>
+  <tr>
+    <td class="range">&gt; 2.50</td>
+    <td class="pos">P90 以上</td>
+    <td><span class="badge b1">过热</span></td>
+    <td>FOMO 全开,大概率短期回调。卖出而非买入区。</td>
+  </tr>
+</tbody>
+</table>
+
+<p style="font-size:13px; color:var(--muted); margin-top:8px;">
+  ※ 百分位口径:过去 252 天 daily mNAV 摊薄值;中位数 1.13,均值 1.37(右偏,顶部肥尾)。
+</p>
+
+<h3 style="margin-top:32px;">硬规则:mNAV 触发什么动作</h3>
+<p>
+  按个人 IPS 的"加仓 / 减仓触发"维度,mNAV 应该这样被用成硬规则:
+</p>
+
+<div class="hard-rules">
+  <div class="title">— mNAV 触发规则 —</div>
+  <div class="rule danger">
+    <span class="cond">mNAV &gt; 2.0</span>
+    <span class="arrow">→</span>
+    <span class="act">禁止主动加仓 MSTR(即使 BTC 看好)</span>
+  </div>
+  <div class="rule">
+    <span class="cond">mNAV 1.3 – 2.0</span>
+    <span class="arrow">→</span>
+    <span class="act">按定投节奏</span>
+  </div>
+  <div class="rule">
+    <span class="cond">mNAV 1.0 – 1.3</span>
+    <span class="arrow">→</span>
+    <span class="act">正常持有,无操作</span>
+  </div>
+  <div class="rule opportunity">
+    <span class="cond">mNAV &lt; 1.0</span>
+    <span class="arrow">→</span>
+    <span class="act">考虑加仓(同时 cross-check Q3/Q4/Q5 基本面没坏)</span>
+  </div>
+  <div class="rule opportunity">
+    <span class="cond">mNAV &lt; 0.85</span>
+    <span class="arrow">→</span>
+    <span class="act">启动 IPS § 3 触发一的"大幅回撤加仓"</span>
+  </div>
+</div>
+
+<div class="counterintuitive">
+  <strong>注意这套规则反人性 ——</strong>
+  当 mNAV &gt; 2.0 时,市场情绪好、新闻铺天盖地、你的 FOMO 最强,而规则说<strong>不许加</strong>。
+  当 mNAV &lt; 0.9 时,市场冷清、KOL 集体看空、你的恐惧最强,而规则说<strong>可以加</strong>。
+  这就是王阳明"事上磨练"的具体场景:规则告诉你该做什么,你的情绪告诉你相反的事 ——
+  能听规则不听情绪的人,10 年下来才会站到 J 型曲线的右端。
+</div>
+
+<div class="risk-inline" style="margin-top:24px;">
+  <h4>⚠️ 不要单看 mNAV</h4>
+  <p>
+    mNAV 是<strong>市场情绪的坐标</strong>,不是基本面信号。极端低位之所以是机会,
+    前提是<strong>"基本面没变坏"</strong>。所以触发加仓时,必须 cross-check 战略五问的 Q3
+    (法币利息成本是否飙升)、Q4(Saylor 叙事是否失效)、Q5(机构持仓是否大撤)。
+    三者任意一个亮红灯,mNAV 再低也是陷阱不是机会。
+  </p>
+</div>
+</section>
+
+<section id="risks">
+<h2>5. 风险与已知局限</h2>
+<div class="risks">
+  <div class="risk">
+    <h4>飞轮反转</h4>
+    <p>mNAV 长期 &lt; 1 时,继续 ATM 增发会反向稀释每股 BTC。公司理论上应停发或回购,但实际可能因为短期现金流压力被迫继续稀释。</p>
+  </div>
+  <div class="risk">
+    <h4>可转债到期</h4>
+    <p>若可转债到期时 MSTR 股价低于转股价,持有人选择现金还本而非转股,公司需出售 BTC 或借新还旧。BTC 熊市叠加可放大此压力。</p>
+  </div>
+  <div class="risk">
+    <h4>SEC 8-K 减持信号</h4>
+    <p><code>monitor.py</code> 监控所有新 8-K,正则 <code>SELL_CUES</code> 匹配 "sold/liquidat/dispose/divest + bitcoin"。一旦命中,推送红色告警 —— 这是论点 termination 的法定来源。</p>
+  </div>
+</div>
+</section>
+
+<section id="sources">
+<h2>6. 数据源</h2>
+<p>dashboard 所有数据来自这几个公开源,每小时 cron 拉一次(详见 <code>monitor.py</code> 顶部 docstring):</p>
+<ul class="sources">
+  <li><strong>BTC 价格</strong> — <code>CoinGecko</code> (api.coingecko.com/api/v3/simple/price,免费,无 key)</li>
+  <li><strong>MSTR 价格</strong> — <code>yfinance</code> (Yahoo Finance 非官方 wrapper)</li>
+  <li><strong>BTC 持仓数量</strong> — 三源级联:① <code>strategy.com/purchases</code> 解析最新 hodl 时间线(法定来源) → ② <code>bitcointreasuries.net</code> JSON → ③ 硬编码 fallback <code>818,869 BTC</code>(2026-05-10 截止)</li>
+  <li><strong>摊薄股数</strong> — SEC XBRL <code>WeightedAverageNumberOfDilutedSharesOutstanding</code>(GAAP 最新季报)+ 手动 <code>EXTRA_DILUTION</code> 修正最新未入报告的 convert</li>
+  <li><strong>8-K 文件</strong> — SEC EDGAR atom feed(CIK 0001050446),买卖动作的法定来源</li>
+</ul>
+</section>
+
+<section id="research">
+<h2>7. 深度研究资源(五层学习路径)</h2>
+<p>
+  MSTR 是这 5 标的里底层逻辑最复杂的一个。<strong>不能按"看一堆视频"的方式学,要分层</strong>。
+  下面 5 层,每层只挑最少且最值得的资源。按顺序看完,你比 95% 的散户深。
+</p>
+
+<!-- 第一层 -->
+<div class="layer">
+  <div class="layer-head">
+    <span class="layer-num">L1</span>
+    <span class="layer-title">先懂 BTC 本身</span>
+  </div>
+  <p class="layer-takeaway">不懂 BTC,MSTR 一切都是空。Saylor 不是把 BTC 当"投资标的",他把 BTC 当"新的货币层"。</p>
+  <ul class="refs">
+    <li>
+      <span class="tag must">必看</span>
+      <a href="https://www.youtube.com/results?search_query=Saylor+Lex+Fridman" target="_blank" rel="noopener">Saylor × Lex Fridman 系列访谈</a>
+      <div class="note">每次约 4h, 比 Breedlove 系列更紧凑。先听最近一次。</div>
+    </li>
+    <li>
+      <span class="tag recommended">深度</span>
+      <a href="https://www.youtube.com/results?search_query=Saylor+Breedlove+What+is+Money" target="_blank" rel="noopener">Saylor × Robert Breedlove —《What is Money》系列</a>
+      <div class="note">10+ 集, 每集 4-8h。挑第 1 集和最近一集听即可,这是 Saylor 把世界观完整讲完的地方。</div>
+    </li>
+  </ul>
+</div>
+
+<!-- 第二层 -->
+<div class="layer">
+  <div class="layer-head">
+    <span class="layer-num">L2</span>
+    <span class="layer-title">Saylor 的战略叙事</span>
+  </div>
+  <p class="layer-takeaway">Saylor 不是"等 BTC 涨", 他在<strong>主动制造</strong>一个 BTC 飞轮。这一层听他怎么自己讲。</p>
+  <ul class="refs">
+    <li>
+      <span class="tag recommended">官方</span>
+      <a href="https://www.strategy.com/investor-relations" target="_blank" rel="noopener">Strategy Inc Investor Relations</a>
+      <div class="note">年度股东信 + 演示稿 + 季报材料(一手)。</div>
+    </li>
+    <li>
+      <span class="tag">视频</span>
+      <a href="https://www.youtube.com/results?search_query=Saylor+Bitcoin+Conference" target="_blank" rel="noopener">Saylor 在 Bitcoin Conference 历年演讲</a>
+      <div class="note">搜 "Saylor Bitcoin 2024" / "Saylor Bitcoin 2025"。"BTC Bank" / "trillion-dollar vision" 等故事都在这里。</div>
+    </li>
+    <li>
+      <span class="tag">日更</span>
+      <a href="https://www.podbean.com/podcast-detail/fisvw-330dbc/MSTR-Today-Daily-insights-of-Michael-Saylor-Bitcoin-and-Strategy-%28MicroStrategy%29-Podcast" target="_blank" rel="noopener">MSTR Today 播客</a>
+      <div class="note">日更, 跟踪 MSTR 官方动作。</div>
+    </li>
+  </ul>
+</div>
+
+<!-- 第三层 -->
+<div class="layer">
+  <div class="layer-head">
+    <span class="layer-num">L3</span>
+    <span class="layer-title">金融工程(最关键的一层)</span>
+  </div>
+  <p class="layer-takeaway">大多数中文内容讲不透、英文里也只有少数人讲透的部分。<strong>你的关键学习区</strong>。看完应能用自己的话讲清楚:可转债 zero-coupon、mNAV premium、ATM 反稀释、永续优先股结构。</p>
+  <ul class="refs">
+    <li>
+      <span class="tag must">必读</span>
+      <a href="https://aarongilbert.substack.com/p/mstr-deep-dive" target="_blank" rel="noopener">Aaron Gilbert《MSTR Deep Dive》Substack</a>
+      <div class="note">机构级深度。可转债 + 稀释 + mNAV 数学拆得最清楚的少数几个写作者之一。</div>
+    </li>
+    <li>
+      <span class="tag must">必读</span>
+      <a href="https://thebitcoinlayer.substack.com/p/pioneers-a-deep-dive-into-saylors" target="_blank" rel="noopener">The Bitcoin Layer (Nik Bhatia)《Pioneers: A Deep Dive into Saylor's Strategy》</a>
+      <div class="note">从利率 / 信用债 / 资本结构的宏观角度讲 MSTR。</div>
+    </li>
+    <li>
+      <span class="tag recommended">单篇</span>
+      <a href="https://www.vantagepointsoftware.com/blog/microstrategy-convertible-debt-bitcoin-strategy-explained/" target="_blank" rel="noopener">Vantage Point《The Great Bitcoin Bond Gamble》</a>
+      <div class="note">单篇文章, 把可转债怎么变成"对 Saylor 没坏处的金融炼金术"讲清楚。</div>
+    </li>
+    <li>
+      <span class="tag">视频</span>
+      <a href="https://www.youtube.com/watch?v=CPwHBspFtZk" target="_blank" rel="noopener">MicroStrategy Deep Dive (Part 2) — mNAV 机制</a>
+    </li>
+    <li>
+      <span class="tag">视频</span>
+      <a href="https://www.youtube.com/watch?v=_FyeXjqpBhw" target="_blank" rel="noopener">MicroStrategy Deep Dive (Part 3) — 可转债</a>
+    </li>
+    <li>
+      <span class="tag">视频</span>
+      <a href="https://www.youtube.com/watch?v=65cec3en06M" target="_blank" rel="noopener">MSTR mNAV 实战分析</a>
+    </li>
+    <li>
+      <span class="tag">追踪</span>
+      <a href="https://twitter.com/Croesus_BTC" target="_blank" rel="noopener">Jesse Myers (@Croesus_BTC) · Onramp 播客</a>
+      <div class="note">mNAV 飞轮模型的早期讲述者之一。</div>
+    </li>
+    <li>
+      <span class="tag">追踪</span>
+      <a href="https://x.com/DylanLeClair" target="_blank" rel="noopener">Dylan LeClair (@DylanLeClair)</a>
+      <span style="margin-left:12px"></span>
+      <a href="https://x.com/benwehrman" target="_blank" rel="noopener">Ben Wehrman (@benwehrman)</a>
+      <div class="note">实时追踪 MSTR 最高质量的两个账号。</div>
+    </li>
+  </ul>
+</div>
+
+<!-- 第四层 -->
+<div class="layer">
+  <div class="layer-head">
+    <span class="layer-num">L4</span>
+    <span class="layer-title">对手盘(必看,否则只是信仰)</span>
+  </div>
+  <p class="layer-takeaway">主动找最尖锐的反对意见。<strong>每个月这一栏至少要有 1-2 条新内容,否则你已经被信念绑架</strong>。</p>
+  <ul class="refs">
+    <li>
+      <span class="tag must">必看</span>
+      <a href="https://www.youtube.com/results?search_query=Chanos+MicroStrategy" target="_blank" rel="noopener">Jim Chanos 公开做空 MSTR 论证</a>
+      <div class="note">2024-2025 多次公开演讲 / 访谈。核心论点:溢价不可持续, mNAV 终将向 1 回归。</div>
+    </li>
+    <li>
+      <span class="tag must">必读</span>
+      <a href="https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine" target="_blank" rel="noopener">Matt Levine (Bloomberg Money Stuff)</a>
+      <div class="note">不是看空, 但是<strong>最中立、最聪明的</strong>第三方观察。历年关于 MSTR 的评论值得反复读。</div>
+    </li>
+    <li>
+      <span class="tag">追踪</span>
+      <a href="https://twitter.com/MikeAlfred" target="_blank" rel="noopener">@MikeAlfred Twitter</a>
+      <div class="note">长期批评者。"mNAV will collapse" 论据库。</div>
+    </li>
+    <li>
+      <span class="tag">视频</span>
+      <a href="https://www.youtube.com/watch?v=RpFGNkhVJUc" target="_blank" rel="noopener">WHY IS MICHAEL SAYLOR WINNING? | MSTR DeepDive #005</a>
+      <div class="note">标题看似多头, 内容有反方视角。</div>
+    </li>
+  </ul>
+</div>
+
+<!-- 第五层 -->
+<div class="layer">
+  <div class="layer-head">
+    <span class="layer-num">L5</span>
+    <span class="layer-title">中文素材(快速参考, 不当主餐)</span>
+  </div>
+  <p class="layer-takeaway">中文素材普遍滞后 6-12 个月, 很少触及金融工程细节。当快速参考用, 不能替代英文一手。</p>
+  <ul class="refs">
+    <li>
+      <span class="tag zh">中文</span>
+      <a href="https://www.theblockbeats.info/news/56375" target="_blank" rel="noopener">一文读懂 MSTR 微策略的比特币战略 — BlockBeats</a>
+      <div class="note">入门首选。</div>
+    </li>
+    <li>
+      <span class="tag zh">中文</span>
+      <a href="https://www.tradingkey.com/zh-hans/analysis/stocks/us-stock/261876507-stock-strategy-microstrategy-mstr-bitcoin-btc-dat-michael-saylor-tradingkey" target="_blank" rel="noopener">Strategy 是什么?为什么央行疯狂购买其股票 MSTR?— TradingKey</a>
+      <div class="note">央行视角。</div>
+    </li>
+    <li>
+      <span class="tag zh">中文</span>
+      <a href="https://news.qq.com/rain/a/20241231A07FN200" target="_blank" rel="noopener">投资新传奇,详解微策略的比特币战略 — 腾讯新闻</a>
+    </li>
+    <li>
+      <span class="tag zh">中文</span>
+      <a href="https://www.tradingkey.com/zh-hans/analysis/stocks/us-stock/261656966-strategy-mstr-michael-saylor-bitcoin-btc-tradingkey" target="_blank" rel="noopener">微策略可以买光市场上的 BTC?Saylor 狂傲声明 — TradingKey</a>
+    </li>
+    <li>
+      <span class="tag zh">中文</span>
+      <a href="https://www.kavout.com/market-lens/is-microstrategy-still-the-ultimate-bitcoin-proxy-in-2026" target="_blank" rel="noopener">Is MicroStrategy Still the Ultimate Bitcoin Proxy in 2026</a>
+      <div class="note">英文但篇幅适中。</div>
+    </li>
+    <li>
+      <span class="tag zh">中文</span>
+      <a href="https://mp.weixin.qq.com/s/k6B7ufLnaAe6_viv8Whtlw" target="_blank" rel="noopener">胡翌霖谈微策略:法币本位 vs 比特币本位之间的认知套利</a>
+      <div class="note">最有洞察力的一篇中文。把"法币利息"和 BTC Yield 串成同一笔金融工程的两端。</div>
+    </li>
+  </ul>
+</div>
+
+<!-- 极简路径 -->
+<div class="min-path">
+  <div class="title">— 如果只能挑 3 个先看 —</div>
+  <ol>
+    <li>
+      <a href="https://www.youtube.com/results?search_query=Saylor+Lex+Fridman" target="_blank" rel="noopener">Saylor × Lex Fridman 最近一次访谈</a>
+      <span style="color:#7f8c8d"> · 4h, 战略全貌</span>
+    </li>
+    <li>
+      <a href="https://aarongilbert.substack.com/p/mstr-deep-dive" target="_blank" rel="noopener">Aaron Gilbert《MSTR Deep Dive》</a>
+      <span style="color:#7f8c8d"> · 1-2h, 金融工程层</span>
+    </li>
+    <li>
+      <a href="https://www.youtube.com/results?search_query=Chanos+MicroStrategy" target="_blank" rel="noopener">Jim Chanos 反方论证</a>
+      <span style="color:#7f8c8d"> · 30-60min, 平衡视角</span>
+    </li>
+  </ol>
+  <div class="summary">
+    共约 10 小时。看完之后你<strong style="color:#c7a957">会知道你不知道的东西有哪些</strong> ——
+    这是从 0 到 1 的关键一步。然后再分头深入 L2 和 L3。
+  </div>
+</div>
+
+<div class="risk-inline" style="margin-top:24px;">
+  <h4>📝 看完任何资源 → 立刻复述</h4>
+  <p>
+    按王阳明"知行合一"原则,<strong>没复述过的, 就算没看过</strong>。
+    看完任何一份资源, 用自己的话写 200-500 字摘要(可以存桌面研究文件夹的 04_我的笔记/)。
+    复述的过程中你会发现 70% 的内容其实没真懂 —— 这正是研究透的开始。
+  </p>
+</div>
+</section>
+
+<section id="mindset">
+<h2>8. 三条心法 · 反复看(摘录)</h2>
+<p>
+  摘自《结硬寨 · 给 Tom 的十年心法》(作者 Tom 自用),
+  跟 BTC/MSTR 长期持有最相关的 3 条。在 dashboard 闪红、市场恐慌、社媒噪声放大时,
+  <strong>这 3 条比任何技术指标都重要</strong>。
+</p>
+
+<div style="display: grid; gap: 14px; margin: 22px 0;">
+
+  <article style="background:#f4f8fb; border-left:4px solid #2980b9; padding:20px 24px; border-radius:8px;">
+    <h3 style="font-size:16px; color:#1a2533; margin-bottom:10px; font-weight:700;">
+      ① 第 4 章 · J 型曲线 — 你已经走在上面,只是不知道
+    </h3>
+    <p style="font-size:14px; line-height:1.85; color:#3a4655; margin:0;">
+      所有真正值得做的事都是 J 型 —— 前一段平到怀疑人生,中段慢慢拐头,后段陡峭上扬。
+      建立 BTC/MSTR 的能力圈也一样:前几年读什么都觉得"已经懂了"(其实没懂),
+      中段开始能识别自己懂的边界,后段你比 99% 的人都懂。
+      <strong>不要看曲线,要相信曲线。</strong>
+    </p>
+  </article>
+
+  <article style="background:#fef0ef; border-left:4px solid #c0392b; padding:20px 24px; border-radius:8px;">
+    <h3 style="font-size:16px; color:#1a2533; margin-bottom:10px; font-weight:700;">
+      ② 第 9 章 · 致良知 — BTC 暴跌 50% 那一刻心里那个声音
+    </h3>
+    <p style="font-size:14px; line-height:1.85; color:#3a4655; margin:0;">
+      投资是一个特别能照见良知的领域 —— 反馈周期长、噪音大、诱惑多。
+      BTC 一周内跌 50% 时,你的良知告诉你什么?
+      <strong>把盖在良知上的恐惧、虚荣、周围人看法一层层擦掉</strong>,
+      让那个天然的判断力重新发挥作用。
+      这是 dashboard 之外更核心的"监控"。
+    </p>
+  </article>
+
+  <article style="background:#eafaf1; border-left:4px solid #27ae60; padding:20px 24px; border-radius:8px;">
+    <h3 style="font-size:16px; color:#1a2533; margin-bottom:10px; font-weight:700;">
+      ③ 第 16 章 · 十年是必要的最短时间
+    </h3>
+    <p style="font-size:14px; line-height:1.85; color:#3a4655; margin:0;">
+      3 年扛不住一次完整周期(BTC 4 年一次牛熊),5 年刚好扛一个但不够检验你"是真懂还是运气"。
+      <strong>10 年才能跨两个周期</strong> —— 只有走过两个周期的人才有资格说自己理解了市场。
+      复利在 5 年位置还没真正发力,10 年才到"复利验证过自己"的笃定。
+    </p>
+  </article>
+
+</div>
+
+<p style="text-align:center; font-size:12px; color:#7a6855; margin-top:14px; font-style:italic;">
+  完整 18 章见《结硬寨 · 给 Tom 的十年心法》(本地材料,未公开)
+</p>
+</section>
+
+</main>
+
+<footer>
+本页面是 <strong>mstr-mnav-monitor</strong> 的内嵌科普,非投资建议,所有数据请自行核验,决策由你自己承担。<br>
+<a href="./">← 返回 dashboard</a>
+</footer>
+
+</body>
+</html>

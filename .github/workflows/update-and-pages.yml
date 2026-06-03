@@ -77,6 +77,11 @@ jobs:
           cp btc-macro-system/outputs/report.html _site/macro-report.html
           cp btc-macro-system/outputs/latest.json _site/latest.json
           cp investment-thesis-rerun.html _site/investment-thesis-rerun.html
+          cp mstr-education.html _site/mstr-education.html
+          cp crcl-education.html _site/crcl-education.html
+          cp nvda-education.html _site/nvda-education.html
+          cp crcl-floor-report.html _site/crcl-floor-report.html
+          cp nvda-factory-report.html _site/nvda-factory-report.html
           cp investment-thesis-harness/outputs/report.html _site/investment-research.html
           cp investment-thesis-harness/outputs/latest.json _site/investment-latest.json
           cp -R everydayzen-macro _site/everydayzen-macro

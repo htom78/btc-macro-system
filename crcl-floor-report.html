@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CRCL Interest Floor Monitor</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink:#162033; --muted:#617085; --line:#d8dee8; --paper:#f7f5ee;
+      --panel:#ffffff; --blue:#173b57; --gold:#b9832f; --green:#1f8a5b;
+    }
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--paper); color:var(--ink); }
+    nav.top {
+      position:sticky; top:0; z-index:10;
+      background:rgba(247,245,238,0.92);
+      -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--line);
+      padding:10px 18px;
+      display:flex; gap:6px; align-items:center; flex-wrap:wrap;
+      font-size:13px;
+    }
+    nav.top a {
+      color:var(--muted); text-decoration:none;
+      padding:6px 11px; border-radius:6px;
+      transition:background .15s, color .15s;
+    }
+    nav.top a:hover { color:var(--blue); background:#eaf2f7; }
+    nav.top .home { color:var(--blue); font-weight:750; margin-right:auto; }
+    main { max-width:1120px; margin:0 auto; padding:28px 18px 44px; }
+    h1 { margin:0 0 6px; font-size:30px; letter-spacing:0; }
+    .sub { color:var(--muted); margin:0 0 22px; }
+    .grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px; }
+    .label { color:var(--muted); font-size:13px; }
+    .value { font-size:25px; font-weight:750; margin-top:8px; }
+    .delta { color:var(--muted); font-size:13px; margin-top:6px; }
+    .signal { display:inline-flex; align-items:center; gap:8px; background:#1f8a5b; color:white; padding:7px 12px; border-radius:999px; font-weight:700; }
+    .formula { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:#edf2f7; padding:12px; border-radius:6px; overflow:auto; }
+    .two { display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-top:12px; }
+    canvas { width:100%; height:280px; }
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    td { padding:9px 0; border-bottom:1px solid var(--line); }
+    td:last-child { text-align:right; font-weight:650; }
+    .note { color:var(--muted); font-size:13px; line-height:1.55; }
+    @media (max-width: 820px) { .grid,.two { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<nav class="top">
+  <a href="./" class="home">← 返回 dashboard</a>
+  <a href="crcl-education.html">CRCL 科普</a>
+  <a href="mstr-education.html">MSTR 科普</a>
+  <a href="#floor">利息地板</a>
+  <a href="#chart">趋势图</a>
+  <a href="#explain">监控解释</a>
+</nav>
+<main>
+  <h1 id="floor">CRCL 利息地板监控</h1>
+  <p class="sub">USDC 流通量 × 短端美债收益率 × Circle 净留存率。最新快照：2026-06-02T07:43:48+00:00</p>
+
+  <div class="card" style="margin-bottom:12px;">
+    <span class="signal">Signal: HEALTHY</span>
+    <div class="formula" style="margin-top:14px;">
+      $76.02B × 3.78% × 41.4%
+      = $1.19B / year
+    </div>
+  </div>
+
+  <section class="grid">
+    <div class="card"><div class="label">USDC 流通量</div><div class="value">$76.02B</div><div class="delta">7D -0.55% · 30D -1.72%</div></div>
+    <div class="card"><div class="label">3-month Treasury constant maturity</div><div class="value">3.78%</div><div class="delta">FRED DGS3MO</div></div>
+    <div class="card"><div class="label">Circle 净留存率</div><div class="value">41.4%</div><div class="delta">Circle Q1 2026 RLDC margin</div></div>
+    <div class="card"><div class="label">年化可留存地板</div><div class="value">$1.19B</div><div class="delta">约 $3.3M / day</div></div>
+  </section>
+
+  <section class="two">
+    <div class="card">
+      <div class="label">近 120 条快照：USDC 规模与可留存地板</div>
+      <canvas id="chart" width="900" height="320"></canvas>
+    </div>
+    <div class="card" id="explain">
+      <div class="label">监控解释</div>
+      <table>
+        <tr><td>年化储备总收入</td><td>$2.87B</td></tr>
+        <tr><td>年化留存收入</td><td>$1.19B</td></tr>
+        <tr><td>CRCL 收盘价</td><td>$104.97</td></tr>
+        <tr><td>数据源</td><td>DefiLlama / FRED / Stooq</td></tr>
+      </table>
+      <p class="note">净留存率不是日更数据，来自最新财报假设。财报更新后修改 config.json 的 net_retention_ratio 即可。</p>
+    </div>
+  </section>
+
+  <p class="note">这不是投资建议。它只回答 CRCL 最底层现金流地板是否变厚或变薄；CPN、Arc、AI Agent 等平台期权需另行跟踪。</p>
+</main>
+<script>
+const labels = ["2026-06-02"];
+const retained = [1.1896];
+const usdc = [76.0173];
+const canvas = document.getElementById('chart');
+const ctx = canvas.getContext('2d');
+const pad = 42, w = canvas.width, h = canvas.height;
+function scale(arr) {
+  const min = Math.min(...arr), max = Math.max(...arr);
+  const span = max - min || 1;
+  return v => h - pad - ((v - min) / span) * (h - pad * 2);
+}
+function drawLine(arr, color) {
+  const y = scale(arr);
+  ctx.beginPath();
+  arr.forEach((v,i) => {
+    const x = pad + i * ((w - pad * 2) / Math.max(arr.length - 1, 1));
+    if (i === 0) ctx.moveTo(x, y(v)); else ctx.lineTo(x, y(v));
+  });
+  ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.stroke();
+}
+ctx.clearRect(0,0,w,h);
+ctx.strokeStyle = '#d8dee8'; ctx.lineWidth = 1;
+for (let i=0; i<5; i++) {
+  const y = pad + i * ((h - pad * 2) / 4);
+  ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w-pad, y); ctx.stroke();
+}
+if (labels.length) {
+  drawLine(usdc, '#173b57');
+  drawLine(retained, '#b9832f');
+}
+ctx.fillStyle = '#162033'; ctx.font = '18px -apple-system, BlinkMacSystemFont, sans-serif';
+ctx.fillText('USDC $B', pad, 24);
+ctx.fillStyle = '#b9832f'; ctx.fillText('Retained floor $B/year', pad + 110, 24);
+</script>
+</body>
+</html>
