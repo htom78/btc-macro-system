@@ -1,0 +1,16 @@
+{
+  "usdc_stablecoin_id": "2",
+  "rate_series": "DGS3MO",
+  "rate_label": "3-month Treasury constant maturity",
+  "net_retention_ratio": 0.414,
+  "net_retention_label": "Circle Q1 2026 RLDC margin",
+  "net_retention_source": "Circle Q1 2026: revenue less distribution costs margin, approx (694m - 407m) / 694m",
+  "stooq_symbol": "crcl.us",
+  "thresholds": {
+    "usdc_7d_drop_pct": -5.0,
+    "usdc_30d_drop_pct": -10.0,
+    "retained_floor_watch_usd": 800000000,
+    "retained_floor_risk_usd": 500000000,
+    "short_rate_watch_pct": 2.5
+  }
+}

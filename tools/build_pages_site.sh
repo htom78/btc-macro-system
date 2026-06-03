@@ -30,6 +30,7 @@ mkdir -p "$out_dir"
 
 copy_file home.html "$out_dir/index.html"
 copy_dir dao-system "$out_dir/dao-system"
+copy_dir mstr-mnav "$out_dir/mstr-mnav"
 copy_file btc-macro-system/outputs/report.html "$out_dir/macro-report.html"
 copy_file btc-macro-system/outputs/latest.json "$out_dir/latest.json"
 copy_file investment-thesis-rerun.html "$out_dir/investment-thesis-rerun.html"

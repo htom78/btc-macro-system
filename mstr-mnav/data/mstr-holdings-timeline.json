@@ -1,0 +1,29 @@
+{
+  "_doc": "MSTR 历史 BTC 持仓时间线,供 backfill.py 回溯 2020 至今的 mNAV。覆盖 strategy.com/purchases 够不到的 2020-08 → 2024 区间。backfill.py 会把本文件与 strategy.com 实时抓取(2024-09 起 117 个密集点)合并成一条步进序列。",
+  "_provenance": {
+    "xbrl": "SEC companyfacts us-gaap:CryptoAssetNumberOfUnits — 审计过的年末硬数字,见 2022/2023/2024/2025 年末 + 2026-Q1",
+    "8k-curated": "从公开购买公告(8-K)整理的里程碑,圈内公认数字。日期为公告日附近。如需绝对精确可逐份核对 SEC 8-K。",
+    "note": "持仓为步进序列:每个日期是该次公告后的累计持仓,backfill.py 用 forward-fill 填到下一个点。"
+  },
+  "generated": "2026-05-22",
+  "timeline": {
+    "2020-08-11": {"btc": 21454,  "src": "8k-curated"},
+    "2020-09-14": {"btc": 38250,  "src": "8k-curated"},
+    "2020-12-21": {"btc": 70470,  "src": "8k-curated"},
+    "2021-02-24": {"btc": 90531,  "src": "8k-curated"},
+    "2021-06-21": {"btc": 105085, "src": "8k-curated"},
+    "2021-09-13": {"btc": 114042, "src": "8k-curated"},
+    "2021-12-30": {"btc": 124391, "src": "8k-curated"},
+    "2022-04-05": {"btc": 129218, "src": "8k-curated"},
+    "2022-06-29": {"btc": 129699, "src": "8k-curated"},
+    "2022-12-31": {"btc": 132500, "src": "xbrl"},
+    "2023-06-28": {"btc": 152800, "src": "8k-curated"},
+    "2023-09-25": {"btc": 158245, "src": "8k-curated"},
+    "2023-12-31": {"btc": 189150, "src": "xbrl"},
+    "2024-03-19": {"btc": 214246, "src": "8k-curated"},
+    "2024-06-20": {"btc": 226331, "src": "8k-curated"},
+    "2024-12-31": {"btc": 447470, "src": "xbrl"},
+    "2025-12-31": {"btc": 672500, "src": "xbrl"},
+    "2026-03-31": {"btc": 762099, "src": "xbrl"}
+  }
+}

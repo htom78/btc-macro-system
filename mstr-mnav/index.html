@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MSTR mNAV Monitor Hub</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f2ec;
+      --panel: rgba(255, 255, 255, 0.72);
+      --panel-strong: rgba(255, 255, 255, 0.94);
+      --ink: #171916;
+      --muted: #656660;
+      --line: rgba(23, 25, 22, 0.16);
+      --line-strong: rgba(23, 25, 22, 0.3);
+      --btc: #c87218;
+      --blue: #286da8;
+      --green: #168369;
+      --red: #b94747;
+      --slate: #2f3d46;
+      --shadow: 0 18px 58px rgba(24, 22, 18, 0.11);
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--paper); scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.58;
+      background:
+        linear-gradient(110deg, rgba(200, 114, 24, 0.09) 0 18%, transparent 18% 100%),
+        linear-gradient(90deg, rgba(23, 25, 22, 0.045) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(23, 25, 22, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+    .shell {
+      width: min(1420px, calc(100vw - 30px));
+      margin: 0 auto;
+      padding: 22px 0 42px;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+    }
+
+    .brand {
+      display: inline-grid;
+      grid-template-columns: 38px auto;
+      gap: 10px;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .mark {
+      width: 38px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, var(--btc), rgba(255, 255, 255, 0.88) 47%, var(--blue));
+      font: 820 16px/1 var(--mono);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .brand b { display: block; font-size: 14px; line-height: 1.15; }
+    .brand span span {
+      display: block;
+      color: var(--muted);
+      font: 11px/1.2 var(--mono);
+      margin-top: 2px;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav a,
+    .button {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 12px;
+      background: rgba(255, 255, 255, 0.64);
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 760;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .nav a:hover,
+    .button:hover {
+      transform: translateY(-1px);
+      background: var(--panel-strong);
+      border-color: var(--line-strong);
+    }
+
+    .hero {
+      min-height: 520px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(380px, 0.92fr);
+      gap: 18px;
+      align-items: stretch;
+      padding: 24px 0 20px;
+    }
+
+    .hero-main {
+      display: grid;
+      align-content: space-between;
+      gap: 24px;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.52);
+      box-shadow: var(--shadow);
+      padding: clamp(24px, 4vw, 48px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      right: -8%;
+      bottom: 10%;
+      width: 48%;
+      height: 34%;
+      border: 1px solid rgba(23, 25, 22, 0.12);
+      transform: skewX(-16deg) rotate(-3deg);
+      background:
+        repeating-linear-gradient(90deg, rgba(23, 25, 22, 0.08) 0 1px, transparent 1px 18px),
+        rgba(255, 255, 255, 0.18);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #8b4d10;
+      font: 780 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      max-width: 870px;
+      font: 780 clamp(42px, 7vw, 92px)/0.9 var(--serif);
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    p { margin: 0; color: var(--muted); }
+
+    .lead {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin-top: 18px;
+      color: #44443e;
+      font-size: 16px;
+    }
+
+    .hero-actions,
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .button.primary {
+      background: #171916;
+      border-color: #171916;
+      color: #fffaf0;
+      box-shadow: 0 14px 34px rgba(23, 25, 22, 0.16);
+    }
+
+    .thesis-strip {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .strip-item {
+      min-height: 92px;
+      padding: 14px;
+      border-right: 1px solid var(--line);
+    }
+
+    .strip-item:last-child { border-right: 0; }
+    .strip-item span {
+      display: block;
+      color: var(--muted);
+      font: 720 11px/1.2 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .strip-item b {
+      display: block;
+      margin-top: 7px;
+      font: 790 15px/1.28 var(--sans);
+    }
+
+    .snapshot {
+      display: grid;
+      gap: 12px;
+    }
+
+    .metric-card,
+    .route-card,
+    .map-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 14px 48px rgba(24, 22, 18, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(12px);
+    }
+
+    .metric-card {
+      min-height: 110px;
+      padding: 17px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font: 760 12px/1.2 var(--mono);
+    }
+
+    .metric-value {
+      font: 800 28px/1.05 var(--mono);
+      letter-spacing: 0;
+    }
+
+    .metric-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .signal {
+      display: inline-flex;
+      width: fit-content;
+      min-height: 30px;
+      align-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      padding: 0 9px;
+      background: rgba(255, 255, 255, 0.58);
+      color: var(--green);
+      font: 800 12px/1 var(--mono);
+    }
+
+    .band {
+      margin-top: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin-bottom: 12px;
+    }
+
+    .section-head p {
+      max-width: 680px;
+      font-size: 14px;
+    }
+
+    .route-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+    }
+
+    .route-card {
+      min-height: 230px;
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+      padding: 18px;
+      text-decoration: none;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .route-card:hover {
+      transform: translateY(-3px);
+      background: var(--panel-strong);
+      border-color: var(--line-strong);
+    }
+
+    .route-kicker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font: 12px/1.2 var(--mono);
+    }
+
+    .route-index {
+      display: inline-grid;
+      place-items: center;
+      width: 31px;
+      aspect-ratio: 1;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.54);
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .route-title {
+      display: grid;
+      gap: 9px;
+    }
+
+    .route-title h3 {
+      font: 760 24px/1.05 var(--serif);
+    }
+
+    .route-title p {
+      font-size: 14px;
+    }
+
+    .route-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border: 1px solid rgba(23, 25, 22, 0.13);
+      border-radius: 8px;
+      padding: 0 9px;
+      background: rgba(255, 255, 255, 0.5);
+      color: #42423d;
+      font: 720 11px/1 var(--mono);
+    }
+
+    .tone-btc { border-top: 4px solid var(--btc); }
+    .tone-blue { border-top: 4px solid var(--blue); }
+    .tone-green { border-top: 4px solid var(--green); }
+    .tone-red { border-top: 4px solid var(--red); }
+    .tone-slate { border-top: 4px solid var(--slate); }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .map-card {
+      min-height: 176px;
+      padding: 17px;
+    }
+
+    .map-card p {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .data-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+    }
+
+    .data-link {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 52px;
+      padding: 0 13px;
+      background: rgba(255, 255, 255, 0.58);
+      text-decoration: none;
+    }
+
+    .data-link b { font-size: 13px; }
+    .data-link span {
+      color: var(--muted);
+      font: 11px/1.2 var(--mono);
+      text-align: right;
+    }
+
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .foot a {
+      color: var(--ink);
+      font-weight: 760;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(23, 25, 22, 0.24);
+    }
+
+    @media (max-width: 1080px) {
+      .hero,
+      .map-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero,
+      .hero-main {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100vw - 20px, 1420px); padding-top: 12px; }
+      .topline { align-items: flex-start; flex-direction: column; }
+      .nav { justify-content: flex-start; }
+      .hero-main { padding: 22px; }
+      h1 { font-size: clamp(39px, 13vw, 64px); }
+      .thesis-strip { grid-template-columns: 1fr; }
+      .strip-item { border-right: 0; border-bottom: 1px solid var(--line); }
+      .strip-item:last-child { border-bottom: 0; }
+      .section-head { display: grid; justify-content: start; }
+      .metric-value { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topline">
+      <a class="brand" href="../" aria-label="BTC 策略工作台首页">
+        <span class="mark">M</span>
+        <span>
+          <b>MSTR mNAV Monitor</b>
+          <span>BTC beta / Financing / Floors</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="mNAV 主导航">
+        <a href="../">首页</a>
+        <a href="report.html">MSTR 深度报告</a>
+        <a href="education.html">mNAV 科普</a>
+        <a href="crcl-floor-report.html">CRCL 地板</a>
+        <a href="nvda-factory-report.html">NVDA 工厂</a>
+        <a href="investment-thesis-rerun.html">Thesis 重跑</a>
+      </nav>
+    </div>
+
+    <section class="hero">
+      <div class="hero-main">
+        <div>
+          <p class="eyebrow">Integrated monitor hub</p>
+          <h1>MSTR 不是 BTC ETF，而是带融资飞轮的 BTC 高 beta。</h1>
+          <p class="lead">这个栏目把 mstr-mnav-monitor 里的 MSTR 主报告、Saylor 状态机、资本结构、CRCL 利息地板、NVDA AI 工厂现金流和年度 thesis 复核，合并成一个公开研究入口。核心问题只有一个：哪些硬数据说明飞轮仍在工作，哪些变化说明基本面已经变了。</p>
+          <div class="hero-actions">
+            <a class="button primary" href="report.html">读 MSTR 深度报告</a>
+            <a class="button" href="education.html">理解 mNAV 飞轮</a>
+            <a class="button" href="data/saylor-state.json">看 Saylor 状态 JSON</a>
+            <a class="button" href="../dao-system/">回到 Dao 总控</a>
+          </div>
+        </div>
+
+        <div class="thesis-strip" aria-label="核心拆解法">
+          <div class="strip-item">
+            <span>01 · Underlying</span>
+            <b>底层资产是 BTC，方向来自货币化与宏观流动性。</b>
+          </div>
+          <div class="strip-item">
+            <span>02 · Structure</span>
+            <b>公司层面叠加可转债、优先股、ATM 和 mNAV。</b>
+          </div>
+          <div class="strip-item">
+            <span>03 · Reflexivity</span>
+            <b>溢价时融资买币，折价时飞轮反转并放大风险。</b>
+          </div>
+          <div class="strip-item">
+            <span>04 · Breakpoint</span>
+            <b>红线不是股价下跌，而是 BTC/share 与融资纪律变坏。</b>
+          </div>
+        </div>
+      </div>
+
+      <aside class="snapshot" aria-label="监控快照">
+        <section class="metric-card">
+          <span class="metric-label">MSTR BTC holdings</span>
+          <b class="metric-value" id="mstrHoldings">--</b>
+          <p class="metric-note" id="mstrHoldingsNote">读取 data/mstr-holdings-timeline.json</p>
+        </section>
+        <section class="metric-card">
+          <span class="metric-label">ATM remaining</span>
+          <b class="metric-value" id="atmRemaining">--</b>
+          <p class="metric-note" id="atmNote">读取 data/saylor-state.json</p>
+        </section>
+        <section class="metric-card">
+          <span class="metric-label">CRCL retained interest floor</span>
+          <b class="metric-value" id="crclFloor">--</b>
+          <p class="metric-note" id="crclNote">USDC × 3M T-bill × retention</p>
+        </section>
+        <section class="metric-card">
+          <span class="metric-label">NVDA AI factory multiple</span>
+          <b class="metric-value" id="nvdaMultiple">--</b>
+          <p class="metric-note" id="nvdaNote">Market cap / annualized FCF</p>
+        </section>
+      </aside>
+    </section>
+
+    <section class="band" id="routes">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Research routes</p>
+          <h2>mstr-mnav-monitor 公开内容入口</h2>
+        </div>
+        <p>把“报告、科普、子监控、复核笔记”拆成独立入口：先看飞轮，再看现金流地板，最后用年度复核判断 thesis 是否仍成立。</p>
+      </div>
+
+      <div class="route-grid">
+        <a class="route-card tone-btc" href="report.html">
+          <div class="route-kicker"><span>MSTR core</span><span class="route-index">M1</span></div>
+          <div class="route-title">
+            <h3>MSTR 深度报告</h3>
+            <p>mNAV、duration、债务到期、入场/出场规则和 Saylor 红线的完整研究总结。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">duration math</span>
+            <span class="tag">mNAV</span>
+            <span class="tag">risk map</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-blue" href="education.html">
+          <div class="route-kicker"><span>Education</span><span class="route-index">M2</span></div>
+          <div class="route-title">
+            <h3>MSTR × BTC × mNAV</h3>
+            <p>用业务模型解释：为什么它是 BTC 高 beta，什么时候飞轮正向，什么时候变成稀释。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">BTC beta</span>
+            <span class="tag">ATM</span>
+            <span class="tag">red lines</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-green" href="crcl-floor-report.html">
+          <div class="route-kicker"><span>Stablecoin floor</span><span class="route-index">C1</span></div>
+          <div class="route-title">
+            <h3>CRCL 利息地板</h3>
+            <p>USDC 流通量、短端美债收益率和 Circle 净留存率构成最底层现金流支撑。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">USDC</span>
+            <span class="tag">3M yield</span>
+            <span class="tag">retention</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-green" href="crcl-education.html">
+          <div class="route-kicker"><span>Stablecoin thesis</span><span class="route-index">C2</span></div>
+          <div class="route-title">
+            <h3>CRCL 科普与竞争</h3>
+            <p>把 Circle 与 Tether、PayPal、银行稳定币放到同一张竞争地图里看。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">Tether</span>
+            <span class="tag">Arc</span>
+            <span class="tag">payments</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-slate" href="nvda-factory-report.html">
+          <div class="route-kicker"><span>AI factory floor</span><span class="route-index">N1</span></div>
+          <div class="route-title">
+            <h3>NVDA AI 工厂监控</h3>
+            <p>把数据中心收入、毛利率、FCF 转化率和市场估值倍数作为 AI 工厂现金流地板。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">data center</span>
+            <span class="tag">FCF</span>
+            <span class="tag">multiple</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-slate" href="nvda-education.html">
+          <div class="route-kicker"><span>AI platform</span><span class="route-index">N2</span></div>
+          <div class="route-title">
+            <h3>NVDA 平台锁定</h3>
+            <p>从 GPU 公司拆到智能产能结算层：现金流地板、平台护城河和竞争红线。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">CUDA</span>
+            <span class="tag">Rubin</span>
+            <span class="tag">ASIC risk</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-red" href="investment-thesis-rerun.html">
+          <div class="route-kicker"><span>SkillOpt</span><span class="route-index">R1</span></div>
+          <div class="route-title">
+            <h3>旧标的 Thesis 重跑</h3>
+            <p>BTC、MSTR、NVDA、GOOG、AAPL、PDD、CRCL 用同一套“地板 / 平台 / 期权 / 红线”重跑。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">7 assets</span>
+            <span class="tag">re-underwrite</span>
+            <span class="tag">red lines</span>
+          </div>
+        </a>
+
+        <a class="route-card tone-blue" href="articles/mstr-deep-dive.html">
+          <div class="route-kicker"><span>Translation</span><span class="route-index">A1</span></div>
+          <div class="route-title">
+            <h3>MSTR Deep Dive 中英对照</h3>
+            <p>Aaron Gilbert 原文路径的中英对照阅读页，适合补 Saylor 模式的外部视角。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">Substack</span>
+            <span class="tag">dual language</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="band" id="model">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">System model</p>
+          <h2>这套系统真正监控的四件事</h2>
+        </div>
+        <p>mNAV 数字只是表层。要判断 MSTR 基本面有没有变，核心是看 BTC 底层、融资成本、溢价买家和管理层动作是否同向。</p>
+      </div>
+
+      <div class="map-grid">
+        <div class="map-card">
+          <h3>BTC 方向</h3>
+          <p>ETF 持仓/净流、实际利率、M2、美元流动性、链上安全预算，决定底层资产方向。</p>
+        </div>
+        <div class="map-card">
+          <h3>资本结构</h3>
+          <p>可转债 duration、票息、优先股股息、ATM 剩余额度，决定 MSTR 能否把路径风险熬成端点风险。</p>
+        </div>
+        <div class="map-card">
+          <h3>mNAV 飞轮</h3>
+          <p>溢价时融资买 BTC 可以增厚 BTC/share；折价时继续增发会稀释，飞轮反向。</p>
+        </div>
+        <div class="map-card">
+          <h3>Saylor 状态</h3>
+          <p>他在融资、讲故事、买币还是沉默，会影响期权深度买家、杠杆买家和合规绕道买家的溢价预期。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="data">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Public data</p>
+          <h2>已发布的数据与笔记</h2>
+        </div>
+        <p>这些文件来自 mstr-mnav-monitor 的公开研究层，方便后续继续做仪表盘、自动复核或外部引用。</p>
+      </div>
+
+      <div class="data-list">
+        <a class="data-link" href="data/mstr-capital-structure.json"><b>MSTR capital structure</b><span>convertibles / preferreds</span></a>
+        <a class="data-link" href="data/saylor-state.json"><b>Saylor state</b><span>ATM / issuance / earnings</span></a>
+        <a class="data-link" href="data/mstr-holdings-timeline.json"><b>MSTR BTC holdings timeline</b><span>historical BTC units</span></a>
+        <a class="data-link" href="data/mstr-shares-timeline.json"><b>MSTR shares timeline</b><span>basic share history</span></a>
+        <a class="data-link" href="data/crcl-latest.json"><b>CRCL latest</b><span>USDC floor snapshot</span></a>
+        <a class="data-link" href="data/crcl-history.jsonl"><b>CRCL history</b><span>observations.jsonl</span></a>
+        <a class="data-link" href="data/nvda-latest.json"><b>NVDA latest</b><span>AI factory snapshot</span></a>
+        <a class="data-link" href="data/nvda-history.jsonl"><b>NVDA history</b><span>observations.jsonl</span></a>
+        <a class="data-link" href="notes/saylor-state-machine.md"><b>Saylor state machine</b><span>spec note</span></a>
+        <a class="data-link" href="notes/re-underwrite/mstr.md"><b>MSTR re-underwrite</b><span>annual review note</span></a>
+        <a class="data-link" href="monitors/crcl/README.md"><b>CRCL monitor README</b><span>formula / data sources</span></a>
+        <a class="data-link" href="monitors/nvda/README.md"><b>NVDA monitor README</b><span>formula / data sources</span></a>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>研究系统，不构成投资建议。MSTR 是 BTC 高 beta，但不是无脑 BTC 替代品。</span>
+      <span><a href="../">首页</a> · <a href="../macro-report.html">宏观报告</a> · <a href="../investment-thesis-rerun.html">Thesis 重跑</a> · <a href="data/mstr-monitor-state.json">monitor state</a></span>
+    </footer>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    const formatCompactUsd = value => {
+      if (!Number.isFinite(value)) return "--";
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        notation: "compact",
+        maximumFractionDigits: 2
+      }).format(value);
+    };
+
+    const formatCompactNumber = value => {
+      if (!Number.isFinite(value)) return "--";
+      return new Intl.NumberFormat("en-US", {
+        notation: "compact",
+        maximumFractionDigits: 2
+      }).format(value);
+    };
+
+    const formatPct = value => {
+      if (!Number.isFinite(value)) return "--";
+      return `${value.toFixed(2)}%`;
+    };
+
+    async function readJson(path) {
+      const response = await fetch(path, { cache: "no-store" });
+      if (!response.ok) throw new Error(`${path} HTTP ${response.status}`);
+      return response.json();
+    }
+
+    function latestTimelineEntry(timeline) {
+      const dates = Object.keys(timeline || {}).sort();
+      const date = dates[dates.length - 1];
+      return date ? { date, value: timeline[date] } : null;
+    }
+
+    async function initSnapshot() {
+      try {
+        const [holdings, shares, saylor, crcl, nvda] = await Promise.all([
+          readJson("data/mstr-holdings-timeline.json"),
+          readJson("data/mstr-shares-timeline.json"),
+          readJson("data/saylor-state.json"),
+          readJson("data/crcl-latest.json"),
+          readJson("data/nvda-latest.json")
+        ]);
+
+        const latestHoldings = latestTimelineEntry(holdings.timeline);
+        const latestShares = latestTimelineEntry(shares.timeline);
+        const holdingsValue = latestHoldings?.value?.btc;
+
+        $("mstrHoldings").textContent = Number.isFinite(holdingsValue)
+          ? `${formatCompactNumber(holdingsValue)} BTC`
+          : "--";
+        $("mstrHoldingsNote").textContent = latestHoldings
+          ? `${latestHoldings.date} 持仓 · ${latestShares ? `${formatCompactNumber(latestShares.value)} basic shares` : "shares 未读"}`
+          : "MSTR 持仓时间线未读";
+
+        $("atmRemaining").textContent = formatCompactUsd(saylor.atm_remaining_usd);
+        $("atmNote").textContent = `更新 ${saylor.last_updated || "--"} · next earnings ${saylor.next_earnings_date || "--"}`;
+
+        $("crclFloor").textContent = formatCompactUsd(crcl.retained_income_annual_usd);
+        $("crclNote").textContent = `${formatCompactNumber(crcl.usdc_circulation_usd)} USDC · ${formatPct(crcl.short_rate_pct)} short rate · signal ${crcl.signal || "--"}`;
+
+        $("nvdaMultiple").textContent = Number.isFinite(nvda.market_cap_to_annualized_fcf)
+          ? `${nvda.market_cap_to_annualized_fcf.toFixed(1)}×`
+          : "--";
+        $("nvdaNote").textContent = `${nvda.quarter_label || "--"} · annualized FCF ${formatCompactUsd(nvda.annualized_fcf_usd)} · signal ${nvda.signal || "--"}`;
+      } catch (error) {
+        ["mstrHoldingsNote", "atmNote", "crclNote", "nvdaNote"].forEach(id => {
+          $(id).textContent = "数据读取失败，请直接打开下方 JSON。";
+        });
+      }
+    }
+
+    initSnapshot();
+  </script>
+</body>
+</html>

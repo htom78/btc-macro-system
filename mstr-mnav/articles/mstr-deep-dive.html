@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSTR Deep Dive · 中英对照 — Aaron Gilbert</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a2533;
+    --muted: #5a6877;
+    --en-text: #6b7280;
+    --line: #e6ebf0;
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --accent: #2980b9;
+    --accent-dark: #1a5d8a;
+    --warn: #c0392b;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+    --mono: "SF Mono", "JetBrains Mono", "Consolas", "Menlo", monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav.top {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(250,251,252,0.92);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 24px;
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+    font-size: 13px;
+  }
+  nav.top a {
+    color: var(--muted); text-decoration: none;
+    padding: 6px 12px; border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  nav.top a:hover { color: var(--accent); background: #eef4fa; }
+  nav.top .home { color: var(--accent); font-weight: 600; margin-right: auto; }
+  nav.top .source { color: var(--muted); font-size: 12px; opacity: 0.75; }
+
+  main { max-width: 920px; margin: 0 auto; padding: 28px 24px 80px; }
+
+  .hero {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    color: white;
+    padding: 48px 40px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 24px rgba(41,128,185,0.15);
+  }
+  .hero .tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    padding: 3px 10px; border-radius: 4px;
+    font-size: 12px; letter-spacing: 1px;
+    margin-bottom: 12px; text-transform: uppercase; font-weight: 600;
+  }
+  .hero h1 {
+    font-size: 28px; line-height: 1.4; margin-bottom: 8px; font-weight: 700;
+  }
+  .hero .subtitle {
+    font-size: 15px; opacity: 0.88; margin-bottom: 18px;
+  }
+  .hero .meta {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    font-size: 13px; opacity: 0.85;
+    padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.18);
+  }
+  .hero .meta span strong { font-weight: 600; opacity: 1; }
+  .hero a { color: #ffeaa7; text-decoration: underline; }
+
+  .notice {
+    background: #fff5e6; border: 1px solid #f3c98b;
+    padding: 14px 18px; border-radius: 8px; margin-bottom: 24px;
+    font-size: 13.5px; line-height: 1.7; color: #5a4a3a;
+  }
+  .notice strong { color: #b86c1f; }
+
+  article.para {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  article.para .en {
+    color: var(--en-text);
+    font-size: 13.5px; line-height: 1.75;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--line);
+    font-family: "Charter", "Iowan Old Style", Georgia, serif;
+  }
+  article.para .zh {
+    color: var(--ink);
+    font-size: 16px; line-height: 1.85;
+  }
+  article.para code {
+    background: #f4f8fb; padding: 2px 6px; border-radius: 4px;
+    font-family: var(--mono); font-size: 13px; color: var(--accent-dark);
+  }
+  article.para .en code { color: #4a5a6a; }
+  article.para strong { color: var(--ink); font-weight: 600; }
+  article.para .en strong { color: #3a4655; }
+  article.para ul { padding-left: 22px; margin: 6px 0; }
+  article.para .en ul { padding-left: 20px; }
+  article.para .en li, article.para .zh li {
+    margin-bottom: 4px;
+  }
+  article.para .img-placeholder {
+    display: inline-block;
+    background: #eef4fa; color: var(--muted);
+    padding: 1px 6px; border-radius: 3px;
+    font-size: 12px; font-style: italic;
+    margin: 0 2px;
+  }
+
+  .translator {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 32px 36px;
+    margin: 28px 0 16px;
+    box-shadow: var(--shadow);
+  }
+  .translator h2 {
+    font-size: 20px; color: var(--ink);
+    padding-left: 14px; border-left: 4px solid var(--warn);
+    line-height: 1.3; margin-bottom: 14px;
+  }
+  .translator p { margin-bottom: 12px; color: #3a4655; }
+  .translator table {
+    width: 100%; border-collapse: collapse;
+    margin: 16px 0; font-size: 14px;
+  }
+  .translator th {
+    text-align: left; padding: 10px 12px;
+    background: #f4f8fb;
+    border-bottom: 2px solid var(--accent);
+    font-weight: 600; font-size: 12px;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .translator td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .translator td.mono { font-family: var(--mono); font-size: 13px; }
+  .translator td.fail { color: var(--warn); font-weight: 600; }
+  .translator td.ok { color: #27ae60; font-weight: 600; }
+
+  footer {
+    text-align: center;
+    padding: 36px 24px 24px;
+    color: var(--muted);
+    font-size: 13px; line-height: 1.85;
+  }
+  footer a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 720px) {
+    main { padding: 20px 16px 60px; }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 22px; }
+    article.para { padding: 16px 18px; }
+    .translator { padding: 24px 20px; }
+    nav.top { padding: 8px 14px; gap: 6px; font-size: 12px; }
+    nav.top a { padding: 4px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <a href="../" class="home">← 返回 dashboard</a>
+  <a href="../education.html">业务循环科普</a>
+  <a class="source">原文: aarongilbert.substack.com</a>
+</nav>
+
+<main>
+
+<div class="hero">
+  <span class="tag">外部文章 · 中英对照</span>
+  <h1>MSTR Deep Dive</h1>
+  <p class="subtitle">作者解读 MicroStrategy 的 BTC 飞轮机制、可转债 + ATM 增发模型、FASB 新规及标普 500 前景</p>
+  <div class="meta">
+    <span><strong>作者</strong>: Aaron Gilbert</span>
+    <span><strong>发布</strong>: 2025-02-09</span>
+    <span><strong>原文</strong>: <a href="https://aarongilbert.substack.com/p/mstr-deep-dive" target="_blank">aarongilbert.substack.com/p/mstr-deep-dive</a></span>
+  </div>
+</div>
+
+<div class="notice">
+  <strong>译者预警</strong>: 文中所有数据(471,107 BTC / $96k BTC 价 / $82B 市值 / mNAV=2.0 / $7.2B 债务 / 0.476% 票息)是 2025-02 时点。截至 2026-05,持仓已增至约 818,869 BTC,BTC 报 ~$78k,mNAV 已跌入折价区 ~0.97。文中"21/21 Plan"已在 2025 年里被超额完成。详见文末「译者笔记」中的对照表。
+</div>
+
+<article class="para">
+  <div class="en">I've explained many times why I believe that Bitcoin is one of the best investments of all time. A publicly traded company called MicroStrategy (now Strategy) is immersing itself in Bitcoin and securitizing it. They've discovered an amazing way to acquire massive amounts of Bitcoin. I find this company extremely fascinating. I'd like to dig into the mechanics around how they are acquiring their Bitcoin and how some bullish tailwinds could contribute to positive future performance in the stock.</div>
+  <div class="zh">我多次解释过为什么我相信比特币是史上最佳投资之一。一家叫 MicroStrategy(现在更名为 Strategy)的上市公司正在把自己彻底浸入比特币,并把它证券化。他们摸出了一套惊人的方法来大规模获取比特币。我觉得这家公司极其有意思。我想拆解一下他们到底是怎么买入比特币的,以及哪些看涨的顺风可能推动股票的未来表现。</div>
+</article>
+
+<article class="para">
+  <div class="en">In 2020 as the world was rapidly changing, the CEO of MicroStrategy (MSTR) Michael Saylor realized he had a huge problem. His company had tons of cash on its balance sheet that was losing value every year to inflation and government money printing. He needed somewhere to invest that cash and he found Bitcoin.</div>
+  <div class="zh">2020 年世界剧变之时,MicroStrategy 的 CEO Michael Saylor 意识到自己有个大麻烦。公司资产负债表上躺着一大笔现金,每年都被通胀和政府印钞蚕食掉价值。他必须给这笔钱找个出路 —— 他找到了比特币。</div>
+</article>
+
+<article class="para">
+  <div class="en">On August 10th 2020, MicroStrategy announced it would adopt Bitcoin as its primary Treasury Reserve Asset. At the time, Bitcoin was trading at around $11,000 per coin. MicroStrategy initially purchased $250 million worth of Bitcoin (21,454 BTC).</div>
+  <div class="zh">2020 年 8 月 10 日,MicroStrategy 宣布把比特币作为公司首要的资金储备资产。当时 BTC 价格约 $11,000/枚。MicroStrategy 首笔买入 2.5 亿美元(合 21,454 BTC)。</div>
+</article>
+
+<article class="para">
+  <div class="en">Since then, MSTR has acquired 471,107 BTC. This is about 2.2% of the total supply of Bitcoin that will ever exist. At the current price of $96,000 per BTC, their Net Asset Value (NAV) of their Bitcoin is around $45 Billion. The chart below shows the average Bitcoin price and every spot where MSTR bought Bitcoin. MSTR is essentially Dollar Cost Averaging into Bitcoin with large buys over time. <span class="img-placeholder">[图: 历次买入价格散点]</span></div>
+  <div class="zh">此后 MSTR 累计买入 471,107 枚 BTC,约占比特币总供应量(永远)的 2.2%。按当前 $96,000/BTC 计,其 BTC 净值约 $450 亿美元。下图展示了 BTC 平均价以及 MSTR 每一次买入的位置 —— 本质上是大额、跨周期的定投 (DCA)。</div>
+</article>
+
+<article class="para">
+  <div class="en">The company itself trades at a higher multiple to the net asset value (mNAV) of its Bitcoin holdings. This is partly because the company is also a business intelligence software business which is earning about $500 million per year. The current market cap of MSTR is $82 Billion which puts it at the 223 ranked stock by market cap. <span class="img-placeholder">[图: MSTR 市值排名]</span></div>
+  <div class="zh">公司本身的市值相对其 BTC 净值(mNAV)有显著溢价。部分原因是它同时还是一家商业智能软件公司,年收入约 5 亿美元。MSTR 当前市值 $820 亿,按市值排在美股第 223 位。</div>
+</article>
+
+<article class="para">
+  <div class="en">At the beginning of 2024, MSTR had a market cap of around $10 Billion and it rose about 8x over the past year. This was fueled by their increasing Bitcoin holdings and increase in Bitcoin price. Bitcoin's price rose 121% in 2024. <span class="img-placeholder">[图: 2024 年 BTC 涨幅 + MSTR 涨幅]</span></div>
+  <div class="zh">2024 年初 MSTR 市值约 $100 亿,过去一年涨了约 8 倍。驱动来自持续增持 BTC + BTC 价格本身的上涨 ——2024 年 BTC 涨幅 121%。</div>
+</article>
+
+<article class="para">
+  <div class="en">Since MSTR has embarked on their Bitcoin strategy, they have beaten out every top performing stock in the S&amp;P 500 by percentage returns. <span class="img-placeholder">[图: MSTR vs 标普 500 头部回报对比]</span></div>
+  <div class="zh">自 MSTR 启动 BTC 战略以来,它的回报率打败了标普 500 中任意一只表现最好的股票。</div>
+</article>
+
+<article class="para">
+  <div class="en">Michael Saylor has said that MSTR is now a Bitcoin Treasury company. Saylor compares what his company is doing with Bitcoin as similar to what energy companies do with oil.</div>
+  <div class="zh">Michael Saylor 说 MSTR 现在是一家"比特币资产储备公司"。他把公司对比特币所做的事,类比为能源公司对石油所做的事。</div>
+</article>
+
+<article class="para">
+  <div class="en">Just as energy companies extract, refine, and store oil, MicroStrategy acquires, holds, and leverages Bitcoin as a store of value and an asset for financial growth. Oil refineries don't just store crude oil—they process and refine it to create fuel and generate revenue. Likewise, MicroStrategy leverages Bitcoin by issuing debt and equity financing to buy more BTC, effectively acting like an energy firm that continuously reinvests in its reserves. <span class="img-placeholder">[图: BTC 类比石油的两张幻灯片]</span></div>
+  <div class="zh">正如能源公司开采、精炼、储存石油,MicroStrategy 获取、持有、并杠杆化比特币 —— 把它当作价值储存和金融增长的资产。炼油厂不只是储存原油,而是把它加工成燃料产生收入;同样,MicroStrategy 通过发债和发股融资买入更多 BTC,实际上扮演了一个能源公司"持续把利润再投资入储备"的角色。</div>
+</article>
+
+<article class="para">
+  <div class="en">At their Q3 2024 earnings call, the company announced its 3 year 21/21 plan. This plan includes raising $21 Billion of Debt and $21 Billion of Equity from 2025-2027 all for the purpose of purchasing Bitcoin. Let's take a look at the way that MSTR has been acquiring Bitcoin through Convertible Debt and At The Market (ATM) stock issuance.</div>
+  <div class="zh">2024 Q3 财报电话会上,公司宣布了 3 年期的"21/21 计划":2025-2027 三年内通过债务融资 $210 亿 + 股权融资 $210 亿,<strong>全部用于买入比特币</strong>。下面看看 MSTR 是怎么通过<strong>可转债</strong>和 <strong>ATM 增发</strong>(按市价持续发新股)获取 BTC 的。</div>
+</article>
+
+<article class="para">
+  <div class="en">
+    Convertible debt is a type of corporate bond that:
+    <ul>
+      <li>Pays a fixed <strong>low interest rate</strong>.</li>
+      <li>Gives investors the right to <strong>convert the bonds into MSTR shares</strong> at a predetermined higher price.</li>
+      <li>Helps companies raise capital without immediately diluting shareholders.</li>
+      <li>Most convertible bonds have a <strong>maturity period</strong> of <strong>5 to 7 years</strong>.</li>
+    </ul>
+  </div>
+  <div class="zh">
+    可转债是一种公司债,特点:
+    <ul>
+      <li>付<strong>极低固定利率</strong></li>
+      <li>给债权人在预设的(高于现价的)转股价<strong>把债换成 MSTR 股票</strong>的权利</li>
+      <li>让公司能融资,而<strong>不立刻稀释</strong>老股东</li>
+      <li>大多数可转债的<strong>到期期限是 5-7 年</strong></li>
+    </ul>
+  </div>
+</article>
+
+<article class="para">
+  <div class="en">So MSTR is raising convertible debt for very low interest rates and long time horizons. They are then using that debt to acquire Bitcoin. This debt immediately becomes an asset on the company's balance sheet and should increase the company's market cap / stock price as a result. The debt is also uninsured meaning that the Bitcoin that MSTR is buying is not collateral for the loan. That means if Bitcoin / MSTR's equity price drops by a large amount for a short period of time then there is no risk of liquidation on the Bitcoin holdings.</div>
+  <div class="zh">所以 MSTR 是以<strong>极低利率 + 长周期</strong>发可转债,然后用债务融来的钱买 BTC。这些债立刻变成资产负债表上的资产,应该会推高市值/股价。同时这些债<strong>是无抵押的</strong> —— 也就是说,MSTR 买入的 BTC<strong>不是借款的抵押物</strong>。这意味着即便 BTC 或 MSTR 股价短期暴跌,<strong>也不会触发 BTC 仓位被强平的风险</strong>。</div>
+</article>
+
+<article class="para">
+  <div class="en">MSTR currently has $7.2 Billion of Debt on its balance sheet with an average coupon of 0.476%. This debt is only about 10% of MSTR's market cap and 18% of their Bitcoin NAV. <span class="img-placeholder">[图: 各期可转债明细表]</span></div>
+  <div class="zh">MSTR 目前资产负债表上有 $72 亿债务,加权平均票息只有 0.476%。这笔债仅占 MSTR 市值的约 10%、占 BTC 净值的约 18%。</div>
+</article>
+
+<article class="para">
+  <div class="en">There is significant demand for MSTR's convertible bonds and many have been oversubscribed. This means they are able to raise more debt than expected due to the significant demand.</div>
+  <div class="zh">市场对 MSTR 可转债需求极旺,多次发行都<strong>超额认购</strong> —— 也就是因为需求太大,他们能融到比预期更多的钱。</div>
+</article>
+
+<article class="para">
+  <div class="en">The convertible debt is attractive to bond investors for a few different reasons. As MSTR is somewhat of a proxy for Bitcoin, it gives debt investors the ability to get exposure to Bitcoin without directly investing in the asset itself. So it gives the upside exposure by offering a high stock conversion price but it reduces the downside and the volatility. It also gives debt investors the opportunity to short MSTR stock and arbitrage the significant volatility in the stock.</div>
+  <div class="zh">可转债对债券投资者有多重吸引力。因为 MSTR 在某种程度上是<strong>比特币的代理</strong>,可转债让债券投资者<strong>间接获得 BTC 敞口</strong>,无需直接持币。高转股价提供了"上涨参与权",而债券本身限制了下行和波动。另外,债券投资者还可以<strong>做空 MSTR 股票</strong>来套利它本身的高波动(gamma trade)。</div>
+</article>
+
+<article class="para">
+  <div class="en">An ATM (At-the-Market) offering allows a company to gradually sell shares over time at market prices, rather than issuing all at once. The proceeds from these stock sales go directly to fund Bitcoin purchases.</div>
+  <div class="zh">ATM(按市价持续发售)允许公司<strong>按当前市价、分散在时间维度上</strong>慢慢卖出新股,而不是一次性大量发行。融得的现金直接用于买入比特币。</div>
+</article>
+
+<article class="para">
+  <div class="en">Although MSTR is technically diluting shareholders by issuing more stock, it is actually beneficial to shareholders since they are buying more Bitcoin. So MSTR has adopted increasing "Bitcoin Per Share" as a Key Performance Indicator for the company. So even though they are issuing more shares of stock, the amount of Bitcoin per share of stock is going up. As an investor, this stock is attractive because I could either buy Bitcoin directly or I could buy a share of stock that is going to be worth more Bitcoin over time (aka Bitcoin Per Share going up). More Bitcoin is better than Bitcoin, although there are obviously risks which I'll talk about later.</div>
+  <div class="zh">虽然增发股票在技术上是在稀释老股东,但因为融到的钱被用来买更多 BTC,实际上<strong>对股东是有利的</strong>。所以 MSTR 把"<strong>每股 BTC 数(Bitcoin Per Share)</strong>"作为公司核心 KPI 来管理 —— 即便股本增加,每股对应的 BTC 数仍在上升。作为投资者来看,我可以直接买 BTC,也可以买一股 MSTR —— 而 MSTR 这一股<strong>会随时间对应越来越多的 BTC</strong>。"持续增加的比特币"比"固定一份比特币"更好(当然有风险,后面会讲)。</div>
+</article>
+
+<article class="para">
+  <div class="en">The timing of these ATM issuances is also very strategic. When MSTR's stock price is trading at a high mNAV (meaning their market cap is at a high multiple to their Bitcoin holdings), the company can issue new shares at the elevated market price, effectively selling equity at a premium to its Bitcoin-backed intrinsic value. The proceeds from these stock sales are then used to purchase more Bitcoin, increasing MSTR's total BTC holdings while minimizing the dilution impact on existing shareholders.</div>
+  <div class="zh">ATM 增发的<strong>时点选择</strong>也极具策略性。当 MSTR 的 mNAV 处于高位(市值远超 BTC 持仓价值)时,公司可以<strong>按被市场抬高的价格</strong>发新股 —— 等于按相对其 BTC 内在价值的"溢价"卖出股权。融到的资金被用来买更多 BTC,在<strong>最小稀释</strong>的同时<strong>最大化总持仓增长</strong>。</div>
+</article>
+
+<article class="para">
+  <div class="en">This approach creates a self-reinforcing Bitcoin flywheel where more Bitcoin holdings attract investor interest, leading to a higher stock price and a continued premium over mNAV, which allows for further ATM share issuance at favorable prices. By consistently executing this strategy, MicroStrategy effectively acquires Bitcoin <strong>at a discount relative to its stock price</strong>. As long as Bitcoin's value continues to appreciate, this method enables the company to continuously expand its Bitcoin reserves without taking on additional debt (which they are still doing at the same time).</div>
+  <div class="zh">这套打法创造了一个<strong>自我强化的比特币飞轮</strong>:更多 BTC 持仓 → 吸引投资者 → 推高股价 → mNAV 持续溢价 → ATM 增发能在更高价完成 → 再回头买更多 BTC。一直执行下去,MicroStrategy 实际上是<strong>以相对自身股价的折扣</strong>在买 BTC。只要 BTC 价格继续上涨,这个机制就让公司<strong>无需新增债务</strong>(虽然他们其实还在同步发债)就能持续扩张 BTC 储备。</div>
+</article>
+
+<article class="para">
+  <div class="en">
+    The Convertible Notes and ATM issuance strategically deployed together effectively allows MSTR to print money to buy Bitcoin. Here is how it works:
+    <ul>
+      <li>MSTR issues debt for very low interest rates over long duration with no liquidation risk, which increases MSTR Bitcoin NAV</li>
+      <li>As Bitcoin NAV and Bitcoin price rises, then the market cap of MSTR rises</li>
+      <li>As the market cap of MSTR rises, there is more demand for MSTR stock which then makes MSTR trade at a higher multiple to its Bitcoin NAV</li>
+      <li>As the value of the market cap of MSTR trades at a higher multiple to its Bitcoin NAV, then MSTR can issue more shares at the market to capture the spread and buy more Bitcoin.</li>
+      <li>As Bitcoin NAV and Bitcoin price rises, then the market cap of MSTR rises. Eventually the MSTR price is high enough to convert debt to MSTR stock.</li>
+      <li>Cycle repeats</li>
+    </ul>
+    This is truly incredible.
+  </div>
+  <div class="zh">
+    可转债 + ATM 增发战略性叠加使用,等于让 MSTR 能"<strong>印钱买 BTC</strong>"。流程如下:
+    <ul>
+      <li>MSTR 以<strong>极低利率 + 长久期 + 无强平风险</strong>发债,增加 BTC NAV</li>
+      <li>BTC NAV 和 BTC 价上涨 → MSTR 市值上涨</li>
+      <li>MSTR 市值上涨 → 股票需求增加 → MSTR 相对 BTC NAV 的溢价倍数(mNAV)进一步抬高</li>
+      <li>mNAV 抬高 → MSTR 可以按市价发更多股,<strong>捕捉这个 spread</strong>,买更多 BTC</li>
+      <li>BTC NAV 和 BTC 价继续涨 → MSTR 市值继续涨 → 最终 MSTR 股价<strong>足够高,触发可转债转股</strong></li>
+      <li>循环往复</li>
+    </ul>
+    这真的令人震撼。
+  </div>
+</article>
+
+<article class="para">
+  <div class="en">The new FASB accounting rules, starting in 2025, lets companies like MSTR report their Bitcoin at its real market value instead of an outdated system that forced them to show losses when Bitcoin's price dropped but never let them report gains when it went back up. This means MSTR's financial reports will now reflect the true value of its Bitcoin, making its balance sheet look stronger and more accurate. Investors will get a clearer picture of the company's actual worth. At the current Bitcoin price, MSTR has a $1.2 Billion gain on their Bitcoin holdings for the quarter (they are up 15 Billion all time). I would expect Bitcoin's price to be higher than where it is now at MSTR's Q1 earnings call. This means that MSTR could report a significant increase in their earnings, which could drive increased demand in the stock.</div>
+  <div class="zh">2025 年起生效的 <strong>FASB(美国财务会计准则委员会)新规</strong>允许像 MSTR 这样的公司<strong>按公允市价</strong>记账比特币 —— 而非旧的非对称规则:BTC 跌时必须计减值,BTC 涨时却不能记升值。这意味着 MSTR 的财报现在能反映 BTC 的真实价值,资产负债表看起来更强、更准确;投资者看到的"公司真值"更清晰。按当前 BTC 价,MSTR 这个季度 BTC 持仓的浮盈是 $12 亿(全周期累计浮盈 $150 亿)。我预期到 MSTR Q1 财报会时,BTC 价会比现在更高 —— 那意味着 MSTR 可以报出<strong>显著的盈利增长</strong>,这又能推动股价需求。</div>
+</article>
+
+<article class="para">
+  <div class="en">These changes also make it easier and more attractive for other companies to hold Bitcoin, supporting MSTR's long-term Bitcoin strategy. More companies adopting a similar strategy means more demand for the finite supply of Bitcoin which is bullish for the Bitcoin price and therefore bullish for MSTR.</div>
+  <div class="zh">这套新规也让<strong>其他公司持有 BTC 变得更容易、更具吸引力</strong>,这从外部支撑了 MSTR 的长期 BTC 战略。更多公司效仿 = 对有限 BTC 供应的需求增加 = 利好 BTC 价格 = 利好 MSTR。</div>
+</article>
+
+<article class="para">
+  <div class="en">At the end of 2024, MSTR was included in the Nasdaq 100 stock market index. There are hundreds of Billions of dollars worth of ETFs which track the Nasdaq 100. This includes the Invesco QQQ Trust ETF which has over $300 Billion in assets under management. These ETFs adjust the allocation to different companies in the index by market cap, giving higher allocations to companies with higher market caps. These ETFs will need to balance their holdings to include a weighted MSTR allocation. That's Billions of dollars that will flow into MSTR through these ETFs. As that happens, MSTR will surely buy more Bitcoin to capture the spread on their NAV if the price of the stock rises. As the market cap of MSTR increases, the more capital MSTR will get from these ETFs. Whether they know it or not, investors in these ETFs now have exposure to Bitcoin through MSTR.</div>
+  <div class="zh">2024 年底,MSTR 被纳入<strong>纳斯达克 100 指数</strong>。追踪纳指 100 的 ETF 总规模有几千亿美元,其中 Invesco QQQ Trust(QQQ)管理规模超过 $3000 亿。这些 ETF 按市值分配权重,市值越大的成份股权重越高 —— 这些 ETF 必须再平衡持仓,<strong>按权重持有 MSTR</strong>。这意味着数十亿美元会通过 ETF 通道流入 MSTR。这种流入推高股价 → MSTR 利用 mNAV spread 再买 BTC → 市值再上升 → ETF 再加仓。这些 ETF 的投资者不管知不知道,他们现在都通过 MSTR <strong>间接持有了比特币</strong>。</div>
+</article>
+
+<article class="para">
+  <div class="en">After the changes to the FASB rules, MSTR may be eligible to join the S&amp;P 500. There are many requirements to be added to the S&amp;P 500 including four consecutive quarters of positive earnings. MSTR has not met these requirements due to the previous accounting rules for Bitcoin. But now that MSTR can report their Bitcoin holdings at fair market value, they could potentially qualify. The three largest S&amp;P 500 ETFs combined have about $2 Trillion in AUM. If MSTR is added to the S&amp;P 500, this would unlock a massive amount of even more capital to invest in the stock on a regular basis.</div>
+  <div class="zh">FASB 新规之后,MSTR 还有可能<strong>入选标普 500</strong>。入选标普 500 有多项硬要求,包括<strong>连续 4 个季度正盈利</strong>。MSTR 之前因为 BTC 旧会计规则一直没满足条件 —— 但现在可以按公允价值记账 BTC 持仓后,<strong>有机会过门槛</strong>。前三大标普 500 ETF 合计管理规模约 $2 万亿。如果 MSTR 进了标普 500,等于解锁了<strong>一个数量级更大的常态化资本</strong>流入。</div>
+</article>
+
+<article class="para">
+  <div class="en">Although the outlook for MSTR looks pretty positive, there are some notable risks. Overall, MSTR is a security and you take significant counter party risk by investing in the stock as opposed to buying Bitcoin and storing in cold storage.</div>
+  <div class="zh">虽然 MSTR 前景看起来很正面,但有几个不可忽视的风险。归根结底 MSTR 是一种证券,你买 MSTR 而不是直接买 BTC 自己冷钱包存,等于承担了<strong>显著的对手方风险</strong>。</div>
+</article>
+
+<article class="para">
+  <div class="en"><strong>Storage / Custody risks</strong>: Holding Bitcoin takes a lot of responsibility. If you lose it, there is no FDIC insurance to create more Bitcoin. When you buy MSTR you are trusting them to custody their Bitcoin in a responsible manner. Michael Saylor is extremely knowledgeable and I'm sure his company has done extensive work on custody strategies. However, if the company were to lose a portion of their Bitcoin, that could tank the value of the company as investors would lose trust in the company.</div>
+  <div class="zh"><strong>托管 / 保管风险</strong>:持有 BTC 责任重大。一旦丢了,<strong>没有 FDIC 那样的保险</strong>会凭空创造新 BTC 补给你。买 MSTR 等于<strong>把托管责任委托给公司</strong>。Saylor 极其内行,他的公司在托管策略上一定下了功夫。但万一公司损失了哪怕一部分 BTC,投资者信任崩塌,公司估值会暴跌。</div>
+</article>
+
+<article class="para">
+  <div class="en"><strong>Change of strategy</strong>: A change of strategy from increasing Bitcoin holdings to spending Bitcoin could have an effect on the value of the company. I don't see this as a legitimate risk for the short term while Michael Saylor is still in charge. However, I believe a change in strategy at some point is inevitable. With how many Bitcoin MSTR has, they could have a huge amount of flexibility to provide additional products in the future (i.e. Bitcoin Bank, Insurance Products, etc.)</div>
+  <div class="zh"><strong>战略转向</strong>:如果公司从"持续增持 BTC"转为"开始花 BTC",会影响估值。短期内只要 Saylor 在掌舵,这不算个真风险。但我相信<strong>长期看战略转向是不可避免的</strong>。以 MSTR 现在的 BTC 体量,它将来可以拓展很多新业务 —— 比如 BTC 银行、保险产品等等,有大量灵活性。</div>
+</article>
+
+<article class="para">
+  <div class="en"><strong>Bitcoin price drops</strong>: This is probably the largest risk for the majority of people that don't understand Bitcoin. Majority of people view Bitcoin as an extremely risky investment, therefore they see MSTR as an extremely risky company. Bitcoin is very cyclical and goes through large price appreciations and drops every 4 years. But the general trend over time is up. So I believe it is possible that the price of Bitcoin could drop in the short term for a period of time. But in the long run it should appreciate and MSTR should appreciate with it.</div>
+  <div class="zh"><strong>BTC 价格下跌</strong>:对大多数不懂 BTC 的人,这可能是最大风险点。他们把 BTC 看作极高风险资产,因此把 MSTR 也看作极高风险公司。BTC 周期性极强,每 4 年都经历大幅涨跌,但<strong>长期总趋势是上涨</strong>。所以我认为 BTC 短期一段时间内可能下跌,但<strong>长期看一定升值</strong>,MSTR 也会随之升值。</div>
+</article>
+
+<article class="para">
+  <div class="en">I continue to feel extremely positive about where Bitcoin is going over the upcoming year. Bitcoin is tracking almost exactly with the previous cycles. <span class="img-placeholder">[图: BTC 周期对照图]</span></div>
+  <div class="zh">我对 BTC 未来一年的走势仍然极度乐观。BTC 几乎在<strong>严格复现过去几轮周期</strong>的路径。</div>
+</article>
+
+<article class="para">
+  <div class="en">If this trend continues, Bitcoin could hit around $250k - $500k. Given that MSTR holds 471,107 BTC this would be a NAV of $117 Billion - $235 Billion. Since MSTR usually trades at a higher multiple to their NAV, that means the market cap of the company could trade much higher. The current mNAV is 2.0 (meaning the market cap is double the NAV) which would value the company anywhere from $234 Billion - $470 Billion. That is only at an mNAV of 2.0, this mNAV could trade much higher in a period of mania where everyone is extremely excited about Bitcoin and Bitcoin adjacent companies. During its peak surge, GameStop traded at around 50 times its net asset value for a short period of time. MSTR also has no signs of slowing down their Bitcoin purchases with their 21/21 plan increasing their NAV.</div>
+  <div class="zh">如果这个趋势延续,BTC 可能涨到 <strong>$25 万 - $50 万</strong>。按 MSTR 471,107 BTC 持仓算,BTC NAV 是 $1170 亿 - $2350 亿。由于 MSTR 通常<strong>以 NAV 的倍数交易</strong>,公司市值可以更高。当前 mNAV 是 <strong>2.0</strong>(市值是 NAV 的 2 倍),按这个倍数公司市值会落在 <strong>$2340 亿 - $4700 亿</strong>区间。这还只是 mNAV=2.0 的算法 —— 在市场对 BTC 和 BTC 相关公司极度狂热的时期,mNAV 可以飙得更高。GameStop 在它最疯狂的爆发期短暂交易到了<strong>净资产的 50 倍</strong>。而 MSTR 也没有任何放缓 BTC 买入的迹象 ——21/21 计划还在持续增加它的 NAV。</div>
+</article>
+
+<article class="para">
+  <div class="en">I believe that one day Bitcoin will be the most valuable asset in the world and MSTR has potential to be one of most valuable companies in the world. <br>— AG</div>
+  <div class="zh">我相信有一天比特币会成为世界上最有价值的资产,而 MSTR 有潜力成为世界上最有价值的公司之一。<br>—— AG</div>
+</article>
+
+<div class="translator">
+  <h2>译者笔记 — 对照 2026-05 现状</h2>
+  <p>
+    文章发布于 2025-02,作者立场强烈看多。15 个月后回看,几个关键事实更新:
+  </p>
+  <table>
+    <thead>
+      <tr><th>指标</th><th>文中 (2025-02)</th><th>现在 (2026-05)</th><th>评价</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>BTC 持仓</td>
+        <td class="mono">471,107</td>
+        <td class="mono"><strong>818,869</strong> (+73%)</td>
+        <td class="ok">21/21 计划被超额完成</td>
+      </tr>
+      <tr>
+        <td>BTC 现价</td>
+        <td class="mono">~$96,000</td>
+        <td class="mono">~$78,000 (-19%)</td>
+        <td class="fail">短期回撤,未达 $25-50 万</td>
+      </tr>
+      <tr>
+        <td>MSTR mNAV</td>
+        <td class="mono">2.0</td>
+        <td class="mono"><strong>0.97</strong>(折价)</td>
+        <td class="fail">作者最乐观的假设没成立</td>
+      </tr>
+      <tr>
+        <td>FASB 公允价值规则</td>
+        <td>即将生效</td>
+        <td><strong>已生效</strong>(2025 财年起)</td>
+        <td class="ok">验证</td>
+      </tr>
+      <tr>
+        <td>标普 500 入选</td>
+        <td>推测可能</td>
+        <td>尚未入选</td>
+        <td>待观察</td>
+      </tr>
+      <tr>
+        <td>飞轮状态</td>
+        <td>正向自转</td>
+        <td><strong>停转条件已触发</strong></td>
+        <td class="fail">mNAV ≤ 1,ATM 反向稀释</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top:14px;">
+    作者的<strong>业务模型描述完全准确</strong>(可转债 + ATM + 飞轮机制),但他的<strong>价格预测</strong>目前没兑现。这是看 substack 这类内容的常态信号 —— 机制分析与价格预测要分开评估。我们 dashboard 监控的就是飞轮的<strong>实时启停状态</strong>(<code>mNAV &lt; 1.00</code> 当前正命中)。
+  </p>
+</div>
+
+</main>
+
+<footer>
+  原文版权归 Aaron Gilbert 所有;此双语对照仅供学习,不构成投资建议。<br>
+  <a href="../">← 返回 dashboard</a>　·　<a href="../education.html">业务循环科普</a>
+</footer>
+
+</body>
+</html>

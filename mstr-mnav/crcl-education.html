@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRCL × USDC — 利息地板与稳定币基础设施科普</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #17212f;
+    --muted: #617084;
+    --line: #dde5ec;
+    --bg: #f6f4ed;
+    --surface: #ffffff;
+    --blue: #173b57;
+    --blue-soft: #eaf2f7;
+    --gold: #b9832f;
+    --gold-soft: #fbf0dc;
+    --green: #1f8a5b;
+    --red: #b83232;
+    --shadow: 0 1px 3px rgba(23,33,47,0.05), 0 8px 24px rgba(23,33,47,0.05);
+    --mono: "SF Mono", "JetBrains Mono", "Consolas", "Menlo", monospace;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background:
+      linear-gradient(90deg, rgba(23,59,87,0.05) 0 1px, transparent 1px 100%),
+      linear-gradient(0deg, rgba(23,59,87,0.04) 0 1px, transparent 1px 100%),
+      var(--bg);
+    background-size: 28px 28px;
+    color: var(--ink);
+    line-height: 1.72;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  nav.top {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(246,244,237,0.92);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 24px;
+    display: flex; gap: 4px; align-items: center; flex-wrap: wrap;
+    font-size: 13px;
+  }
+  nav.top a {
+    color: var(--muted); text-decoration: none;
+    padding: 6px 12px; border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  nav.top a:hover { color: var(--blue); background: var(--blue-soft); }
+  nav.top .home { color: var(--blue); font-weight: 700; margin-right: auto; }
+  main { max-width: 940px; margin: 0 auto; padding: 32px 24px 80px; }
+  .hero {
+    background:
+      radial-gradient(circle at 12% 20%, rgba(255,255,255,0.24), transparent 28%),
+      linear-gradient(135deg, #173b57 0%, #1f5e72 52%, #b9832f 100%);
+    color: white;
+    padding: 54px 44px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 28px rgba(23,59,87,0.18);
+  }
+  .hero h1 { font-size: 30px; line-height: 1.38; margin-bottom: 14px; font-weight: 760; }
+  .hero h1 small { display: block; font-size: 18px; font-weight: 450; opacity: 0.88; margin-top: 6px; }
+  .hero p { max-width: 760px; opacity: 0.94; }
+  .hero strong { color: #ffe4a3; }
+  section {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 32px 36px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+  section h2 {
+    font-size: 22px; margin-bottom: 18px;
+    padding-left: 14px; border-left: 4px solid var(--gold);
+    line-height: 1.32;
+  }
+  section h3 { font-size: 16px; margin: 24px 0 10px; }
+  p { color: #364556; margin-bottom: 12px; }
+  code {
+    background: #f3f7fa; padding: 2px 6px; border-radius: 4px;
+    font-family: var(--mono); font-size: 13px; color: var(--blue);
+  }
+  .formula {
+    background: linear-gradient(180deg, #f8fbfc, #eef5f8);
+    border: 1px solid #d5e4ec;
+    border-radius: 10px;
+    padding: 26px 22px;
+    margin: 20px 0;
+    text-align: center;
+    font-family: var(--mono);
+  }
+  .formula .big { display: block; font-size: 18px; font-weight: 750; color: var(--blue); margin-bottom: 8px; }
+  .formula .small { color: var(--muted); font-size: 13px; }
+  .triad {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 14px; margin: 20px 0;
+  }
+  .tile {
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 18px 16px;
+    background: #fbfcfd;
+  }
+  .tile .k { font-size: 12px; font-weight: 750; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; }
+  .tile .v { font-size: 20px; font-weight: 780; margin: 6px 0; color: var(--blue); }
+  .tile p { font-size: 13px; margin: 0; color: #526070; }
+  .map {
+    margin: 26px 0 16px;
+    background: #f9fbfc;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .map svg { width: 100%; height: auto; display: block; }
+  table.matrix {
+    width: 100%; border-collapse: collapse;
+    margin: 18px 0 4px; font-size: 14px;
+  }
+  table.matrix th {
+    text-align: left; padding: 12px 14px;
+    background: var(--blue-soft);
+    border-bottom: 2px solid var(--blue);
+    color: var(--muted);
+    font-size: 12px; text-transform: uppercase; letter-spacing: .6px;
+  }
+  table.matrix td {
+    padding: 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.matrix tr:last-child td { border-bottom: 0; }
+  table.matrix td:first-child { font-weight: 700; color: var(--ink); white-space: nowrap; }
+  .badge {
+    display: inline-block; padding: 3px 9px; border-radius: 4px;
+    font-size: 12px; font-weight: 760;
+  }
+  .b-green { background: #e8f6ef; color: var(--green); }
+  .b-gold { background: var(--gold-soft); color: #9a671f; }
+  .b-red { background: #fdecec; color: var(--red); }
+  ol.steps {
+    counter-reset: step; list-style: none; padding: 0; margin: 22px 0 6px;
+  }
+  ol.steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 16px 18px 16px 60px;
+    margin-bottom: 10px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 3px solid var(--blue);
+  }
+  ol.steps li::before {
+    content: counter(step);
+    position: absolute; left: 14px; top: 14px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--blue); color: white;
+    text-align: center; line-height: 30px; font-weight: 760; font-size: 14px;
+  }
+  ol.steps li strong { color: var(--ink); }
+  ol.steps li .desc { color: var(--muted); font-size: 14px; margin-top: 6px; }
+  .risks {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px; margin: 18px 0;
+  }
+  .risk {
+    background: #fff7ea;
+    border-left: 4px solid var(--gold);
+    padding: 16px 18px;
+    border-radius: 7px;
+  }
+  .risk h4 { font-size: 14px; color: #9a671f; margin-bottom: 7px; }
+  .risk p { font-size: 13px; margin: 0; color: #5d5142; }
+  .callout {
+    background: #edf6f1;
+    border: 1px solid #b7ddc8;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 20px;
+  }
+  .callout strong { color: var(--green); }
+  .source-intro {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 18px 0 22px;
+    color: #364556;
+    font-size: 14px;
+  }
+  .source-group { margin-top: 24px; }
+  .source-group h3 {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+  .source-group h3::before {
+    content: "";
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 5px var(--gold-soft);
+  }
+  ul.sources { list-style: none; margin-top: 8px; }
+  ul.sources li {
+    display: grid; grid-template-columns: 150px 1fr;
+    gap: 16px;
+    padding: 13px 0; border-bottom: 1px solid var(--line);
+    color: #364556;
+  }
+  ul.sources li:last-child { border-bottom: 0; }
+  ul.sources a { color: var(--blue); font-weight: 650; text-decoration: none; }
+  .source-tag {
+    align-self: start;
+    display: inline-flex; justify-content: center;
+    min-width: 112px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    background: var(--blue-soft);
+    color: var(--blue);
+    font-size: 12px; font-weight: 760;
+  }
+  .source-body div { font-size: 14px; color: var(--muted); margin-top: 3px; }
+  .source-body em { color: #364556; font-style: normal; font-weight: 650; }
+  .reading-rule {
+    margin-top: 24px;
+    border-left: 4px solid var(--green);
+    background: #edf6f1;
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .reading-rule p { margin: 0; font-size: 14px; color: #40594a; }
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px;
+    padding: 26px 0 8px;
+  }
+  @media (max-width: 820px) {
+    main { padding: 22px 16px 56px; }
+    .hero { padding: 36px 24px; }
+    .hero h1 { font-size: 24px; }
+    section { padding: 24px 20px; }
+    .triad { grid-template-columns: 1fr; }
+    ul.sources li { grid-template-columns: 1fr; gap: 6px; }
+    .source-tag { justify-content: flex-start; width: fit-content; min-width: 0; }
+    table.matrix { font-size: 13px; }
+    table.matrix td, table.matrix th { padding: 11px 9px; }
+  }
+</style>
+</head>
+<body>
+<nav class="top">
+  <a href="./" class="home">← 返回 dashboard</a>
+  <a href="#floor">利息地板</a>
+  <a href="#layers">三层模型</a>
+  <a href="#competition">竞争格局</a>
+  <a href="#break">基本面变坏</a>
+  <a href="#sources">学习路径</a>
+</nav>
+
+<main>
+<div class="hero">
+  <h1>CRCL × USDC × 利息地板<small>—— 一张监控背后的稳定币生意模型</small></h1>
+  <p>
+    这个页面只讲一件事：Circle 的股价最底层不是 Arc、AI Agent 或故事，
+    而是 <strong>USDC 储备产生的利息现金流</strong>。真正的投资问题是：
+    这块地板有多厚，以及 Circle 能不能从“靠利率赚钱”升级成“靠网络收费”。
+  </p>
+</div>
+
+<section id="floor">
+  <h2>1. 利息地板是什么</h2>
+  <p>
+    Circle 发行 USDC，用户拿到链上美元，背后对应现金、短期美债、回购或货币市场基金等储备资产。
+    只要 USDC 在外流通，储备就会产生短端美元收益。这就是 CRCL 的最底层现金流。
+  </p>
+
+  <div class="formula">
+    <span class="big">利息地板 = USDC 流通量 × 短端美债收益率 × Circle 净留存率</span>
+    <span class="small">注意：这是年化现金流近似，不是完整估值，也不是买卖建议。</span>
+  </div>
+
+  <div class="triad">
+    <div class="tile">
+      <div class="k">Variable A</div>
+      <div class="v">USDC 流通量</div>
+      <p>代表 Circle 管了多少“链上美元储备”。规模越大，利息池越大。</p>
+    </div>
+    <div class="tile">
+      <div class="k">Variable B</div>
+      <div class="v">短端利率</div>
+      <p>代表这笔储备能赚多少。它由美联储和国债市场决定，不由 Circle 决定。</p>
+    </div>
+    <div class="tile">
+      <div class="k">Variable C</div>
+      <div class="v">净留存率</div>
+      <p>代表利息收入扣掉 Coinbase 等分销成本后，Circle 自己留下多少。</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>一句话：</strong>这块地板回答的是“CRCL 最差还是不是一门能赚钱的生意”。
+    它不回答“CRCL 是否值得高估值”。高估值要靠后面的平台化收入证明。
+  </div>
+</section>
+
+<section id="layers">
+  <h2>2. Circle 要分三层看</h2>
+  <p>
+    最容易犯的错，是把 Circle 直接说成“金融操作系统”，或者反过来说它只是“利息机器”。
+    更科学的做法是拆三层：现金流地板、平台化转折、远期生态期权。
+  </p>
+
+  <div class="map">
+    <svg viewBox="0 0 860 260" role="img" aria-label="Circle three layer model">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L9,3 z" fill="#173b57"></path>
+        </marker>
+      </defs>
+      <rect x="20" y="40" width="230" height="160" rx="10" fill="#eaf2f7" stroke="#b9cfdd"></rect>
+      <text x="135" y="78" text-anchor="middle" font-size="18" font-weight="700" fill="#173b57">第一层：利息地板</text>
+      <text x="135" y="112" text-anchor="middle" font-size="13" fill="#445365">USDC × 利率 × 留存</text>
+      <text x="135" y="143" text-anchor="middle" font-size="13" fill="#445365">决定“不死”的现金流</text>
+      <text x="135" y="172" text-anchor="middle" font-size="13" fill="#445365">像高质量利率敏感资产</text>
+
+      <line x1="260" y1="120" x2="330" y2="120" stroke="#173b57" stroke-width="3" marker-end="url(#arrow)"></line>
+
+      <rect x="340" y="40" width="230" height="160" rx="10" fill="#fbf0dc" stroke="#e6c27f"></rect>
+      <text x="455" y="78" text-anchor="middle" font-size="18" font-weight="700" fill="#9a671f">第二层：平台转折</text>
+      <text x="455" y="112" text-anchor="middle" font-size="13" fill="#5b4a31">CPN / Other Revenue</text>
+      <text x="455" y="143" text-anchor="middle" font-size="13" fill="#5b4a31">把“被使用”变成“可收费”</text>
+      <text x="455" y="172" text-anchor="middle" font-size="13" fill="#5b4a31">估值从利率股抬到平台股</text>
+
+      <line x1="580" y1="120" x2="650" y2="120" stroke="#173b57" stroke-width="3" marker-end="url(#arrow)"></line>
+
+      <rect x="660" y="40" width="220" height="160" rx="10" fill="#edf6f1" stroke="#b7ddc8"></rect>
+      <text x="770" y="78" text-anchor="middle" font-size="18" font-weight="700" fill="#1f8a5b">第三层：生态期权</text>
+      <text x="770" y="112" text-anchor="middle" font-size="13" fill="#40594a">Arc / ARC / AI Agent</text>
+      <text x="770" y="143" text-anchor="middle" font-size="13" fill="#40594a">想象空间很大</text>
+      <text x="770" y="172" text-anchor="middle" font-size="13" fill="#40594a">但不是当期现金流</text>
+    </svg>
+  </div>
+
+  <table class="matrix">
+    <tr><th>层级</th><th>看什么</th><th>不能怎么误读</th></tr>
+    <tr>
+      <td>利息地板</td>
+      <td>USDC 规模、短端利率、净留存率、运营费用刚性。</td>
+      <td>不能按 SaaS 估值；它首先仍是利率敏感现金流。</td>
+    </tr>
+    <tr>
+      <td>平台转折</td>
+      <td>CPN 年化交易量、收费率、Other Revenue 占比、USDC on Platform。</td>
+      <td>链上交易量巨大不等于 Circle 已经对交易收费。</td>
+    </tr>
+    <tr>
+      <td>生态期权</td>
+      <td>Arc 主网、ARC 经济机制、机构和开发者采用、AI Agent 支付。</td>
+      <td>ARC 价值不能直接等同于 CRCL 股东价值。</td>
+    </tr>
+  </table>
+</section>
+
+<section id="competition">
+  <h2>3. 和 Tether、PayPal 的竞争要这样看</h2>
+  <p>
+    稳定币不是单一赢家通吃市场。更像美元轨道分层：离岸美元轨道、合规美元轨道、钱包美元轨道。
+  </p>
+
+  <table class="matrix">
+    <tr><th>玩家</th><th>核心优势</th><th>核心脆弱点</th><th>像什么</th></tr>
+    <tr>
+      <td>USDT / Tether</td>
+      <td><span class="badge b-green">规模和利润</span> 全球交易所、P2P、新兴市场、离岸美元流动性最强。</td>
+      <td>监管可接受性、完整审计、美国机构准入仍是长期变量。</td>
+      <td>全球离岸美元现金网络</td>
+    </tr>
+    <tr>
+      <td>USDC / Circle</td>
+      <td><span class="badge b-gold">合规和机构</span> 更适合银行、企业财资、开发者、合规 DeFi 和 CPN。</td>
+      <td>储备收益被分销成本稀释，平台化收入还需要证明。</td>
+      <td>合规链上美元基础设施</td>
+    </tr>
+    <tr>
+      <td>PYUSD / PayPal</td>
+      <td><span class="badge b-red">用户入口</span> PayPal/Venmo/商户网络能帮助冷启动和零售支付试验。</td>
+      <td>更依赖封闭钱包、奖励和分发；开放协议层地位不足。</td>
+      <td>钱包美元功能</td>
+    </tr>
+  </table>
+
+  <div class="callout">
+    <strong>升级版洞见：</strong>USDC 不需要在所有场景打败 USDT。
+    CRCL 的关键问题是：制度化、机构化、企业支付化、AI 自动结算化的新需求，是否更多流向 USDC。
+  </div>
+</section>
+
+<section id="break">
+  <h2>4. 什么算基本面真的变了</h2>
+  <p>
+    股价波动不是基本面变化。基本面变化，是公式里的变量坏掉，或者平台化转折被证伪。
+  </p>
+
+  <ol class="steps">
+    <li>
+      <strong>USDC 信任受损</strong>
+      <div class="desc">脱锚、赎回延迟、储备透明度争议，都会直接打穿稳定币公司的第一性资产：信任。</div>
+    </li>
+    <li>
+      <strong>USDC 连续掉份额</strong>
+      <div class="desc">如果整个稳定币市场增长，但 USDC 连续几个季度萎缩，那就不是市场周期，而是竞争地位变弱。</div>
+    </li>
+    <li>
+      <strong>净留存率恶化</strong>
+      <div class="desc">Coinbase、Binance 或其他渠道分走更多利息，地板会变薄；这比“故事热不热”更重要。</div>
+    </li>
+    <li>
+      <strong>降息没有被规模增长抵消</strong>
+      <div class="desc">利率下降本身不致命，但如果 USDC 规模不补上，储备收入会被机械压缩。</div>
+    </li>
+    <li>
+      <strong>CPN / Other Revenue 长期做不大</strong>
+      <div class="desc">如果平台化收入一直很小，市场最终会把 CRCL 重新按“利息机器”估值。</div>
+    </li>
+  </ol>
+
+  <div class="risks">
+    <div class="risk">
+      <h4>风险一：把公共网络效应当股东现金流</h4>
+      <p>USDC 被大量使用是社会价值，但只有能被 Circle 收费和留存的部分，才是 CRCL 股东价值。</p>
+    </div>
+    <div class="risk">
+      <h4>风险二：把 Arc 期权当确定利润</h4>
+      <p>Arc/ARC 可能很重要，但代币机制和 CRCL 股权不是同一份索取权。</p>
+    </div>
+    <div class="risk">
+      <h4>风险三：忽略 Tether 的盈利能力</h4>
+      <p>Tether 不只是竞争者，也是在证明稳定币规模化后现金流可以非常强。</p>
+    </div>
+  </div>
+</section>
+
+<section id="howto">
+  <h2>5. Dashboard 这张表应该怎么用</h2>
+  <p>
+    `CRCL 利息地板监控` 是底层检查表，不是完整投资系统。它适合每天回答三个问题：
+  </p>
+  <ol class="steps">
+    <li>
+      <strong>地板是变厚还是变薄</strong>
+      <div class="desc">看年化可留存地板是否稳定上升。它由 USDC 规模、短端利率、净留存率共同决定。</div>
+    </li>
+    <li>
+      <strong>压力来自哪里</strong>
+      <div class="desc">USDC 掉了，是竞争问题；利率掉了，是宏观问题；留存率掉了，是分销和商业模式问题。</div>
+    </li>
+    <li>
+      <strong>是否需要转去看第二层</strong>
+      <div class="desc">地板稳定但股价很贵时，要看 CPN、Other Revenue、Arc 这些平台化指标是否跟上。</div>
+    </li>
+  </ol>
+</section>
+
+<section id="sources">
+  <h2>6. 学习路径与外部资源</h2>
+  <div class="source-intro">
+    这组资料按“先看一手事实，再看数据，再看高质量解释”的顺序排。
+    读 CRCL 不要只追新闻，要反复回到三个问题：储备利息还在不在、USDC 份额有没有变、Circle 是否真的把支付网络变成收费网络。
+  </div>
+
+  <div class="source-group">
+    <h3>一手资料：先校准事实</h3>
+    <ul class="sources">
+      <li>
+        <span class="source-tag">Circle 财报</span>
+        <div class="source-body">
+          <a href="https://www.circle.com/pressroom/circle-reports-first-quarter-2026-results" target="_blank" rel="noopener">Circle Q1 2026 Results</a>
+          <div>看 USDC 流通量、储备收入、RLDC margin、CPN 和 Other Revenue。<em>这是估值地板和平台化叙事的原始入口。</em></div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">储备透明度</span>
+        <div class="source-body">
+          <a href="https://www.circle.com/en/transparency" target="_blank" rel="noopener">Circle Transparency & Stability</a>
+          <div>检查 USDC 储备资产、储备报告和赎回可信度。信任不是口号，要落到储备结构和披露节奏。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">基础设施</span>
+        <div class="source-body">
+          <a href="https://www.circle.com/cross-chain-transfer-protocol" target="_blank" rel="noopener">Circle CCTP</a>
+          <div>理解 USDC 为什么不只是“币”，也是跨链流动性的基础设施。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">Arc 期权</span>
+        <div class="source-body">
+          <a href="https://www.circle.com/pressroom/circle-launches-arc-public-testnet" target="_blank" rel="noopener">Circle Arc Public Testnet</a>
+          <div>把 Arc 当远期生态期权看：关注参与者、费用机制、机构采用，不要直接把链上叙事等同于 CRCL 股东利润。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">竞争对手</span>
+        <div class="source-body">
+          <a href="https://tether.to/en/transparency/?tab=usdt" target="_blank" rel="noopener">Tether Transparency</a>
+          <div>比较 USDT 的规模、储备、利润潜力和披露方式。Tether 是 CRCL 的竞争者，也是稳定币生意现金流上限的参照物。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">钱包美元</span>
+        <div class="source-body">
+          <a href="https://developer.paypal.com/dev-center/pyusd/" target="_blank" rel="noopener">PayPal PYUSD Resource Center</a>
+          <div>观察 PYUSD 如何从 PayPal/Venmo/商户入口切入。它不是 USDC 的复制品，而是“钱包分发”路线。</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="source-group">
+    <h3>数据看板：看真实使用</h3>
+    <ul class="sources">
+      <li>
+        <span class="source-tag">份额/供给</span>
+        <div class="source-body">
+          <a href="https://defillama.com/stablecoins" target="_blank" rel="noopener">DefiLlama Stablecoins</a>
+          <div>跟踪 USDC、USDT、PYUSD 的流通量和份额变化。它适合回答“规模是在扩张还是流失”。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">交易质量</span>
+        <div class="source-body">
+          <a href="https://visaonchainanalytics.com/transactions" target="_blank" rel="noopener">Visa Onchain Analytics</a>
+          <div>看过滤噪音后的稳定币交易量。它能帮你区分“链上刷量”和“更像真实支付/结算的活动”。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">链上活动</span>
+        <div class="source-body">
+          <a href="https://stablecoins.artemis.ai/" target="_blank" rel="noopener">Artemis Stablecoin Dashboard</a>
+          <div>看不同链、不同资产、转账量和用户活动。适合判断 USDC 的平台位置是否变强。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">短端利率</span>
+        <div class="source-body">
+          <a href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve" target="_blank" rel="noopener">U.S. Treasury Daily Rates</a>
+          <div>监控短端利率，理解利息地板的宏观变量。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">本地监控</span>
+        <div class="source-body">
+          <a href="crcl-floor-report.html">CRCL 利息地板实时报告</a>
+          <div>每天看公式里的三个变量是否变厚或变薄：USDC 流通量、短端利率、Circle 净留存率。</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="source-group">
+    <h3>YouTube / 播客：听高手怎么拆</h3>
+    <ul class="sources">
+      <li>
+        <span class="source-tag">Bankless</span>
+        <div class="source-body">
+          <a href="https://www.youtube.com/@Bankless/search?query=stablecoin" target="_blank" rel="noopener">Bankless YouTube：Stablecoin 搜索</a>
+          <div>适合看 crypto-native 视角：以太坊、DeFi、钱包和稳定币网络效应。读的时候要主动过滤代币叙事。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">Unchained</span>
+        <div class="source-body">
+          <a href="https://www.youtube.com/c/UnchainedPodcast/search?query=stablecoin" target="_blank" rel="noopener">Unchained YouTube：Stablecoin 搜索</a>
+          <div>Laura Shin 的访谈适合补监管、交易所、诉讼和行业人物背景。对 USDC/USDT 争议尤其有用。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">Money View</span>
+        <div class="source-body">
+          <a href="https://blockworks.co/podcast/forwardguidance/de1efdba-a046-11ee-9c57-b74a6954ed42" target="_blank" rel="noopener">Forward Guidance：Stablecoins Are The New Eurodollars</a>
+          <div>Daniel Neilson 从 Eurodollar 和 par settlement 解释稳定币。适合理解“稳定币不是普通支付 App，而是链上美元影子系统”。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">Circle 内核</span>
+        <div class="source-body">
+          <a href="https://blockworks.co/podcast/forwardguidance/6df590b2-464e-11f0-aab8-dfb235e83c50" target="_blank" rel="noopener">Forward Guidance：Robert Bench on the Future of Money</a>
+          <div>前 Fed 官员、USDC 早期参与者视角，适合把 Circle 放进 CBDC、支付基础设施和美元体系的长线框架里。</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="source-group">
+    <h3>Substack / 长文：建立自己的框架</h3>
+    <ul class="sources">
+      <li>
+        <span class="source-tag">Nic Carter</span>
+        <div class="source-body">
+          <a href="https://murmurationstwo.substack.com/p/situating-stablecoins-in-the-payments" target="_blank" rel="noopener">Situating Stablecoins in the Payments Landscape</a>
+          <div>把稳定币放进支付系统分类：push/pull、open/closed loop、global/domestic。适合理解为什么 USDC 和 USDT 的竞争不是单维度胜负。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">Patrick M.</span>
+        <div class="source-body">
+          <a href="https://www.bitsaboutmoney.com/archive/stablecoin-mechanisms-and-use-cases/" target="_blank" rel="noopener">Stablecoin Mechanisms and Use Cases</a>
+          <div>Patrick McKenzie 用支付、风控、商业模式语言拆稳定币。适合把 crypto 术语翻译成金融基础设施语言。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">Soon Parted</span>
+        <div class="source-body">
+          <a href="https://www.soonparted.co/p/on-chain-off-chain" target="_blank" rel="noopener">Stablecoins and Payment Areas</a>
+          <div>Daniel Neilson 的货币视角：稳定币发行人不只是“发币”，也是链上/链下美元之间的做市者。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">BIS 论文</span>
+        <div class="source-body">
+          <a href="https://www.bis.org/publ/work1146.htm" target="_blank" rel="noopener">On Par: A Money View of Stablecoins</a>
+          <div>更硬核的理论底座：par、流动性、dealer function、Eurodollar 类比。适合校准“稳定”的真正含义。</div>
+        </div>
+      </li>
+      <li>
+        <span class="source-tag">实证报告</span>
+        <div class="source-body">
+          <a href="https://castleisland.vc/writing/stablecoins-the-emerging-market-story/" target="_blank" rel="noopener">Stablecoins: The Emerging Market Story</a>
+          <div>Castle Island / Visa 视角，适合看新兴市场里的稳定币需求：储值、跨境支付、贸易结算和美元可得性。</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="reading-rule">
+    <p>
+      <strong>推荐读法：</strong>每天看本地监控和 DefiLlama；每周看 Visa/Artemis 的真实使用；
+      每季回到 Circle/Tether/PYUSD 一手披露；框架文章反复读，用来判断市场叙事有没有偏离现金流和支付网络的本质。
+    </p>
+  </div>
+</section>
+
+<footer>
+  本页面是 mstr-mnav-monitor 的内嵌科普，非投资建议。它解释监控系统如何思考 CRCL 的底层现金流与风险。
+</footer>
+</main>
+</body>
+</html>

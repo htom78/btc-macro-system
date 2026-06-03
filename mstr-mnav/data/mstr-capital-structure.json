@@ -1,0 +1,62 @@
+{
+  "_meta": {
+    "purpose": "MSTR (Strategy Inc) 资本结构按季度归档。financing.py 读这个文件计算加权法币利息成本。",
+    "_update_protocol": [
+      "1. 每季度 10-Q 发布后(约季度结束 30-45 天),去 SEC EDGAR 拉最新 10-Q HTML",
+      "2. 在 'Long-Term Debt' 附注里抄每档 Convertible Note 的: 简称, 发行金额, coupon, 到期日",
+      "3. 在 'Preferred Stock' 附注里抄每档优先股的: 简称, aggregate liquidation preference, dividend rate",
+      "4. 复制最后一个 quarter 节为新的, 改 as_of/source_10q, 更新数字, 设 inferred=false",
+      "5. python financing.py 验证, 然后 git commit + push + 服务器 git pull"
+    ],
+    "_special_cases": [
+      "STRC 是 variable rate 优先股 —— dividend_pct 每月重设 (10-Q 写'for the month ended XXX was YY%'),",
+      "不是季度均值。每月查一次 10-Q/10-K/8-K 更新 STRC 行为最新月利率, 否则会随时间漂移。"
+    ],
+    "_units": "金额单位 = 百万美元 (USD millions). 利率/股息率 = 百分数 (annual %)"
+  },
+
+  "history": [
+    {
+      "as_of": "2025-12-31",
+      "inferred": true,
+      "inferred_from": "Q1 2026 10-Q prior-period 对比列 + Q3 2025 10-Q 余额",
+      "source_10q": "https://www.sec.gov/Archives/edgar/data/1050446/000119312525262568/mstr-20250930.htm",
+      "convertibles": [
+        {"name": "2028", "outstanding_usd_m": 1010.0, "coupon_pct": 0.625},
+        {"name": "2029", "outstanding_usd_m": 3000.0, "coupon_pct": 0.000},
+        {"name": "2030A", "outstanding_usd_m": 800.0, "coupon_pct": 0.625},
+        {"name": "2030B", "outstanding_usd_m": 2000.0, "coupon_pct": 0.000},
+        {"name": "2031", "outstanding_usd_m": 603.7, "coupon_pct": 0.875},
+        {"name": "2032", "outstanding_usd_m": 800.0, "coupon_pct": 2.250}
+      ],
+      "preferreds": [
+        {"name": "STRF", "liq_pref_usd_m": 1283.97, "dividend_pct": 10.00, "note": "Strife · 10% perpetual"},
+        {"name": "STRC", "liq_pref_usd_m": 2962.0,  "dividend_pct": 11.50, "note": "Stretch · 变动率,Q4 2025 估算 (Q1 2026 通过 ATM 增加约 $2B 到 $5025M)"},
+        {"name": "STRE", "liq_pref_usd_m": 891.56, "dividend_pct": 10.00, "note": "Stream · 10% perpetual,11 月 2025 IPO"},
+        {"name": "STRK", "liq_pref_usd_m": 1402.07, "dividend_pct":  8.00, "note": "Strike · 8% perpetual,最低利率档"},
+        {"name": "STRD", "liq_pref_usd_m": 1402.42, "dividend_pct": 10.00, "note": "Stride · 10% perpetual"}
+      ]
+    },
+
+    {
+      "as_of": "2026-03-31",
+      "inferred": false,
+      "source_10q": "https://www.sec.gov/Archives/edgar/data/1050446/000105044626000031/mstr-20260331.htm",
+      "convertibles": [
+        {"name": "2028", "outstanding_usd_m": 1010.0, "coupon_pct": 0.625},
+        {"name": "2029", "outstanding_usd_m": 3000.0, "coupon_pct": 0.000},
+        {"name": "2030A", "outstanding_usd_m": 800.0, "coupon_pct": 0.625},
+        {"name": "2030B", "outstanding_usd_m": 2000.0, "coupon_pct": 0.000},
+        {"name": "2031", "outstanding_usd_m": 603.7, "coupon_pct": 0.875},
+        {"name": "2032", "outstanding_usd_m": 800.0, "coupon_pct": 2.250}
+      ],
+      "preferreds": [
+        {"name": "STRF", "liq_pref_usd_m": 1283.97, "dividend_pct": 10.00, "note": "10% perpetual"},
+        {"name": "STRC", "liq_pref_usd_m": 5024.65, "dividend_pct": 11.50, "note": "11.50% variable (Q1 2026 月度股息率)"},
+        {"name": "STRE", "liq_pref_usd_m": 891.56, "dividend_pct": 10.00, "note": "10% perpetual"},
+        {"name": "STRK", "liq_pref_usd_m": 1402.07, "dividend_pct":  8.00, "note": "8% perpetual"},
+        {"name": "STRD", "liq_pref_usd_m": 1402.42, "dividend_pct": 10.00, "note": "10% perpetual"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投资 Thesis Monitor — 旧标的重跑报告</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #17202c;
+    --muted: #5d6876;
+    --faint: #8792a0;
+    --line: #dfe5ec;
+    --bg: #f7f8f6;
+    --btc: #d98324;
+    --mstr: #286da8;
+    --nvda: #4f8f22;
+    --goog: #315ed8;
+    --aapl: #4b5563;
+    --pdd: #d24a2f;
+    --crcl: #1780a3;
+    --red: #b83232;
+    --green: #1f8a5b;
+    --amber: #b7791f;
+    --mono: "SF Mono", "JetBrains Mono", "Consolas", "Menlo", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background:
+      linear-gradient(90deg, rgba(23,32,44,0.045) 0 1px, transparent 1px 100%),
+      linear-gradient(0deg, rgba(23,32,44,0.035) 0 1px, transparent 1px 100%),
+      var(--bg);
+    background-size: 30px 30px;
+    font-size: 16px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  nav.top {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    padding: 10px 22px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(247,248,246,0.93);
+    -webkit-backdrop-filter: blur(9px);
+    backdrop-filter: blur(9px);
+    font-size: 13px;
+  }
+  nav.top a {
+    text-decoration: none;
+    color: var(--muted);
+    padding: 6px 10px;
+    border-radius: 6px;
+    line-height: 1.25;
+  }
+  nav.top a:hover { color: var(--ink); background: #eef2f4; }
+  nav.top .home { color: var(--ink); font-weight: 750; margin-right: auto; }
+  main { max-width: 1120px; margin: 0 auto; padding: 34px 24px 80px; }
+  .hero {
+    padding: 48px 0 30px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 760;
+    margin-bottom: 12px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  h1 {
+    max-width: 900px;
+    font-size: clamp(30px, 4.2vw, 52px);
+    line-height: 1.12;
+    font-weight: 820;
+    letter-spacing: 0;
+    margin-bottom: 18px;
+  }
+  .lead {
+    max-width: 860px;
+    color: #374151;
+    font-size: 18px;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .meta-pill {
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.68);
+    border-radius: 6px;
+    padding: 7px 10px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .meta-pill strong { color: var(--ink); }
+  h2 {
+    font-size: 24px;
+    line-height: 1.3;
+    margin: 0 0 18px;
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+  h3 {
+    font-size: 17px;
+    line-height: 1.35;
+    margin: 24px 0 8px;
+    font-weight: 760;
+  }
+  p { color: #374151; margin-bottom: 12px; }
+  code {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: #233348;
+    background: #eef3f6;
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+  .note {
+    border-left: 4px solid var(--amber);
+    background: #fff7ea;
+    padding: 14px 16px;
+    border-radius: 6px;
+    color: #5d5142;
+    font-size: 14px;
+  }
+  .section {
+    padding: 34px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .scoreboard {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.72);
+    border: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .scoreboard th,
+  .scoreboard td {
+    text-align: left;
+    vertical-align: top;
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .scoreboard th {
+    color: var(--muted);
+    background: #eef2f4;
+    font-size: 12px;
+    font-weight: 780;
+  }
+  .scoreboard tr:last-child td { border-bottom: 0; }
+  .ticker {
+    font-family: var(--mono);
+    font-weight: 840;
+    white-space: nowrap;
+  }
+  .rubric {
+    display: inline-flex;
+    min-width: 44px;
+    justify-content: center;
+    font-family: var(--mono);
+    font-weight: 800;
+    color: white;
+    background: var(--green);
+    border-radius: 4px;
+    padding: 2px 7px;
+  }
+  .framework {
+    margin-top: 22px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.72);
+    padding: 18px;
+  }
+  .framework svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .asset {
+    padding: 34px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .asset-head {
+    display: grid;
+    grid-template-columns: 108px 1fr;
+    gap: 20px;
+    align-items: start;
+    margin-bottom: 18px;
+  }
+  .mark {
+    width: 92px;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    color: white;
+    display: grid;
+    place-items: center;
+    font-family: var(--mono);
+    font-size: 23px;
+    font-weight: 860;
+    box-shadow: inset 0 -10px 24px rgba(0,0,0,0.12);
+  }
+  .btc .mark { background: var(--btc); }
+  .mstr .mark { background: var(--mstr); }
+  .nvda .mark { background: var(--nvda); }
+  .goog .mark { background: var(--goog); }
+  .aapl .mark { background: var(--aapl); }
+  .pdd .mark { background: var(--pdd); }
+  .crcl .mark { background: var(--crcl); }
+  .asset-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .asset-title h2 { margin: 0; }
+  .asset-title span {
+    color: var(--muted);
+    font-size: 13px;
+    font-family: var(--mono);
+  }
+  .thesis {
+    font-size: 17px;
+    color: #263446;
+    max-width: 860px;
+    margin: 0;
+  }
+  .layer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .layer {
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.76);
+    padding: 15px 16px;
+    border-radius: 7px;
+  }
+  .layer .k {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 780;
+    margin-bottom: 6px;
+  }
+  .layer p { font-size: 14px; margin: 0; color: #3b4654; }
+  .formula {
+    border-left: 4px solid #8a96a3;
+    background: #f0f4f7;
+    padding: 15px 16px;
+    margin: 18px 0;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: #233348;
+    overflow-x: auto;
+  }
+  .btc .formula { border-left-color: var(--btc); }
+  .mstr .formula { border-left-color: var(--mstr); }
+  .nvda .formula { border-left-color: var(--nvda); }
+  .goog .formula { border-left-color: var(--goog); }
+  .aapl .formula { border-left-color: var(--aapl); }
+  .pdd .formula { border-left-color: var(--pdd); }
+  .crcl .formula { border-left-color: var(--crcl); }
+  .two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 18px;
+    margin-top: 18px;
+  }
+  .panel {
+    border-top: 3px solid var(--line);
+    padding-top: 14px;
+  }
+  .panel h3 { margin-top: 0; }
+  ul.clean {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.clean li {
+    position: relative;
+    padding-left: 18px;
+    margin: 7px 0;
+    color: #374151;
+    font-size: 14px;
+  }
+  ul.clean li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--faint);
+  }
+  .danger li::before { background: var(--red); }
+  .watch li::before { background: var(--green); }
+  .anti {
+    margin-top: 18px;
+    padding: 15px 16px;
+    background: #fff4f2;
+    border-left: 4px solid var(--red);
+    border-radius: 6px;
+    color: #5d3b35;
+    font-size: 14px;
+  }
+  .current {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .metric {
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.72);
+    padding: 12px 13px;
+    border-radius: 7px;
+  }
+  .metric .k {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 760;
+    margin-bottom: 4px;
+  }
+  .metric .v {
+    font-family: var(--mono);
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .skillopt {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .opt {
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.72);
+    padding: 16px;
+    border-radius: 7px;
+  }
+  .opt strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .sources {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+  }
+  .sources li {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 16px;
+    border-bottom: 1px solid var(--line);
+    padding: 12px 0;
+    font-size: 14px;
+  }
+  .sources li:last-child { border-bottom: 0; }
+  .sources .tag {
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 760;
+  }
+  .sources a {
+    color: #245d8d;
+    text-decoration: none;
+    font-weight: 680;
+  }
+  .sources a:hover { text-decoration: underline; }
+  footer {
+    padding: 28px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+  }
+  @media (max-width: 860px) {
+    main { padding: 24px 16px 60px; }
+    nav.top { padding: 8px 12px; }
+    .asset-head { grid-template-columns: 1fr; }
+    .mark { width: 76px; font-size: 19px; }
+    .layer-grid,
+    .two-col,
+    .current,
+    .skillopt { grid-template-columns: 1fr; }
+    .scoreboard { display: block; overflow-x: auto; white-space: nowrap; }
+    .sources li { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+<nav class="top">
+  <a href="./" class="home">← 返回 dashboard</a>
+  <a href="#overview">总览</a>
+  <a href="#btc">BTC</a>
+  <a href="#mstr">MSTR</a>
+  <a href="#nvda">NVDA</a>
+  <a href="#goog">GOOG</a>
+  <a href="#aapl">AAPL</a>
+  <a href="#pdd">PDD</a>
+  <a href="#crcl">CRCL</a>
+  <a href="#skillopt">SkillOpt</a>
+  <a href="#sources">来源</a>
+  <a href="education.html">MSTR 科普</a>
+  <a href="crcl-education.html">CRCL 科普</a>
+  <a href="nvda-education.html">NVDA 科普</a>
+</nav>
+
+<main>
+  <header class="hero">
+    <div class="eyebrow">Investment Thesis Monitor · 2026-06-02 rerun</div>
+    <h1>把旧标的重新拆成可证伪、可监控、可复盘的系统</h1>
+    <p class="lead">
+      这份页面把 <code>BTC / MSTR / NVDA / GOOG / AAPL / PDD / CRCL</code> 放进同一套框架：
+      先找现金流或价值地板，再看平台转折，最后才讨论远期期权。它不是买卖建议，
+      而是一张“什么还成立、什么算变坏、该持续盯什么”的研究底稿。
+    </p>
+    <div class="meta-row">
+      <div class="meta-pill"><strong>方法</strong> 三层模型 + 竞争向量 + 基本面红线</div>
+      <div class="meta-pill"><strong>状态</strong> 本地监控数据 + 外部一手资料交叉</div>
+      <div class="meta-pill"><strong>输出</strong> 7 个标的、10 项 rubric、3 个 SkillOpt 候选改进</div>
+    </div>
+  </header>
+
+  <section id="overview" class="section">
+    <h2>快速结论</h2>
+    <table class="scoreboard">
+      <thead>
+        <tr>
+          <th>标的</th>
+          <th>当前判断</th>
+          <th>最该盯的变量</th>
+          <th>当前主要风险</th>
+          <th>Rubric</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ticker">BTC</td>
+          <td>核心结构性资产仍成立</td>
+          <td>ETF 持仓/净流、实际利率、链上安全预算</td>
+          <td>ETF bid 反转、宏观风险资产化</td>
+          <td><span class="rubric">95</span></td>
+        </tr>
+        <tr>
+          <td class="ticker">MSTR</td>
+          <td>thesis 明显弱于直接 BTC</td>
+          <td>mNAV、BTC/share、优先股/转债负担</td>
+          <td>mNAV 折价下继续融资会伤害普通股</td>
+          <td><span class="rubric">96</span></td>
+        </tr>
+        <tr>
+          <td class="ticker">NVDA</td>
+          <td>AI 工厂现金流地板极厚</td>
+          <td>Data Center YoY、GM、FCF、ASIC 替代</td>
+          <td>客户自研 ASIC + capex 纪律</td>
+          <td><span class="rubric">96</span></td>
+        </tr>
+        <tr>
+          <td class="ticker">GOOG</td>
+          <td>搜索现金牛 + AI full-stack 组合成立</td>
+          <td>Search growth、Cloud growth/margin、capex ROI</td>
+          <td>反垄断 + AI 搜索替代 + capex 过热</td>
+          <td><span class="rubric">95</span></td>
+        </tr>
+        <tr>
+          <td class="ticker">AAPL</td>
+          <td>硬件生态现金牛 + Services 复利仍成立</td>
+          <td>iPhone 周期、Services GM、installed base、AI 端侧能力</td>
+          <td>AI 叙事落后、监管抽佣压力、硬件换机周期变长</td>
+          <td><span class="rubric">95</span></td>
+        </tr>
+        <tr>
+          <td class="ticker">PDD</td>
+          <td>低价电商效率地板仍在，利润再投资周期更重</td>
+          <td>Transaction services、non-GAAP profit、cash、Temu/supply-chain investment</td>
+          <td>跨境监管、补贴强度、利润率重置、商家/物流质量</td>
+          <td><span class="rubric">95</span></td>
+        </tr>
+        <tr>
+          <td class="ticker">CRCL</td>
+          <td>利息地板成立，平台化仍待证明</td>
+          <td>USDC supply、short rate、retention、CPN/Other revenue</td>
+          <td>降息、分销成本、USDT/PYUSD/银行稳定币</td>
+          <td><span class="rubric">95</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="framework" aria-label="三层投资拆解框架图">
+      <svg viewBox="0 0 980 250" role="img">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#334155"></path>
+          </marker>
+        </defs>
+        <rect x="22" y="44" width="260" height="150" rx="8" fill="#eef6f1" stroke="#b9ddc8"></rect>
+        <text x="152" y="80" text-anchor="middle" font-size="19" font-weight="760" fill="#1f8a5b">第一层：现实地板</text>
+        <text x="152" y="116" text-anchor="middle" font-size="14" fill="#40594a">现金流 / 货币化 / NAV / 服务与交易利润</text>
+        <text x="152" y="146" text-anchor="middle" font-size="14" fill="#40594a">先回答“现在已经有什么”</text>
+        <line x1="300" y1="119" x2="370" y2="119" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"></line>
+
+        <rect x="390" y="44" width="260" height="150" rx="8" fill="#fff3df" stroke="#e4bf82"></rect>
+        <text x="520" y="80" text-anchor="middle" font-size="19" font-weight="760" fill="#b7791f">第二层：平台转折</text>
+        <text x="520" y="116" text-anchor="middle" font-size="14" fill="#5d4a32">分发 / 锁定 / 飞轮 / 费用网络</text>
+        <text x="520" y="146" text-anchor="middle" font-size="14" fill="#5d4a32">再回答“能不能持续捕获”</text>
+        <line x1="668" y1="119" x2="738" y2="119" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"></line>
+
+        <rect x="758" y="44" width="220" height="150" rx="8" fill="#f0f3fb" stroke="#cbd5e1"></rect>
+        <text x="868" y="80" text-anchor="middle" font-size="19" font-weight="760" fill="#315ed8">第三层：远期期权</text>
+        <text x="868" y="116" text-anchor="middle" font-size="14" fill="#445365">主权储备 / 机器人 / Waymo / Arc</text>
+        <text x="868" y="146" text-anchor="middle" font-size="14" fill="#445365">最后才讨论“未来可能有多大”</text>
+      </svg>
+    </div>
+  </section>
+
+  <section id="btc" class="asset btc">
+    <div class="asset-head">
+      <div class="mark">BTC</div>
+      <div>
+        <div class="asset-title"><h2>BTC</h2><span>non-sovereign monetary asset</span></div>
+        <p class="thesis">
+          BTC 不是普通风险资产；它是正在被 ETF、公司 treasury 和全球储值需求制度化的非主权货币资产，
+          因为它把稀缺性、结算最终性和抗审查性绑定到同一个开放网络。
+        </p>
+      </div>
+    </div>
+
+    <div class="layer-grid">
+      <div class="layer"><div class="k">现金流地板</div><p>没有现金流，地板来自货币化程度、流动性、持有者质量和网络安全预算。</p></div>
+      <div class="layer"><div class="k">平台转折</div><p>ETF、托管、衍生品和公司 treasury 把 BTC 转成 institutionally reachable collateral。</p></div>
+      <div class="layer"><div class="k">远期期权</div><p>主权储备、跨境结算、货币重估、layer-2 支付。</p></div>
+    </div>
+
+    <div class="formula">BTC 货币化强度 = 持有者质量 × 可接入流动性 × 稀缺性可信度 × 网络安全预算</div>
+    <div class="current">
+      <div class="metric"><div class="k">BTC price</div><div class="v">about $68,021</div></div>
+      <div class="metric"><div class="k">U.S. spot ETF</div><div class="v">1,276,843 BTC</div></div>
+      <div class="metric"><div class="k">IBIT alone</div><div class="v">784,910.5 BTC</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h3>竞争与替代</h3>
+        <ul class="clean">
+          <li>Gold attacks store-of-value legitimacy.</li>
+          <li>Fiat/stablecoins attack payments convenience.</li>
+          <li>ETH/SOL attack programmable settlement.</li>
+          <li>ETFs attack friction, but also make BTC more macro-flow-sensitive.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>基本面真的变坏</h3>
+        <ul class="clean danger">
+          <li>ETF/treasury adoption stalls for multiple quarters.</li>
+          <li>Hashrate/security budget weakens after fee market fails to mature.</li>
+          <li>Major jurisdictions restrict custody/ETF rails.</li>
+          <li>BTC behaves only as high-beta Nasdaq for a full cycle.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="anti">Anti-thesis：BTC 可能正在成熟为高流动性风险资产，而不是货币储备。如果 ETF 持有人主要是动量资金，制度化会放大回撤，而不是稳定资产。</div>
+  </section>
+
+  <section id="mstr" class="asset mstr">
+    <div class="asset-head">
+      <div class="mark">MSTR</div>
+      <div>
+        <div class="asset-title"><h2>MSTR</h2><span>leveraged BTC capital-market vehicle</span></div>
+        <p class="thesis">
+          MSTR is not a software company; it is a leveraged BTC capital-market vehicle whose value depends on whether
+          its financing flywheel increases BTC per share without trapping common shareholders under a heavier capital stack.
+        </p>
+      </div>
+    </div>
+
+    <div class="layer-grid">
+      <div class="layer"><div class="k">现金流地板</div><p>BTC holdings value minus capital structure claims.</p></div>
+      <div class="layer"><div class="k">平台转折</div><p>premium-to-NAV financing flywheel：用高估值股权/信用买更多 BTC。</p></div>
+      <div class="layer"><div class="k">远期期权</div><p>becoming the preferred listed Bitcoin credit/equity complex.</p></div>
+    </div>
+
+    <div class="formula">MSTR common value ≈ BTC holdings value × mNAV premium - debt/preferred/common dilution drag</div>
+    <div class="current">
+      <div class="metric"><div class="k">Holdings</div><div class="v">843,738 BTC</div></div>
+      <div class="metric"><div class="k">BTC NAV</div><div class="v">about $57.39B</div></div>
+      <div class="metric"><div class="k">Implied mNAV</div><div class="v">about 0.80x</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h3>竞争与替代</h3>
+        <ul class="clean">
+          <li>Direct BTC attacks purity and lower fee/friction.</li>
+          <li>IBIT/FBTC attack institutional-access premium.</li>
+          <li>Other BTC treasury companies attack scarcity of the wrapper.</li>
+          <li>Preferred/convertible stack attacks common equity from inside.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>基本面真的变坏</h3>
+        <ul class="clean danger">
+          <li>mNAV remains below 1.0 and management still issues common equity for BTC.</li>
+          <li>BTC/share stops rising or rises only through fragile senior claims.</li>
+          <li>Preferred dividends/refinancing needs force asset sales or cash leakage.</li>
+          <li>BTC ETFs fully replace MSTR's access premium.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="anti">Anti-thesis：MSTR 可能已从“BTC/share accretion machine”变成“complex capital stack on top of BTC”。普通股不是更干净的 BTC，而是带融资、优先股、治理和稀释风险的剩余索取权。</div>
+  </section>
+
+  <section id="nvda" class="asset nvda">
+    <div class="asset-head">
+      <div class="mark">NVDA</div>
+      <div>
+        <div class="asset-title"><h2>NVDA</h2><span>AI factory integrator</span></div>
+        <p class="thesis">
+          NVIDIA is not merely a GPU vendor; it is the default AI factory integrator because it converts AI capex
+          into usable intelligent capacity faster and with lower execution risk than alternatives.
+        </p>
+      </div>
+    </div>
+
+    <div class="layer-grid">
+      <div class="layer"><div class="k">现金流地板</div><p>Data Center revenue × gross margin × FCF conversion.</p></div>
+      <div class="layer"><div class="k">平台转折</div><p>CUDA、NVLink、networking、rack systems、software 和部署确定性。</p></div>
+      <div class="layer"><div class="k">远期期权</div><p>physical AI、robotics、AI-RAN、Omniverse、edge AI。</p></div>
+    </div>
+
+    <div class="formula">AI factory floor = Data Center revenue × gross margin × FCF conversion × refresh cycle</div>
+    <div class="current">
+      <div class="metric"><div class="k">Q1 FY2027 revenue</div><div class="v">$81.615B</div></div>
+      <div class="metric"><div class="k">Data Center</div><div class="v">$75.2B / +92%</div></div>
+      <div class="metric"><div class="k">MCap / annualized FCF</div><div class="v">about 28.6x</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h3>竞争与替代</h3>
+        <ul class="clean">
+          <li>AMD attacks GPU supply and price.</li>
+          <li>Broadcom/custom ASICs attack mature large-scale inference workloads.</li>
+          <li>Google TPU / AWS Trainium / Microsoft Maia attack hyperscaler dependence.</li>
+          <li>Power, HBM, CoWoS and networking bottlenecks attack supply.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>基本面真的变坏</h3>
+        <ul class="clean danger">
+          <li>Data Center growth slows while customer capex remains high.</li>
+          <li>Gross margin breaks below 70% for more than a transient reason.</li>
+          <li>Networking attach rate falls.</li>
+          <li>Hyperscalers shift incremental inference scale to custom ASICs.</li>
+          <li>CUDA migration friction materially declines.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="anti">Anti-thesis：NVIDIA 的当前经济性可能是 capex 军备竞赛的高峰阶段。如果模型 scaling ROI 变弱，或 hyperscalers 在内部 ASIC 上稳定 workload，市场会把它从 AI 平台重新定价为周期性资本设备供应商。</div>
+  </section>
+
+  <section id="goog" class="asset goog">
+    <div class="asset-head">
+      <div class="mark">GOOG</div>
+      <div>
+        <div class="asset-title"><h2>GOOG</h2><span>full-stack AI distribution company</span></div>
+        <p class="thesis">
+          GOOG is not merely a search cash cow; it is a full-stack AI distribution company because Search, YouTube,
+          Android, Cloud, TPU and Gemini let it both defend old attention markets and monetize new AI compute demand.
+        </p>
+      </div>
+    </div>
+
+    <div class="layer-grid">
+      <div class="layer"><div class="k">现金流地板</div><p>Search/YouTube ads plus Google Services operating income.</p></div>
+      <div class="layer"><div class="k">平台转折</div><p>Cloud + Gemini + TPU 把内部 AI 能力变成企业收入和基础设施独立性。</p></div>
+      <div class="layer"><div class="k">远期期权</div><p>Waymo、DeepMind、agentic search、enterprise AI subscriptions、AI-native devices。</p></div>
+    </div>
+
+    <div class="formula">GOOG floor = Search durability × ad monetization × Cloud growth/margin × capex ROI</div>
+    <div class="current">
+      <div class="metric"><div class="k">Q1 2026 revenue</div><div class="v">$109.9B / +22%</div></div>
+      <div class="metric"><div class="k">Google Cloud</div><div class="v">$20.028B / +63%</div></div>
+      <div class="metric"><div class="k">Operating margin</div><div class="v">36.1%</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h3>竞争与替代</h3>
+        <ul class="clean">
+          <li>ChatGPT/Perplexity/Claude attack query habit and answer interface.</li>
+          <li>Amazon/retail media attack commercial search ads.</li>
+          <li>Microsoft/OpenAI attack enterprise AI distribution.</li>
+          <li>Antitrust remedies attack default search distribution.</li>
+          <li>TPU stack partly attacks NVIDIA reliance.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>基本面真的变坏</h3>
+        <ul class="clean danger">
+          <li>Search revenue growth turns negative or monetization per query deteriorates.</li>
+          <li>AI Overviews / answer engines cannibalize ads faster than query volume expands.</li>
+          <li>Cloud growth slows before margins mature.</li>
+          <li>Antitrust remedies weaken default distribution materially.</li>
+          <li>Capex rises faster than durable AI revenue.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="anti">Anti-thesis：GOOG 可能是在用 AI 防守旧 Search rent，而不是创造新利润池。如果 capex intensity 上升，同时 Search monetization 压缩，“safe AI winner”会变成资本密集防守故事。</div>
+  </section>
+
+  <section id="aapl" class="asset aapl">
+    <div class="asset-head">
+      <div class="mark">AAPL</div>
+      <div>
+        <div class="asset-title"><h2>AAPL</h2><span>installed-base cash-flow compounder</span></div>
+        <p class="thesis">
+          AAPL is not just a hardware cycle stock; it is an installed-base cash-flow compounder whose value depends on
+          converting device loyalty into high-margin Services, while proving that on-device AI can refresh the ecosystem instead of only defending it.
+        </p>
+      </div>
+    </div>
+
+    <div class="layer-grid">
+      <div class="layer"><div class="k">现金流地板</div><p>iPhone + Services + gross margin + buyback capacity。</p></div>
+      <div class="layer"><div class="k">平台转折</div><p>installed base、App Store、iCloud、Apple Pay、device-to-service bundling 把硬件关系变成持续现金流。</p></div>
+      <div class="layer"><div class="k">远期期权</div><p>on-device AI、personal agents、Vision/health、private compute、下一代设备形态。</p></div>
+    </div>
+
+    <div class="formula">AAPL floor = installed base × device replacement × Services attach × gross margin × capital return</div>
+    <div class="current">
+      <div class="metric"><div class="k">Q2 FY2026 revenue</div><div class="v">$111.2B / +17%</div></div>
+      <div class="metric"><div class="k">Services revenue</div><div class="v">$30.976B</div></div>
+      <div class="metric"><div class="k">Gross margin</div><div class="v">49.3%</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h3>竞争与替代</h3>
+        <ul class="clean">
+          <li>Samsung/Android attack hardware price and form-factor parity.</li>
+          <li>Google/OpenAI/Microsoft attack the AI assistant layer and user intent interface.</li>
+          <li>EU/US regulators attack App Store take rate, default placement and platform control.</li>
+          <li>China local brands and geopolitics attack premium share and supply-chain resilience.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>基本面真的变坏</h3>
+        <ul class="clean danger">
+          <li>iPhone replacement cycle elongates while Services growth also slows.</li>
+          <li>Services gross margin compresses because App Store economics are regulated down.</li>
+          <li>Installed base stops growing or active-device engagement deteriorates.</li>
+          <li>Apple fails to turn AI into a better device/service loop and becomes only a hardware cash cow.</li>
+          <li>China demand or supply-chain risk becomes structural rather than cyclical.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="anti">Anti-thesis：AAPL 可能是极强现金牛，但 AI 时代的“用户入口”被外部模型公司拿走。如果 Apple 只能防守硬件和抽佣，而不能重塑个人 AI 体验，估值会从平台复利重新回到成熟消费电子。</div>
+  </section>
+
+  <section id="pdd" class="asset pdd">
+    <div class="asset-head">
+      <div class="mark">PDD</div>
+      <div>
+        <div class="asset-title"><h2>PDD</h2><span>discount-commerce operating system</span></div>
+        <p class="thesis">
+          PDD is not only a China e-commerce platform; it is a discount-commerce operating system whose value depends on
+          whether transaction-services scale and supply-chain investments can create durable merchant/user economics without permanently resetting margins lower.
+        </p>
+      </div>
+    </div>
+
+    <div class="layer-grid">
+      <div class="layer"><div class="k">现金流地板</div><p>online marketing + transaction services + operating profit + net cash。</p></div>
+      <div class="layer"><div class="k">平台转折</div><p>merchant density、低价履约、拼多多主站、Temu 和供应链投资把低价优势转成规模网络。</p></div>
+      <div class="layer"><div class="k">远期期权</div><p>跨境电商、first-party brand、供应链金融、全球低价 marketplace。</p></div>
+    </div>
+
+    <div class="formula">PDD floor = transaction volume × take rate × merchant density × marketing efficiency - reinvestment burden</div>
+    <div class="current">
+      <div class="metric"><div class="k">Q1 2026 revenue</div><div class="v">RMB106.2B / +11%</div></div>
+      <div class="metric"><div class="k">Transaction services</div><div class="v">RMB56.3B / +20%</div></div>
+      <div class="metric"><div class="k">Cash + short-term investments</div><div class="v">RMB436.1B</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h3>竞争与替代</h3>
+        <ul class="clean">
+          <li>Alibaba/JD attack trust, logistics, merchant relationships and premium categories.</li>
+          <li>Douyin/Kuaishou attack discovery commerce and ad budgets.</li>
+          <li>Amazon/Shein/marketplace regulation attack Temu's global expansion path.</li>
+          <li>Offline discount retailers attack low-price credibility and fulfillment convenience.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>基本面真的变坏</h3>
+        <ul class="clean danger">
+          <li>Revenue grows but non-GAAP profit and operating cash flow structurally deteriorate.</li>
+          <li>Transaction-services growth slows while marketing spend remains elevated.</li>
+          <li>Supply-chain investments become recurring subsidy rather than durable efficiency.</li>
+          <li>Temu faces regulatory, tariff, logistics or consumer-quality constraints that cap international scale.</li>
+          <li>Merchant trust, product quality or fulfillment problems weaken the low-price flywheel.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="anti">Anti-thesis：PDD 可能不是“低估值高增长”，而是进入一轮利润再投资和全球合规成本重估。收入增长还在，但如果利润率被长期压低，现金地板会变厚，股东回报地板却未必同步变厚。</div>
+  </section>
+
+  <section id="crcl" class="asset crcl">
+    <div class="asset-head">
+      <div class="mark">CRCL</div>
+      <div>
+        <div class="asset-title"><h2>CRCL</h2><span>regulated dollar infrastructure</span></div>
+        <p class="thesis">
+          CRCL is not an AI stock; it is regulated dollar infrastructure whose floor is USDC reserve economics and whose
+          upside depends on converting trusted circulation into payment-network fees.
+        </p>
+      </div>
+    </div>
+
+    <div class="layer-grid">
+      <div class="layer"><div class="k">现金流地板</div><p>USDC circulation × short-rate yield × Circle retention.</p></div>
+      <div class="layer"><div class="k">平台转折</div><p>CCTP / CPN / Gateway / agent payments 把稳定币使用变成 fee revenue。</p></div>
+      <div class="layer"><div class="k">远期期权</div><p>Arc、ARC token ecosystem、AI agent commerce、institutional settlement。</p></div>
+    </div>
+
+    <div class="formula">Interest floor = USDC circulation × short Treasury yield × Circle net retention</div>
+    <div class="current">
+      <div class="metric"><div class="k">USDC circulation</div><div class="v">about $76.02B</div></div>
+      <div class="metric"><div class="k">Short rate</div><div class="v">3.78%</div></div>
+      <div class="metric"><div class="k">Retained floor</div><div class="v">about $1.19B</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h3>竞争与替代</h3>
+        <ul class="clean">
+          <li>USDT attacks global offshore dollar liquidity and emerging-market distribution.</li>
+          <li>PYUSD attacks wallet and merchant distribution.</li>
+          <li>Banks attack regulated corporate treasury use cases.</li>
+          <li>Coinbase and other distributors attack retention by capturing reserve economics.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>基本面真的变坏</h3>
+        <ul class="clean danger">
+          <li>USDC share falls while the stablecoin market grows.</li>
+          <li>Short rates fall and USDC growth does not offset yield decline.</li>
+          <li>Coinbase/distributor take worsens.</li>
+          <li>CPN/Other Revenue fails to become material.</li>
+          <li>Regulation narrows reserve economics or blocks key use cases.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="anti">Anti-thesis：CRCL 可能长期停留在低留存率储备收入业务。稳定币用量可以增长，但 Circle 股东未必能捕获足够网络价值。</div>
+  </section>
+
+  <section id="monitor" class="section">
+    <h2>持续监控怎么落地</h2>
+    <div class="two-col">
+      <div class="panel">
+        <h3>Daily / Weekly</h3>
+        <ul class="clean watch">
+          <li>BTC：价格、ETF net flows、ETF holdings、real rates、DXY。</li>
+          <li>MSTR：mNAV、BTC/share、MSTR/BTC beta、8-K financing actions。</li>
+          <li>CRCL：USDC supply、short rates、market cap / retained floor、USDC vs USDT share。</li>
+          <li>AAPL：iPhone demand、Services growth、regulatory headlines、China demand。</li>
+          <li>PDD：price reaction、Temu regulatory/tariff headlines、China consumption signals。</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Quarterly / Annual</h3>
+        <ul class="clean watch">
+          <li>NVDA：Data Center revenue、GM、FCF margin、guide growth、ASIC share。</li>
+          <li>GOOG：Search revenue、Cloud revenue/margin、capex、TAC、AI search behavior。</li>
+          <li>AAPL：Services gross margin、installed base、buybacks、AI feature adoption。</li>
+          <li>PDD：transaction services、non-GAAP profit、operating cash flow、cash balance、reinvestment intensity。</li>
+          <li>MSTR：capital structure、preferred dividends、BTC yield quality、index inclusion odds。</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">这张页面的用法不是“看完得出永恒结论”，而是把每个 thesis 变成一组会变动的变量。变量坏了，故事就必须改。</p>
+  </section>
+
+  <section id="skillopt" class="section">
+    <h2>SkillOpt-lite 反馈</h2>
+    <div class="skillopt">
+      <div class="opt">
+        <strong>What worked</strong>
+        <p>三层模型能防止远期期权污染现金流地板；竞争向量让 MSTR vs BTC、NVDA vs ASICs 更清楚；valuation/reflexivity 让 GOOG 和 MSTR 少一点故事化。</p>
+      </div>
+      <div class="opt">
+        <strong>What still needs improvement</strong>
+        <p>每个资产都要明确索取权层级；平台叙事前要问“谁捕获价值”；AI/基础设施公司必须补 reinvestment burden。</p>
+      </div>
+      <div class="opt">
+        <strong>Candidate bounded edits</strong>
+        <p>1. Add claim hierarchy.<br>2. Add value-capture test.<br>3. Add reinvestment burden for capital-intensive AI/infrastructure businesses.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="sources" class="section">
+    <h2>Sources used</h2>
+    <ul class="sources">
+      <li><span class="tag">Circle</span><a href="https://www.circle.com/pressroom/circle-reports-first-quarter-2026-results" target="_blank" rel="noopener">Circle Q1 2026 results</a></li>
+      <li><span class="tag">NVIDIA</span><a href="https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-first-quarter-fiscal-2027" target="_blank" rel="noopener">NVIDIA Q1 FY2027 results</a></li>
+      <li><span class="tag">Alphabet</span><a href="https://www.sec.gov/Archives/edgar/data/1652044/000165204426000043/googexhibit991q12026.htm" target="_blank" rel="noopener">Alphabet Q1 2026 results</a></li>
+      <li><span class="tag">Apple</span><a href="https://www.apple.com/newsroom/2026/04/apple-reports-second-quarter-results/" target="_blank" rel="noopener">Apple Q2 FY2026 results</a></li>
+      <li><span class="tag">Apple 10-Q</span><a href="https://www.sec.gov/Archives/edgar/data/320193/000032019326000013/aapl-20260328.htm" target="_blank" rel="noopener">Apple Q2 FY2026 Form 10-Q</a></li>
+      <li><span class="tag">PDD</span><a href="https://investor.pddholdings.com/news-releases/news-release-details/pdd-holdings-announces-first-quarter-2026-unaudited-financial/" target="_blank" rel="noopener">PDD Holdings Q1 2026 results</a></li>
+      <li><span class="tag">PDD SEC</span><a href="https://www.sec.gov/Archives/edgar/data/1737806/000110465926067186/tm2615739d1_ex99-1.htm" target="_blank" rel="noopener">PDD Holdings Q1 2026 SEC exhibit</a></li>
+      <li><span class="tag">Strategy</span><a href="https://www.sec.gov/Archives/edgar/data/1050446/000105044626000024/mstr-20260505x8kxex991.htm" target="_blank" rel="noopener">Strategy Q1 2026 results</a></li>
+      <li><span class="tag">Bitcoin ETFs</span><a href="https://bitbo.io/treasuries/us-etfs/" target="_blank" rel="noopener">Bitbo Bitcoin ETF holdings</a></li>
+      <li><span class="tag">Local monitor</span><span>CRCL: <code>crcl-floor-monitor/data/latest.json</code> · NVDA: <code>nvda-factory-monitor/data/latest.json</code> · MSTR: <code>data.db</code>, <code>notes/saylor_state.json</code></span></li>
+    </ul>
+  </section>
+
+  <footer>
+    Extended from <code>notes/re-underwrite/2026-06-02-skill-rerun.md</code> with AAPL/PDD source checks. This page is a research artifact, not investment advice.
+  </footer>
+</main>
+</body>
+</html>

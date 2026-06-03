@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSTR 研究总结 · 2026-05-17</title>
+<style>
+:root {
+  --bg: oklch(98.5% 0.004 95);
+  --surface: oklch(100% 0 0);
+  --ink: oklch(22% 0.012 60);
+  --ink-soft: oklch(45% 0.01 60);
+  --accent: oklch(64% 0.18 55);          /* BTC orange */
+  --accent-soft: oklch(75% 0.12 55);
+  --red: oklch(55% 0.20 25);
+  --green: oklch(55% 0.16 145);
+  --line: oklch(90% 0.006 80);
+  --code-bg: oklch(96% 0.006 90);
+  --max: 52rem;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 1.0625rem/1.7 ui-sans-serif, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: var(--max); margin: 0 auto; padding: 4rem 1.5rem 8rem; }
+article { background: var(--surface); padding: 3rem 3rem 4rem; border-radius: 4px; box-shadow: 0 1px 3px oklch(0% 0 0 / 0.04), 0 12px 40px oklch(0% 0 0 / 0.05); }
+h1, h2, h3, h4 {
+  font-family: ui-serif, Georgia, "Songti SC", serif;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 2.4em 0 0.7em;
+}
+h1 {
+  font-size: clamp(1.9rem, 1.4rem + 2vw, 2.6rem);
+  margin-top: 0;
+  padding-bottom: 0.4em;
+  border-bottom: 3px solid var(--accent);
+}
+h2 {
+  font-size: 1.5rem;
+  padding-left: 0.7rem;
+  border-left: 4px solid var(--accent);
+}
+h3 { font-size: 1.15rem; color: var(--ink); }
+h4 { font-size: 1rem; color: var(--ink-soft); }
+p, li { color: var(--ink); }
+strong { color: oklch(30% 0.02 60); }
+hr { border: none; border-top: 1px solid var(--line); margin: 2.6rem 0; }
+ul, ol { padding-left: 1.4rem; }
+li { margin: 0.35em 0; }
+
+blockquote {
+  margin: 1.4rem 0;
+  padding: 0.7rem 1.2rem;
+  background: color-mix(in oklch, var(--accent) 7%, var(--surface));
+  border-left: 3px solid var(--accent);
+  color: var(--ink-soft);
+}
+
+code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.92em;
+  background: var(--code-bg);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+}
+pre {
+  background: var(--code-bg);
+  padding: 1rem 1.2rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border: 1px solid var(--line);
+}
+pre code { background: none; padding: 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2rem 0;
+  font-size: 0.95rem;
+}
+th, td {
+  text-align: left;
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+th {
+  font-weight: 600;
+  background: color-mix(in oklch, var(--accent) 5%, var(--surface));
+  color: oklch(28% 0.02 60);
+  border-bottom: 2px solid var(--accent-soft);
+}
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+tr:hover td { background: color-mix(in oklch, var(--accent) 3%, transparent); }
+
+.meta { color: var(--ink-soft); font-size: 0.92rem; margin-top: -0.6rem; }
+.meta time { font-variant-numeric: tabular-nums; }
+
+.callout {
+  margin: 1.6rem 0;
+  padding: 1rem 1.3rem;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.callout.alert { border-color: color-mix(in oklch, var(--red) 40%, var(--line)); background: color-mix(in oklch, var(--red) 4%, var(--surface)); }
+.callout.signal { border-color: color-mix(in oklch, var(--accent) 50%, var(--line)); background: color-mix(in oklch, var(--accent) 6%, var(--surface)); }
+.callout.kicker { font-family: ui-serif, Georgia, serif; font-size: 1.1rem; font-style: italic; }
+
+.tag {
+  display: inline-block;
+  padding: 0.1em 0.55em;
+  border-radius: 3px;
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.tag.p0 { background: var(--red); color: white; }
+.tag.p1 { background: var(--accent); color: white; }
+.tag.p2 { background: var(--accent-soft); color: oklch(22% 0.05 55); }
+.tag.ok { background: var(--green); color: white; }
+.tag.pending { background: oklch(85% 0.01 60); color: var(--ink-soft); }
+
+.formula {
+  text-align: center;
+  font-size: 1.25rem;
+  margin: 1.4rem 0;
+  font-family: "Latin Modern Math", "Cambria Math", Georgia, serif;
+  font-style: italic;
+}
+
+.toc { background: color-mix(in oklch, var(--accent) 4%, var(--surface)); padding: 1.2rem 1.6rem; border-radius: 6px; margin: 2rem 0; border: 1px solid var(--line); }
+.toc ol { margin: 0.4rem 0 0; padding-left: 1.4rem; }
+.toc li { margin: 0.2em 0; font-size: 0.96rem; }
+.toc a { color: var(--ink); text-decoration: none; border-bottom: 1px dotted var(--line); }
+.toc a:hover { border-bottom-color: var(--accent); color: var(--accent); }
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in oklch, var(--accent) 35%, transparent); }
+a:hover { border-bottom-color: var(--accent); }
+
+@media (max-width: 640px) {
+  article { padding: 2rem 1.3rem 3rem; }
+  .wrap { padding: 1.5rem 0.5rem 4rem; }
+  table { font-size: 0.85rem; }
+  th, td { padding: 0.45rem 0.5rem; }
+  pre { font-size: 0.8rem; }
+}
+@media print {
+  body { background: white; }
+  article { box-shadow: none; padding: 0; }
+  .toc { background: none; border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<article>
+
+<h1>MicroStrategy (MSTR) 研究总结</h1>
+<p class="meta">研究周期 2026-05-14 → <time>2026-05-17</time> · 数据快照 BTC $78,030 / MSTR $177.42 / 持仓 818,869 BTC</p>
+
+<div class="callout signal kicker">
+MSTR 当前 mNAV ≈ 0.97,处于 15 年加密历史里第三次「折价交易 BTC NAV」窗口。按 duration 数学,这是 10 年级买点候选之一;但 2027-10 前必须主动减仓,不能等 2028-29 到期墙;Saylor 卖币是唯一 override 一切的红线。
+</div>
+
+<nav class="toc">
+<strong>目录</strong>
+<ol>
+  <li><a href="#thesis">核心论题与可验证性分层</a></li>
+  <li><a href="#math">数学骨架:duration vs cycle</a></li>
+  <li><a href="#live">当前实时数据</a></li>
+  <li><a href="#entry">入场策略($200K · 4 档触发)</a></li>
+  <li><a href="#exit">出场策略(三套并行)</a></li>
+  <li><a href="#infra">监控基础设施(已建成)</a></li>
+  <li><a href="#views">多视角对照</a></li>
+  <li><a href="#risk">风险地图</a></li>
+  <li><a href="#todo">待办</a></li>
+</ol>
+</nav>
+
+<h2 id="thesis">一 · 核心论题与可验证性分层</h2>
+
+<p><strong>胡翌霖框架</strong>:MSTR 不是杠杆 BTC 多头,不是庞氏。本质是「比特币本位 vs 法币本位」之间的认知套利——给法币世界提供现金流,把法币换成 BTC,<strong>赌 BTC 长期涨幅 &gt; 美元利息成本</strong>。<em>不是赌方向,是赌时间。</em></p>
+
+<table>
+<thead><tr><th style="width:3em">层</th><th>内容</th><th style="width:11em">可验证性</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>KPI 已切换为 sats/share(会计单位换轨)</td><td><span class="tag ok">已验证</span></td></tr>
+<tr><td>2</td><td>long-duration · 低票息 · 强制转股 = 把路径风险压成端点风险</td><td><span class="tag ok">SEC 可查</span></td></tr>
+<tr><td>3</td><td>飞轮只在「过渡期」有意义,本位真切换则中介无用</td><td><span class="tag pending">概念性</span></td></tr>
+<tr><td>4</td><td>BTC 成为全球本位资产,MSTR 无需兑付美元</td><td><span class="tag pending">10-20 年尾部</span></td></tr>
+</tbody>
+</table>
+
+<p>实操<strong>只用前两层</strong>。第三、第四层是信仰,不进决策。</p>
+
+<h2 id="math">二 · 数学骨架:duration vs cycle</h2>
+
+<p>单笔债务到期不爆的生存不等式:</p>
+
+<p class="formula">P<sub>t</sub> / P<sub>0</sub>  &gt;  1 + r · D</p>
+
+<p>把 P<sub>t</sub>/P<sub>0</sub> 拆成「趋势 × 周期相位」后,趋势项随 D 指数发散,相位项有界,所以 <strong>D 越大,相位风险被趋势压平</strong>。代入 BTC 历史滚动窗口最差年化:</p>
+
+<table>
+<thead><tr><th>D</th><th class="num">历史最差 P<sub>t</sub>/P<sub>0</sub></th><th class="num">需达到(r=0.5%)</th><th>结论</th></tr></thead>
+<tbody>
+<tr><td>1 年</td><td class="num">0.18</td><td class="num">1.005</td><td><span class="tag p0">可能爆</span></td></tr>
+<tr><td>4 年</td><td class="num">0.89</td><td class="num">1.020</td><td>临界</td></tr>
+<tr><td><strong>5 年</strong></td><td class="num"><strong>3.3</strong></td><td class="num">1.025</td><td><span class="tag ok">130× 安全</span></td></tr>
+<tr><td><strong>7 年</strong></td><td class="num"><strong>9.4</strong></td><td class="num">1.035</td><td><span class="tag ok">270× 安全</span></td></tr>
+</tbody>
+</table>
+
+<p><strong>临界拐点 = 4-5 年</strong>(刚好一个 halving 周期)。Saylor 把债务 duration 设计成跨过此线 → payoff 从 path-dependent 退化为 path-independent。</p>
+
+<blockquote>护城河 = 主动选择让「相信」变得无关紧要的 duration。</blockquote>
+
+<h2 id="live">三 · 当前实时数据</h2>
+
+<pre><code>BTC      = $78,030
+MSTR     = $177.42
+basic shares    = 350,679,196
+holdings        = 818,869 BTC   (strategy.com 直抓 2026-05-10)
+mcap basic      = $62.22B
+BTC NAV         = $63.90B
+mNAV            = 0.974   →  P1_extreme</code></pre>
+
+<div class="callout alert">
+<strong>MSTR 已折价交易 BTC NAV。</strong>15 年加密历史中第三次出现这种窗口(前两次 2020-03 / 2022-11),分别对应 24 月回报 ~10× 和 ~12×。
+</div>
+
+<p>7 条件极端买点清单当前满足 <strong>3/7</strong>:</p>
+
+<table>
+<thead><tr><th style="width:2em">#</th><th>条件</th><th style="width:7em">状态</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>BTC 从前高回撤 ≥ 60%</td><td><span class="tag pending">待评估</span></td></tr>
+<tr><td>2</td><td>距下次 halving 12-18 月</td><td><span class="tag pending">~30 月,未到</span></td></tr>
+<tr><td>3</td><td>mNAV &lt; 1.0 持续</td><td><span class="tag ok">已触发</span></td></tr>
+<tr><td>4</td><td>最近大债到期 &gt; 24 月</td><td><span class="tag ok">满足</span></td></tr>
+<tr><td>5</td><td>HY 信用利差 &gt; 800bp</td><td><span class="tag pending">待查</span></td></tr>
+<tr><td>6</td><td>MSTR 借券率 &gt; 20%</td><td><span class="tag pending">待查</span></td></tr>
+<tr><td>7</td><td>Saylor 仍公开加仓</td><td><span class="tag ok">满足</span></td></tr>
+</tbody>
+</table>
+
+<p>属于<strong>弱信号</strong>,不是 perfect storm → 可触发 T1-T2,T3-T4 留弹。</p>
+
+<h2 id="entry">四 · 入场策略 · 4 档触发式 DCA · $200K</h2>
+
+<table>
+<thead><tr><th>档</th><th class="num">金额</th><th>触发条件</th><th>工具</th></tr></thead>
+<tbody>
+<tr><td><strong>T1</strong></td><td class="num">$50K</td><td>BTC 回撤 ≥ 40%(无条件基础档)</td><td>IBIT / FBTC</td></tr>
+<tr><td><strong>T2</strong></td><td class="num">$50K</td><td>BTC 回撤 ≥ 55% <em>且</em> 距 halving &lt; 18 月</td><td>IBIT / FBTC</td></tr>
+<tr><td><strong>T3</strong></td><td class="num">$50K</td><td>mNAV &lt; 1.5 持续 2 周 <em>且</em> Saylor 加仓中</td><td>50% MSTR + 50% IBIT</td></tr>
+<tr><td><strong>T4</strong></td><td class="num">$50K</td><td>mNAV &lt; 1.0 <em>且</em> BTC 回撤 ≥ 70%(预备弹)</td><td>70% MSTR + 30% IBIT</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+<strong>日本税务硬约束</strong>:走 IBIT / MSTR / ETF(20.315%)而非现货 BTC(雑所得最高 55%)。<strong>35pp 税差不可让</strong>——同样 $1M 收益,现货比 ETF 多交 $35 万税。
+</div>
+
+<h2 id="exit">五 · 出场策略 · 三套并行,任一命中</h2>
+
+<table>
+<thead><tr><th>信号</th><th>行动</th><th style="width:4em">优先级</th></tr></thead>
+<tbody>
+<tr><td><strong>Saylor 公开卖 BTC</strong>(任何剂量)</td><td>立即全清 MSTR + BTC 减半</td><td><span class="tag p0">P0</span></td></tr>
+<tr><td>BTC ×3 或 mNAV &gt; 2.5 持续 4 周</td><td>减仓 33%,落本金</td><td><span class="tag p1">P1</span></td></tr>
+<tr><td>BTC ×5 或下下次 halving 前 3 月</td><td>再减 33%,只留底仓</td><td><span class="tag p1">P1</span></td></tr>
+<tr><td><strong>2027 年 10 月底(硬日历)</strong></td><td>无条件减至 1/3,不论盈亏</td><td><span class="tag p0">P0</span></td></tr>
+<tr><td>12 月内到期债 &gt; 现金 + ATM 容量</td><td>duration 假设破,清仓</td><td><span class="tag p0">P0</span></td></tr>
+</tbody>
+</table>
+
+<p>留 ~33% 永久仓,博本位真正切换的尾部。</p>
+
+<h2 id="infra">六 · 监控基础设施(已建成完整系统)</h2>
+
+<p>项目路径:<code>/Volumes/PortableSSD/Codes/mstr-mnav-monitor/</code></p>
+
+<table>
+<thead><tr><th>文件</th><th class="num">行数</th><th>职责</th></tr></thead>
+<tbody>
+<tr><td><code>monitor.py</code></td><td class="num">401</td><td>主采集 · 三档持仓 fallback · 双档 mNAV · 8-K 监听 · DB 写入</td></tr>
+<tr><td><code>db.py</code></td><td class="num">170</td><td>SQLite schema: snapshots / filings / alerts + upsert</td></tr>
+<tr><td><code>dashboard.py</code></td><td class="num">277</td><td>Streamlit + Plotly 可视化面板</td></tr>
+<tr><td><code>analyst.py</code></td><td class="num">150</td><td>Anthropic Claude 接口,「AI 趋势分析」按钮</td></tr>
+<tr><td><code>suggest.py</code></td><td class="num">261</td><td>操作建议引擎</td></tr>
+<tr><td><code>backfill.py</code></td><td class="num">174</td><td>历史数据回填</td></tr>
+<tr><td><code>data.db</code></td><td class="num">—</td><td>SQLite,<strong>已累积 252 条 snapshot</strong></td></tr>
+</tbody>
+</table>
+
+<h3>数据源级联</h3>
+<ul>
+<li>BTC 价格 → CoinGecko · MSTR → yfinance</li>
+<li>BTC 持仓 → strategy.com「we hodl」最新日期项 → bitcointreasuries → hardcoded</li>
+<li>摊薄股本 → SEC XBRL · 8-K 监听 → EDGAR atom feed</li>
+<li>推送 → ntfy.sh · AI 趋势分析 → Anthropic API</li>
+</ul>
+
+<h3>告警分级</h3>
+<table>
+<thead><tr><th>级别</th><th>触发</th><th>推送优先级</th></tr></thead>
+<tbody>
+<tr><td><span class="tag p0">P0</span></td><td>Saylor 卖出 BTC(8-K body 含 sell 关键词)</td><td>urgent</td></tr>
+<tr><td><span class="tag p1">P1_extreme</span></td><td>mNAV &lt; 1.0</td><td>high</td></tr>
+<tr><td><span class="tag p1">P1_entry</span></td><td>mNAV &lt; 1.2</td><td>high</td></tr>
+<tr><td><span class="tag p2">P2_observe</span></td><td>mNAV &lt; 1.5</td><td>default</td></tr>
+<tr><td><span class="tag p2">8-K 买入</span></td><td>acquired / purchased BTC 字样</td><td>default</td></tr>
+</tbody>
+</table>
+
+<h2 id="views">七 · 多视角对照</h2>
+
+<table>
+<thead><tr><th>视角</th><th>时间尺度</th><th>MSTR 性质</th><th>对你的用法</th></tr></thead>
+<tbody>
+<tr><td>胡翌霖 本位之争</td><td>10-20 年</td><td>文明级套利机器</td><td>让你<strong>敢入场</strong></td></tr>
+<tr><td>硅谷101 E183</td><td>3-5 年</td><td>教主级销售 + 庞氏飞轮 · <strong>2028-29 到期墙</strong></td><td>让你<strong>记得出场</strong></td></tr>
+<tr><td>Campbell Wedge/Victim</td><td>1-2 年战术</td><td>完美 victim 候选(利率为 wedge)</td><td>帮你<strong>对冲</strong></td></tr>
+</tbody>
+</table>
+
+<p>三家不冲突,是不同时间尺度的拼图。完整 mental model = <strong>胡的方向 + 硅谷101 的日历 + Campbell 的对冲</strong>。</p>
+
+<h3>横向对照 · Oracle 作为 AI 时代债务王</h3>
+
+<p>Oracle ~$96B 长期债务,FY2026 指引 $130B+,几乎全部投入 Stargate / OpenAI 算力基建。<strong>利率敏感性结构性高于 MSTR</strong>:MSTR 票息已锁 · duration 长;Oracle 再融资墙就在 2027-2030。</p>
+
+<blockquote><strong>MSTR long + Oracle put</strong> = 同一场流动性周期两面的对冲组合。同样押注「2026-2028 信用紧缩」,但只在 BTC 上承担方向风险。</blockquote>
+
+<h2 id="risk">八 · 风险地图</h2>
+
+<table>
+<thead><tr><th>风险</th><th>触发</th><th>防御</th></tr></thead>
+<tbody>
+<tr><td>Saylor 单点风险</td><td>公开卖 BTC</td><td>P0 红线,无 override</td></tr>
+<tr><td>2028-29 到期墙</td><td>滚动发债撞 BTC 谷底</td><td>2027-10 硬日历减仓</td></tr>
+<tr><td>信用市场冻结</td><td>HY 利差骤升 / Convert 关闭</td><td>跟踪 wedge 信号</td></tr>
+<tr><td>mNAV 永久折价</td><td>飞轮叙事破裂(竞争 + 监管)</td><td>退出条件之一</td></tr>
+<tr><td>BTC 周期失效</td><td>ETF 资金流改变市场结构</td><td>T1 无条件入场对冲此风险</td></tr>
+<tr><td>日本现货税</td><td>雑所得最高 55%</td><td>强制走 ETF / MSTR</td></tr>
+</tbody>
+</table>
+
+<h2 id="todo">九 · 待办</h2>
+
+<ul>
+<li>[ ] 配 <code>NTFY_TOPIC</code> + 加 cron(每小时第 9 分)</li>
+<li>[ ] 配 <code>ANTHROPIC_API_KEY</code> 启用 dashboard 的 AI 趋势分析</li>
+<li>[ ] 用 dashboard / suggest 跑一遍,确认告警链路全通</li>
+<li>[ ] 下次 8-K 出来后校准 <code>EXTRA_DILUTION</code></li>
+<li>[ ] 把利率 wedge(美 10Y &gt; 5.0)+ HY 利差 + ORCL CDS 加进监控</li>
+<li>[ ] 抓 10-Q maturity ladder,可视化 2028-29 墙体量</li>
+<li>[ ] 第三方对账:saylortracker.com 当前 mNAV 是否也 &lt; 1</li>
+</ul>
+
+<hr>
+
+<p class="meta">本报告由会话研究自动汇编,数据快照仅代表 2026-05-17 时点。实盘决策前应交叉验证 saylortracker / bitcointreasuries / SEC 最新文件。报告不构成投资建议。</p>
+
+</article>
+</div>
+</body>
+</html>

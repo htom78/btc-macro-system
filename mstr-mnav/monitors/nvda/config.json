@@ -1,0 +1,36 @@
+{
+  "ticker": "NVDA",
+  "stooq_symbol": "nvda.us",
+  "latest_quarter": {
+    "label": "Q1 FY2027",
+    "period_end": "2026-04-26",
+    "reported_at": "2026-05-20",
+    "source_url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-First-Quarter-Fiscal-2027/default.aspx",
+    "revenue_usd": 81615000000,
+    "data_center_revenue_usd": 75200000000,
+    "data_center_yoy_pct": 92.0,
+    "gross_margin_pct": 75.0,
+    "free_cash_flow_usd": 48554000000,
+    "next_quarter_revenue_guide_usd": 91000000000,
+    "diluted_shares_m": 24391,
+    "notes": "NVIDIA Q1 FY2027 press release. Non-GAAP gross margin used for pricing-power proxy."
+  },
+  "capex_context": {
+    "label": "Top eight CSP 2026 capex estimate",
+    "value_usd": 710000000000,
+    "source_url": "https://www.trendforce.com/presscenter/news/20260225-12934.html",
+    "notes": "TrendForce estimate for Google, AWS, Meta, Microsoft, Oracle, Tencent, Alibaba, and Baidu."
+  },
+  "thresholds": {
+    "data_center_yoy_watch_pct": 45.0,
+    "data_center_yoy_risk_pct": 20.0,
+    "gross_margin_watch_pct": 70.0,
+    "gross_margin_risk_pct": 65.0,
+    "guide_growth_watch_pct": 0.0,
+    "guide_growth_risk_pct": -5.0,
+    "fcf_margin_watch_pct": 45.0,
+    "fcf_margin_risk_pct": 30.0,
+    "market_cap_to_annualized_fcf_watch": 45.0,
+    "market_cap_to_annualized_fcf_risk": 70.0
+  }
+}

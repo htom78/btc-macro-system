@@ -1,0 +1,15 @@
+{
+  "crcl_close_usd": 104.97,
+  "gross_reserve_income_annual_usd": 2873454276.228885,
+  "net_retention_ratio": 0.414,
+  "observation_date": "2026-06-02",
+  "retained_income_annual_usd": 1189610070.3587584,
+  "retained_income_daily_usd": 3259205.6722157765,
+  "short_rate_pct": 3.78,
+  "signal": "healthy",
+  "source": "defillama:stablecoins|treasury:daily_treasury_yield_curve:3mo|stooq:crcl.us|config:net_retention",
+  "ts": "2026-06-02T07:43:48+00:00",
+  "usdc_change_30d_pct": -1.7158797236174972,
+  "usdc_change_7d_pct": -0.553003905793259,
+  "usdc_circulation_usd": 76017308894.94405
+}

@@ -1,0 +1,17 @@
+{
+  "_doc": "Saylor 状态机的手动输入(暂未对接 SEC EDGAR)。每个季报后更新一次。详见 notes/saylor_state_machine.md。",
+  "last_updated": "2026-05-27",
+  "atm_remaining_usd": 26265700000.0,
+  "last_issuance_kind": "preferred",
+  "quiet_period_until": null,
+  "next_earnings_date": "2026-07-31",
+  "_fields": {
+    "atm_remaining_usd": "ATM 授权剩余额度,USD。null = 未知。",
+    "last_issuance_kind": "最近一次融资动作:'atm_equity' / 'convertible' / 'preferred' / null。",
+    "quiet_period_until": "(手动覆盖)财报静默期截止日 YYYY-MM-DD。优先级低于 next_earnings_date 自动派生。null = 用自动派生。",
+    "next_earnings_date": "下一次财报日 YYYY-MM-DD。saylor_state.py 据此自动反推 [earnings - 30d, earnings] 为 S3 窗口。null = 关闭自动派生。"
+  },
+  "atm_preferred_remaining_usd": 25244899999.999996,
+  "_source_8k": "https://www.sec.gov/Archives/edgar/data/1050446/000119312526227918/mstr-20260504.htm",
+  "_source_8k_date": "2026-05-18"
+}

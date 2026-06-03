@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BTC 与货币周期 — 五阶段框架</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a2533;
+    --muted: #5a6877;
+    --line: #e6ebf0;
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --accent: #2980b9;
+    --accent-dark: #1a5d8a;
+    --warn: #c0392b;
+    --ok: #27ae60;
+    --hi: #e67e22;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+    --mono: "SF Mono", "JetBrains Mono", "Consolas", "Menlo", monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav.top {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(250,251,252,0.92);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 24px;
+    display: flex; gap: 4px; align-items: center; flex-wrap: wrap;
+    font-size: 13px;
+  }
+  nav.top a {
+    color: var(--muted); text-decoration: none;
+    padding: 6px 12px; border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  nav.top a:hover { color: var(--accent); background: #eef4fa; }
+  nav.top .home { color: var(--accent); font-weight: 600; margin-right: auto; }
+
+  main { max-width: 880px; margin: 0 auto; padding: 32px 24px 40px; }
+
+  .hero {
+    background: linear-gradient(135deg, #1a5d8a 0%, #0e1116 100%);
+    color: white;
+    padding: 56px 44px;
+    border-radius: 12px;
+    margin-bottom: 32px;
+    box-shadow: 0 8px 24px rgba(14,17,22,0.18);
+  }
+  .hero h1 { font-size: 30px; line-height: 1.4; margin-bottom: 14px; font-weight: 700; }
+  .hero h1 small { font-weight: 400; opacity: 0.85; }
+  .hero p.lead { font-size: 16px; opacity: 0.94; line-height: 1.78; }
+  .hero strong { color: #ffeaa7; font-weight: 600; }
+  .hero .stamp {
+    margin-top: 18px; font-size: 12px; opacity: 0.7;
+    font-family: var(--mono); letter-spacing: 0.04em;
+  }
+
+  section {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 32px 36px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+  section h2 {
+    font-size: 22px; color: var(--ink); margin-bottom: 18px;
+    padding-left: 14px; border-left: 4px solid var(--accent);
+    line-height: 1.3;
+  }
+  section h3 {
+    font-size: 16px; color: var(--ink);
+    margin: 24px 0 10px; font-weight: 600;
+  }
+  section p { color: #3a4655; margin-bottom: 12px; }
+  section p code, section li code, td code {
+    background: #f4f8fb; padding: 2px 6px; border-radius: 4px;
+    font-family: var(--mono); font-size: 13px; color: var(--accent-dark);
+  }
+  section ul { margin: 8px 0 12px 22px; color: #3a4655; }
+  section ul li { margin-bottom: 6px; }
+
+  /* 五阶段总览表 */
+  table.overview {
+    width: 100%; border-collapse: collapse;
+    margin: 14px 0 4px; font-size: 13.5px;
+  }
+  table.overview th {
+    text-align: left; padding: 11px 12px;
+    background: #f4f8fb;
+    border-bottom: 2px solid var(--accent);
+    font-weight: 600; font-size: 11.5px;
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  table.overview td {
+    padding: 12px; border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.overview tr:last-child td { border-bottom: 0; }
+  table.overview td.era { font-family: var(--mono); white-space: nowrap; color: var(--ink); font-weight: 600; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  /* 阶段卡 */
+  .phase {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+  .phase .head {
+    padding: 14px 22px; color: #fff;
+    display: flex; justify-content: space-between;
+    align-items: baseline; flex-wrap: wrap; gap: 8px;
+  }
+  .phase .head .name { font-weight: 700; font-size: 16px; }
+  .phase .head .era { font-size: 12.5px; opacity: 0.92; font-family: var(--mono); }
+  .phase .body { padding: 20px 24px; }
+  .phase .body p { margin-bottom: 10px; }
+  .phase .body ul { margin: 6px 0 10px 20px; font-size: 14.5px; }
+  .p1 .head { background: linear-gradient(135deg, #27ae60, #1e8449); }
+  .p2 .head { background: linear-gradient(135deg, #c0392b, #922b21); }
+  .p3 .head { background: linear-gradient(135deg, #7f8c8d, #5d6d6e); }
+  .p4 .head { background: linear-gradient(135deg, #2980b9, #1a5d8a); }
+  .p5 .head { background: linear-gradient(135deg, #e67e22, #0e1116); }
+
+  /* 分析点评块 */
+  .callout {
+    background: #f4f8fb;
+    border-left: 4px solid var(--accent);
+    padding: 14px 18px; border-radius: 6px;
+    margin-top: 14px; font-size: 14px; line-height: 1.78;
+    color: #3a4655;
+  }
+  .callout .tag {
+    display: block; font-weight: 700; font-size: 11.5px;
+    letter-spacing: 0.1em; color: var(--accent-dark);
+    margin-bottom: 6px; text-transform: uppercase;
+  }
+  .callout strong { color: var(--ink); }
+  .callout.warn { background: #fff5e6; border-color: var(--hi); color: #5a4a3a; }
+  .callout.warn .tag { color: #b86c1f; }
+  .callout.warn strong { color: var(--warn); }
+
+  /* 层级模型 */
+  .tier {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 18px 0; border-bottom: 1px solid var(--line);
+  }
+  .tier:last-child { border-bottom: 0; }
+  .tier .n {
+    flex: 0 0 46px; height: 46px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 17px;
+  }
+  .tier .n.l2 { background: #5dade2; }
+  .tier .n.l3 { background: #aeb6bd; }
+  .tier .t { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .tier .d { font-size: 14px; color: #3a4655; line-height: 1.72; }
+  .tier .d em { color: var(--accent-dark); font-style: normal; font-weight: 600; }
+
+  /* 边界批判 */
+  .bound {
+    background: #fef0ef;
+    border-left: 4px solid var(--warn);
+    padding: 14px 18px; border-radius: 6px;
+    margin: 12px 0; font-size: 14px; line-height: 1.74;
+    color: #5a3a3a;
+  }
+  .bound h4 { font-size: 14px; color: var(--warn); margin-bottom: 5px; font-weight: 700; }
+  .bound p { margin: 0; color: #5a3a3a; }
+
+  /* 来源 */
+  ul.sources { list-style: none; margin: 8px 0 0; }
+  ul.sources li {
+    padding: 8px 0; border-bottom: 1px solid var(--line);
+    font-size: 13.5px;
+  }
+  ul.sources li:last-child { border-bottom: 0; }
+  ul.sources a { color: var(--accent); text-decoration: none; }
+  ul.sources a:hover { text-decoration: underline; }
+  ul.sources .src-tag {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    color: var(--muted); background: #f0f4f8;
+    padding: 1px 7px; border-radius: 3px; margin-right: 8px;
+  }
+
+  footer {
+    max-width: 880px; margin: 0 auto;
+    padding: 24px 24px 60px; text-align: center;
+    color: var(--muted); font-size: 12.5px; line-height: 1.9;
+    border-top: 1px solid var(--line);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* 情景推演器 */
+  .sim-controls {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 14px; margin: 18px 0;
+  }
+  .sim-field label {
+    display: block; font-size: 11.5px; font-weight: 700;
+    color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+  .sim-field select {
+    width: 100%; padding: 10px 12px; font-size: 14px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface); color: var(--ink);
+    font-family: inherit; cursor: pointer;
+  }
+  .sim-field select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .sim-field .hint { font-size: 11.5px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+  .sim-btn {
+    width: 100%; padding: 13px; font-size: 15px; font-weight: 700;
+    color: #fff; background: var(--accent); border: 0;
+    border-radius: 8px; cursor: pointer; margin: 4px 0 8px;
+    transition: background 0.15s;
+  }
+  .sim-btn:hover { background: var(--accent-dark); }
+  .verdict {
+    padding: 18px 22px; border-radius: 10px; color: #fff;
+    margin: 6px 0 14px;
+  }
+  .verdict .dir { font-size: 23px; font-weight: 800; }
+  .verdict .sub { font-size: 13px; opacity: 0.93; margin-top: 5px; font-family: var(--mono); }
+  .deriv {
+    border: 1px solid var(--line); border-radius: 8px;
+    overflow: hidden; margin-bottom: 12px;
+  }
+  .deriv .row {
+    display: flex; gap: 12px; padding: 12px 16px;
+    border-bottom: 1px solid var(--line); font-size: 13.5px;
+  }
+  .deriv .row:last-child { border-bottom: 0; }
+  .deriv .row .lv {
+    flex: 0 0 30px; font-weight: 800; color: var(--accent);
+    font-family: var(--mono);
+  }
+  .deriv .row .txt { color: #3a4655; line-height: 1.62; }
+  .deriv .row .txt b { color: var(--ink); }
+
+  @media (max-width: 600px) {
+    .hero { padding: 38px 26px; }
+    .hero h1 { font-size: 24px; }
+    section { padding: 24px 22px; }
+    .phase .body { padding: 16px 18px; }
+    .sim-controls { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <a href="../" class="home">← 返回 dashboard</a>
+  <a href="#why">为什么</a>
+  <a href="#overview">五阶段总览</a>
+  <a href="#phases">逐阶段</a>
+  <a href="#tiers">三层级模型</a>
+  <a href="#sim">情景推演</a>
+  <a href="#stagflation">滞胀终局</a>
+  <a href="#bounds">框架边界</a>
+  <a href="#sources">数据来源</a>
+</nav>
+
+<main>
+
+<div class="hero">
+  <h1>BTC 与货币周期<br><small>—— 一个五阶段框架,以及它的边界</small></h1>
+  <p class="lead">
+    MSTR 本质是 <strong>BTC 的杠杆代理</strong>,而 BTC 的潮汐由
+    <strong>货币周期</strong>决定。看懂 2020 年以来的五个阶段,就看懂了
+    mNAV 溢价/折价背后那股最大的力。但一个框架真正的价值,不在它解释了什么,
+    而在它<strong>诚实标注了自己的边界</strong>。
+  </p>
+  <div class="stamp">数据截至 2026-05 · 本页为研究框架,非投资建议</div>
+</div>
+
+<section id="why">
+<h2>为什么把 BTC 和货币周期放在一起看</h2>
+<p>
+  这个 dashboard 监控的是 MSTR 对其 BTC 净值的溢价(mNAV)。但 mNAV 只是
+  <em>相对</em>信号——它告诉你"间接持 BTC 贵不贵",不告诉你"BTC 本身在周期的哪个位置"。
+  后者由货币环境决定。
+</p>
+<p>
+  把 2020 年 3 月至今切成五段,会看到一条清晰的主线:<strong>BTC 的大涨大跌,
+  几乎都能对上联储资产负债表和利率路径的拐点</strong>。它不是完美对齐,
+  恰恰是"哪里对不上"暴露了框架的真实边界——那才是这页最该读的部分。
+</p>
+</section>
+
+<section id="overview">
+<h2>五阶段总览</h2>
+<table class="overview">
+  <thead>
+    <tr><th>阶段</th><th>时段</th><th>货币环境</th><th>BTC 表现</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="dot" style="background:#27ae60"></span><b>① QE 大放水</b></td>
+      <td class="era">2020.3–2021.11</td>
+      <td>无上限 QE,资产负债表 ~$4.2T→~$7T</td>
+      <td>$3,800 → ~$69,000 · 约 18 倍</td>
+    </tr>
+    <tr>
+      <td><span class="dot" style="background:#c0392b"></span><b>② 加息 + 缩表</b></td>
+      <td class="era">2022.3–2023.7</td>
+      <td>利率 0.25% → 5.50%,同步缩表</td>
+      <td>$47,000 → ~$15,500 · 回撤 ~77%</td>
+    </tr>
+    <tr>
+      <td><span class="dot" style="background:#7f8c8d"></span><b>③ 利率平台期</b></td>
+      <td class="era">2023.8–2024.9</td>
+      <td>停止加息,高位横盘 ~14 个月</td>
+      <td>回 $30,000 震荡 → ETF 后升至 $60–70K</td>
+    </tr>
+    <tr>
+      <td><span class="dot" style="background:#2980b9"></span><b>④ 降息周期</b></td>
+      <td class="era">2024.9–2025.12</td>
+      <td>6 次降息,5.25–5.50% → 3.50–3.75%</td>
+      <td>2025.10.6 创 ATH ~$126,000,年底走弱</td>
+    </tr>
+    <tr>
+      <td><span class="dot" style="background:#e67e22"></span><b>⑤ 地缘冲击 + 滞胀</b></td>
+      <td class="era">2026.2 至今</td>
+      <td>伊朗冲突,油价冲击,联储两难</td>
+      <td>ATH → ~$76,600 · 回撤 ~39%</td>
+    </tr>
+  </tbody>
+</table>
+</section>
+
+<section id="phases">
+<h2>逐阶段拆解</h2>
+
+<div class="phase p1">
+  <div class="head"><span class="name">① QE 大放水</span><span class="era">2020.3 – 2021.11</span></div>
+  <div class="body">
+    <p>联储 2020 年 3 月启动无上限 QE,资产负债表当年从约 $4.2 万亿扩到约 $7 万亿,
+    是史上最快的货币扩张。BTC 从 COVID 崩盘的约 $3,800 起步,到 2021 年 11 月 10 日
+    触及约 $69,000(精确 $68,789),约 18 倍。</p>
+    <div class="callout">
+      <span class="tag">分析</span>
+      这是 BTC 与全球流动性相关性最高的一段,几乎是教科书级的"高 beta 流动性代理"。
+      但要注意——这种相关性强,部分是<strong>幸存者偏差</strong>:同期纳指、ARKK、SPAC、
+      meme 股全在涨,BTC 只是涨得最猛的那个。它证明的是"放水时 BTC 弹性最大",
+      不是"BTC 独立追踪流动性"。
+    </div>
+  </div>
+</div>
+
+<div class="phase p2">
+  <div class="head"><span class="name">② 加息 + 缩表</span><span class="era">2022.3 – 2023.7</span></div>
+  <div class="body">
+    <p>联储把利率上限从 0.25% 加到 5.50%(2023 年 7 月见顶),同步缩表。BTC 从 2022 年初
+    约 $47,000 跌到 11 月 FTX 暴雷后的约 $15,500,从 $69,000 高点算最大回撤约 77%。</p>
+    <div class="callout warn">
+      <span class="tag">分析</span>
+      这一阶段 BTC 表现为<strong>纯高 beta 风险资产</strong>,流动性逆转是结构性主因,
+      FTX 只是加速器。更重要的是:这也是 BTC 叙事的一次证伪——2021 年市场曾大肆宣传
+      "通胀对冲",结果 2022 年 CPI 冲到 9%、BTC 跌 77%,对冲叙事当场破产。
+      <strong>BTC 不对冲通胀,它对冲的是流动性</strong>——两者在 QE 时重叠,在 QT 时分道。
+    </div>
+  </div>
+</div>
+
+<div class="phase p3">
+  <div class="head"><span class="name">③ 利率平台期</span><span class="era">2023.8 – 2024.9</span></div>
+  <div class="body">
+    <p>联储 2023 年 7 月最后一次加息后转入约 14 个月的高位平台期。BTC 先回到 $30,000
+    附近震荡,2024 年 1 月现货 ETF 获批成为独立催化剂,到 2024 年中升至 $60,000–70,000。</p>
+    <div class="callout">
+      <span class="tag">分析</span>
+      关键洞察:BTC 在<strong>实际降息之前就启动</strong>,交易的是利率的"二阶导"
+      (变化方向的预期),不是利率水平本身。但 ETF 这个变量要单独拎出来——它不是
+      货币周期的一部分,而是一次<strong>一次性的需求结构变化</strong>(打开了机构和
+      退休账户的合规通道)。把它和"利率预期"叠在同一阶段,会让人高估货币周期的解释力。
+    </div>
+  </div>
+</div>
+
+<div class="phase p4">
+  <div class="head"><span class="name">④ 降息周期</span><span class="era">2024.9 – 2025.12</span></div>
+  <div class="body">
+    <p>联储分 6 次降息:2024 年 9/11/12 月共 100bp,2025 年 9/10/12 月再各 25bp,
+    联邦基金利率从 5.25–5.50% 一路降到 3.50–3.75%。BTC 在 2025 年 10 月 6 日创下
+    约 $126,000 的历史新高,但年底开始走弱。</p>
+    <div class="callout warn">
+      <span class="tag">分析 · 框架的第一道裂缝</span>
+      这轮<strong>不是 QE</strong>——联储没扩表,是利率正常化,流动性是"少抽水"而非"放水"。
+      这解释了一个反常现象:<strong>降息周期里 BTC 反而在 2025 年底走弱、同期黄金创新高</strong>。
+      若 BTC 真是流动性代理,降息它该强——它却弱了。可能的解释:ETF 带来的一次性增量买盘
+      2025 下半年消化完了,而真正的流动性扩张(扩表)并没有发生。
+    </div>
+  </div>
+</div>
+
+<div class="phase p5">
+  <div class="head"><span class="name">⑤ 地缘冲击 + 滞胀阴影</span><span class="era">2026.2 – 至今</span></div>
+  <div class="body">
+    <p>2026 年 2 月底伊朗冲突升级,3 月初 Brent 油价飙至 $80–85/桶并在 5 月一度破 $110。
+    BTC 从 $126K 的 ATH 回落,4 月底跌至约 $76,600(回撤约 39%),5 月在 $76,500–$77,000
+    区间震荡,5 月 18 日因特朗普对伊朗放话再度跌破 $77,000。</p>
+    <div class="callout warn">
+      <span class="tag">分析</span>
+      BTC 的身份在滞胀里<strong>彻底模糊</strong>了:它既不是纯风险资产(地缘恐慌时
+      跟股市一起跌),也不是纯避险资产(黄金创新高时它没跟上)。$77K 这个价格,
+      就是这种"身份未定"的定价。坊间"自冲突以来 BTC 跑赢标普纳指黄金白银"的说法
+      流传较广,但与"黄金创新高"的事实有张力,且未能独立交叉验证,不宜当硬结论。
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="tiers">
+<h2>三层级模型:信号有强弱之分</h2>
+<p>把五阶段归纳成一个分层结构——BTC 跟货币环境的关系,有清晰的层级。
+上层信号强、慢、决定方向;下层信号弱、快、只是扰动。</p>
+
+<div class="tier">
+  <div class="n">L1</div>
+  <div>
+    <div class="t">流动性方向 —— 最强信号</div>
+    <div class="d"><em>扩表涨,缩表跌。</em>这是第一性的力。注意措辞:是"扩表/缩表",
+    不是笼统的"宽松/紧缩"——第四阶段证明了,降息(宽松)但不扩表时,BTC 并不必然涨。</div>
+  </div>
+</div>
+<div class="tier">
+  <div class="n l2">L2</div>
+  <div>
+    <div class="t">利率预期的拐点 —— 二阶导</div>
+    <div class="d"><em>BTC 往往在实际降息之前就开始动</em>,交易的是预期差、是利率
+    变化方向的转折,不是利率的绝对水平。第三阶段是典型例证。</div>
+  </div>
+</div>
+<div class="tier">
+  <div class="n l3">L3</div>
+  <div>
+    <div class="t">地缘政治与供给冲击 —— 短期扰动</div>
+    <div class="d"><em>战争、油价、单日恐慌</em>制造剧烈波动,但很少改变中期方向。
+    第五阶段的反复跳水属于这一层——除非它升级成 L1 级别的货币政策转向。</div>
+  </div>
+</div>
+</section>
+
+<section id="sim">
+<h2>情景推演器:输入未来的联储动作</h2>
+<p>这个框架的用处不止回看历史。选定一组<strong>假设的</strong>联储动作和外部环境,
+它会按上面的三层级模型,推导出对 BTC 中期方向的判断、最接近的历史类比、以及该警惕什么。
+推导规则是<em>透明的</em>——结论下方逐层展开"为什么"。</p>
+
+<div class="sim-controls">
+  <div class="sim-field">
+    <label>L1 · 资产负债表</label>
+    <select id="s-bs">
+      <option value="expand">扩表(重启 QE / 净买债)</option>
+      <option value="flat" selected>持平(既不扩也不缩)</option>
+      <option value="shrink">缩表(QT / 净卖债)</option>
+    </select>
+    <div class="hint">最强信号。决定中期方向的第一性力量。</div>
+  </div>
+  <div class="sim-field">
+    <label>L2 · 利率路径</label>
+    <select id="s-rate">
+      <option value="cut">降息</option>
+      <option value="hold" selected>暂停 / 平台期</option>
+      <option value="hike">加息</option>
+    </select>
+    <div class="hint">二阶导。L1 持平时由它主导。</div>
+  </div>
+  <div class="sim-field">
+    <label>L3 · 外部供给冲击</label>
+    <select id="s-shock">
+      <option value="none" selected>无(油价 / 地缘平稳)</option>
+      <option value="shock">有(战争 / 油价飙升)</option>
+    </select>
+    <div class="hint">短期扰动。一般不改方向,除非倒逼 L1 转向。</div>
+  </div>
+</div>
+<button class="sim-btn" onclick="runSim()">▶ 推导结论</button>
+<div class="sim-out" id="sim-out"></div>
+
+<div class="callout warn" style="margin-top:16px;">
+  <span class="tag">使用须知</span>
+  这是一个<strong>规则引擎,不是预测模型</strong>。它只是把"框架边界"一节那套推理
+  显式化,帮你检验自己的假设是否自洽。真实市场里 L2、L3 之间还有大量反身性和时滞,
+  任何单一结论都不该当成交易依据。
+</div>
+</section>
+
+<section id="stagflation">
+<h2>滞胀终局:对这个框架最大的挑战</h2>
+<p>
+  有一种流行论点:即使在滞胀环境下,决策者大概率会优先保财政稳定和政府融资,
+  而不是单纯对抗通胀——意味着最终选择是放水,而放水利好 BTC。
+  换句话说,<strong>滞胀的终局是货币贬值,而 BTC 是货币贬值的对冲工具</strong>。
+</p>
+<p>逻辑链成立,但它依赖一个未必成立的前提。</p>
+<div class="callout warn">
+  <span class="tag">这里要顶回去</span>
+  "决策者一定选放水"不是经济必然,而是<strong>政治选择</strong>。1970 年代的反例
+  就是沃尔克——他选了硬扛通胀、把利率干到 20%、主动制造衰退。走"沃尔克路线"还是
+  "放水路线",取决于届时的政治意志,无法提前定价成确定性。
+</div>
+<p style="margin-top:14px;">
+  更现实的路径是:从滞胀到"被迫放水"之间,有一段很长、很痛苦的不确定期。在这段时间里,
+  BTC 大概率<strong>继续按"高 beta 风险资产"交易(跟跌)</strong>。真正的转折要等
+  <em>扩表落地</em>或明确的放水信号——而不是等通胀本身。当前 $77K 反映的不是
+  "身份模糊本身值这个价",而是市场还没等到那个信号。
+</p>
+</section>
+
+<section id="bounds">
+<h2>框架边界:它不能解释什么</h2>
+<p>一个框架若不标注边界,就是话术。这个五阶段框架有四条明确的局限:</p>
+
+<div class="bound">
+  <h4>1. L1 信号只被完整验证过一轮</h4>
+  <p>"扩表涨、缩表跌"目前只有 2020(扩表)对 2022(缩表)这一组干净样本。
+  单一周期的归纳,不足以称为规律。</p>
+</div>
+<div class="bound">
+  <h4>2. 降息 ≠ QE,第四阶段已经不服从</h4>
+  <p>2024–2025 降息周期里 BTC 走弱,是框架的第一个反例。把"宽松"和"扩表"混为一谈,
+  框架就会在这里失灵。</p>
+</div>
+<div class="bound">
+  <h4>3. ETF 是框架外的结构变量</h4>
+  <p>2024–2025 的不少涨幅来自合规通道打开后的一次性存量重配,与货币周期无关。
+  把它算进货币周期,会让框架的解释力"虚高"。</p>
+</div>
+<div class="bound">
+  <h4>4. 它是定性框架,不是择时模型</h4>
+  <p>五阶段能解释"为什么涨/跌",不能给出买卖点。L2(预期拐点)尤其难以实时识别——
+  事后清晰,事前模糊。</p>
+</div>
+</section>
+
+<section id="sources">
+<h2>数据来源</h2>
+<p>本页关键数字均来自公开来源,价格快照截至 2026-05,引用时请自行复核时效。</p>
+<ul class="sources">
+  <li><span class="src-tag">BTC ATH</span><a href="https://digitalchamber.org/bitcoin-surges-past-126000-record-breaking-rally-continues-into-october/" target="_blank" rel="noopener">Bitcoin Surges Past $126,000 — The Digital Chamber</a></li>
+  <li><span class="src-tag">BTC ATH</span><a href="https://www.usnews.com/news/top-news/articles/2025-10-05/bitcoin-hits-all-time-high-above-125-000" target="_blank" rel="noopener">Bitcoin Hits All-Time High Above $125,000 — US News</a></li>
+  <li><span class="src-tag">联储</span><a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20251210a.htm" target="_blank" rel="noopener">FOMC Statement, December 10, 2025 — Federal Reserve</a></li>
+  <li><span class="src-tag">降息</span><a href="https://www.congress.gov/crs-product/IN12635" target="_blank" rel="noopener">Federal Reserve Cuts Interest Rates in Late 2025 — Congress.gov</a></li>
+  <li><span class="src-tag">BTC 2026</span><a href="https://www.coindesk.com/markets/2026/05/18/bitcoin-slides-below-usd77-000-as-trump-s-iran-warning-rattles-risk-assets" target="_blank" rel="noopener">Bitcoin slides below $77,000 as Trump's Iran warning rattles risk assets — CoinDesk</a></li>
+  <li><span class="src-tag">BTC 2026</span><a href="https://www.coindesk.com/markets/2026/04/27/bitcoin-pulls-back-to-usd76-600-as-rising-oil-price-and-iran-risks-stall-the-rally" target="_blank" rel="noopener">Bitcoin pulls back to $76,600 as rising oil and Iran risks stall the rally — CoinDesk</a></li>
+  <li><span class="src-tag">油价/通胀</span><a href="https://cepr.org/voxeu/columns/quantifying-impact-iran-war-us-inflation" target="_blank" rel="noopener">Quantifying the impact of the Iran war on US inflation — CEPR</a></li>
+</ul>
+</section>
+
+</main>
+
+<footer>
+本页面是 <strong>mstr-mnav-monitor</strong> 的内嵌研究框架,非投资建议,所有数据请自行核验,决策由你自己承担。<br>
+<a href="../">← 返回 dashboard</a>
+</footer>
+
+<script>
+function runSim() {
+  var bs = document.getElementById('s-bs').value;
+  var rate = document.getElementById('s-rate').value;
+  var shock = document.getElementById('s-shock').value;
+
+  var score = 0;
+  var rows = [];
+
+  // L1 · 资产负债表方向 —— 最强信号
+  if (bs === 'expand') {
+    score += 3;
+    rows.push(['L1', '<b>扩表</b> —— 最强多头信号(+3)。真正的"放水",流动性直接注入风险资产。']);
+  } else if (bs === 'shrink') {
+    score -= 3;
+    rows.push(['L1', '<b>缩表</b> —— 最强空头信号(−3)。流动性全面逆转,BTC 按高 beta 资产被抛售。']);
+  } else {
+    rows.push(['L1', '<b>持平</b> —— 中性(0)。方向交给 L2 决定。']);
+  }
+
+  // L2 · 利率路径
+  if (rate === 'cut') {
+    score += 1;
+    if (bs === 'expand') {
+      rows.push(['L2', '<b>降息</b> —— 与扩表同向,强化多头(+1)。']);
+    } else {
+      rows.push(['L2', '<b>降息但不扩表</b> —— 仅 +1。第四阶段(2024–25)证明:降息 ≠ QE,上行有限,甚至可能走弱。']);
+    }
+  } else if (rate === 'hike') {
+    score -= 2;
+    rows.push(['L2', '<b>加息</b> —— 偏空(−2)。资金成本上升,risk-off。']);
+  } else {
+    rows.push(['L2', '<b>暂停</b> —— 中性(0)。市场转而交易"下一步预期",震荡为主。']);
+  }
+
+  // L3 · 外部供给冲击
+  var stagflation = false;
+  if (shock === 'shock') {
+    if (rate === 'hike') {
+      score -= 1;
+      stagflation = true;
+      rows.push(['L3', '<b>供给冲击 + 加息</b> —— 滞胀象限(−1)。最痛苦的组合:通胀与衰退风险并存,BTC 身份模糊、跟跌不跟涨。']);
+    } else if (bs === 'expand') {
+      rows.push(['L3', '<b>供给冲击 + 扩表</b> —— "滞胀终局 / 被迫放水"路径。多头情景,但属被动放水,过程颠簸。']);
+    } else {
+      rows.push(['L3', '<b>供给冲击</b> —— 短期放大波动与下行风险(0),中期方向仍由 L1 / L2 决定。']);
+    }
+  } else {
+    rows.push(['L3', '<b>无外部冲击</b> —— 不额外影响(0)。']);
+  }
+
+  // 方向判定
+  var dir, color;
+  if (score >= 3) { dir = '强烈看多'; color = '#1e8449'; }
+  else if (score >= 1) { dir = '偏多'; color = '#27ae60'; }
+  else if (score === 0) { dir = '震荡 / 方向不明'; color = '#7f8c8d'; }
+  else if (score >= -2) { dir = '偏空'; color = '#e67e22'; }
+  else { dir = '强烈看空'; color = '#c0392b'; }
+
+  // 历史类比
+  var analog;
+  if (bs === 'expand') analog = '阶段① QE 大放水(2020–21)';
+  else if (bs === 'shrink') analog = '阶段② 加息+缩表(2022–23)';
+  else if (shock === 'shock') analog = '阶段⑤ 地缘冲击+滞胀(2026–)';
+  else if (rate === 'cut') analog = '阶段④ 降息周期(2024–25)';
+  else analog = '阶段③ 利率平台期(2023–24)';
+
+  var sub = '综合评分 ' + (score > 0 ? '+' : '') + score + ' · 最接近 ' + analog;
+  if (stagflation) sub += ' · ⚠ 滞胀象限';
+
+  // 边界提醒
+  var warn;
+  if (bs !== 'expand' && rate === 'cut') {
+    warn = '降息但不扩表,是框架的已知反例(第四阶段)。别把"宽松"直接读成"上涨"。';
+  } else if (stagflation) {
+    warn = '滞胀里 BTC 既非纯风险资产、也非纯避险资产。真正的转折要等"扩表落地",不是等通胀见顶。';
+  } else if (bs === 'expand') {
+    warn = 'L1 扩表的多头信号目前只被 2020 一轮完整验证,样本单一,别外推过度。';
+  } else {
+    warn = '这是定性方向,不是择时。L2 拐点事后清晰、事前模糊。';
+  }
+
+  var html = '<div class="verdict" style="background:' + color + '">'
+    + '<div class="dir">BTC 中期:' + dir + '</div>'
+    + '<div class="sub">' + sub + '</div></div>';
+  html += '<div class="deriv">';
+  for (var i = 0; i < rows.length; i++) {
+    html += '<div class="row"><span class="lv">' + rows[i][0] + '</span>'
+      + '<span class="txt">' + rows[i][1] + '</span></div>';
+  }
+  html += '</div>';
+  html += '<div class="bound" style="margin:0"><h4>边界提醒</h4><p>' + warn + '</p></div>';
+
+  document.getElementById('sim-out').innerHTML = html;
+}
+
+// 页面载入即展示默认情景结果
+runSim();
+</script>
+
+</body>
+</html>
