@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-03T06:04:55+00:00",
+  "state": {
+    "key": "washout_probe",
+    "label": "恐慌小探",
+    "score": -4,
+    "confidence": "medium-low",
+    "action": "只允许小额、分批、观察性 DCA；不追反弹。",
+    "score_formula": "天 + 地 + 人"
+  },
+  "axes": [
+    {
+      "id": "heaven",
+      "name": "天",
+      "en": "Macro liquidity",
+      "score": 0,
+      "stance": "mixed",
+      "detail": "macro score +0; regime mixed",
+      "inputs": [
+        {
+          "name": "USD liquidity",
+          "score": 2,
+          "stance": "supportive",
+          "detail": "M2 3个月年化 6.9% / M2 3m annualized 6.9%; 联储资产负债表13周 1.4% / Fed balance sheet 13w 1.4%"
+        },
+        {
+          "name": "Inflation constraint",
+          "score": -2,
+          "stance": "hostile",
+          "detail": "CPI同比 3.9% / CPI YoY 3.9%; 3个月年化 7.3% / 3m annualized 7.3%"
+        },
+        {
+          "name": "Real-rate pressure",
+          "score": 0,
+          "stance": "mixed",
+          "detail": "10年期实际收益率 n/a% / 10Y real yield n/a%; 13周变化 n/a百分点 / 13w delta n/a pp"
+        },
+        {
+          "name": "Dollar pressure",
+          "score": 0,
+          "stance": "mixed",
+          "detail": "广义美元13周 n/a / Broad dollar 13w n/a"
+        },
+        {
+          "name": "Risk appetite",
+          "score": 1,
+          "stance": "supportive",
+          "detail": "VIX n/a; 高收益债利差13周变化 -0.31百分点 / HY OAS 13w delta -0.31 pp"
+        },
+        {
+          "name": "BTC trend",
+          "score": -1,
+          "stance": "hostile",
+          "detail": "价格 $71,326 / Price $71,326; 200日均线 $79,380 / 200d MA $79,380"
+        },
+        {
+          "name": "Fiscal pressure",
+          "score": 0,
+          "stance": "mixed",
+          "detail": "公众持有债务/GDP 98.24% / Public debt/GDP 98.24%; 利息支出/GDP 3.15% / interest outlays/GDP 3.15%; 长期支撑硬通货叙事，但短期会放大利率压力 / structural BTC narrative support, but rate pressure risk"
+        }
+      ]
+    },
+    {
+      "id": "earth",
+      "name": "地",
+      "en": "Market structure",
+      "score": -2,
+      "stance": "hostile",
+      "detail": "trend, washout, ETF flow, and reserved derivatives inputs",
+      "inputs": [
+        {
+          "name": "MA95 trend",
+          "score": -1,
+          "detail": "below MA95"
+        },
+        {
+          "name": "MA200 regime",
+          "score": -1,
+          "detail": "below MA200"
+        },
+        {
+          "name": "RSI washout",
+          "score": 1,
+          "detail": "RSI14 17.5"
+        },
+        {
+          "name": "30d drawdown",
+          "score": 1,
+          "detail": "-18.9% from 30d high"
+        },
+        {
+          "name": "ETF flow",
+          "score": -2,
+          "detail": "-3,965.2 US$m over seed window"
+        }
+      ]
+    },
+    {
+      "id": "human",
+      "name": "人",
+      "en": "Treasury reflexivity",
+      "score": -2,
+      "stance": "hostile",
+      "detail": "MSTR mNAV, BTC yield, filings, and source freshness",
+      "inputs": [
+        {
+          "name": "MSTR mNAV",
+          "score": -2,
+          "detail": "0.87; mNAV below 0.9; flywheel disabled and stress is visible"
+        },
+        {
+          "name": "BTC yield",
+          "score": 1,
+          "detail": "13.3% YTD"
+        },
+        {
+          "name": "mNAV staleness",
+          "score": -1,
+          "detail": "snapshot is 8.0 days old"
+        }
+      ]
+    }
+  ],
+  "btc": {
+    "source": "coinbase",
+    "date": "2026-06-03",
+    "price": 67161.87,
+    "ma95": 73568.26336842106,
+    "ma200": 79100.3374,
+    "above_ma95": false,
+    "above_ma200": false,
+    "rsi14": 17.530086421727376,
+    "atr14": 2160.71,
+    "high_30d": 82814.23,
+    "low_30d": 65353.08,
+    "drawdown_from_30d_high": -0.18900568175300314
+  },
+  "market_structure": {
+    "schema_version": 1,
+    "updated": "2026-06-03",
+    "etf_flow": {
+      "source": "Farside Investors BTC ETF Flow table, manually checked against 2026-05-15 through 2026-06-02 rows",
+      "period_start": "2026-05-15",
+      "period_end": "2026-06-02",
+      "lookback_trading_days": 12,
+      "total_usd_m": -3965.2,
+      "btc_equiv": 53606,
+      "largest_outflow_day": {
+        "date": "2026-05-27",
+        "usd_m": -733.4
+      },
+      "notes": "Manual seed used by dao-system/scripts/build_dao.py. Refresh this file when ETF flow source changes or when a live adapter is added."
+    },
+    "derivatives": {
+      "funding_status": "unknown",
+      "open_interest_status": "unknown",
+      "liquidation_status": "unknown",
+      "notes": "Reserved for Binance/Coinglass adapter. Unknown values do not add score."
+    },
+    "stablecoin_liquidity": {
+      "status": "unknown",
+      "notes": "Reserved for future USDT/USDC supply adapter."
+    }
+  },
+  "mstr_reflexivity": {
+    "source": "local mstr-mnav-monitor sqlite db",
+    "ts": "2026-05-26T05:53:04+00:00",
+    "btc_price": 76799.0,
+    "mstr_price": 159.88999938964844,
+    "basic_shares": 351109540.0,
+    "diluted_shares": 351109540.0,
+    "holdings_btc": 843738.0,
+    "btc_nav_usd": 64798234662.0,
+    "mcap_basic_usd": 56138904136.29974,
+    "mcap_diluted_usd": 56138904136.29974,
+    "mnav_basic": 0.8663647154761394,
+    "mnav_diluted": 0.8663647154761394,
+    "snapshot_source": "live",
+    "btc_yield_ytd_pct": 13.3,
+    "btc_yield_seen_at": "2026-05-26T00:00:00+00:00",
+    "recent_filings": [
+      {
+        "accession": "0001193125-26-227918",
+        "seen_at": "2026-05-26T05:53:04+00:00",
+        "kind": "other",
+        "link": "https://www.sec.gov/Archives/edgar/data/1050446/000119312526227918/0001193125-26-227918-index.htm",
+        "amount_usd": null
+      }
+    ],
+    "recent_btc_sale_filings": []
+  },
+  "action_ladder": [
+    {
+      "zone": "核心仓",
+      "default": "60%-70% BTC",
+      "rule": "不因 MA95/ETF/MSTR 单点信号清仓；只在个人资产配置层面再平衡。"
+    },
+    {
+      "zone": "战术仓",
+      "default": "30%-40% BTC/USDT",
+      "rule": "由 Dao 状态决定是否恢复 DCA、暂停买回或按 ATH 阶梯卖出。"
+    },
+    {
+      "zone": "红线",
+      "default": "MSTR BTC sale / 强制融资压力",
+      "rule": "先复核公司财库飞轮，再决定是否降低 MSTR 暴露；不要把 MSTR 事件机械等同 BTC 本体。"
+    },
+    {
+      "zone": "当前动作",
+      "default": "恐慌小探",
+      "rule": "只允许小额、分批、观察性 DCA；不追反弹。"
+    }
+  ],
+  "source_health": {
+    "macro_latest": "btc-macro-system/outputs/latest.json",
+    "market_structure": "dao-system/data/market-structure.json",
+    "coinbase_candles": "ok",
+    "mnav": "ok"
+  },
+  "disclaimer": "Research and strategy-state dashboard only. Not investment advice."
+}

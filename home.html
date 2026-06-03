@@ -477,6 +477,7 @@
     .tone-green { border-top: 4px solid var(--green); }
     .tone-red { border-top: 4px solid var(--red); }
     .tone-violet { border-top: 4px solid var(--violet); }
+    .tone-ink { border-top: 4px solid var(--ink); }
 
     .lower-grid {
       display: grid;
@@ -641,10 +642,11 @@
         <span class="mark">₿</span>
         <span>
           <b>BTC 策略工作台</b>
-          <span>Macro / Ladder / Research</span>
+          <span>Macro / Dao / Ladder / Research</span>
         </span>
       </a>
       <nav class="nav" aria-label="主导航">
+        <a href="dao-system/">Dao 总控</a>
         <a href="macro-report.html">宏观仪表盘</a>
         <a href="btc-ma95-hybrid-strategy.html">MA95 混合策略</a>
         <a href="btc-usdt-ladder-demo.html">BTC/USDT 阶梯</a>
@@ -662,9 +664,10 @@
         <div>
           <p class="eyebrow">Portfolio command page</p>
           <h1>把 BTC 囤币、阶梯仓位和宏观风险放在同一张桌面上。</h1>
-          <p class="lead">首页不是单独给一个“买卖答案”，而是把几套已经做好的模型变成入口：核心 BTC 仓位保持长期不动，战术仓看 ATH 阶梯和回撤，MA95 只做风险闸门，宏观面用来提醒环境是否顺风。</p>
+          <p class="lead">首页不是单独给一个“买卖答案”，而是把几套已经做好的模型变成入口：Dao 总控合成天、地、人，核心 BTC 仓位保持长期不动，战术仓看 ATH 阶梯和回撤，MA95 只做风险闸门。</p>
           <div class="hero-actions">
-            <a class="button primary" href="btc-ma95-hybrid-strategy.html">打开 MA95 混合策略</a>
+            <a class="button primary" href="dao-system/">打开 Dao 总控</a>
+            <a class="button" href="btc-ma95-hybrid-strategy.html">MA95 混合策略</a>
             <a class="button" href="macro-report.html">查看宏观仪表盘</a>
             <a class="button" href="btc-usdt-ladder-theory.html">读 BTC/USDT 理论</a>
           </div>
@@ -728,12 +731,24 @@
       <div class="section-head">
         <div>
           <p class="eyebrow">Main routes</p>
-          <h2>九个主要入口</h2>
+          <h2>十个主要入口</h2>
         </div>
-        <p>从“长期囤 BTC”到“小币多空候选筛选”、AI 物理瓶颈研究和动中禅宏观文案，每个页面都负责一个独立问题，首页只负责把路径整理清楚。</p>
+        <p>从“道层总控”到“小币多空候选筛选”、AI 物理瓶颈研究和动中禅宏观文案，每个页面都负责一个独立问题，首页只负责把路径整理清楚。</p>
       </div>
 
       <div class="route-grid">
+        <a class="route-card tone-ink" href="dao-system/">
+          <div class="route-kicker"><span>Dao console</span><span class="route-index">00</span></div>
+          <div class="route-title">
+            <h3>BTC 天地人总控</h3>
+            <p>合成宏观流动性、ETF/趋势结构和 MSTR mNAV 财库反身性，输出当前动作状态。</p>
+          </div>
+          <div class="route-meta">
+            <span class="tag">dao-latest.json</span>
+            <span class="tag">天 地 人</span>
+          </div>
+        </a>
+
         <a class="route-card tone-blue" href="macro-report.html">
           <div class="route-kicker"><span>Macro</span><span class="route-index">01</span></div>
           <div class="route-title">
@@ -916,6 +931,10 @@
         <h2>理论与演示</h2>
         <div class="status-list">
           <div class="status-item">
+            <span>BTC 天地人总控系统</span>
+            <b><a href="dao-system/">总控台</a> / <a href="dao-system/data/dao-latest.json">dao</a></b>
+          </div>
+          <div class="status-item">
             <span>价格阶梯空头模型</span>
             <b><a href="price-ladder-short-demo.html">演示</a> / <a href="price-ladder-short-theory.html">理论</a></b>
           </div>
@@ -953,7 +972,7 @@
 
     <footer class="foot">
       <span>仅作研究和策略演示，不构成投资建议。</span>
-      <span><a href="https://github.com/htom78/btc-macro-system">GitHub</a> · <a href="macro-report.html">宏观报告</a> · <a href="investment-research.html">投资研究</a> · <a href="everydayzen-macro/">动中禅宏观</a> · <a href="latest.json">latest.json</a></span>
+      <span><a href="https://github.com/htom78/btc-macro-system">GitHub</a> · <a href="dao-system/">Dao</a> · <a href="macro-report.html">宏观报告</a> · <a href="investment-research.html">投资研究</a> · <a href="everydayzen-macro/">动中禅宏观</a> · <a href="latest.json">latest.json</a></span>
     </footer>
   </main>
 

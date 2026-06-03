@@ -39,8 +39,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Generate report
-        run: python3 btc-macro-system/run.py --force
+      - name: Generate report and Dao state
+        run: |
+          python3 btc-macro-system/run.py --force
+          python3 dao-system/scripts/build_dao.py
 
       - name: Validate investment thesis harness
         run: python3 investment-thesis-harness/scripts/validate.py
@@ -54,6 +56,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add btc-macro-system/outputs/report.html btc-macro-system/outputs/latest.json
+          git add dao-system/data/dao-latest.json
           git add -f btc-macro-system/data/history/observations.jsonl
           git add investment-thesis-harness/outputs/report.html investment-thesis-harness/outputs/latest.json
           git add -f investment-thesis-harness/data/history/thesis_snapshots.jsonl
@@ -69,6 +72,7 @@ jobs:
           rm -rf _site
           mkdir -p _site
           cp home.html _site/index.html
+          cp -R dao-system _site/dao-system
           cp btc-macro-system/outputs/report.html _site/macro-report.html
           cp btc-macro-system/outputs/latest.json _site/latest.json
           cp investment-thesis-harness/outputs/report.html _site/investment-research.html

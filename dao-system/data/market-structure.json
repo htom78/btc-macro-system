@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "updated": "2026-06-03",
+  "etf_flow": {
+    "source": "Farside Investors BTC ETF Flow table, manually checked against 2026-05-15 through 2026-06-02 rows",
+    "period_start": "2026-05-15",
+    "period_end": "2026-06-02",
+    "lookback_trading_days": 12,
+    "total_usd_m": -3965.2,
+    "btc_equiv": 53606,
+    "largest_outflow_day": {
+      "date": "2026-05-27",
+      "usd_m": -733.4
+    },
+    "notes": "Manual seed used by dao-system/scripts/build_dao.py. Refresh this file when ETF flow source changes or when a live adapter is added."
+  },
+  "derivatives": {
+    "funding_status": "unknown",
+    "open_interest_status": "unknown",
+    "liquidation_status": "unknown",
+    "notes": "Reserved for Binance/Coinglass adapter. Unknown values do not add score."
+  },
+  "stablecoin_liquidity": {
+    "status": "unknown",
+    "notes": "Reserved for future USDT/USDC supply adapter."
+  }
+}
