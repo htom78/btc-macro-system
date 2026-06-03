@@ -1,0 +1,1160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>资本周期温度计 | Market Temperature</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f3efe5;
+      --paper-2: #fffaf0;
+      --ink: #171912;
+      --muted: #62635d;
+      --line: rgba(23, 25, 18, 0.16);
+      --line-strong: rgba(23, 25, 18, 0.3);
+      --panel: rgba(255, 250, 240, 0.82);
+      --panel-strong: rgba(255, 252, 246, 0.94);
+      --amber: #c87018;
+      --green: #1f8068;
+      --blue: #2a68a3;
+      --red: #b4473f;
+      --violet: #6655a0;
+      --charcoal: #20221b;
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      --shadow: 0 18px 60px rgba(28, 25, 18, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { background: var(--paper); scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.62;
+      background:
+        linear-gradient(120deg, rgba(200, 112, 24, 0.1) 0 18%, transparent 18% 100%),
+        linear-gradient(90deg, rgba(23, 25, 18, 0.045) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(23, 25, 18, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        repeating-linear-gradient(135deg, rgba(23, 25, 18, 0.018) 0 1px, transparent 1px 18px),
+        var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 78% 10%, rgba(42, 104, 163, 0.13), transparent 26%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.36), transparent 42%);
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      position: relative;
+      width: min(1400px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 22px 0 44px;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 15px;
+    }
+
+    .brand {
+      display: inline-grid;
+      grid-template-columns: 40px auto;
+      gap: 10px;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 40px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(23, 25, 18, 0.24);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(31, 128, 104, 0.9), rgba(255, 250, 240, 0.88) 47%, rgba(180, 71, 63, 0.78));
+      font: 850 16px/1 var(--mono);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .brand b {
+      display: block;
+      font-size: 14px;
+      line-height: 1.12;
+    }
+
+    .brand span span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font: 11px/1.2 var(--mono);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .nav a,
+    .button {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 13px;
+      background: rgba(255, 250, 240, 0.78);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 760;
+      text-decoration: none;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .nav a:hover,
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.98fr);
+      gap: 16px;
+      padding: 24px 0 18px;
+      min-height: calc(100vh - 140px);
+    }
+
+    .hero-copy,
+    .temperature-panel,
+    .panel,
+    .stage-card,
+    .asset-row,
+    .monitor-row {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-copy {
+      display: grid;
+      align-content: space-between;
+      min-height: 560px;
+      padding: clamp(24px, 4vw, 48px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      right: -12%;
+      bottom: 6%;
+      width: 58%;
+      height: 38%;
+      border: 1px solid rgba(23, 25, 18, 0.12);
+      transform: skewX(-16deg) rotate(-3deg);
+      background:
+        repeating-linear-gradient(90deg, rgba(23, 25, 18, 0.08) 0 1px, transparent 1px 16px),
+        rgba(255, 255, 255, 0.16);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #895013;
+      font: 780 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin: 0; }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      font: 760 clamp(42px, 6.8vw, 94px)/0.9 var(--serif);
+      letter-spacing: 0;
+    }
+
+    .lead {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin-top: 20px;
+      color: #454641;
+      font-size: clamp(15px, 1.2vw, 17px);
+    }
+
+    .hero-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 22px;
+    }
+
+    .button.primary {
+      background: var(--charcoal);
+      color: #fffaf0;
+      border-color: rgba(23, 25, 18, 0.34);
+      box-shadow: 0 14px 34px rgba(28, 30, 23, 0.18);
+    }
+
+    .formula-strip {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 8px;
+      border-top: 1px solid rgba(23, 25, 18, 0.12);
+      padding-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .formula-strip code {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      overflow-x: auto;
+      border: 1px solid rgba(23, 25, 18, 0.14);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.54);
+      color: #263124;
+      font: 780 13px/1.35 var(--mono);
+    }
+
+    .temperature-panel {
+      min-height: 560px;
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+      align-content: space-between;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .stamp {
+      color: var(--muted);
+      text-align: right;
+      font: 12px/1.35 var(--mono);
+    }
+
+    .gauge-wrap {
+      display: grid;
+      grid-template-columns: minmax(200px, 320px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+    }
+
+    .gauge {
+      --score: 50;
+      width: min(100%, 320px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      margin: 0 auto;
+      background:
+        conic-gradient(from 220deg,
+          #2d6a5a 0deg,
+          #2d6a5a calc(var(--score) * 2.4deg),
+          rgba(23, 25, 18, 0.12) calc(var(--score) * 2.4deg),
+          rgba(23, 25, 18, 0.12) 240deg,
+          transparent 240deg 360deg);
+      position: relative;
+    }
+
+    .gauge::before {
+      content: "";
+      position: absolute;
+      inset: 20px;
+      border-radius: 50%;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 250, 240, 0.88)),
+        var(--paper-2);
+      border: 1px solid rgba(23, 25, 18, 0.16);
+      box-shadow: inset 0 8px 22px rgba(23, 25, 18, 0.06);
+    }
+
+    .gauge-core {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .gauge-core strong {
+      font: 860 clamp(54px, 7vw, 86px)/0.95 var(--mono);
+      letter-spacing: 0;
+    }
+
+    .gauge-core span {
+      color: var(--muted);
+      font: 760 12px/1.2 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .stage-label {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      min-height: 34px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      padding: 0 10px;
+      background: rgba(255, 255, 255, 0.58);
+      color: var(--green);
+      font: 820 12px/1 var(--mono);
+    }
+
+    .temp-copy {
+      display: grid;
+      gap: 12px;
+    }
+
+    .temp-copy h2 {
+      font: 760 28px/1.08 var(--serif);
+      letter-spacing: 0;
+    }
+
+    .temp-copy p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .component {
+      min-height: 96px;
+      border: 1px solid rgba(23, 25, 18, 0.12);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.48);
+    }
+
+    .component span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .component b {
+      display: block;
+      margin-top: 5px;
+      color: var(--ink);
+      font: 820 19px/1.2 var(--mono);
+    }
+
+    .component small {
+      display: block;
+      margin-top: 5px;
+      color: #6d6b63;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .section {
+      margin-top: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .cycle-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stage-card {
+      min-height: 246px;
+      padding: 16px;
+      display: grid;
+      align-content: space-between;
+      gap: 16px;
+      box-shadow: 0 14px 42px rgba(28, 25, 18, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+    }
+
+    .stage-card h3 {
+      font: 760 21px/1.05 var(--serif);
+      letter-spacing: 0;
+    }
+
+    .stage-card p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stage-card .range {
+      color: var(--ink);
+      font: 820 12px/1 var(--mono);
+    }
+
+    .stage-1 { border-top: 4px solid var(--green); }
+    .stage-2 { border-top: 4px solid var(--blue); }
+    .stage-3 { border-top: 4px solid var(--amber); }
+    .stage-4 { border-top: 4px solid var(--red); }
+    .stage-5 { border-top: 4px solid var(--violet); }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+      gap: 12px;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .panel h2 {
+      font-size: 22px;
+      line-height: 1.16;
+      margin-bottom: 12px;
+      letter-spacing: 0;
+    }
+
+    .panel p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .battle {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .battle-row {
+      display: grid;
+      grid-template-columns: 134px minmax(0, 1fr);
+      gap: 12px;
+      border-top: 1px solid rgba(23, 25, 18, 0.1);
+      padding-top: 10px;
+    }
+
+    .battle-row b {
+      color: var(--ink);
+      font: 820 12px/1.25 var(--mono);
+    }
+
+    .battle-row span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .slider-lab {
+      display: grid;
+      gap: 13px;
+      margin-top: 14px;
+    }
+
+    .slider-row {
+      display: grid;
+      grid-template-columns: 128px 1fr 44px;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--amber);
+    }
+
+    .sim-result {
+      display: grid;
+      gap: 4px;
+      border: 1px solid rgba(23, 25, 18, 0.14);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .sim-result b {
+      font: 840 24px/1.15 var(--mono);
+    }
+
+    .sim-result span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .asset-grid {
+      display: grid;
+      gap: 9px;
+    }
+
+    .asset-row {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr) minmax(0, 1fr) 160px;
+      gap: 14px;
+      align-items: start;
+      min-height: 92px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(28, 25, 18, 0.07);
+    }
+
+    .ticker {
+      font: 860 18px/1.1 var(--mono);
+    }
+
+    .asset-row small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .asset-row p {
+      color: #454641;
+      font-size: 13px;
+    }
+
+    .chip {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      border-radius: 8px;
+      border: 1px solid rgba(23, 25, 18, 0.14);
+      padding: 0 10px;
+      background: rgba(255, 255, 255, 0.52);
+      font: 820 11px/1 var(--mono);
+    }
+
+    .monitor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .monitor-row {
+      min-height: 168px;
+      padding: 16px;
+      display: grid;
+      align-content: space-between;
+      gap: 16px;
+      box-shadow: 0 12px 34px rgba(28, 25, 18, 0.07);
+    }
+
+    .monitor-row h3 {
+      font-size: 16px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .monitor-row p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      border-top: 1px solid var(--line);
+      margin-top: 22px;
+      padding-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .foot a {
+      color: var(--ink);
+      font-weight: 760;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(23, 25, 18, 0.22);
+    }
+
+    @media (max-width: 1180px) {
+      .hero,
+      .two-col { grid-template-columns: 1fr; }
+      .hero { min-height: auto; }
+      .cycle-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .asset-row { grid-template-columns: 90px minmax(0, 1fr); }
+      .asset-row .chip { align-self: start; }
+    }
+
+    @media (max-width: 760px) {
+      .shell {
+        width: min(100vw - 20px, 1400px);
+        padding-top: 12px;
+      }
+
+      .topline {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav { justify-content: flex-start; }
+
+      .hero-copy,
+      .temperature-panel { min-height: auto; padding: 20px; }
+
+      h1 { font-size: clamp(39px, 12vw, 62px); }
+
+      .gauge-wrap,
+      .component-grid,
+      .cycle-grid,
+      .monitor-grid { grid-template-columns: 1fr; }
+
+      .section-head {
+        align-items: start;
+        display: grid;
+      }
+
+      .battle-row,
+      .slider-row {
+        grid-template-columns: 1fr;
+      }
+
+      .asset-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topline">
+      <a class="brand" href="./" aria-label="返回 BTC 策略工作台首页">
+        <span class="brand-mark">T</span>
+        <span>
+          <b>资本周期温度计</b>
+          <span>Marx / Macro / Credit / Thesis</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="页面导航">
+        <a href="./">首页</a>
+        <a href="#temperature">温度</a>
+        <a href="#cycle">周期</a>
+        <a href="#battle">框架 battle</a>
+        <a href="#assets">标的映射</a>
+        <a href="#monitor">监控规则</a>
+        <a href="macro-report.html">宏观仪表盘</a>
+        <a href="investment-thesis-rerun.html">Thesis 重跑</a>
+      </nav>
+    </div>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div>
+          <p class="eyebrow">Market temperature from capital cycle</p>
+          <h1>用马克思的周期逻辑，判断市场到底冷、热，还是假热。</h1>
+          <p class="lead">
+            这里不把“市场温度”当情绪词，而是拆成资本再生产的五个环节：
+            利润是否还能实现、信用是否还在扩张、资本开支是否过剩、估值信任是否透支、清算是否已经发生。
+            它补在原来的「三维拆解 + 好坏变化 + 信任倍数」之上，专门回答：现在这个资产处在资本循环的哪个位置。
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#temperature">读取当前温度</a>
+            <a class="button" href="#assets">看标的映射</a>
+            <a class="button" href="#monitor">监控规则</a>
+          </div>
+        </div>
+
+        <div class="formula-strip">
+          <span>核心公式</span>
+          <code>市场温度 = 流动性热度 + 信用热度 + 风险偏好 + 资产趋势 + 财政/货币压力 - 利率/通胀约束</code>
+          <p>更深一层：股价涨跌只是表象，资本能不能顺利完成「投入生产 → 商品售出 → 利润实现 → 再投资」才是底层温度。</p>
+        </div>
+      </div>
+
+      <aside class="temperature-panel" id="temperature" aria-label="资本周期温度读取面板">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Live state from latest.json</p>
+            <h2>当前市场温度</h2>
+          </div>
+          <p class="stamp" id="generatedAt">读取 latest.json...</p>
+        </div>
+
+        <div class="gauge-wrap">
+          <div class="gauge" id="heatGauge" aria-label="市场温度仪表">
+            <div class="gauge-core">
+              <strong id="heatScore">--</strong>
+              <span>0 cold / 100 overheated</span>
+            </div>
+          </div>
+          <div class="temp-copy">
+            <p class="stage-label" id="stageLabel">loading</p>
+            <h2 id="stageTitle">等待数据</h2>
+            <p id="stageNarrative">
+              页面会读取现有宏观系统的 BTC、M2、实际利率、VIX、高收益利差和财政压力数据，压缩成一张资本周期温度图。
+            </p>
+          </div>
+        </div>
+
+        <div class="component-grid">
+          <div class="component">
+            <span>流动性热度</span>
+            <b id="liquidityScore">--</b>
+            <small id="liquidityNote">M2 与联储资产负债表</small>
+          </div>
+          <div class="component">
+            <span>信用/风险热度</span>
+            <b id="creditScore">--</b>
+            <small id="creditNote">VIX 与高收益债利差</small>
+          </div>
+          <div class="component">
+            <span>趋势/反身性</span>
+            <b id="trendScore">--</b>
+            <small id="trendNote">BTC 动量与 MA200</small>
+          </div>
+          <div class="component">
+            <span>利率通胀约束</span>
+            <b id="constraintScore">--</b>
+            <small id="constraintNote">实际利率与 CPI 3M</small>
+          </div>
+          <div class="component">
+            <span>财政硬资产压力</span>
+            <b id="fiscalScore">--</b>
+            <small id="fiscalNote">债务/GDP 与利息支出</small>
+          </div>
+          <div class="component">
+            <span>宏观 regime</span>
+            <b id="regimeScore">--</b>
+            <small id="regimeNote">原系统压缩标签</small>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section" id="cycle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Five capital-cycle states</p>
+          <h2>五个温度区间</h2>
+        </div>
+        <p>
+          马克思周期逻辑的优势是，它不会只问「钱多不多」，还会问「利润能不能实现」。
+          真正危险的不是冷，而是利润已经开始变薄、市场还在用高倍数相信未来。
+        </p>
+      </div>
+
+      <div class="cycle-grid">
+        <article class="stage-card stage-1">
+          <div>
+            <p class="range">0-31</p>
+            <h3>清算期</h3>
+          </div>
+          <p>信用收缩，弱公司退出，资产被迫卖出。价格痛苦，但长期机会开始被重新播种。</p>
+        </article>
+        <article class="stage-card stage-2">
+          <div>
+            <p class="range">32-45</p>
+            <h3>实现危机</h3>
+          </div>
+          <p>生产和投资还在，但商品/服务无法按预期价格卖掉。收入、毛利、库存和 EPS 下修最关键。</p>
+        </article>
+        <article class="stage-card stage-3">
+          <div>
+            <p class="range">46-61</p>
+            <h3>再集中/早周期</h3>
+          </div>
+          <p>资本开始从弱者流向强者。幸存者份额扩大，下一轮上行的质量取决于利润率是否修复。</p>
+        </article>
+        <article class="stage-card stage-4">
+          <div>
+            <p class="range">62-77</p>
+            <h3>扩张期</h3>
+          </div>
+          <p>利润、信用和估值一起走强。适合顺势，但要盯资本开支增速是否快过真实需求。</p>
+        </article>
+        <article class="stage-card stage-5">
+          <div>
+            <p class="range">78-100</p>
+            <h3>过热期</h3>
+          </div>
+          <p>资本太多追逐同一个利润池。估值看起来合理，前提却是需求、毛利和融资永远不掉链子。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section two-col" id="battle">
+      <div class="panel">
+        <p class="eyebrow">Framework battle</p>
+        <h2>这套温度计和原有框架怎么合体</h2>
+        <p>
+          原来的「地板价值 / 信任倍数 / 好坏变化」适合分析单个标的；
+          资本周期温度适合判断外部环境和产业阶段。两者合起来，才能区分：
+          公司本身变坏、只是宏观降温，还是整个行业已经进入过剩。
+        </p>
+        <div class="battle">
+          <div class="battle-row">
+            <b>地板价值</b>
+            <span>回答这家公司现在靠什么赚钱。温度计补充：这个赚钱池是否正在被过剩资本压薄。</span>
+          </div>
+          <div class="battle-row">
+            <b>信任倍数</b>
+            <span>回答市场愿意给未来多少倍。温度计补充：这个倍数是早周期修复，还是过热期透支。</span>
+          </div>
+          <div class="battle-row">
+            <b>好坏变化</b>
+            <span>回答关键变量是增强还是减弱。温度计补充：变量变化属于公司问题、产业问题，还是宏观信用问题。</span>
+          </div>
+          <div class="battle-row">
+            <b>资本周期</b>
+            <span>回答资本从哪里来、流到哪里去、何时变成过剩、何时被清算。</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="eyebrow">Scenario lab</p>
+        <h2>手动体感校准</h2>
+        <p>把五个滑块当成研究员的主观校准。它不覆盖实时数据，只帮助你训练对“冷热”的直觉。</p>
+        <div class="slider-lab">
+          <label class="slider-row"><span>利润率修复</span><input type="range" min="0" max="100" value="58" data-sim="profit"><b id="profitVal">58</b></label>
+          <label class="slider-row"><span>信用扩张</span><input type="range" min="0" max="100" value="55" data-sim="credit"><b id="creditVal">55</b></label>
+          <label class="slider-row"><span>产能过剩</span><input type="range" min="0" max="100" value="42" data-sim="overcapacity"><b id="overcapacityVal">42</b></label>
+          <label class="slider-row"><span>估值信任</span><input type="range" min="0" max="100" value="62" data-sim="trust"><b id="trustVal">62</b></label>
+          <label class="slider-row"><span>清算压力</span><input type="range" min="0" max="100" value="34" data-sim="liquidation"><b id="liquidationVal">34</b></label>
+          <div class="sim-result">
+            <b id="simScore">--</b>
+            <span id="simText">拖动滑块查看阶段</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="assets">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Asset map</p>
+          <h2>把温度计套到当前几个标的</h2>
+        </div>
+        <p>这里是结构性判断，不是实时股价判断。真正上线后，每个标的还要接财报变量和估值区间。</p>
+      </div>
+
+      <div class="asset-grid">
+        <div class="asset-row">
+          <div><div class="ticker">BTC</div><small>货币化资产</small></div>
+          <p>受流动性、实际利率、ETF 净流和风险偏好影响最大。</p>
+          <p>马克思视角：不是生产资本，而是对法币信用周期的外部锚。</p>
+          <span class="chip">宏观温度敏感</span>
+        </div>
+        <div class="asset-row">
+          <div><div class="ticker">MSTR</div><small>BTC 高 beta</small></div>
+          <p>不是 BTC 本身，而是 BTC + 信用/股权融资结构。</p>
+          <p>温度高时 mNAV 和融资飞轮增强；温度低时资本结构会反向压普通股。</p>
+          <span class="chip">反身性最高</span>
+        </div>
+        <div class="asset-row">
+          <div><div class="ticker">NVDA</div><small>AI 工厂</small></div>
+          <p>处在 AI 资本开支扩张的核心受益层。</p>
+          <p>温度问题不在需求有没有，而在客户 ROI 是否支撑继续扩大 capex。</p>
+          <span class="chip">扩张后段</span>
+        </div>
+        <div class="asset-row">
+          <div><div class="ticker">AVGO</div><small>ASIC + 网络</small></div>
+          <p>更像 AI 资本开支的基础设施收租层。</p>
+          <p>如果 hyperscaler 自研 ASIC 扩大，它是价值再分配的受益者之一。</p>
+          <span class="chip">质量偏强</span>
+        </div>
+        <div class="asset-row">
+          <div><div class="ticker">MRVL</div><small>连接层</small></div>
+          <p>处在“瓶颈被发现，订单待验证”的阶段。</p>
+          <p>温度来自 AI 连接需求，但地板要等收入和利润兑现。</p>
+          <span class="chip">验证期</span>
+        </div>
+        <div class="asset-row">
+          <div><div class="ticker">INTC</div><small>制造再集中</small></div>
+          <p>典型清算后再集中逻辑。</p>
+          <p>市场买的是美国先进制造期权，但当下地板被 Foundry 亏损吞掉。</p>
+          <span class="chip">再集中期权</span>
+        </div>
+        <div class="asset-row">
+          <div><div class="ticker">MU</div><small>存储周期</small></div>
+          <p>HBM 是结构性增量，但 DRAM/NAND 仍然有周期品属性。</p>
+          <p>温度计要重点看库存、价格、毛利和资本开支纪律。</p>
+          <span class="chip">周期修复</span>
+        </div>
+        <div class="asset-row">
+          <div><div class="ticker">GOOG</div><small>AI 分发层</small></div>
+          <p>搜索现金牛给它地板，AI capex 决定新周期。</p>
+          <p>如果 $80B 级别投资不能转成 Cloud/Ads/TPU 回报，就是实现危机。</p>
+          <span class="chip">强地板+大投入</span>
+        </div>
+        <div class="asset-row">
+          <div><div class="ticker">CRCL</div><small>稳定币利差</small></div>
+          <p>USDC 流通量和短端利率是地板，分销留存决定信任倍数。</p>
+          <p>降息周期会冷却利息收入，但可能提高链上交易和支付用量。</p>
+          <span class="chip">利率敏感</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="monitor">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Monitoring contract</p>
+          <h2>下一步要接的数据</h2>
+        </div>
+        <p>这个页面已经能读取宏观系统。要让它成为真正的持续监控系统，后续可以把下面三组数据接成 JSON。</p>
+      </div>
+
+      <div class="monitor-grid">
+        <article class="monitor-row">
+          <div>
+            <h3>宏观信用</h3>
+            <p>M2、实际利率、HY OAS、VIX、美元指数、ETF 净流。</p>
+          </div>
+          <span class="chip">daily / weekly</span>
+        </article>
+        <article class="monitor-row">
+          <div>
+            <h3>产业过剩</h3>
+            <p>capex 增速、库存、订单积压、交付周期、行业融资/IPO 热度。</p>
+          </div>
+          <span class="chip">quarterly</span>
+        </article>
+        <article class="monitor-row">
+          <div>
+            <h3>利润实现</h3>
+            <p>收入增速、毛利率、营业利润率、EPS revision、FCF 转换率。</p>
+          </div>
+          <span class="chip">earnings</span>
+        </article>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>研究框架与监控原型，不构成投资建议。</span>
+      <span><a href="./">首页</a> · <a href="macro-report.html">宏观报告</a> · <a href="investment-research.html">投资研究</a> · <a href="investment-thesis-rerun.html">Thesis 重跑</a> · <a href="latest.json">latest.json</a></span>
+    </footer>
+  </main>
+
+  <script>
+    const clamp = (value, min = 0, max = 100) => Math.min(max, Math.max(min, value));
+    const fmtPct = value => Number.isFinite(value) ? `${value >= 0 ? "+" : ""}${(value * 100).toFixed(1)}%` : "--";
+    const fmtNum = value => Number.isFinite(value) ? value.toFixed(0) : "--";
+    const fmtDate = value => {
+      if (!value) return "--";
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleString("zh-CN", { hour12: false });
+    };
+
+    const stages = [
+      {
+        min: 78,
+        label: "overheated",
+        title: "过热期",
+        text: "信用、风险偏好和估值信任同时偏热。此时最危险的不是上涨，而是利润实现一旦放缓，市场会突然重估。"
+      },
+      {
+        min: 62,
+        label: "expansion",
+        title: "扩张期",
+        text: "资本仍在顺畅再生产，利润与信用大体同向。顺势有效，但要开始监控 capex 是否快过真实需求。"
+      },
+      {
+        min: 46,
+        label: "re-concentration",
+        title: "再集中/早周期",
+        text: "温度不高不低，弱者开始让出份额，强者可能得到下一轮周期的筹码。关键看利润率是否修复。"
+      },
+      {
+        min: 32,
+        label: "realization-crisis",
+        title: "实现危机/冷却",
+        text: "信用或需求已经降温，生产出来的东西未必能按预期价格卖掉。库存、毛利和 EPS 下修比叙事更重要。"
+      },
+      {
+        min: 0,
+        label: "liquidation",
+        title: "清算期",
+        text: "资本被迫退出，融资和估值同时收缩。短期痛苦，但优质资产的长期赔率可能开始变好。"
+      }
+    ];
+
+    const read = (object, path, fallback = NaN) => path.reduce((acc, key) => acc && acc[key] !== undefined ? acc[key] : undefined, object) ?? fallback;
+
+    function setText(id, value) {
+      const node = document.getElementById(id);
+      if (node) node.textContent = value;
+    }
+
+    function updateGauge(score) {
+      const gauge = document.getElementById("heatGauge");
+      if (gauge) gauge.style.setProperty("--score", clamp(score).toFixed(0));
+      setText("heatScore", fmtNum(score));
+      const stage = stages.find(item => score >= item.min) || stages[stages.length - 1];
+      setText("stageLabel", stage.label);
+      setText("stageTitle", stage.title);
+      setText("stageNarrative", stage.text);
+    }
+
+    function computeTemperature(data) {
+      const indicators = data.indicators || {};
+      const btc = indicators.btc || {};
+      const liquidity = indicators.liquidity || {};
+      const rates = indicators.policy_rates || {};
+      const inflation = indicators.inflation || {};
+      const risk = indicators.dollar_risk || {};
+      const debt = indicators.debt || {};
+
+      const m2 = read(liquidity, ["m2_3m_annualized"]);
+      const fedBalance = read(liquidity, ["fed_balance_sheet_13w_change"]);
+      const vix = read(risk, ["vix"]);
+      const hyOas = read(risk, ["high_yield_oas"]);
+      const hyDelta = read(risk, ["high_yield_oas_13w_delta"]);
+      const realYield = read(rates, ["real_yield_10y"]);
+      const cpi3m = read(inflation, ["cpi_3m_annualized"]);
+      const btc30 = read(btc, ["change_30d"]);
+      const btc90 = read(btc, ["change_90d"]);
+      const aboveMa200 = Boolean(btc.above_ma200);
+      const publicDebt = read(debt, ["public_debt_gdp"]);
+      const interest = read(debt, ["interest_outlays_gdp"]);
+
+      const liquidityScore = clamp(50 + (Number.isFinite(m2) ? m2 * 320 : 0) + (Number.isFinite(fedBalance) ? fedBalance * 260 : 0));
+      const creditScore = clamp(
+        72
+        - (Number.isFinite(hyOas) ? (hyOas - 3.0) * 12 : 0)
+        - (Number.isFinite(vix) ? Math.max(vix - 18, 0) * 2.2 : 0)
+        + (Number.isFinite(vix) ? Math.max(18 - vix, 0) * 1.1 : 0)
+        - (Number.isFinite(hyDelta) ? Math.max(hyDelta, 0) * 26 : 0)
+        + (Number.isFinite(hyDelta) ? Math.max(-hyDelta, 0) * 13 : 0)
+      );
+      const trendScore = clamp(50 + (Number.isFinite(btc30) ? btc30 * 90 : 0) + (Number.isFinite(btc90) ? btc90 * 60 : 0) + (aboveMa200 ? 10 : -14));
+      const constraintScore = clamp(44 + (Number.isFinite(realYield) ? (realYield - 1.2) * 18 : 0) + (Number.isFinite(cpi3m) ? (cpi3m - 0.03) * 500 : 0));
+      const fiscalScore = clamp(50 + (Number.isFinite(publicDebt) ? (publicDebt - 90) * 0.55 : 0) + (Number.isFinite(interest) ? (interest - 2.4) * 12 : 0));
+      const heat = clamp(
+        liquidityScore * 0.3
+        + creditScore * 0.24
+        + trendScore * 0.22
+        + fiscalScore * 0.12
+        + (100 - constraintScore) * 0.12
+      );
+
+      return {
+        heat,
+        liquidityScore,
+        creditScore,
+        trendScore,
+        constraintScore,
+        fiscalScore,
+        notes: {
+          liquidity: `M2 3M ${fmtPct(m2)} / Fed BS 13W ${fmtPct(fedBalance)}`,
+          credit: `VIX ${Number.isFinite(vix) ? vix.toFixed(1) : "--"} / HY OAS ${Number.isFinite(hyOas) ? hyOas.toFixed(2) : "--"} / OAS 13W ${Number.isFinite(hyDelta) ? `${hyDelta >= 0 ? "+" : ""}${hyDelta.toFixed(2)}pp` : "--"}`,
+          trend: `BTC 30D ${fmtPct(btc30)} / 90D ${fmtPct(btc90)} / MA200 ${aboveMa200 ? "above" : "below"}`,
+          constraint: `10Y real ${Number.isFinite(realYield) ? realYield.toFixed(2) : "--"}% / CPI 3M ${fmtPct(cpi3m)}`,
+          fiscal: `Debt/GDP ${Number.isFinite(publicDebt) ? publicDebt.toFixed(1) : "--"}% / interest ${Number.isFinite(interest) ? interest.toFixed(2) : "--"}%`
+        }
+      };
+    }
+
+    async function loadLiveTemperature() {
+      try {
+        const response = await fetch("latest.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const result = computeTemperature(data);
+        updateGauge(result.heat);
+        setText("generatedAt", `generated ${fmtDate(data.generated_at)}`);
+        setText("liquidityScore", fmtNum(result.liquidityScore));
+        setText("creditScore", fmtNum(result.creditScore));
+        setText("trendScore", fmtNum(result.trendScore));
+        setText("constraintScore", fmtNum(result.constraintScore));
+        setText("fiscalScore", fmtNum(result.fiscalScore));
+        setText("regimeScore", `${data.regime?.score ?? "--"} / ${data.regime?.label ?? "--"}`);
+        setText("liquidityNote", result.notes.liquidity);
+        setText("creditNote", result.notes.credit);
+        setText("trendNote", result.notes.trend);
+        setText("constraintNote", result.notes.constraint);
+        setText("fiscalNote", result.notes.fiscal);
+        setText("regimeNote", "来自 BTC macro system");
+      } catch (error) {
+        updateGauge(50);
+        setText("generatedAt", "本地文件模式下无法 fetch latest.json");
+        setText("stageTitle", "需要通过静态服务器或线上页面读取数据");
+        setText("stageNarrative", `错误：${error.message}。页面结构仍可阅读，部署到 GitHub Pages 后会自动读取 latest.json。`);
+      }
+    }
+
+    function updateSimulator() {
+      const values = {};
+      document.querySelectorAll("[data-sim]").forEach(input => {
+        values[input.dataset.sim] = Number(input.value);
+        setText(`${input.dataset.sim}Val`, input.value);
+      });
+      const score = clamp(
+        values.profit * 0.25
+        + values.credit * 0.22
+        + (100 - values.overcapacity) * 0.2
+        + values.trust * 0.2
+        + (100 - values.liquidation) * 0.13
+      );
+      const stage = stages.find(item => score >= item.min) || stages[stages.length - 1];
+      setText("simScore", `${score.toFixed(0)} · ${stage.title}`);
+      setText("simText", stage.text);
+    }
+
+    document.querySelectorAll("[data-sim]").forEach(input => input.addEventListener("input", updateSimulator));
+    updateSimulator();
+    loadLiveTemperature();
+  </script>
+</body>
+</html>
