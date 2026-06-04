@@ -52,6 +52,28 @@ open investment-thesis-harness/outputs/report.html
 
 The GitHub Pages workflow publishes this report as `investment-research.html`, with machine-readable output at `investment-latest.json` and history at `thesis-snapshots.jsonl`.
 
+## Agent Harness
+
+`agent-harness/` is the repo-level control loop for future AI-agent iterations.
+It keeps a short contract, recurring battle scenarios, and deterministic checks
+so that new pages, earnings updates, market-temperature modules, and thesis
+changes are judged by executable evidence instead of prose claims.
+
+Before a broad system change is considered done:
+
+```bash
+bash agent-harness/scripts/run_harness.sh
+```
+
+The GitHub Pages workflow also runs:
+
+```bash
+python3 agent-harness/scripts/validate.py --site-root _site
+```
+
+Future agents should start with `AGENTS.md` for the repo map, then use
+`agent-harness/contracts/system-iteration-contract.md` as the done criteria.
+
 ## EveryDayZen Macro Notes
 
 Static content system for macro essays, voiceover scripts, and infographic assets:

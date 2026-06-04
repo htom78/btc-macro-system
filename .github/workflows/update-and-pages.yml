@@ -74,6 +74,9 @@ jobs:
       - name: Validate Pages links
         run: python3 tools/check_site_links.py --root _site
 
+      - name: Validate agent harness
+        run: python3 agent-harness/scripts/validate.py --site-root _site
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:

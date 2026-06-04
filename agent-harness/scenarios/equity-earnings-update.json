@@ -1,0 +1,32 @@
+{
+  "id": "equity-earnings-update",
+  "title": "Update an equity thesis after earnings while preserving falsifiability",
+  "task_type": "investment_thesis_update",
+  "risk": "The agent summarizes earnings headlines but fails to update the underlying thesis variables, red lines, or competition battle.",
+  "prompt": "Analyze a public-company earnings release and update the investment-thesis system with a durable monitoring conclusion.",
+  "target_files": [
+    "investment-thesis-rerun.html",
+    "mstr-mnav/notes/re-underwrite/",
+    "agent-harness/scenarios/"
+  ],
+  "required_commands": [
+    "python3 investment-thesis-harness/scripts/validate.py",
+    "bash tools/build_pages_site.sh _site",
+    "python3 agent-harness/scripts/validate.py --site-root _site"
+  ],
+  "deterministic_checks": [
+    "official source links are recorded when current financial facts are used",
+    "analysis keeps cash-flow floor, trust multiple, competition vector, and falsification triggers",
+    "public route still builds and link-checks"
+  ],
+  "done_criteria": [
+    "Facts, estimates, and inferences are separated.",
+    "The update says what would count as fundamental improvement or deterioration.",
+    "The final view compares direct competitors by attack vector, not isolated summaries."
+  ],
+  "judge_questions": [
+    "Did the agent use official releases or filings before making current claims?",
+    "Did the conclusion change the monitoring variables or only the prose?",
+    "Could another agent rerun the update next quarter?"
+  ]
+}

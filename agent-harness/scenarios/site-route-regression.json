@@ -1,0 +1,33 @@
+{
+  "id": "site-route-regression",
+  "title": "Prevent public Pages route regressions",
+  "task_type": "site_regression",
+  "risk": "A new static page works locally but is not copied into _site, linked from the homepage, or compatible with the GitHub Pages subpath.",
+  "prompt": "Add a new public research module to the BTC macro Pages site.",
+  "target_files": [
+    "home.html",
+    "tools/build_pages_site.sh",
+    "tools/check_site_links.py",
+    ".github/workflows/update-and-pages.yml"
+  ],
+  "required_commands": [
+    "bash tools/build_pages_site.sh _site",
+    "python3 tools/check_site_links.py --root _site",
+    "python3 agent-harness/scripts/validate.py --site-root _site"
+  ],
+  "deterministic_checks": [
+    "required public pages exist under _site",
+    "internal links resolve under the btc-macro-system base path",
+    "workflow runs the harness validator after Pages artifact preparation"
+  ],
+  "done_criteria": [
+    "The new module is reachable from the homepage.",
+    "No root-absolute local links are introduced.",
+    "The deployment workflow has a deterministic guard for the new surface."
+  ],
+  "judge_questions": [
+    "Would GitHub Pages publish the new file?",
+    "Would a future homepage link typo be caught?",
+    "Did the agent update source files rather than only _site?"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "market-temperature-extension",
+  "title": "Extend capital-cycle market temperature without breaking macro data contracts",
+  "task_type": "dashboard_extension",
+  "risk": "The agent adds a visually persuasive market-temperature page but forgets data paths, public routing, or capital-cycle falsification language.",
+  "prompt": "Add or update a market-temperature module that uses Marx-style capital-cycle logic and reads existing macro data.",
+  "target_files": [
+    "market-temperature.html",
+    "home.html",
+    "tools/build_pages_site.sh"
+  ],
+  "required_commands": [
+    "bash tools/build_pages_site.sh _site",
+    "python3 tools/check_site_links.py --root _site",
+    "python3 agent-harness/scripts/validate.py --site-root _site"
+  ],
+  "deterministic_checks": [
+    "market-temperature.html fetches latest.json",
+    "home.html links to market-temperature.html",
+    "_site/market-temperature.html exists after build",
+    "page text includes liquidation, realization crisis, re-concentration, expansion, and overheating stages"
+  ],
+  "done_criteria": [
+    "The page is reachable from the public homepage.",
+    "The page keeps observable variables rather than only narrative prose.",
+    "The page explains what would make the market stage colder or hotter."
+  ],
+  "judge_questions": [
+    "Can a future agent tell which source data feeds the score?",
+    "Would a stale or missing latest.json be caught before deploy?",
+    "Does the page distinguish capital-cycle stage from buy/sell advice?"
+  ]
+}
