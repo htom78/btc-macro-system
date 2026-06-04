@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-03T06:25:37+00:00",
+  "generated_at": "2026-06-04T02:01:48+00:00",
   "state": {
     "key": "washout_probe",
     "label": "恐慌小探",
@@ -46,13 +46,13 @@
           "name": "Risk appetite",
           "score": 1,
           "stance": "supportive",
-          "detail": "VIX n/a; 高收益债利差13周变化 -0.31百分点 / HY OAS 13w delta -0.31 pp"
+          "detail": "VIX n/a; 高收益债利差13周变化 -0.37百分点 / HY OAS 13w delta -0.37 pp"
         },
         {
           "name": "BTC trend",
           "score": -1,
           "stance": "hostile",
-          "detail": "价格 $71,326 / Price $71,326; 200日均线 $79,380 / 200d MA $79,380"
+          "detail": "价格 $66,677 / Price $66,677; 200日均线 $79,241 / 200d MA $79,241"
         },
         {
           "name": "Fiscal pressure",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 1,
-          "detail": "RSI14 18.0"
+          "detail": "RSI14 11.0"
         },
         {
           "name": "30d drawdown",
           "score": 1,
-          "detail": "-18.8% from 30d high"
+          "detail": "-25.2% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 8.0 days old"
+          "detail": "snapshot is 8.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-06-03",
-    "price": 67256.0,
-    "ma95": 73569.25421052631,
-    "ma200": 79100.80804999999,
+    "date": "2026-06-04",
+    "price": 61931.02,
+    "ma95": 73495.00178947368,
+    "ma200": 78923.4633,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 18.015974502885697,
-    "atr14": 2160.71,
+    "rsi14": 11.026236401134838,
+    "atr14": 2337.9407142857153,
     "high_30d": 82814.23,
-    "low_30d": 65353.08,
-    "drawdown_from_30d_high": -0.18786904134712112
+    "low_30d": 61840.32,
+    "drawdown_from_30d_high": -0.2521693433604345
   },
   "market_structure": {
     "schema_version": 1,
