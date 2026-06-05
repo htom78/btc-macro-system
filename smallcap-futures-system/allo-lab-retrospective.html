@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ALLO / LAB 小币剧本复盘</title>
+  <style>
+    :root {
+      --paper: #f7f4ed;
+      --ink: #171714;
+      --muted: #68645c;
+      --line: #d7d1c4;
+      --soft: #eee8dc;
+      --red: #b83f3b;
+      --green: #1e7d5a;
+      --amber: #a96b1f;
+      --blue: #2e6093;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    header {
+      padding: 28px clamp(18px, 4vw, 52px) 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 26px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    h1 {
+      margin: 0;
+      max-width: 980px;
+      font-size: clamp(34px, 5.6vw, 66px);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+    .lead {
+      max-width: 900px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    main { padding: 24px clamp(18px, 4vw, 52px) 44px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .metric, .panel, .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .36);
+    }
+    .metric {
+      min-height: 112px;
+      padding: 15px 16px;
+    }
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .value {
+      margin-top: 10px;
+      font-size: 24px;
+      line-height: 1.12;
+      font-weight: 850;
+    }
+    .panel {
+      padding: 18px;
+      margin-top: 16px;
+    }
+    .panel h2, .card h3 {
+      margin: 0 0 12px;
+      font-size: 19px;
+    }
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .symbol {
+      margin-top: 16px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.26);
+    }
+    .symbol-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .symbol h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 36px);
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 9px;
+      color: var(--muted);
+      background: rgba(255,255,255,.42);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .tag.red { color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, var(--line)); }
+    .tag.green { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, var(--line)); }
+    .card {
+      padding: 16px;
+      min-height: 100%;
+    }
+    .card.validation { border-top: 5px solid var(--green); }
+    .card.invalidation { border-top: 5px solid var(--red); }
+    ul, ol {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+    li { margin: 6px 0; }
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .note {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--soft);
+      color: #312c25;
+    }
+    .missed {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .missed-item {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+    .missed-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+    .trigger-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .trigger {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.3);
+    }
+    .trigger strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--blue);
+    }
+    footer {
+      padding: 0 clamp(18px, 4vw, 52px) 36px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media (max-width: 900px) {
+      .grid, .two, .trigger-grid { grid-template-columns: 1fr; }
+      .symbol-head { display: block; }
+      .symbol-head .tag { margin-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="./">返回小币系统</a>
+      <a href="../">返回首页</a>
+    </nav>
+    <h1>ALLO / LAB 小币剧本复盘</h1>
+    <p class="lead" id="purpose">把这次跟踪里错过的机会, 变成下次能条件反射执行的剧本。</p>
+  </header>
+  <main>
+    <section class="grid" aria-label="复盘总览">
+      <div class="metric">
+        <div class="label">核心错误</div>
+        <div class="value">只停止看多, 没有立刻切换反手剧本</div>
+      </div>
+      <div class="metric">
+        <div class="label">LAB 教训</div>
+        <div class="value">燃料不等于点火</div>
+      </div>
+      <div class="metric">
+        <div class="label">ALLO 教训</div>
+        <div class="value">破位后等第一次回踩失败</div>
+      </div>
+      <div class="metric">
+        <div class="label">训练目标</div>
+        <div class="value">验证剧本 + 失效剧本</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>复盘结论</h2>
+      <p id="marketRead"></p>
+      <div class="note">
+        <strong>肌肉记忆口令:</strong>
+        <ol id="memoryList"></ol>
+      </div>
+    </section>
+
+    <section id="symbols"></section>
+
+    <section class="panel">
+      <h2>下次遇到类似小币时的触发反应</h2>
+      <div class="trigger-grid" id="trainingRules"></div>
+    </section>
+  </main>
+  <footer id="disclaimer"></footer>
+
+  <script>
+    function list(items) {
+      return `<ul>${items.map(item => `<li>${item}</li>`).join("")}</ul>`;
+    }
+    function renderScript(script, kind) {
+      return `<div class="card ${kind}">
+        <h3>${script.name}</h3>
+        ${list(script.conditions)}
+        <div class="note"><strong>观察区:</strong> ${script.action_zone}</div>
+        <div class="small">${kind === "validation" ? script.do_not_chase : "风险线: " + script.risk_line}</div>
+      </div>`;
+    }
+    function renderSymbol(item) {
+      return `<article class="symbol">
+        <div class="symbol-head">
+          <div>
+            <h2>${item.symbol}</h2>
+            <div class="small">${item.case_name}</div>
+          </div>
+          <span class="tag ${item.symbol === "LABUSDT" ? "red" : "green"}">${item.status_after_review}</span>
+        </div>
+        <p>${item.initial_thesis}</p>
+        <div class="two">
+          ${renderScript(item.validation_script, "validation")}
+          ${renderScript(item.invalidation_script, "invalidation")}
+        </div>
+        <section class="panel">
+          <h2>错过的可交易机会</h2>
+          <div class="missed">
+            ${item.missed_opportunities.map(op => `<div class="missed-item">
+              <strong>${op.label}</strong>
+              <div>${op.what_we_could_have_done}</div>
+              <div class="small">复盘经验: ${op.lesson}</div>
+            </div>`).join("")}
+          </div>
+        </section>
+      </article>`;
+    }
+    async function boot() {
+      const data = await fetch("data/allo-lab-retrospective.json", { cache: "no-store" }).then(r => r.json());
+      document.title = data.title;
+      document.querySelector("#purpose").textContent = data.purpose;
+      document.querySelector("#marketRead").textContent = data.market_read.summary;
+      document.querySelector("#memoryList").innerHTML = data.market_read.muscle_memory.map(x => `<li>${x}</li>`).join("");
+      document.querySelector("#symbols").innerHTML = data.symbols.map(renderSymbol).join("");
+      document.querySelector("#trainingRules").innerHTML = data.training_rules.map(rule => `<div class="trigger">
+        <strong>${rule.trigger}</strong>
+        <span>${rule.response}</span>
+      </div>`).join("");
+      document.querySelector("#disclaimer").textContent = `${data.generated_at} · ${data.disclaimer}`;
+    }
+    boot().catch(error => {
+      document.querySelector("#marketRead").textContent = "复盘数据加载失败: " + error.message;
+    });
+  </script>
+</body>
+</html>
