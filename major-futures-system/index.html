@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>大币合约策略系统</title>
+  <style>
+    :root {
+      --paper: #f7f4ed;
+      --ink: #171714;
+      --muted: #69655d;
+      --line: #d7d1c4;
+      --soft: #eee8dc;
+      --green: #1f7f5d;
+      --red: #b8423e;
+      --amber: #a66b1e;
+      --blue: #2e6093;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    a { color: inherit; }
+    header {
+      padding: 28px clamp(18px, 4vw, 52px) 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    h1 {
+      margin: 0;
+      max-width: 980px;
+      font-size: clamp(34px, 5.4vw, 66px);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+    .lead {
+      margin: 18px 0 0;
+      max-width: 900px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    main { padding: 24px clamp(18px, 4vw, 52px) 44px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .metric, .panel, .symbol {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.36);
+    }
+    .metric { padding: 15px 16px; min-height: 112px; }
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .value {
+      margin-top: 10px;
+      font-size: 25px;
+      line-height: 1.12;
+      font-weight: 850;
+    }
+    .panel { padding: 18px; margin-top: 16px; }
+    .panel h2, .symbol h2 {
+      margin: 0 0 12px;
+      font-size: 19px;
+    }
+    .symbols {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .symbol { padding: 17px; }
+    .symbol-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .symbol-name {
+      margin: 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 26px;
+      font-weight: 850;
+    }
+    .small { color: var(--muted); font-size: 13px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 9px;
+      margin: 2px;
+      color: var(--muted);
+      background: rgba(255,255,255,.42);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .tag.preferred, .tag.alert { color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, var(--line)); }
+    .tag.watch { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 45%, var(--line)); }
+    .tag.long { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, var(--line)); }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .stat {
+      padding: 10px;
+      border-radius: 8px;
+      background: var(--soft);
+    }
+    .stat b { display: block; margin-top: 4px; }
+    .script {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+    .script:first-of-type { border-top: 0; }
+    .rules {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .rule {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.3);
+      color: #312c25;
+    }
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+    @media (max-width: 1050px) {
+      .grid, .symbols, .rules { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 680px) {
+      .grid, .symbols, .rules, .stats { grid-template-columns: 1fr; }
+      .symbol-head { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="../">返回首页</a>
+      <span id="updated">等待数据</span>
+    </nav>
+    <h1>大币合约策略系统</h1>
+    <p class="lead">用 BTC 做方向锚, 用 ETH/SOL/BNB 做 beta 执行和强弱轮动。系统只给观察剧本: 反抽失败空, 或 reclaim 确认多。</p>
+  </header>
+  <main>
+    <section class="grid">
+      <div class="metric">
+        <div class="label">默认剧本</div>
+        <div class="value" id="defaultPlaybook">--</div>
+      </div>
+      <div class="metric">
+        <div class="label">低于 1h MA20</div>
+        <div class="value" id="belowCount">--</div>
+      </div>
+      <div class="metric">
+        <div class="label">最弱 beta</div>
+        <div class="value mono" id="weakest">--</div>
+      </div>
+      <div class="metric">
+        <div class="label">24h 中位数</div>
+        <div class="value mono" id="median">--</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>策略肌肉记忆</h2>
+      <div class="rules" id="rules"></div>
+    </section>
+
+    <section class="symbols" id="symbols"></section>
+  </main>
+  <script>
+    function pct(value, digits = 2) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
+      const n = Number(value);
+      return `${n >= 0 ? "+" : ""}${n.toFixed(digits)}%`;
+    }
+    function rate(value, digits = 4) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
+      const n = Number(value) * 100;
+      return `${n >= 0 ? "+" : ""}${n.toFixed(digits)}%`;
+    }
+    function money(value) {
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "--";
+      const n = Number(value);
+      return n >= 1000 ? n.toFixed(1) : n.toFixed(4).replace(/0+$/, "").replace(/\.$/, "");
+    }
+    function cls(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n) || n === 0) return "";
+      return n > 0 ? "pos" : "neg";
+    }
+    function renderSymbol(row) {
+      const scripts = (row.strategy?.scripts || []).map(script => `<div class="script">
+        <strong>${script.name}</strong>
+        <span class="tag ${script.status}">${script.status}</span>
+        <span class="tag ${script.direction === "long" ? "long" : ""}">${script.direction}</span>
+        <div>${script.reason}</div>
+        <div class="small">观察区: ${script.observation_zone}</div>
+        <div class="small">失效: ${script.invalidation}</div>
+      </div>`).join("");
+      return `<article class="symbol">
+        <div class="symbol-head">
+          <div>
+            <div class="symbol-name">${row.symbol}</div>
+            <div class="small">${row.strategy?.primary_bias || "--"} · ${row.strategy?.risk_note || "--"}</div>
+          </div>
+          <span class="tag">${money(row.price)}</span>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="small">24h</span><b class="${cls(row.pct24)}">${pct(row.pct24)}</b></div>
+          <div class="stat"><span class="small">Funding</span><b class="${cls(row.derivatives?.funding_rate)}">${rate(row.derivatives?.funding_rate)}</b></div>
+          <div class="stat"><span class="small">OI 1h</span><b class="${cls(row.derivatives?.oi_change_1h_pct)}">${pct(row.derivatives?.oi_change_1h_pct)}</b></div>
+          <div class="stat"><span class="small">Global long</span><b>${rate(row.positioning?.global_long_account, 1)}</b></div>
+          <div class="stat"><span class="small">Taker</span><b>${row.positioning?.taker_buy_sell_ratio ? Number(row.positioning.taker_buy_sell_ratio).toFixed(2) : "--"}</b></div>
+          <div class="stat"><span class="small">1h MA20</span><b>${money(row.trend?.h1_ma20)}</b></div>
+        </div>
+        ${scripts}
+      </article>`;
+    }
+    async function boot() {
+      const data = await fetch("data/latest.json", { cache: "no-store" }).then(r => r.json());
+      document.querySelector("#updated").textContent = data.generated_at;
+      document.querySelector("#defaultPlaybook").textContent = data.market_state.default_playbook;
+      document.querySelector("#belowCount").textContent = `${data.market_state.symbols_below_h1_ma20}/4`;
+      document.querySelector("#weakest").textContent = data.market_state.weakest_beta || "--";
+      document.querySelector("#median").textContent = pct(data.market_state.median_24h_pct);
+      document.querySelector("#rules").innerHTML = data.risk_rules.map(rule => `<div class="rule">${rule}</div>`).join("");
+      document.querySelector("#symbols").innerHTML = data.symbols.map(renderSymbol).join("");
+    }
+    boot().catch(error => {
+      document.querySelector("#defaultPlaybook").textContent = "数据加载失败: " + error.message;
+    });
+  </script>
+</body>
+</html>

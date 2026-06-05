@@ -1,0 +1,262 @@
+{
+  "schema_version": "2026-06-05.major-futures.v1",
+  "generated_at": "2026-06-05T09:51:03Z",
+  "symbols": [
+    {
+      "symbol": "BTCUSDT",
+      "price": 62845.1,
+      "pct24": -0.343,
+      "range_15m_4h": {
+        "high": 63231.8,
+        "low": 61067.6
+      },
+      "trend": {
+        "h1_ma20": 63240.43000000001,
+        "h1_ma60": 64645.996666666666,
+        "h4_ma20": 65339.79,
+        "h4_ma60": 70951.855
+      },
+      "derivatives": {
+        "funding_rate": -3.054e-05,
+        "open_interest": 98132.762,
+        "oi_change_1h_pct": -0.03410151952559781,
+        "oi_change_window_pct": -1.891680565846432
+      },
+      "positioning": {
+        "global_long_account": 0.6676,
+        "global_short_account": 0.3324,
+        "top_long_position": 0.5405,
+        "top_short_position": 0.4595,
+        "taker_buy_sell_ratio": 0.7974
+      },
+      "strategy": {
+        "primary_bias": "反抽失败空",
+        "risk_note": "多头账户拥挤, 弱势里防杀多",
+        "scripts": [
+          {
+            "name": "反抽失败空",
+            "status": "preferred",
+            "direction": "short",
+            "reason": "价格仍在 1h/4h 均线结构下方, 先等旧支撑或 1h MA20 反抽失败。",
+            "observation_zone": "1h MA20 附近或最近 4h 区间上沿。",
+            "invalidation": "重新站回 1h MA20 并保持 15m 更高低点。"
+          },
+          {
+            "name": "reclaim 确认多",
+            "status": "blocked",
+            "direction": "long",
+            "reason": "只有先收回 1h MA20, 再看 ETH/SOL/BNB 的 beta 跟随。",
+            "observation_zone": "收回 1h MA20 后第一次回踩。",
+            "invalidation": "reclaim 后快速跌回均线下方。"
+          },
+          {
+            "name": "多头拥挤杀多",
+            "status": "watch",
+            "direction": "short",
+            "reason": "账户多头拥挤而价格低于 1h 均线, 弱势里更容易杀多。",
+            "observation_zone": "反抽失败或跌破 15m 区间下沿。",
+            "invalidation": "价格收回 1h MA20 且 taker 买盘持续有效。"
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "price": 1679.99,
+      "pct24": -4.546,
+      "range_15m_4h": {
+        "high": 1689.23,
+        "low": 1622.31
+      },
+      "trend": {
+        "h1_ma20": 1739.2415,
+        "h1_ma60": 1796.327,
+        "h4_ma20": 1821.054,
+        "h4_ma60": 1954.1535000000001
+      },
+      "derivatives": {
+        "funding_rate": -5.456e-05,
+        "open_interest": 2262845.317,
+        "oi_change_1h_pct": 0.09174677234369266,
+        "oi_change_window_pct": 0.16366705173760376
+      },
+      "positioning": {
+        "global_long_account": 0.7223,
+        "global_short_account": 0.2777,
+        "top_long_position": 0.5772,
+        "top_short_position": 0.4228,
+        "taker_buy_sell_ratio": 1.2391
+      },
+      "strategy": {
+        "primary_bias": "反抽失败空",
+        "risk_note": "多头账户拥挤, 弱势里防杀多",
+        "scripts": [
+          {
+            "name": "反抽失败空",
+            "status": "preferred",
+            "direction": "short",
+            "reason": "价格仍在 1h/4h 均线结构下方, 先等旧支撑或 1h MA20 反抽失败。",
+            "observation_zone": "1h MA20 附近或最近 4h 区间上沿。",
+            "invalidation": "重新站回 1h MA20 并保持 15m 更高低点。"
+          },
+          {
+            "name": "reclaim 确认多",
+            "status": "blocked",
+            "direction": "long",
+            "reason": "只有先收回 1h MA20, 再看 ETH/SOL/BNB 的 beta 跟随。",
+            "observation_zone": "收回 1h MA20 后第一次回踩。",
+            "invalidation": "reclaim 后快速跌回均线下方。"
+          },
+          {
+            "name": "多头拥挤杀多",
+            "status": "alert",
+            "direction": "short",
+            "reason": "账户多头拥挤而价格低于 1h 均线, 弱势里更容易杀多。",
+            "observation_zone": "反抽失败或跌破 15m 区间下沿。",
+            "invalidation": "价格收回 1h MA20 且 taker 买盘持续有效。"
+          },
+          {
+            "name": "拥挤反身性观察",
+            "status": "watch",
+            "direction": "two-way",
+            "reason": "负 funding 与多头账户拥挤并存, 需要等价格点火, 不能只看 funding。",
+            "observation_zone": "关键位 reclaim 或反抽失败二选一。",
+            "invalidation": "OI 下降且价格无法收回关键位。"
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "price": 66.30320816,
+      "pct24": -3.085,
+      "range_15m_4h": {
+        "high": 66.51,
+        "low": 63.74
+      },
+      "trend": {
+        "h1_ma20": 67.898,
+        "h1_ma60": 70.89450000000001,
+        "h4_ma20": 72.0145,
+        "h4_ma60": 78.85233333333333
+      },
+      "derivatives": {
+        "funding_rate": -0.00030361,
+        "open_interest": 9956684.4,
+        "oi_change_1h_pct": 0.027411484913919537,
+        "oi_change_window_pct": -0.4737460536450966
+      },
+      "positioning": {
+        "global_long_account": 0.7749,
+        "global_short_account": 0.2251,
+        "top_long_position": 0.5985,
+        "top_short_position": 0.4015,
+        "taker_buy_sell_ratio": 0.8764
+      },
+      "strategy": {
+        "primary_bias": "反抽失败空",
+        "risk_note": "多头账户拥挤, 弱势里防杀多",
+        "scripts": [
+          {
+            "name": "反抽失败空",
+            "status": "preferred",
+            "direction": "short",
+            "reason": "价格仍在 1h/4h 均线结构下方, 先等旧支撑或 1h MA20 反抽失败。",
+            "observation_zone": "1h MA20 附近或最近 4h 区间上沿。",
+            "invalidation": "重新站回 1h MA20 并保持 15m 更高低点。"
+          },
+          {
+            "name": "reclaim 确认多",
+            "status": "blocked",
+            "direction": "long",
+            "reason": "只有先收回 1h MA20, 再看 ETH/SOL/BNB 的 beta 跟随。",
+            "observation_zone": "收回 1h MA20 后第一次回踩。",
+            "invalidation": "reclaim 后快速跌回均线下方。"
+          },
+          {
+            "name": "多头拥挤杀多",
+            "status": "alert",
+            "direction": "short",
+            "reason": "账户多头拥挤而价格低于 1h 均线, 弱势里更容易杀多。",
+            "observation_zone": "反抽失败或跌破 15m 区间下沿。",
+            "invalidation": "价格收回 1h MA20 且 taker 买盘持续有效。"
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "BNBUSDT",
+      "price": 595.21900862,
+      "pct24": -0.26,
+      "range_15m_4h": {
+        "high": 595.88,
+        "low": 570.32
+      },
+      "trend": {
+        "h1_ma20": 599.5654999999999,
+        "h1_ma60": 617.1305,
+        "h4_ma20": 627.432,
+        "h4_ma60": 657.0044999999999
+      },
+      "derivatives": {
+        "funding_rate": 0.0,
+        "open_interest": 584624.13,
+        "oi_change_1h_pct": 0.5229436881409422,
+        "oi_change_window_pct": -0.5336459150712236
+      },
+      "positioning": {
+        "global_long_account": 0.7292,
+        "global_short_account": 0.2708,
+        "top_long_position": 0.5576,
+        "top_short_position": 0.4424,
+        "taker_buy_sell_ratio": 0.9688
+      },
+      "strategy": {
+        "primary_bias": "反抽失败空",
+        "risk_note": "多头账户拥挤, 弱势里防杀多",
+        "scripts": [
+          {
+            "name": "反抽失败空",
+            "status": "preferred",
+            "direction": "short",
+            "reason": "价格仍在 1h/4h 均线结构下方, 先等旧支撑或 1h MA20 反抽失败。",
+            "observation_zone": "1h MA20 附近或最近 4h 区间上沿。",
+            "invalidation": "重新站回 1h MA20 并保持 15m 更高低点。"
+          },
+          {
+            "name": "reclaim 确认多",
+            "status": "blocked",
+            "direction": "long",
+            "reason": "只有先收回 1h MA20, 再看 ETH/SOL/BNB 的 beta 跟随。",
+            "observation_zone": "收回 1h MA20 后第一次回踩。",
+            "invalidation": "reclaim 后快速跌回均线下方。"
+          },
+          {
+            "name": "多头拥挤杀多",
+            "status": "alert",
+            "direction": "short",
+            "reason": "账户多头拥挤而价格低于 1h 均线, 弱势里更容易杀多。",
+            "observation_zone": "反抽失败或跌破 15m 区间下沿。",
+            "invalidation": "价格收回 1h MA20 且 taker 买盘持续有效。"
+          }
+        ]
+      }
+    }
+  ],
+  "market_state": {
+    "median_24h_pct": -1.714,
+    "symbols_below_h1_ma20": 4,
+    "direction_anchor": "BTCUSDT",
+    "weakest_beta": "ETHUSDT",
+    "strongest_beta": "BNBUSDT",
+    "default_playbook": "价格未收回 1h/4h 均线前, 优先等待反抽失败; BTC 先 reclaim 后, 再考虑 ETH/SOL/BNB beta 跟随。"
+  },
+  "risk_rules": [
+    "单笔风险固定, 不因为高胜率叙事加仓。",
+    "BTC 是方向锚; ETH/SOL 是 beta 执行标的; BNB 用来观察抗跌和交易所 beta。",
+    "价格低于 1h/4h 均线时不追多, 只等反抽失败或 reclaim 确认。",
+    "负 funding 不是做多理由; 必须看到关键位收回、OI 稳定和 taker 买盘有效。",
+    "如果账户多头拥挤但价格走弱, 先防杀多。"
+  ],
+  "disclaimer": "Research and education only. Not financial advice."
+}

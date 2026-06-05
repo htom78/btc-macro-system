@@ -51,6 +51,9 @@ jobs:
       - name: Generate investment thesis harness
         run: python3 investment-thesis-harness/run.py
 
+      - name: Generate major futures system
+        run: python3 major-futures-system/scripts/update_major_futures.py
+
       - name: Commit updated history
         if: github.event_name != 'push'
         run: |
@@ -61,6 +64,7 @@ jobs:
           git add -f btc-macro-system/data/history/observations.jsonl
           git add investment-thesis-harness/outputs/report.html investment-thesis-harness/outputs/latest.json
           git add -f investment-thesis-harness/data/history/thesis_snapshots.jsonl
+          git add major-futures-system/data/latest.json
           if git diff --cached --quiet; then
             echo "No report changes to commit."
           else

@@ -18,6 +18,7 @@ REQUIRED_PUBLIC_ROUTES = {
     "investment-research.html": "Investment Thesis",
     "mstr-mnav/index.html": "MSTR",
     "dao-system/index.html": "Dao",
+    "major-futures-system/index.html": "大币合约策略系统",
 }
 
 
@@ -30,6 +31,7 @@ REQUIRED_HOME_LINKS = [
     "investment-thesis-rerun.html",
     "saas-signals/",
     "market-top-triggers/",
+    "major-futures-system/",
 ]
 
 
@@ -139,6 +141,7 @@ def validate_source_contract(errors: list[str]) -> None:
             'copy_file market-temperature.html "$out_dir/market-temperature.html"',
             'copy_file investment-thesis-rerun.html "$out_dir/investment-thesis-rerun.html"',
             'copy_file investment-thesis-harness/outputs/report.html "$out_dir/investment-research.html"',
+            'copy_dir major-futures-system "$out_dir/major-futures-system"',
         ],
         errors,
     )
@@ -195,6 +198,18 @@ def validate_site_artifact(site_root: Path, errors: list[str]) -> None:
     dao = load_json(site_root / "dao-system" / "data" / "dao-latest.json", errors)
     if isinstance(dao, dict):
         require_dict_keys("_site/dao-system/data/dao-latest.json", dao, ["schema_version", "generated_at", "state", "axes"], errors)
+
+    major = load_json(site_root / "major-futures-system" / "data" / "latest.json", errors)
+    if isinstance(major, dict):
+        require_dict_keys(
+            "_site/major-futures-system/data/latest.json",
+            major,
+            ["schema_version", "generated_at", "symbols", "market_state", "risk_rules"],
+            errors,
+        )
+        symbols = major.get("symbols")
+        if not isinstance(symbols, list) or len(symbols) != 4:
+            errors.append("_site/major-futures-system/data/latest.json: symbols must contain 4 entries")
 
 
 def validate_workflow(errors: list[str]) -> None:
