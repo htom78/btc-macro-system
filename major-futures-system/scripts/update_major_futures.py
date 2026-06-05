@@ -233,8 +233,25 @@ def main() -> int:
     parser.add_argument("--show", action="store_true")
     args = parser.parse_args()
 
-    payload = build_payload()
     output = Path(args.output)
+    try:
+        payload = build_payload()
+    except Exception as exc:  # noqa: BLE001 - public data can be blocked on CI runners.
+        if not output.exists():
+            raise
+        payload = json.loads(output.read_text(encoding="utf-8"))
+        payload["data_health"] = {
+            "status": "stale_fallback",
+            "warning": f"Live Binance Futures public data refresh failed; using committed snapshot. Error: {exc}",
+            "checked_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        }
+        print(payload["data_health"]["warning"])
+    else:
+        payload["data_health"] = {
+            "status": "live",
+            "warning": None,
+            "checked_at": payload["generated_at"],
+        }
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if args.show:
