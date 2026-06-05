@@ -1,22 +1,22 @@
 {
-  "generated_at": "2026-06-04T02:01:47.774408+00:00",
+  "generated_at": "2026-06-05T00:31:18.047658+00:00",
   "start_date": "2014-01-01",
   "fetch_errors": {
     "DGS10": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
     "DFII10": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=DFII10: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
-    "T10YIE": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10YIE: curl: (28) Operation timed out after 45003 milliseconds with 0 bytes received",
+    "T10YIE": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10YIE: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
     "T10Y2Y": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10Y2Y: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
     "DTWEXBGS": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
     "VIXCLS": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=VIXCLS: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received"
   },
   "indicators": {
     "btc": {
-      "date": "2026-06-03",
-      "price": 66676.55,
-      "change_30d": -0.15108329057549297,
-      "change_90d": -0.08358525276584516,
-      "change_365d": -0.37042334139323796,
-      "ma200": 79241.1919,
+      "date": "2026-06-04",
+      "price": 64012.8,
+      "change_30d": -0.19811464341964768,
+      "change_90d": -0.09697099994413616,
+      "change_365d": -0.3928664885402279,
+      "ma200": 79083.5851,
       "above_ma200": false
     },
     "inflation": {
@@ -41,17 +41,17 @@
       "m2_date": "2026-04-01",
       "m2_yoy": 0.04724532391610836,
       "m2_3m_annualized": 0.06861025830852618,
-      "fed_balance_sheet_date": "2026-05-27",
-      "fed_balance_sheet_13w_change": 0.013696519563572984
+      "fed_balance_sheet_date": "2026-06-03",
+      "fed_balance_sheet_13w_change": 0.012460751371194068
     },
     "dollar_risk": {
       "dollar_index_date": null,
       "dollar_index_13w_change": null,
       "vix": null,
       "vix_date": null,
-      "high_yield_oas": 2.71,
-      "high_yield_oas_date": "2026-06-02",
-      "high_yield_oas_13w_delta": -0.3700000000000001
+      "high_yield_oas": 2.75,
+      "high_yield_oas_date": "2026-06-03",
+      "high_yield_oas_13w_delta": -0.2200000000000002
     },
     "debt": {
       "gross_debt_gdp": 122.56815,
@@ -67,7 +67,7 @@
       "name": "USD liquidity",
       "score": 2,
       "stance": "supportive",
-      "detail": "M2 3个月年化 6.9% / M2 3m annualized 6.9%; 联储资产负债表13周 1.4% / Fed balance sheet 13w 1.4%"
+      "detail": "M2 3个月年化 6.9% / M2 3m annualized 6.9%; 联储资产负债表13周 1.2% / Fed balance sheet 13w 1.2%"
     },
     {
       "name": "Inflation constraint",
@@ -89,15 +89,15 @@
     },
     {
       "name": "Risk appetite",
-      "score": 1,
-      "stance": "supportive",
-      "detail": "VIX n/a; 高收益债利差13周变化 -0.37百分点 / HY OAS 13w delta -0.37 pp"
+      "score": 0,
+      "stance": "mixed",
+      "detail": "VIX n/a; 高收益债利差13周变化 -0.22百分点 / HY OAS 13w delta -0.22 pp"
     },
     {
       "name": "BTC trend",
       "score": -1,
       "stance": "hostile",
-      "detail": "价格 $66,677 / Price $66,677; 200日均线 $79,241 / 200d MA $79,241"
+      "detail": "价格 $64,013 / Price $64,013; 200日均线 $79,084 / 200d MA $79,084"
     },
     {
       "name": "Fiscal pressure",
@@ -107,7 +107,7 @@
     }
   ],
   "regime": {
-    "score": 0,
+    "score": -1,
     "label": "mixed"
   },
   "correlations": {
@@ -125,7 +125,7 @@
         "pairs": 146
       },
       "90": {
-        "correlation": -0.09278214846076373,
+        "correlation": -0.0947443570266631,
         "pairs": 146
       }
     },
@@ -139,11 +139,11 @@
         "pairs": 148
       },
       "60": {
-        "correlation": -0.11588412460998691,
+        "correlation": -0.11546747230028552,
         "pairs": 148
       },
       "90": {
-        "correlation": 0.013546388068382717,
+        "correlation": 0.013733753760726362,
         "pairs": 148
       }
     },
@@ -161,44 +161,44 @@
         "pairs": 147
       },
       "90": {
-        "correlation": 0.048810643146275826,
+        "correlation": 0.04869978132277178,
         "pairs": 147
       }
     },
     "WALCL": {
       "0": {
-        "correlation": -0.0029541550214408838,
-        "pairs": 647
+        "correlation": -0.0030200696934844728,
+        "pairs": 648
       },
       "30": {
-        "correlation": 0.02684270536978311,
-        "pairs": 647
+        "correlation": 0.026766426099737062,
+        "pairs": 648
       },
       "60": {
-        "correlation": -0.010842034991957931,
-        "pairs": 647
+        "correlation": -0.010988645954281886,
+        "pairs": 648
       },
       "90": {
-        "correlation": -0.03056857756956047,
-        "pairs": 647
+        "correlation": -0.03069560438884877,
+        "pairs": 648
       }
     },
     "BAMLH0A0HYM2": {
       "0": {
-        "correlation": -0.13857628303440794,
-        "pairs": 785
+        "correlation": -0.13981887121052824,
+        "pairs": 786
       },
       "30": {
-        "correlation": -0.04074600387045154,
-        "pairs": 785
+        "correlation": -0.04049716124928749,
+        "pairs": 786
       },
       "60": {
-        "correlation": -0.025536564092090923,
-        "pairs": 785
+        "correlation": -0.02342455908703153,
+        "pairs": 786
       },
       "90": {
-        "correlation": -0.010684371706190403,
-        "pairs": 785
+        "correlation": -0.01415246116738221,
+        "pairs": 786
       }
     },
     "GFDEGDQ188S": {
@@ -260,8 +260,8 @@
   "history": {
     "enabled": true,
     "path": "data/history/observations.jsonl",
-    "count": 10,
+    "count": 11,
     "first_market_date": "2026-05-24",
-    "last_market_date": "2026-06-03"
+    "last_market_date": "2026-06-04"
   }
 }

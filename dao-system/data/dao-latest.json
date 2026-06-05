@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-04T02:01:48+00:00",
+  "generated_at": "2026-06-05T00:31:18+00:00",
   "state": {
-    "key": "washout_probe",
-    "label": "恐慌小探",
-    "score": -4,
+    "key": "defensive_pause",
+    "label": "逆风防守",
+    "score": -5,
     "confidence": "medium-low",
-    "action": "只允许小额、分批、观察性 DCA；不追反弹。",
+    "action": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。",
     "score_formula": "天 + 地 + 人"
   },
   "axes": [
@@ -14,15 +14,15 @@
       "id": "heaven",
       "name": "天",
       "en": "Macro liquidity",
-      "score": 0,
+      "score": -1,
       "stance": "mixed",
-      "detail": "macro score +0; regime mixed",
+      "detail": "macro score -1; regime mixed",
       "inputs": [
         {
           "name": "USD liquidity",
           "score": 2,
           "stance": "supportive",
-          "detail": "M2 3个月年化 6.9% / M2 3m annualized 6.9%; 联储资产负债表13周 1.4% / Fed balance sheet 13w 1.4%"
+          "detail": "M2 3个月年化 6.9% / M2 3m annualized 6.9%; 联储资产负债表13周 1.2% / Fed balance sheet 13w 1.2%"
         },
         {
           "name": "Inflation constraint",
@@ -44,15 +44,15 @@
         },
         {
           "name": "Risk appetite",
-          "score": 1,
-          "stance": "supportive",
-          "detail": "VIX n/a; 高收益债利差13周变化 -0.37百分点 / HY OAS 13w delta -0.37 pp"
+          "score": 0,
+          "stance": "mixed",
+          "detail": "VIX n/a; 高收益债利差13周变化 -0.22百分点 / HY OAS 13w delta -0.22 pp"
         },
         {
           "name": "BTC trend",
           "score": -1,
           "stance": "hostile",
-          "detail": "价格 $66,677 / Price $66,677; 200日均线 $79,241 / 200d MA $79,241"
+          "detail": "价格 $64,013 / Price $64,013; 200日均线 $79,084 / 200d MA $79,084"
         },
         {
           "name": "Fiscal pressure",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 1,
-          "detail": "RSI14 11.0"
+          "detail": "RSI14 14.0"
         },
         {
           "name": "30d drawdown",
           "score": 1,
-          "detail": "-25.2% from 30d high"
+          "detail": "-22.6% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 8.8 days old"
+          "detail": "snapshot is 9.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-06-04",
-    "price": 61931.02,
-    "ma95": 73495.00178947368,
-    "ma200": 78923.4633,
+    "date": "2026-06-05",
+    "price": 63849.1,
+    "ma95": 73462.28694736843,
+    "ma200": 78791.5808,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 11.026236401134838,
-    "atr14": 2337.9407142857153,
-    "high_30d": 82814.23,
-    "low_30d": 61840.32,
-    "drawdown_from_30d_high": -0.2521693433604345
+    "rsi14": 13.98932737359101,
+    "atr14": 2244.351428571429,
+    "high_30d": 82450.0,
+    "low_30d": 61309.25,
+    "drawdown_from_30d_high": -0.22560218314129776
   },
   "market_structure": {
     "schema_version": 1,
@@ -209,8 +209,8 @@
     },
     {
       "zone": "当前动作",
-      "default": "恐慌小探",
-      "rule": "只允许小额、分批、观察性 DCA；不追反弹。"
+      "default": "逆风防守",
+      "rule": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。"
     }
   ],
   "source_health": {
