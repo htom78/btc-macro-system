@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-05T00:31:18.047658+00:00",
+  "generated_at": "2026-06-06T00:31:07.289043+00:00",
   "start_date": "2014-01-01",
   "fetch_errors": {
     "DGS10": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
@@ -11,12 +11,12 @@
   },
   "indicators": {
     "btc": {
-      "date": "2026-06-04",
-      "price": 64012.8,
-      "change_30d": -0.19811464341964768,
-      "change_90d": -0.09697099994413616,
-      "change_365d": -0.3928664885402279,
-      "ma200": 79083.5851,
+      "date": "2026-06-05",
+      "price": 63812.6,
+      "change_30d": -0.21149321974817004,
+      "change_90d": -0.06335064324683659,
+      "change_365d": -0.3907754307956821,
+      "ma200": 78931.70934999999,
       "above_ma200": false
     },
     "inflation": {
@@ -49,9 +49,9 @@
       "dollar_index_13w_change": null,
       "vix": null,
       "vix_date": null,
-      "high_yield_oas": 2.75,
-      "high_yield_oas_date": "2026-06-03",
-      "high_yield_oas_13w_delta": -0.2200000000000002
+      "high_yield_oas": 2.74,
+      "high_yield_oas_date": "2026-06-04",
+      "high_yield_oas_13w_delta": -0.2599999999999998
     },
     "debt": {
       "gross_debt_gdp": 122.56815,
@@ -89,15 +89,15 @@
     },
     {
       "name": "Risk appetite",
-      "score": 0,
-      "stance": "mixed",
-      "detail": "VIX n/a; 高收益债利差13周变化 -0.22百分点 / HY OAS 13w delta -0.22 pp"
+      "score": 1,
+      "stance": "supportive",
+      "detail": "VIX n/a; 高收益债利差13周变化 -0.26百分点 / HY OAS 13w delta -0.26 pp"
     },
     {
       "name": "BTC trend",
       "score": -1,
       "stance": "hostile",
-      "detail": "价格 $64,013 / Price $64,013; 200日均线 $79,084 / 200d MA $79,084"
+      "detail": "价格 $63,813 / Price $63,813; 200日均线 $78,932 / 200d MA $78,932"
     },
     {
       "name": "Fiscal pressure",
@@ -107,7 +107,7 @@
     }
   ],
   "regime": {
-    "score": -1,
+    "score": 0,
     "label": "mixed"
   },
   "correlations": {
@@ -125,7 +125,7 @@
         "pairs": 146
       },
       "90": {
-        "correlation": -0.0947443570266631,
+        "correlation": -0.09489379154061528,
         "pairs": 146
       }
     },
@@ -139,11 +139,11 @@
         "pairs": 148
       },
       "60": {
-        "correlation": -0.11546747230028552,
+        "correlation": -0.11543409543786443,
         "pairs": 148
       },
       "90": {
-        "correlation": 0.013733753760726362,
+        "correlation": 0.013747966235277286,
         "pairs": 148
       }
     },
@@ -161,7 +161,7 @@
         "pairs": 147
       },
       "90": {
-        "correlation": 0.04869978132277178,
+        "correlation": 0.048690685267601536,
         "pairs": 147
       }
     },
@@ -171,33 +171,33 @@
         "pairs": 648
       },
       "30": {
-        "correlation": 0.026766426099737062,
+        "correlation": 0.026760534005827303,
         "pairs": 648
       },
       "60": {
-        "correlation": -0.010988645954281886,
+        "correlation": -0.010999484797246351,
         "pairs": 648
       },
       "90": {
-        "correlation": -0.03069560438884877,
+        "correlation": -0.030704686156745816,
         "pairs": 648
       }
     },
     "BAMLH0A0HYM2": {
       "0": {
-        "correlation": -0.13981887121052824,
+        "correlation": -0.139660461041534,
         "pairs": 786
       },
       "30": {
-        "correlation": -0.04049716124928749,
+        "correlation": -0.04044547478362705,
         "pairs": 786
       },
       "60": {
-        "correlation": -0.02342455908703153,
+        "correlation": -0.023248221298848144,
         "pairs": 786
       },
       "90": {
-        "correlation": -0.01415246116738221,
+        "correlation": -0.014274769167785478,
         "pairs": 786
       }
     },
@@ -260,8 +260,8 @@
   "history": {
     "enabled": true,
     "path": "data/history/observations.jsonl",
-    "count": 11,
+    "count": 12,
     "first_market_date": "2026-05-24",
-    "last_market_date": "2026-06-04"
+    "last_market_date": "2026-06-05"
   }
 }
