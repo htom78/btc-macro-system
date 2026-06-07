@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-06T00:31:07+00:00",
+  "generated_at": "2026-06-07T00:28:53+00:00",
   "state": {
     "key": "washout_probe",
     "label": "恐慌小探",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 1,
-          "detail": "RSI14 7.0"
+          "detail": "RSI14 3.9"
         },
         {
           "name": "30d drawdown",
           "score": 1,
-          "detail": "-25.7% from 30d high"
+          "detail": "-26.3% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 10.8 days old"
+          "detail": "snapshot is 11.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-06-06",
-    "price": 61285.99,
-    "ma95": 73358.42273684211,
-    "ma200": 78619.35295,
+    "date": "2026-06-07",
+    "price": 60764.0,
+    "ma95": 73228.37252631578,
+    "ma200": 78463.6874,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 7.030887735016918,
-    "atr14": 2375.362142857143,
+    "rsi14": 3.85403840034067,
+    "atr14": 2398.4592857142857,
     "high_30d": 82450.0,
     "low_30d": 59073.01,
-    "drawdown_from_30d_high": -0.25668902365069746
+    "drawdown_from_30d_high": -0.26302001212856274
   },
   "market_structure": {
     "schema_version": 1,

@@ -270,6 +270,6 @@
   "data_health": {
     "status": "stale_fallback",
     "warning": "Live Binance Futures public data refresh failed; using committed snapshot. Error: HTTP Error 451: ",
-    "checked_at": "2026-06-06T00:31:08Z"
+    "checked_at": "2026-06-07T00:28:53Z"
   }
 }
