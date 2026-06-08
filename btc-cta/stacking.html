@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>稳健囤币方案 · Satisficing Stack</title>
+<style>
+  :root{
+    --bg:#0a0b0e; --bg-2:#101218; --surface:#15181f; --surface-2:#1c2029;
+    --line:#272c36; --ink:#eee9df; --muted:#969cab; --faint:#5e6675;
+    --gold:#f7931a; --gold-soft:#ffb454; --hodl:#4aa8d8; --green:#3fb98a; --red:#e2574c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Inter",-apple-system,"Segoe UI",system-ui,sans-serif;
+    --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sp:clamp(3.5rem,2.5rem+4vw,7rem);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(70% 50% at 50% -8%,rgba(247,147,26,.09),transparent 58%)}
+  .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 clamp(1.2rem,4vw,2.5rem)}
+  section{padding:var(--sp) 0;border-top:1px solid var(--line)}
+  section.wrap > * + *{margin-top:1.4rem}
+  section.wrap > h2{margin-top:.4rem}
+  .cap{margin-top:1rem !important}
+
+  .topnav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;
+    align-items:center;padding:.8rem clamp(1.2rem,4vw,2.5rem);background:rgba(10,11,14,.74);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topnav .brand{font-family:var(--mono);font-weight:600;color:var(--ink);font-size:.92rem;letter-spacing:.02em}
+  .topnav .brand span{color:var(--gold)}
+  .topnav .navlinks{display:flex;gap:1.1rem}
+  .topnav .navlinks a{font-family:var(--sans);font-size:.82rem;color:var(--muted);transition:color .2s;white-space:nowrap}
+  .topnav .navlinks a:hover{color:var(--ink)} .topnav .navlinks a.active{color:var(--gold)}
+  @media(max-width:680px){.topnav .navlinks{gap:.7rem}.topnav .navlinks a{font-size:.72rem}.topnav .brand{font-size:.78rem}}
+
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:1.1rem;display:flex;align-items:center;gap:.7rem}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-weight:600;line-height:1.05;letter-spacing:-.02em;
+    font-size:clamp(2.4rem,1.4rem+4.6vw,4.6rem)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.6rem,1.2rem+1.6vw,2.4rem);
+    letter-spacing:-.01em;line-height:1.12;margin-bottom:.5rem}
+  h3{font-family:var(--sans);font-weight:600;font-size:1.02rem;letter-spacing:.01em}
+  p{color:var(--muted);max-width:64ch}
+  strong{color:var(--ink);font-weight:600}
+  a{color:var(--gold);text-decoration:none}
+  .gold{color:var(--gold)} .blue{color:var(--hodl)} .grn{color:var(--green)}
+
+  .hero{min-height:82vh;display:flex;flex-direction:column;justify-content:center;padding:13vh 0 5vh}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .lead{font-size:clamp(1.05rem,.95rem+.5vw,1.3rem);color:#c4c9d2;max-width:60ch;margin-top:1.8rem}
+  .chain{margin-top:2.2rem;font-family:var(--mono);font-size:.84rem;color:var(--muted);
+    display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+  .chain b{color:var(--gold)} .chain .ar{color:var(--faint)}
+
+  /* playbook cards */
+  .pb{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1.8rem}
+  .pcard{border:1px solid var(--line);border-radius:14px;padding:1.7rem;background:var(--surface)}
+  .pcard.primary{border-color:rgba(247,147,26,.35);background:linear-gradient(155deg,rgba(247,147,26,.06),var(--surface))}
+  .pcard .tag{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+  .pcard h3{font-size:1.15rem;margin-bottom:.8rem}
+  .rule{font-family:var(--mono);font-size:.84rem;color:var(--ink);background:var(--bg-2);border:1px solid var(--line);
+    border-radius:8px;padding:.9rem 1rem;line-height:1.7;margin:.8rem 0}
+  .rule .c{color:var(--faint)}
+  .pcard p{font-size:.86rem;max-width:none}
+  .pcard .stat{margin-top:1rem;font-family:var(--mono);font-size:.8rem;color:var(--grn)}
+  @media(max-width:680px){.pb{grid-template-columns:1fr}}
+
+  /* theory pillars */
+  .pillars{display:flex;flex-direction:column;gap:0;margin-top:1.6rem}
+  .pillar{display:grid;grid-template-columns:46px 1fr;gap:1.2rem;padding:1.5rem 0;border-bottom:1px solid var(--line)}
+  .pillar:last-child{border-bottom:none}
+  .pillar .no{font-family:var(--serif);font-size:1.5rem;color:var(--gold);font-weight:600}
+  .pillar h3{margin-bottom:.5rem;font-size:1.08rem}
+  .pillar p{font-size:.9rem}
+  .pillar .flow{font-family:var(--mono);font-size:.8rem;color:var(--muted);margin-top:.7rem}
+  .pillar .flow b{color:var(--gold)} .pillar .flow .ar{color:var(--faint)}
+  .pillar .ref{font-size:.8rem;margin-top:.7rem;color:var(--faint)}
+  .pillar .ref a{border-bottom:1px solid rgba(247,147,26,.3)}
+
+  /* evidence */
+  .ev{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.6rem}
+  .ecard{border:1px solid var(--line);border-radius:12px;padding:1.4rem;background:var(--surface);text-align:center}
+  .ecard .v{font-family:var(--mono);font-size:2rem;font-weight:600;color:var(--gold);letter-spacing:-.02em}
+  .ecard .v.grn{color:var(--green)}
+  .ecard .k{font-size:.78rem;color:var(--muted);margin-top:.5rem;line-height:1.4}
+
+  /* honesty */
+  .warn{background:linear-gradient(155deg,rgba(226,87,76,.06),var(--surface));border:1px solid rgba(226,87,76,.25);
+    border-radius:14px;padding:1.7rem;margin-top:1.6rem}
+  .warn h3{color:var(--red);font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.8rem}
+  .warn ul{list-style:none} .warn li{padding:.35rem 0 .35rem 1.3rem;position:relative;font-size:.9rem;color:var(--muted)}
+  .warn li::before{content:"!";position:absolute;left:0;color:var(--red);font-family:var(--mono);font-weight:600}
+  .warn li strong{color:var(--ink)}
+
+  /* references */
+  .refs{margin-top:1.6rem;display:flex;flex-direction:column;gap:1rem}
+  .refgroup .gh{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+  .reflist{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .refitem{display:block;padding:1rem 1.2rem;border-bottom:1px solid rgba(39,44,54,.6);transition:background .2s}
+  .refitem:last-child{border-bottom:none} .refitem:hover{background:rgba(255,255,255,.025)}
+  .refitem .t{color:var(--ink);font-size:.92rem;font-weight:600}
+  .refitem .a{color:var(--muted);font-size:.8rem;margin-top:.2rem}
+  .refitem .u{color:var(--gold);font-family:var(--mono);font-size:.74rem;margin-top:.35rem;word-break:break-all}
+  .refitem .note{color:var(--faint);font-size:.8rem;margin-top:.4rem;font-style:italic}
+
+  .final{border-left:3px solid var(--gold);padding:.5rem 0 .5rem 1.8rem;
+    font-family:var(--serif);font-size:clamp(1.25rem,1rem+1.3vw,1.9rem);color:#ddd8cc;line-height:1.4}
+  .final b{color:var(--gold);font-weight:600}
+
+  footer{padding:3rem 0 4rem;border-top:1px solid var(--line);color:var(--faint);font-size:.78rem;
+    font-family:var(--mono);letter-spacing:.03em;line-height:1.7}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html">BTC<span>_CTA</span></a>
+  <div class="navlinks">
+    <a href="../home.html">← Macro</a>
+    <a href="index.html">概览</a>
+    <a href="report.html">全景报告</a>
+    <a href="vs_hodl.html">择时 vs HODL</a>
+    <a href="coin.html">币本位</a>
+    <a href="stacking.html" class="active">囤币方案</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div class="eyebrow">Satisficing Stack · 稳健囤币</div>
+  <h1>不追最优,<br>只求<em>随便选都能囤币</em></h1>
+  <p class="lead">放弃"找到完美参数"的幻觉(那是过拟合),换一个钝的、不依赖单一参数、
+    在多数情况下都能稳定增加 BTC 数量的方案。用一半的理论最优,买不用预测的确定性。</p>
+  <div class="chain">
+    <b>目标:让 BTC 变多</b><span class="ar">→</span>趋势择时砍深熊<span class="ar">→</span>
+    多参数分散<span class="ar">→</span><b>从不亏币</b>
+  </div>
+</header>
+
+<!-- THE PLAYBOOK -->
+<section class="wrap">
+  <div class="eyebrow reveal">方案</div>
+  <h2 class="reveal">两个可执行版本(任选)</h2>
+  <p class="reveal">都基于日线、仅做多(BTC ⇄ USDT)、币本位目标。核心都是"<strong>趋势在就持币、趋势破了换 USDT、
+    突破要等 3 天确认</strong>"——区别只是钝的程度。</p>
+  <div class="pb">
+    <div class="pcard primary reveal">
+      <div class="tag">◆ 推荐 · 最钝最稳</div>
+      <h3>多均线投票</h3>
+      <div class="rule">
+        看 <b>100 / 150 / 200</b> 日均线三条<br>
+        价格站上几条 → 持几成仓 <span class="c">(0 / ⅓ / ⅔ / 满)</span><br>
+        跌破均线 −5% → 对应减仓<br>
+        升破均线 +5% 且 <b>连续 3 天</b> → 才加仓
+      </div>
+      <p>不押单一参数,把判断分散在三条均线上。某条骗你,另两条兜底。最接近"闭着眼执行"。</p>
+      <div class="stat">全样本币本位 ×1.90 · 最差段从不亏币 ×1.17</div>
+    </div>
+    <div class="pcard reveal">
+      <div class="tag">● 极简 · 一个参数</div>
+      <h3>单均线 MA150±5%</h3>
+      <div class="rule">
+        看 <b>150</b> 日均线一条<br>
+        价格升破 <b>+5%</b> 且连续 3 天 → 全仓 BTC<br>
+        价格跌破 <b>−5%</b> → 全部换 USDT<br>
+        其余 → 不动
+      </div>
+      <p>一个参数,简单到能手算。150 是 reddit 那个 200 和短线 100 的折中——不快不慢的"中庸钝刀"。</p>
+      <div class="stat">最差段从不亏币 ×1.14 · 复杂度最低</div>
+    </div>
+  </div>
+  <p class="cap">为什么是 3 天确认:假突破通常 1–2 天就反转,等 3 天滤掉大部分噪音,又不至于踏空真趋势。
+    实测 7 种过滤方案,只有它稳健有效(等 5 天反而踏空,斜率/ATR/组合都更差)。</p>
+</section>
+
+<!-- THEORY -->
+<section class="wrap">
+  <div class="eyebrow reveal">理论</div>
+  <h2 class="reveal">为什么这套成立(四个支柱)</h2>
+  <div class="pillars">
+    <div class="pillar reveal">
+      <div class="no">1</div>
+      <div>
+        <h3>币本位:换了目标,游戏就好打了</h3>
+        <p>记账单位从美元换成 BTC,HODL 的基准从"一路新高的价格"变成"<strong>永远 1 个币</strong>"(币本位收益恒为 0)。
+          择时不必跑赢价格,只要在深熊里逃顶、低位买回更多币就赢。</p>
+        <div class="flow"><b>美元本位</b> 择时几乎打不过 HODL <span class="ar">→</span> <b>币本位</b> HODL=1.0,择时躲过一次深熊就赢</div>
+      </div>
+    </div>
+    <div class="pillar reveal">
+      <div class="no">2</div>
+      <div>
+        <h3>趋势跟随的强项,正是砍深熊回撤</h3>
+        <p>简单均线择时(价格在均线上方持有、下方离场)能在保留长期收益的同时,系统性躲过大崩盘——
+          这是学术界几十年、跨百年数据反复验证的结论。BTC 的反复 −70~−80% 深熊,正是这套方法最值钱的地方。</p>
+        <div class="ref">实证根据:Meb Faber 的 200 日均线择时(SSRN 史上下载第一)、
+          AQR 跨 1880–2016 的研究发现趋势跟随在 10 次最大危机里有 8 次赚钱。见参考 ①②。</div>
+      </div>
+    </div>
+    <div class="pillar reveal">
+      <div class="no">3</div>
+      <div>
+        <h3>satisficing:次优 + 稳健 &gt; 最优 + 脆弱</h3>
+        <p>Herbert Simon(诺奖)提出:现实中信息和算力有限,与其追求"最优解",不如取一个"<strong>足够好</strong>"
+          且稳健的解。放到这里:精确最优参数是事后才知道的,而一个钝的、足够好的参数你<strong>事前就能定、且从不亏币</strong>。</p>
+        <div class="flow"><b>optimizing</b> 追最高分 = 押注你能预测 <span class="ar">→</span> <b>satisficing</b> 取足够好 = 不用预测</div>
+        <div class="ref">概念根据:Herbert Simon, "satisficing"(1956)与 bounded rationality。见参考 ③。</div>
+      </div>
+    </div>
+    <div class="pillar reveal">
+      <div class="no">4</div>
+      <div>
+        <h3>过拟合是头号敌人,钝 = 抗过拟合</h3>
+        <p>在历史上调出的"最优参数",换到没见过的数据上系统性失效——这是量化里被严格量化过的陷阱。
+          钝策略(多参数分散、宽容差)对单一参数不敏感,<strong>过拟合风险最低,因此最可能在未来兑现</strong>。
+          这也是我们自己回测反复撞到的:全样本最优区,到 holdout 整体塌陷。</p>
+        <div class="ref">理论根据:Bailey, Borwein, López de Prado, Zhu, "The Probability of Backtest Overfitting"。见参考 ④。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVIDENCE -->
+<section class="wrap">
+  <div class="eyebrow reveal">证据(我们自己的回测)</div>
+  <h2 class="reveal">放宽参数后,大部分都能囤币</h2>
+  <p class="reveal">Bitstamp 全历史日线(2012–2026),扫 28 组参数(MA 周期 × 带宽,都加 3 天确认),币本位:</p>
+  <div class="ev">
+    <div class="ecard reveal"><div class="v grn">100%</div><div class="k">有深熊的牛熊周期里,<br>能囤币的参数比例</div></div>
+    <div class="ecard reveal"><div class="v">×2.04</div><div class="k">ATH −51% 这波<br>(MA200±5 逃顶)</div></div>
+    <div class="ecard reveal"><div class="v grn">×1.14+</div><div class="k">钝策略最差段<br>从不亏币</div></div>
+    <div class="ecard reveal"><div class="v">~60-70%</div><div class="k">钝策略拿到<br>"精确最优"的</div></div>
+  </div>
+  <p class="cap">关键:"精确最优 ×3.8" 是事后挑的,你事前选不中(参数每段都变);钝策略拿到约 6-7 成,
+    但事前可定、从不亏币。这就是用一半收益换确定性。详见 research/robust_coin_result.md。</p>
+</section>
+
+<!-- HONESTY -->
+<section class="wrap">
+  <div class="eyebrow reveal">诚实边界</div>
+  <h2 class="reveal">它不是圣杯,四个前提要认</h2>
+  <div class="warn reveal">
+    <h3>⚠ 这套有效的前提</h3>
+    <ul>
+      <li><strong>赌 BTC 未来仍有深熊。</strong> 若它走向成熟、波动收敛(像黄金不再 −80%),囤币优势会消失甚至变踏空亏币。你赌的是"波动",不是"方向"。</li>
+      <li><strong>震荡市救不活,只能减损。</strong> 无趋势的市场(如近 2 年)钝策略只囤到 ×1.1,不亏但也不多。</li>
+      <li><strong>要忍得住踏空期。</strong> 当你空仓、BTC 却在涨时,币本位回撤可达 −70%+(相对持币者你的币变少),得扛住"看别人囤得更快"的难受。</li>
+      <li><strong>仍是事后回测。</strong> 钝策略的好处恰恰是对参数不敏感、过拟合最低,但没人能保证历史规律延续。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- REFERENCES -->
+<section class="wrap">
+  <div class="eyebrow reveal">参考资料</div>
+  <h2 class="reveal">外部理论根据(均已核实)</h2>
+  <div class="refs">
+    <div class="refgroup reveal">
+      <div class="gh">理论文献</div>
+      <div class="reflist">
+        <a class="refitem" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=962461" target="_blank" rel="noopener">
+          <div class="t">① A Quantitative Approach to Tactical Asset Allocation</div>
+          <div class="a">Mebane T. Faber · The Journal of Wealth Management (2007/2013) · SSRN 史上下载第一</div>
+          <div class="u">papers.ssrn.com/sol3/papers.cfm?abstract_id=962461</div>
+          <div class="note">200 日均线择时经典:价格在均线上方持有、下方离场,保留长期收益同时躲过大崩盘。</div>
+        </a>
+        <a class="refitem" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2993026" target="_blank" rel="noopener">
+          <div class="t">② A Century of Evidence on Trend-Following Investing</div>
+          <div class="a">Hurst, Ooi, Pedersen (AQR) · J. of Portfolio Management (2017)</div>
+          <div class="u">papers.ssrn.com/sol3/papers.cfm?abstract_id=2993026</div>
+          <div class="note">跨 1880–2016、67 个市场:趋势跟随在 10 次最大危机里 8 次赚钱——支撑"砍深熊"逻辑。</div>
+        </a>
+        <a class="refitem" href="https://en.wikipedia.org/wiki/Satisficing" target="_blank" rel="noopener">
+          <div class="t">③ Satisficing / Bounded Rationality</div>
+          <div class="a">Herbert A. Simon (1956) · 诺贝尔经济学奖</div>
+          <div class="u">en.wikipedia.org/wiki/Satisficing</div>
+          <div class="note">"足够好"胜过"最优":信息与算力有限时,取满意解比追最优解更理性。本方案的方法论根基。</div>
+        </a>
+        <a class="refitem" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253" target="_blank" rel="noopener">
+          <div class="t">④ The Probability of Backtest Overfitting</div>
+          <div class="a">Bailey, Borwein, López de Prado, Zhu · J. of Computational Finance (2015)</div>
+          <div class="u">papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253</div>
+          <div class="note">量化"历史最优参数会过拟合"的陷阱(CSCV 框架)——为什么要选钝的、抗过拟合的参数。</div>
+        </a>
+        <a class="refitem" href="https://www.oaktreecapital.com/insights/memo/selling-out" target="_blank" rel="noopener">
+          <div class="t">⑤ Selling Out(投资心性参考)</div>
+          <div class="a">Howard Marks · Oaktree Capital (2022)</div>
+          <div class="u">oaktreecapital.com/insights/memo/selling-out</div>
+          <div class="note">卖出看 thesis 不看价格、用程度而非开关——对应本方案的"连续仓位"而非全进全出。</div>
+        </a>
+      </div>
+    </div>
+    <div class="refgroup reveal">
+      <div class="gh">本项目回测(可复跑)</div>
+      <div class="reflist">
+        <a class="refitem" href="research/robust_coin_result.md">
+          <div class="t">robust_coin_result.md</div>
+          <div class="a">稳健性扫描 + 钝策略 vs 最优 · src/backtest_robust_coin.py</div>
+        </a>
+        <a class="refitem" href="research/coin_denominated_result.md">
+          <div class="t">coin_denominated_result.md</div>
+          <div class="a">币本位逃顶囤币 · src/backtest_coin.py</div>
+        </a>
+        <a class="refitem" href="research/antiwhipsaw_result.md">
+          <div class="t">antiwhipsaw_result.md</div>
+          <div class="a">3 天确认抗假信号 · src/backtest_antiwhipsaw.py</div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <p class="cap">外部链接为公开学术/研究资料,引用仅作理论说明;Marks memo 为第三方版权,本地不再分发原文 PDF。</p>
+</section>
+
+<!-- FINAL -->
+<section class="wrap">
+  <div class="eyebrow reveal">一句话</div>
+  <div class="final reveal">别找完美参数——那是过拟合的诱惑。
+    <b>取一个钝的、足够好的、从不亏币的方案,把"你得猜对"换成"你不用猜"。</b></div>
+</section>
+
+<footer class="wrap">
+  BTC_CTA · Satisficing Stack · Bitstamp 2012–2026 · 生成于 2026-06-08<br>
+  研究记录,非投资建议 · 过往业绩不代表未来 · 外部文献版权归原作者<br>
+  理论:Faber · AQR(Hurst/Ooi/Pedersen) · Simon · López de Prado et al. · Marks
+</footer>
+
+<script>
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4*45)+'ms';io.observe(el)});
+</script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>币本位 · 能不能逃顶让 BTC 变多?</title>
+<style>
+  :root{
+    --bg:#0a0b0e; --bg-2:#101218; --surface:#15181f; --surface-2:#1c2029;
+    --line:#272c36; --ink:#eee9df; --muted:#969cab; --faint:#5e6675;
+    --gold:#f7931a; --gold-soft:#ffb454; --hodl:#4aa8d8; --green:#3fb98a; --red:#e2574c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Inter",-apple-system,"Segoe UI",system-ui,sans-serif;
+    --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sp:clamp(3.5rem,2.5rem+4vw,7rem);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(75% 55% at 50% -8%,rgba(247,147,26,.12),transparent 55%),
+               radial-gradient(60% 45% at 90% 100%,rgba(63,185,138,.07),transparent 60%)}
+  .wrap{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,4vw,2.5rem)}
+  section{padding:var(--sp) 0;border-top:1px solid var(--line)}
+  section.wrap > * + *{margin-top:1.4rem}
+  section.wrap > h2{margin-top:.4rem}
+  .cap{margin-top:1rem !important}
+
+  .topnav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;
+    align-items:center;padding:.8rem clamp(1.2rem,4vw,2.5rem);background:rgba(10,11,14,.72);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topnav .brand{font-family:var(--mono);font-weight:600;color:var(--ink);font-size:.95rem;letter-spacing:.02em}
+  .topnav .brand span{color:var(--gold)}
+  .topnav .navlinks{display:flex;gap:1.3rem}
+  .topnav .navlinks a{font-family:var(--sans);font-size:.84rem;color:var(--muted);transition:color .2s}
+  .topnav .navlinks a:hover{color:var(--ink)}
+  .topnav .navlinks a.active{color:var(--gold)}
+  @media(max-width:600px){.topnav .navlinks{gap:.8rem}.topnav .navlinks a{font-size:.74rem}.topnav .brand{font-size:.82rem}}
+
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:1.1rem;display:flex;align-items:center;gap:.7rem}
+  .eyebrow::before{content:"";width:28px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-weight:600;line-height:1.03;letter-spacing:-.02em;
+    font-size:clamp(2.6rem,1.4rem+5.4vw,5.4rem)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,1.2rem+1.8vw,2.7rem);
+    letter-spacing:-.01em;line-height:1.1;margin-bottom:.5rem}
+  h3{font-family:var(--sans);font-weight:600;font-size:1.05rem}
+  p{color:var(--muted);max-width:62ch}
+  strong{color:var(--ink);font-weight:600}
+  .gold{color:var(--gold)} .blue{color:var(--hodl)} .grn{color:var(--green)} .rd{color:var(--red)}
+
+  .hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;padding:11vh 0 6vh}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .lead{font-size:clamp(1.05rem,.95rem+.5vw,1.32rem);color:#c4c9d2;max-width:60ch;margin-top:1.8rem}
+  .athbox{margin-top:2.6rem;display:flex;flex-wrap:wrap;gap:2.4rem;align-items:baseline;
+    border-left:2px solid var(--gold);padding-left:1.4rem}
+  .athbox .v{font-family:var(--mono);font-size:clamp(1.4rem,1rem+1.4vw,2rem);font-weight:600}
+  .athbox .k{font-size:.72rem;color:var(--faint);text-transform:uppercase;letter-spacing:.14em;margin-top:.25rem}
+
+  /* switch concept */
+  .switch{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;margin-top:2rem;align-items:center}
+  .sb{border:1px solid var(--line);border-radius:14px;padding:1.4rem;background:var(--surface)}
+  .sb .t{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.5rem}
+  .sb.off .t{color:var(--faint)} .sb.on .t{color:var(--gold)}
+  .sb.on{border-color:rgba(247,147,26,.4);background:linear-gradient(150deg,rgba(247,147,26,.07),var(--surface))}
+  .sb p{font-size:.85rem;max-width:none}
+  .sarrow{font-family:var(--serif);font-style:italic;color:var(--faint);text-align:center}
+  @media(max-width:640px){.switch{grid-template-columns:1fr}.sarrow{padding:.2rem 0}}
+
+  /* BTC multiple bars */
+  .bars{margin-top:1.8rem;display:flex;flex-direction:column;gap:1.1rem}
+  .bar-row{display:grid;grid-template-columns:120px 1fr 58px;gap:1rem;align-items:center}
+  .bar-row .nm{font-size:.84rem;color:var(--muted);font-family:var(--sans)}
+  .bar-row .nm.hl{color:var(--gold);font-weight:600}
+  .bar-track{position:relative;height:30px;background:var(--bg-2);border-radius:8px;border:1px solid var(--line);overflow:hidden}
+  .bar-base{position:absolute;top:0;bottom:0;left:22.2%;width:2px;background:var(--hodl);z-index:2}
+  .bar-fill{position:absolute;top:0;bottom:0;left:0;border-radius:0 6px 6px 0;z-index:1}
+  .bar-fill.up{background:linear-gradient(90deg,var(--gold-soft),var(--gold))}
+  .bar-fill.dn{background:linear-gradient(90deg,#a83a32,var(--red))}
+  .bar-val{font-family:var(--mono);font-size:.84rem;text-align:right}
+  .bar-val.up{color:var(--gold-soft)} .bar-val.dn{color:var(--red)} .bar-val.base{color:var(--hodl)}
+  .baseline-note{font-family:var(--mono);font-size:.72rem;color:var(--hodl);margin-top:.6rem}
+
+  .tabs{display:flex;gap:.5rem;margin:1.6rem 0 1.2rem;flex-wrap:wrap}
+  .tab{font-family:var(--mono);font-size:.78rem;padding:.45rem .9rem;border-radius:999px;
+    border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;transition:.2s}
+  .tab:hover{border-color:var(--faint)} .tab.on{background:var(--gold);color:#1a1206;border-color:var(--gold);font-weight:600}
+  .seg-pane{display:none} .seg-pane.on{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+  .cap{font-size:.78rem;color:var(--faint);margin-top:1rem;font-style:italic}
+
+  .spot{background:linear-gradient(150deg,var(--surface),var(--bg-2));border:1px solid rgba(247,147,26,.3);
+    border-radius:18px;padding:clamp(1.6rem,1rem+2vw,2.6rem);margin-top:1.6rem;position:relative;overflow:hidden}
+  .spot::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--gold),transparent)}
+  .spot .big{font-family:var(--mono);font-size:clamp(2.2rem,1.4rem+3vw,3.6rem);font-weight:600;color:var(--gold);letter-spacing:-.02em}
+  .spot h3{font-family:var(--serif);font-size:1.4rem;margin:.3rem 0 .8rem}
+
+  /* whipsaw table */
+  .tbl-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:1.6rem}
+  table{width:100%;border-collapse:collapse;font-size:.86rem}
+  th,td{padding:.7rem .9rem;text-align:right}th:first-child,td:first-child{text-align:left}
+  thead th{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    border-bottom:1px solid var(--line);font-weight:500;background:var(--bg-2)}
+  tbody td{font-family:var(--mono);color:var(--ink);border-bottom:1px solid rgba(39,44,54,.5)}
+  tbody td:first-child{font-family:var(--sans);color:var(--muted)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.win td{background:rgba(63,185,138,.08)}tbody tr.win td:first-child{color:var(--green);font-weight:600}
+  tbody tr:hover td{background:rgba(255,255,255,.025)}
+  .up{color:var(--gold-soft)}.dn{color:var(--red)}
+
+  .star{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;margin-top:1.8rem}
+  .scard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.4rem;transition:.25s}
+  .scard:hover{border-color:var(--red);transform:translateY(-3px)}
+  .scard .n{font-family:var(--mono);font-size:.7rem;color:var(--red);letter-spacing:.1em}
+  .scard h3{margin:.5rem 0;font-size:.98rem}.scard p{font-size:.84rem;max-width:none}
+
+  .final{border-left:3px solid var(--gold);padding:.5rem 0 .5rem 1.8rem;margin-top:1rem;
+    font-family:var(--serif);font-size:clamp(1.3rem,1rem+1.4vw,2rem);color:#ddd8cc;line-height:1.35}
+  .final b{color:var(--gold);font-weight:600}
+
+  footer{padding:3rem 0 4rem;border-top:1px solid var(--line);color:var(--faint);font-size:.78rem;
+    font-family:var(--mono);letter-spacing:.03em}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html">BTC<span>_CTA</span></a>
+  <div class="navlinks">
+    <a href="../home.html">← Macro</a>
+    <a href="index.html">概览</a>
+    <a href="report.html">全景报告</a>
+    <a href="vs_hodl.html">择时 vs HODL</a>
+    <a href="coin.html" class="active">币本位</a>
+    <a href="stacking.html">囤币方案</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div class="eyebrow">Bitstamp BTC/USD · 记账单位 = BTC · stack sats</div>
+  <h1>能不能逃顶,<br>让 BTC <em>变多</em>?</h1>
+  <p class="lead">换个目标:不是赚美元,是<strong>囤更多币</strong>。这一换,HODL 的基准从"BTC 价格"
+    变成"永远 1 个币"——择时的游戏,瞬间好打了很多。</p>
+  <div class="athbox">
+    <div><div class="v gold">$124,728</div><div class="k">ATH @ 2025-10-06</div></div>
+    <div><div class="v">$61,024</div><div class="k">当前</div></div>
+    <div><div class="v rd">−51.1%</div><div class="k">距 ATH</div></div>
+  </div>
+</header>
+
+<!-- switch of objective -->
+<section class="wrap">
+  <div class="eyebrow reveal">目标函数一换,全局翻转</div>
+  <h2 class="reveal">美元本位 → 币本位</h2>
+  <div class="switch">
+    <div class="sb off reveal"><div class="t">美元本位</div>
+      <p>基准 = BTC 价格(一路新高)。择时要跑赢难如登天——前面全证了,HODL 几乎打不过。</p></div>
+    <div class="sarrow reveal">瞬间<br>翻转</div>
+    <div class="sb on reveal"><div class="t">◆ 币本位 (stack sats)</div>
+      <p>基准 = <strong>永远 1 个 BTC</strong>(币本位收益恒为 0)。择时只要躲过一次深熊、低位买回更多,就赢。</p></div>
+  </div>
+  <p class="reveal" style="margin-top:1.6rem">为什么瞬间好打?因为 BTC 的强项是反复 −70%~−80% 深熊,
+    而择时的强项正是<strong>砍深熊回撤</strong>——币本位把"躲过深熊"直接翻译成"<span class="gold">囤更多币</span>"。</p>
+</section>
+
+<!-- BTC multiple bars -->
+<section class="wrap">
+  <div class="eyebrow reveal">币本位战绩</div>
+  <h2 class="reveal">最终 BTC 倍数 · HODL=1.0 基准线</h2>
+  <p class="reveal">蓝线 = HODL(永远 1 个币)。金条 = 囤币成功,红条 = 择时反而亏币。</p>
+  <div class="tabs reveal">
+    <span class="tab on" data-seg="0">ATH 至今</span>
+    <span class="tab" data-seg="1">全样本</span>
+    <span class="tab" data-seg="2">牛熊 2021.11+</span>
+  </div>
+
+  <!-- ATH 至今 -->
+  <div class="seg-pane on reveal">
+    <div class="bars">
+      <div class="bar-row"><span class="nm hl">MA200±5%</span>
+        <div class="bar-track"><div class="bar-base"></div><div class="bar-fill up" style="width:45.4%"></div></div>
+        <span class="bar-val up">×2.04</span></div>
+      <div class="bar-row"><span class="nm">continuous</span>
+        <div class="bar-track"><div class="bar-base"></div><div class="bar-fill up" style="width:42.7%"></div></div>
+        <span class="bar-val up">×1.94</span></div>
+      <div class="bar-row"><span class="nm">MA95±4%</span>
+        <div class="bar-track"><div class="bar-base"></div><div class="bar-fill up" style="width:39.1%"></div></div>
+        <span class="bar-val up">×1.76</span></div>
+      <div class="bar-row"><span class="nm blue">HODL</span>
+        <div class="bar-track"><div class="bar-base"></div></div>
+        <span class="bar-val base">×1.00</span></div>
+    </div>
+    <p class="baseline-note">▎ 蓝线 = HODL 基准(1.0)</p>
+    <p class="cap">就这波 ATH −51%:跌破 200 日线就换 USDT,到现在能买回 2 倍的币。美元上没亏没赚,币却翻倍。</p>
+  </div>
+
+  <!-- 全样本 -->
+  <div class="seg-pane reveal">
+    <div class="bars">
+      <div class="bar-row"><span class="nm hl">MA95±4%</span>
+        <div class="bar-track"><div class="bar-base"></div><div class="bar-fill up" style="width:97.1%"></div></div>
+        <span class="bar-val up">×4.37</span></div>
+      <div class="bar-row"><span class="nm">continuous</span>
+        <div class="bar-track"><div class="bar-base"></div><div class="bar-fill up" style="width:45.8%"></div></div>
+        <span class="bar-val up">×2.03</span></div>
+      <div class="bar-row"><span class="nm blue">HODL</span>
+        <div class="bar-track"><div class="bar-base"></div></div>
+        <span class="bar-val base">×1.00</span></div>
+      <div class="bar-row"><span class="nm">MA200±5%</span>
+        <div class="bar-track"><div class="bar-base"></div><div class="bar-fill dn" style="width:16.7%"></div></div>
+        <span class="bar-val dn">×0.75</span></div>
+    </div>
+    <p class="baseline-note">▎ 蓝线 = HODL 基准(1.0)</p>
+    <p class="cap">14 年里 MA95±4 把 BTC 囤到 4.4 倍。但注意 MA200±5 裸用反而亏币(×0.75)——假信号坑的,见下方解法。</p>
+  </div>
+
+  <!-- 牛熊 -->
+  <div class="seg-pane reveal">
+    <div class="bars">
+      <div class="bar-row"><span class="nm hl">MA200±5%</span>
+        <div class="bar-track"><div class="bar-base"></div><div class="bar-fill up" style="width:63.3%"></div></div>
+        <span class="bar-val up">×2.90</span></div>
+      <div class="bar-row"><span class="nm">MA95±4%</span>
+        <div class="bar-track"><div class="bar-base"></div><div class="bar-fill up" style="width:55%"></div></div>
+        <span class="bar-val up">×2.48</span></div>
+      <div class="bar-row"><span class="nm">continuous</span>
+        <div class="bar-track"><div class="bar-base"></div><div class="bar-fill up" style="width:52.6%"></div></div>
+        <span class="bar-val up">×2.37</span></div>
+      <div class="bar-row"><span class="nm blue">HODL</span>
+        <div class="bar-track"><div class="bar-base"></div></div>
+        <span class="bar-val base">×1.00</span></div>
+    </div>
+    <p class="baseline-note">▎ 蓝线 = HODL 基准(1.0)</p>
+    <p class="cap">完整牛熊周期(2021 顶到 2023),逃顶+低位买回让 BTC ×2–3。这是币本位最甜的场景。</p>
+  </div>
+</section>
+
+<!-- spotlight ATH -->
+<section class="wrap">
+  <div class="eyebrow reveal">就你问的这段</div>
+  <div class="spot reveal">
+    <div class="big">×2.04</div>
+    <h3>MA200±5% 在 ATH −51% 里,把 BTC 翻了倍</h3>
+    <p>一个极简规则:<strong>跌破 200 日线 −5% 就换 USDT,升破 +5% 再买回</strong>(reddit 那个原版)。
+      在 $124k 附近机械离场,躲过这波腰斩。<strong class="gold">美元倍数只有 1.0(没亏没赚),
+      但因为 BTC 跌一半,同样的钱现在买回 2 倍的币。</strong>
+      它不是逃顶神技,是机械的趋势离场恰好躲过深跌。</p>
+  </div>
+</section>
+
+<!-- anti-whipsaw -->
+<section class="wrap">
+  <div class="eyebrow reveal">怎么减少假信号</div>
+  <h2 class="reveal">一个 3 天确认,把亏币翻成囤币</h2>
+  <p class="reveal">假信号 = 突破后立刻反转,让你卖低买高、白付手续费。我测了 7 种抗假信号增强,
+    币本位口径。<strong>结论:只有一招真有用。</strong></p>
+  <div class="tbl-card reveal">
+    <table>
+      <thead><tr><th>增强方案</th><th>全样本</th><th>近2年(震荡)</th><th>评价</th></tr></thead>
+      <tbody>
+        <tr><td>base MA200±5(裸用)</td><td class="dn">×0.75</td><td class="dn">×0.89</td><td style="text-align:left;font-family:var(--sans);color:var(--muted)">被假信号坑,亏币</td></tr>
+        <tr class="win"><td>+ 突破后等 3 天确认</td><td class="up">×1.49</td><td>×0.93</td><td style="text-align:left;font-family:var(--sans);color:var(--ink)">✓ 唯一稳健改进</td></tr>
+        <tr><td>+ 等 5 天确认</td><td class="dn">×0.62</td><td>×0.98</td><td style="text-align:left;font-family:var(--sans);color:var(--muted)">等太久,踏空真突破</td></tr>
+        <tr><td>+ 加宽带 ±8%</td><td class="dn">×0.66</td><td class="dn">×0.80</td><td style="text-align:left;font-family:var(--sans);color:var(--muted)">没用</td></tr>
+        <tr><td>+ ATR / 斜率 / combo</td><td class="dn">×0.26–0.30</td><td>×0.92–0.96</td><td style="text-align:left;font-family:var(--sans);color:var(--muted)">过度过滤,更差</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">"突破后等 3 天再动",过滤掉一日假突破,又不至于踏空真趋势。全样本从亏币 ×0.75 翻成囤币 ×1.49。
+    又一次:简单 &gt; 复杂——所有花哨的过滤器都更差。</p>
+  <p class="reveal" style="margin-top:1.4rem"><strong>但有个诚实的边界:</strong>近 2 年震荡市,没有任何变体能 &gt;1。
+    抗假信号能把"亏币"减到"打平",<strong>但救不活震荡市</strong>——无趋势的市场对趋势策略天生不友好。
+    这是减损,不是点石成金。</p>
+</section>
+
+<!-- four stars -->
+<section class="wrap">
+  <div class="eyebrow reveal">别当圣杯</div>
+  <h2 class="reveal">四个必须说清的星号</h2>
+  <div class="star">
+    <div class="scard reveal"><span class="n">★ 事后</span><h3>"逃顶"事后才清晰</h3>
+      <p>跌破均线时,你当时不知道是真顶还是回踩。近 2 年 MA200±5 就被假信号坑到亏币。</p></div>
+    <div class="scard reveal"><span class="n">★ 无最优</span><h3>赢家随周期换</h3>
+      <p>全样本 MA95±4、这波 MA200±5、近 2 年 continuous。你无法预知下一段哪个赢。</p></div>
+    <div class="scard reveal"><span class="n">★ 回撤</span><h3>币本位回撤 −73%~−81%</h3>
+      <p>踏空牛市时,你的累积币数相对持币者大幅缩水。要忍"看别人囤得比你快"的难受期。</p></div>
+    <div class="scard reveal"><span class="n">★ 前提</span><h3>赌 BTC 继续有深熊</h3>
+      <p>若 BTC 走向成熟、波动收敛(像黄金不再 −80%),择时优势消失甚至变踏空亏币。</p></div>
+  </div>
+</section>
+
+<!-- final -->
+<section class="wrap">
+  <div class="eyebrow reveal">一句话</div>
+  <div class="final reveal">币本位下,择时从"很难赢"变成"周期对了能大赢"——
+    但代价是你把赌注<b>从'方向'换成了'波动'</b>:你赌的是 BTC 未来继续大起大落。</div>
+  <p class="reveal" style="margin-top:2rem;font-size:1rem;color:#c4c9d2;max-width:62ch">
+    这个赌注过去 14 年一直成立,没人能保证未来。能不能持续,取决于三件事:
+    <strong>① BTC 还有没有深熊 ② 你忍不忍得住假信号期不乱动 ③ 你扛不扛得过踏空期的币本位回撤。</strong></p>
+</section>
+
+<footer class="wrap">
+  BTC_CTA · 引擎 src/backtest_coin.py + backtest_antiwhipsaw.py · Bitstamp 2012–2026 · 生成于 2026-06-08<br>
+  币本位 = 记账单位 BTC · 研究记录,非投资建议 · 过往业绩不代表未来
+</footer>
+
+<script>
+  const tabs=document.querySelectorAll('.tab'),panes=document.querySelectorAll('.seg-pane');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('on'));t.classList.add('on');
+    panes.forEach((p,i)=>p.classList.toggle('on',i==t.dataset.seg));
+  }));
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4*45)+'ms';io.observe(el)});
+</script>
+</body>
+</html>

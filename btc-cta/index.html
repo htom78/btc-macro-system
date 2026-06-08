@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BTC_CTA · 比特币 CTA 策略评估 & 自优化 Harness 研究</title>
+<style>
+  :root{
+    --bg:#0a0b0e; --bg-2:#101218; --surface:#15181f; --surface-2:#1c2029;
+    --line:#272c36; --ink:#eee9df; --muted:#969cab; --faint:#5e6675;
+    --gold:#f7931a; --gold-soft:#ffb454; --hodl:#4aa8d8; --green:#3fb98a; --red:#e2574c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Inter",-apple-system,"Segoe UI",system-ui,sans-serif;
+    --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sp:clamp(3.5rem,2.5rem+4vw,7rem);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(75% 55% at 12% -8%,rgba(247,147,26,.11),transparent 55%),
+               radial-gradient(70% 50% at 92% 0%,rgba(74,168,216,.08),transparent 55%)}
+  .wrap{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,4vw,2.5rem)}
+  section{padding:var(--sp) 0;border-top:1px solid var(--line)}
+  section.wrap > * + *{margin-top:1.4rem}
+  section.wrap > h2{margin-top:.4rem}
+
+  /* nav */
+  .topnav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;
+    align-items:center;padding:.8rem clamp(1.2rem,4vw,2.5rem);
+    background:rgba(10,11,14,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line)}
+  .topnav .brand{font-family:var(--mono);font-weight:600;color:var(--ink);font-size:.95rem;letter-spacing:.02em}
+  .topnav .brand span{color:var(--gold)}
+  .topnav .navlinks{display:flex;gap:1.4rem}
+  .topnav .navlinks a{font-family:var(--sans);font-size:.85rem;color:var(--muted);transition:color .2s}
+  .topnav .navlinks a:hover{color:var(--ink)}
+  .topnav .navlinks a.active{color:var(--gold)}
+  @media(max-width:560px){.topnav .navlinks{gap:.9rem}.topnav .navlinks a{font-size:.78rem}.topnav .brand{font-size:.85rem}}
+
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:1.1rem;display:flex;align-items:center;gap:.7rem}
+  .eyebrow::before{content:"";width:28px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-weight:600;line-height:1.02;letter-spacing:-.02em;
+    font-size:clamp(2.7rem,1.4rem+5.8vw,5.8rem)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,1.2rem+1.8vw,2.6rem);
+    letter-spacing:-.01em;line-height:1.1;margin-bottom:.5rem}
+  p{color:var(--muted);max-width:62ch}
+  strong{color:var(--ink);font-weight:600}
+  .gold{color:var(--gold)} .blue{color:var(--hodl)}
+
+  .hero{min-height:90vh;display:flex;flex-direction:column;justify-content:center;padding:12vh 0 6vh}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .lead{font-size:clamp(1.05rem,.95rem+.5vw,1.32rem);color:#c4c9d2;max-width:60ch;margin-top:1.8rem}
+  .statline{display:flex;flex-wrap:wrap;gap:2.4rem;margin-top:2.8rem}
+  .stat .v{font-family:var(--mono);font-size:clamp(1.5rem,1.1rem+1.4vw,2.2rem);font-weight:600;letter-spacing:-.02em}
+  .stat .v.g{color:var(--gold)} .stat .v.b{color:var(--hodl)}
+  .stat .k{font-size:.72rem;color:var(--faint);text-transform:uppercase;letter-spacing:.14em;margin-top:.3rem}
+
+  /* report cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;margin-top:2rem}
+  .rc{display:block;border:1px solid var(--line);border-radius:18px;padding:2rem;background:var(--surface);
+    transition:transform .25s,border-color .25s;position:relative;overflow:hidden}
+  .rc:hover{transform:translateY(-4px)}
+  .rc.gold:hover{border-color:rgba(247,147,26,.5)}
+  .rc.blue:hover{border-color:rgba(74,168,216,.5)}
+  .rc::after{content:"→";position:absolute;top:1.6rem;right:1.8rem;font-size:1.4rem;color:var(--faint);transition:.25s}
+  .rc:hover::after{color:var(--ink);transform:translateX(4px)}
+  .rc .tag{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase}
+  .rc.gold .tag{color:var(--gold)} .rc.blue .tag{color:var(--hodl)}
+  .rc h3{font-family:var(--serif);font-size:1.5rem;font-weight:600;margin:.7rem 0 .6rem}
+  .rc p{font-size:.9rem;max-width:none}
+  .rc .meta{margin-top:1.2rem;font-family:var(--mono);font-size:.74rem;color:var(--faint)}
+  @media(max-width:640px){.cards{grid-template-columns:1fr}}
+
+  /* verdict */
+  .verdict{background:linear-gradient(150deg,var(--surface),var(--bg-2));border:1px solid var(--line);
+    border-radius:16px;padding:clamp(1.6rem,1rem+2vw,2.6rem);position:relative;overflow:hidden;margin-top:1.6rem}
+  .verdict::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--gold),transparent)}
+  .verdict h3{font-family:var(--serif);font-size:clamp(1.3rem,1rem+1.3vw,1.9rem);font-weight:600;margin-bottom:.9rem;line-height:1.3}
+  .verdict p{max-width:74ch}
+
+  /* iteration chips */
+  .chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.8rem}
+  .chip{font-family:var(--mono);font-size:.78rem;padding:.45rem .85rem;border-radius:8px;
+    border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+  .chip b{font-weight:600}.chip .w{color:var(--green)}.chip .l{color:var(--red)}.chip .y{color:var(--gold)}
+
+  /* docs list */
+  .docs{margin-top:1.6rem;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+  .docs a{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.2rem;
+    border-bottom:1px solid rgba(39,44,54,.5);transition:background .2s}
+  .docs a:last-child{border-bottom:none}
+  .docs a:hover{background:rgba(255,255,255,.025)}
+  .docs .nm{font-family:var(--mono);font-size:.83rem;color:var(--ink)}
+  .docs .ds{font-size:.78rem;color:var(--faint);font-family:var(--sans);text-align:right;margin-left:1rem}
+
+  footer{padding:3rem 0 4rem;border-top:1px solid var(--line);color:var(--faint);font-size:.78rem;
+    font-family:var(--mono);letter-spacing:.03em}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html">BTC<span>_CTA</span></a>
+  <div class="navlinks">
+    <a href="../home.html">← Macro</a>
+    <a href="index.html" class="active">概览</a>
+    <a href="report.html">全景报告</a>
+    <a href="vs_hodl.html">择时 vs HODL</a>
+    <a href="coin.html">币本位</a>
+    <a href="stacking.html">囤币方案</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div class="eyebrow">Bitstamp BTC/USD · 2012–2026 · 5271 日</div>
+  <h1>一个 MA 策略,<br>到底<em>值不值</em>?</h1>
+  <p class="lead">从评估 MA95±4%,到自优化 harness,到与 HODL 对决,再到心性。
+    一次每个假设都过 holdout 的诚实研究——包括那些被证伪的。</p>
+  <div class="statline">
+    <div class="stat"><span class="v g">6</span><span class="k">轮迭代</span></div>
+    <div class="stat"><span class="v">3</span><span class="k">负面结论</span></div>
+    <div class="stat"><span class="v g">1.13→0.95</span><span class="k">诚实修正后</span></div>
+    <div class="stat"><span class="v b">回撤保险</span><span class="k">而非 alpha</span></div>
+  </div>
+</header>
+
+<!-- two reports -->
+<section class="wrap">
+  <div class="eyebrow reveal">两份报告</div>
+  <h2 class="reveal">从哪里进入</h2>
+  <div class="cards">
+    <a class="rc gold reveal" href="report.html">
+      <span class="tag">◆ 全景</span>
+      <h3>完整研究报告</h3>
+      <p>6 轮迭代的全貌:基线评估 → 交易 RSI → Optuna 自优化 → continuous 新策略 →
+        多市场 → Marks 对撞。含 harness 工程方法论与自优化循环。</p>
+      <div class="meta">report.html · 6 轮时间线 · harness 架构</div>
+    </a>
+    <a class="rc blue reveal" href="vs_hodl.html">
+      <span class="tag">● 聚焦</span>
+      <h3>择时 vs HODL</h3>
+      <p>最有张力的收口:把 MA 择时和躺平持有放进同一张表,量化"持有的煎熬",
+        揭示牛市里 HODL 套牢最短的反直觉,收口到信念旋钮与心性。</p>
+      <div class="meta">vs_hodl.html · 三段对比 · 信念旋钮</div>
+    </a>
+  </div>
+</section>
+
+<!-- verdict -->
+<section class="wrap">
+  <div class="eyebrow reveal">核心判断</div>
+  <div class="verdict reveal">
+    <h3>MA95±4 良好不卓越,是稳健的兜底参考,卖的是回撤保险不是 alpha。</h3>
+    <p>用稳健性视角(看最差段),MA95±4 在 8 个 MA 策略里夺冠——三段都不掉链子。但与 HODL 对决:
+      <strong>历史(2012–2022)择时全面胜</strong>(熊市回撤保护值钱),
+      <strong>2023+ 顺畅牛市 HODL 反超</strong>(择时踏空 beta)。
+      本质是赌 regime(无法预知)+ 你能扛多少。<strong class="gold">用确定的牛市收益损失,
+      买熊市回撤保护 + 防止自己割在底部。</strong></p>
+    <div class="chips">
+      <span class="chip"><b class="l">做空腿</b> 砍掉</span>
+      <span class="chip"><b class="l">交易 RSI</b> 负向</span>
+      <span class="chip"><b class="l">参数调优</b> =过拟合</span>
+      <span class="chip"><b class="l">多市场</b> 伪分散</span>
+      <span class="chip"><b class="w">continuous</b> 结构性改进</span>
+      <span class="chip"><b class="y">core_overlay</b> 信念旋钮</span>
+    </div>
+  </div>
+</section>
+
+<!-- docs -->
+<section class="wrap">
+  <div class="eyebrow reveal">研究文档</div>
+  <h2 class="reveal">可复跑的全套产出</h2>
+  <p class="reveal">每份结论都有对应的回测脚本可复跑(详见 PROJECT_CONTEXT.md)。</p>
+  <div class="docs reveal">
+    <a href="research/strategy_evaluation.md"><span class="nm">strategy_evaluation.md</span><span class="ds">MA95±4% 评估 + 交易 RSI</span></a>
+    <a href="research/ma_comparison_result.md"><span class="nm">ma_comparison_result.md</span><span class="ds">8 策略横向 + 交叉测试</span></a>
+    <a href="research/vs_hodl_result.md"><span class="nm">vs_hodl_result.md</span><span class="ds">MA vs HODL 终极对比</span></a>
+    <a href="research/new_strategies_result.md"><span class="nm">new_strategies_result.md</span><span class="ds">continuous 等新策略</span></a>
+    <a href="research/multimarket_result.md"><span class="nm">multimarket_result.md</span><span class="ds">多市场分散(负面)</span></a>
+    <a href="research/harness_optimization_result.md"><span class="nm">harness_optimization_result.md</span><span class="ds">Optuna 自优化实跑</span></a>
+    <a href="research/harness_research.md"><span class="nm">harness_research.md</span><span class="ds">3 篇文章 deep-research</span></a>
+    <a href="research/rsi_self_improvement.md"><span class="nm">rsi_self_improvement.md</span><span class="ds">自优化开源调研</span></a>
+    <a href="research/marks_selling_out_notes.md"><span class="nm">marks_selling_out_notes.md</span><span class="ds">Howard Marks 对撞</span></a>
+  </div>
+</section>
+
+<footer class="wrap">
+  BTC_CTA · Bitstamp 2012–2026 · 双引擎回测 + 自优化 harness · 生成于 2026-06-07<br>
+  方法论:OpenAI Harness Engineering · Anthropic Long-Running Agents · arXiv 2603.03329 · H. Marks Selling Out<br>
+  研究记录,非投资建议 · 过往业绩不代表未来
+</footer>
+
+<script>
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4*45)+'ms';io.observe(el)});
+</script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>择时 vs HODL · BTC 持有的真实代价</title>
+<style>
+  :root{
+    --bg:#0a0b0e; --bg-2:#101218; --surface:#15181f; --surface-2:#1c2029;
+    --line:#272c36; --ink:#eee9df; --muted:#969cab; --faint:#5e6675;
+    --gold:#f7931a; --gold-soft:#ffb454; --hodl:#4aa8d8; --hodl-soft:#7cc6e8;
+    --green:#3fb98a; --red:#e2574c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Inter",-apple-system,"Segoe UI",system-ui,sans-serif;
+    --mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sp:clamp(3.5rem,2.5rem+4vw,7rem);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(70% 50% at 15% -5%,rgba(247,147,26,.10),transparent 55%),
+               radial-gradient(70% 50% at 90% 0%,rgba(74,168,216,.09),transparent 55%)}
+  .wrap{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 clamp(1.2rem,4vw,2.5rem)}
+  section{padding:var(--sp) 0;border-top:1px solid var(--line)}
+  section.wrap > * + *{margin-top:1.4rem}
+  section.wrap > h2{margin-top:.4rem}
+  .cap{margin-top:1rem !important}
+  .topnav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:.8rem clamp(1.2rem,4vw,2.5rem);background:rgba(10,11,14,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topnav .brand{font-family:var(--mono);font-weight:600;color:var(--ink);font-size:.95rem;letter-spacing:.02em}
+  .topnav .brand span{color:var(--gold)}
+  .topnav .navlinks{display:flex;gap:1.4rem}
+  .topnav .navlinks a{font-family:var(--sans);font-size:.85rem;color:var(--muted);transition:color .2s}
+  .topnav .navlinks a:hover{color:var(--ink)}
+  .topnav .navlinks a.active{color:var(--gold)}
+  @media(max-width:560px){.topnav .navlinks{gap:.9rem}.topnav .navlinks a{font-size:.78rem}.topnav .brand{font-size:.85rem}}
+
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:1.1rem;display:flex;align-items:center;gap:.7rem}
+  .eyebrow::before{content:"";width:28px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-weight:600;line-height:1.02;letter-spacing:-.02em;
+    font-size:clamp(2.7rem,1.4rem+5.6vw,5.6rem)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,1.2rem+1.8vw,2.7rem);
+    letter-spacing:-.01em;line-height:1.1;margin-bottom:.5rem}
+  p{color:var(--muted);max-width:62ch}
+  strong{color:var(--ink);font-weight:600}
+  .gold{color:var(--gold)} .blue{color:var(--hodl)}
+
+  /* hero */
+  .hero{min-height:94vh;display:flex;flex-direction:column;justify-content:center;padding:10vh 0 6vh}
+  .vs{font-family:var(--serif);font-style:italic;color:var(--faint);font-weight:400}
+  .hero h1 .a{color:var(--gold)} .hero h1 .b{color:var(--hodl)}
+  .lead{font-size:clamp(1.05rem,.95rem+.5vw,1.32rem);color:#c4c9d2;max-width:58ch;margin-top:2rem}
+  .versus-bar{display:grid;grid-template-columns:1fr auto 1fr;gap:1.2rem;align-items:stretch;margin-top:3rem}
+  .vcard{border:1px solid var(--line);border-radius:16px;padding:1.6rem;background:var(--surface)}
+  .vcard.gold{border-color:rgba(247,147,26,.35);background:linear-gradient(160deg,rgba(247,147,26,.07),var(--surface))}
+  .vcard.blue{border-color:rgba(74,168,216,.32);background:linear-gradient(160deg,rgba(74,168,216,.07),var(--surface))}
+  .vcard .lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:.7rem}
+  .vcard.gold .lbl{color:var(--gold)} .vcard.blue .lbl{color:var(--hodl)}
+  .vcard .desc{font-size:.88rem;color:var(--muted)}
+  .vmid{display:flex;align-items:center;justify-content:center;font-family:var(--serif);
+    font-style:italic;color:var(--faint);font-size:1.3rem}
+  .scrolltag{margin-top:3rem;font-family:var(--mono);font-size:.7rem;color:var(--faint);letter-spacing:.2em}
+  @media(max-width:640px){.versus-bar{grid-template-columns:1fr}.vmid{padding:.3rem 0}}
+
+  /* segmented tabs */
+  .tabs{display:flex;gap:.5rem;margin:2rem 0 1.4rem;flex-wrap:wrap}
+  .tab{font-family:var(--mono);font-size:.8rem;padding:.5rem 1rem;border-radius:999px;
+    border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;
+    transition:.2s}
+  .tab:hover{border-color:var(--faint)}
+  .tab.on{background:var(--gold);color:#1a1206;border-color:var(--gold);font-weight:600}
+
+  /* table */
+  .tbl-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  table{width:100%;border-collapse:collapse;font-size:.86rem}
+  th,td{padding:.72rem .9rem;text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);border-bottom:1px solid var(--line);font-weight:500;background:var(--bg-2)}
+  tbody td{font-family:var(--mono);color:var(--ink);border-bottom:1px solid rgba(39,44,54,.5)}
+  tbody td:first-child{font-family:var(--sans);color:var(--muted)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.hodl td{background:rgba(74,168,216,.08)}
+  tbody tr.hodl td:first-child{color:var(--hodl-soft);font-weight:600}
+  tbody tr.win td:first-child{color:var(--gold)}
+  tbody tr:hover td{background:rgba(255,255,255,.025)}
+  .best{color:var(--green)} .bad{color:var(--red)}
+  .seg-pane{display:none} .seg-pane.on{display:block;animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+  .cap{font-size:.78rem;color:var(--faint);margin-top:.9rem;font-style:italic}
+
+  /* underwater viz */
+  .uw{margin-top:1.8rem;display:flex;flex-direction:column;gap:.9rem}
+  .uw-row{display:grid;grid-template-columns:130px 1fr 60px;gap:1rem;align-items:center}
+  .uw-row .nm{font-size:.82rem;color:var(--muted);font-family:var(--sans)}
+  .uw-track{height:26px;background:var(--bg-2);border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+  .uw-fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:.5rem;font-family:var(--mono);font-size:.7rem;color:#0a0b0e;font-weight:600}
+  .uw-val{font-family:var(--mono);font-size:.82rem;color:var(--ink);text-align:right}
+
+  /* regime split */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2rem}
+  .rcard{border:1px solid var(--line);border-radius:14px;padding:1.6rem;background:var(--surface)}
+  .rcard h3{font-family:var(--sans);font-size:1.05rem;margin-bottom:.5rem}
+  .rcard .who{font-family:var(--mono);font-size:.78rem;padding:.3rem .7rem;border-radius:6px;
+    display:inline-block;margin-bottom:.9rem}
+  .rcard.bear .who{background:rgba(247,147,26,.14);color:var(--gold)}
+  .rcard.bull .who{background:rgba(74,168,216,.14);color:var(--hodl-soft)}
+  .rcard p{font-size:.86rem}
+  @media(max-width:640px){.split{grid-template-columns:1fr}}
+
+  /* belief slider */
+  .belief{margin-top:2rem;background:var(--bg-2);border:1px solid var(--line);border-radius:16px;
+    padding:clamp(1.6rem,1rem+2vw,2.6rem)}
+  .slider-track{height:10px;border-radius:6px;margin:2.2rem 0 .8rem;position:relative;
+    background:linear-gradient(90deg,var(--gold),#8a7a5a,var(--hodl))}
+  .slider-track .knob{position:absolute;top:50%;left:50%;width:22px;height:22px;border-radius:50%;
+    background:#fff;transform:translate(-50%,-50%);box-shadow:0 2px 10px rgba(0,0,0,.5);border:2px solid var(--surface)}
+  .slider-ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.74rem}
+  .slider-ends .l{color:var(--gold)} .slider-ends .r{color:var(--hodl-soft)}
+  .slider-ends .m{color:var(--faint)}
+
+  /* mindset duo */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2rem}
+  .mcard{border-radius:14px;padding:1.7rem;border:1px solid var(--line)}
+  .mcard.good{background:linear-gradient(160deg,rgba(63,185,138,.08),var(--surface));border-color:rgba(63,185,138,.3)}
+  .mcard.trap{background:linear-gradient(160deg,rgba(226,87,76,.08),var(--surface));border-color:rgba(226,87,76,.3)}
+  .mcard .h{font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.7rem}
+  .mcard.good .h{color:var(--green)} .mcard.trap .h{color:var(--red)}
+  .mcard h3{font-family:var(--serif);font-size:1.25rem;margin-bottom:.6rem}
+  .mcard p{font-size:.87rem;max-width:none}
+  .mcard ul{list-style:none;margin-top:.8rem;font-size:.85rem;color:var(--muted)}
+  .mcard li{padding:.3rem 0 .3rem 1.2rem;position:relative}
+  .mcard li::before{content:"›";position:absolute;left:0;color:var(--faint)}
+  @media(max-width:640px){.duo{grid-template-columns:1fr}}
+
+  /* final quote */
+  .final{border-left:3px solid var(--gold);padding:.5rem 0 .5rem 1.8rem;margin-top:1rem;
+    font-family:var(--serif);font-size:clamp(1.3rem,1rem+1.4vw,2rem);color:#ddd8cc;line-height:1.35}
+  .final b{color:var(--gold);font-weight:600}
+
+  footer{padding:3rem 0 4rem;border-top:1px solid var(--line);color:var(--faint);
+    font-size:.78rem;font-family:var(--mono);letter-spacing:.03em}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="brand" href="index.html">BTC<span>_CTA</span></a>
+  <div class="navlinks">
+    <a href="../home.html">← Macro</a>
+    <a href="index.html">概览</a>
+    <a href="report.html">全景报告</a>
+    <a href="vs_hodl.html" class="active">择时 vs HODL</a>
+    <a href="coin.html">币本位</a>
+    <a href="stacking.html">囤币方案</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div class="eyebrow">Bitstamp BTC/USD · 2012–2026 · 5271 日</div>
+  <h1><span class="a">择时</span> <span class="vs">vs</span> <span class="b">HODL</span></h1>
+  <p class="lead">把 MA 趋势择时和"躺平持有"放进同一张表,连<strong>持有的煎熬</strong>都量化。
+    答案不是谁更好,而是——你在赌哪种行情,以及你能扛多少。</p>
+  <div class="versus-bar">
+    <div class="vcard gold reveal"><div class="lbl">◆ MA 择时</div>
+      <div class="desc">跌破均线离场、突破再进。用牛市的部分收益,换熊市的回撤保护。</div></div>
+    <div class="vmid">vs</div>
+    <div class="vcard blue reveal"><div class="lbl">● HODL</div>
+      <div class="desc">买入持有,无视波动。吃满 beta,但要扛得住 −85% 和数年套牢。</div></div>
+  </div>
+  <div class="scrolltag">↓ 三段对比 · 一个反直觉发现 · 信念旋钮</div>
+</header>
+
+<!-- TABLE -->
+<section class="wrap">
+  <div class="eyebrow reveal">绩效对比</div>
+  <h2 class="reveal">三段交叉 · 含"套牢煎熬期"</h2>
+  <p class="reveal">最长水下 = 净值创新高后要等多久再回到新高。HODL 的真实代价藏在这一列。</p>
+  <div class="tabs reveal">
+    <span class="tab on" data-seg="0">全样本 2012+</span>
+    <span class="tab" data-seg="1">2020+</span>
+    <span class="tab" data-seg="2">HOLDOUT 2023+</span>
+  </div>
+
+  <div class="seg-pane on reveal">
+    <div class="tbl-card"><table>
+      <thead><tr><th>策略</th><th>CAGR%</th><th>Sharpe</th><th>最深回撤%</th><th>Calmar</th><th>水下(年)</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>MA95±4%</td><td class="best">112.6</td><td class="best">1.55</td><td class="best">−70.3</td><td class="best">1.60</td><td class="best">2.5</td></tr>
+        <tr><td>core_overlay 50%</td><td>108.1</td><td>1.45</td><td>−73.7</td><td>1.47</td><td>3.0</td></tr>
+        <tr><td>continuous</td><td>101.6</td><td>1.49</td><td>−70.3</td><td>1.45</td><td>2.6</td></tr>
+        <tr class="hodl"><td>HODL</td><td>92.0</td><td>1.23</td><td class="bad">−84.9</td><td>1.08</td><td class="bad">3.2</td></tr>
+        <tr><td>reddit MA200±5%</td><td>88.2</td><td>1.32</td><td>−71.2</td><td>1.24</td><td>3.1</td></tr>
+      </tbody></table></div>
+    <p class="cap">含 2012–13 早期低价幻觉 + 深熊样本。MA 择时全面胜——回撤保护在熊市极值钱。</p>
+  </div>
+
+  <div class="seg-pane reveal">
+    <div class="tbl-card"><table>
+      <thead><tr><th>策略</th><th>CAGR%</th><th>Sharpe</th><th>最深回撤%</th><th>Calmar</th><th>水下(年)</th></tr></thead>
+      <tbody>
+        <tr class="win"><td>MA95±4%</td><td class="best">57.6</td><td class="best">1.29</td><td class="best">−34.8</td><td class="best">1.65</td><td class="best">1.4</td></tr>
+        <tr><td>core_overlay 50%</td><td>52.3</td><td>1.12</td><td>−58.9</td><td>0.89</td><td>2.2</td></tr>
+        <tr><td>continuous</td><td>46.4</td><td>1.18</td><td>−35.7</td><td>1.30</td><td>2.6</td></tr>
+        <tr class="hodl"><td>HODL</td><td>39.5</td><td>0.85</td><td class="bad">−76.7</td><td>0.52</td><td>2.3</td></tr>
+      </tbody></table></div>
+    <p class="cap">MA 把回撤从 −77% 砍到 −35%、套牢从 2.3 年缩到 1.4 年。择时优势最明显的一段。</p>
+  </div>
+
+  <div class="seg-pane reveal">
+    <div class="tbl-card"><table>
+      <thead><tr><th>策略</th><th>CAGR%</th><th>Sharpe</th><th>最深回撤%</th><th>Calmar</th><th>水下(年)</th></tr></thead>
+      <tbody>
+        <tr class="hodl"><td>HODL</td><td class="best">46.2</td><td class="best">1.04</td><td class="bad">−51.1</td><td>0.90</td><td class="best">0.7</td></tr>
+        <tr><td>core_overlay 50%</td><td>36.9</td><td>1.02</td><td>−40.2</td><td>0.92</td><td>0.8</td></tr>
+        <tr><td>continuous</td><td>26.9</td><td>0.96</td><td>−28.3</td><td>0.95</td><td>0.8</td></tr>
+        <tr><td>reddit MA200±5%</td><td>25.0</td><td>0.82</td><td class="best">−26.2</td><td>0.95</td><td>1.5</td></tr>
+        <tr class="win"><td>MA95±4%</td><td>24.7</td><td>0.82</td><td>−30.2</td><td>0.82</td><td>0.8</td></tr>
+      </tbody></table></div>
+    <p class="cap">顺畅单边牛市,HODL 反超:CAGR/Sharpe 最高,套牢期还最短。择时踏空了 beta。</p>
+  </div>
+</section>
+
+<!-- UNDERWATER reversal -->
+<section class="wrap">
+  <div class="eyebrow reveal">反直觉发现</div>
+  <h2 class="reveal">牛市里,HODL 套牢<span class="blue">最短</span></h2>
+  <p class="reveal">"HODL 套牢更久"是错觉。holdout(2023+)最长水下天数——HODL 一路新高很少水下,
+    择时空仓踏空反而错过新高、套得更久。条越短越好。</p>
+  <div class="uw reveal">
+    <div class="uw-row"><span class="nm blue">HODL</span>
+      <div class="uw-track"><div class="uw-fill" style="width:47%;background:linear-gradient(90deg,var(--hodl),var(--hodl-soft))">0.7y</div></div>
+      <span class="uv uw-val">243 天</span></div>
+    <div class="uw-row"><span class="nm">core_overlay</span>
+      <div class="uw-track"><div class="uw-fill" style="width:53%;background:#6b7280">0.8y</div></div>
+      <span class="uw-val">297 天</span></div>
+    <div class="uw-row"><span class="nm gold">MA95±4%</span>
+      <div class="uw-track"><div class="uw-fill" style="width:53%;background:linear-gradient(90deg,var(--gold-soft),var(--gold))">0.8y</div></div>
+      <span class="uw-val">297 天</span></div>
+    <div class="uw-row"><span class="nm">reddit 200±5</span>
+      <div class="uw-track"><div class="uw-fill" style="width:100%;background:#8a6a3a">1.5y</div></div>
+      <span class="uw-val">536 天</span></div>
+  </div>
+  <p class="cap">但反过来——深熊里 HODL 套牢最久(全样本 3.2 年 vs MA 2.5 年)。结论取决于行情,不取决于直觉。</p>
+</section>
+
+<!-- REGIME -->
+<section class="wrap">
+  <div class="eyebrow reveal">本质</div>
+  <h2 class="reveal">不是谁更好,是你在赌哪种行情</h2>
+  <div class="split">
+    <div class="rcard bear reveal"><span class="who">◆ 择时赢</span>
+      <h3>大起大落 + 深熊</h3>
+      <p>像 2012–2022。回撤保护值钱:MA 把 −77% 砍到 −35%,把数年套牢缩短。
+        熊市里,机械离场救你于水火。</p></div>
+    <div class="rcard bull reveal"><span class="who">● HODL 赢</span>
+      <h3>顺畅单边牛</h3>
+      <p>像 2023+。没有深熊可躲,择时只剩踏空。HODL 吃满 beta,CAGR、Sharpe、
+        套牢期全面更优。</p></div>
+  </div>
+  <p class="reveal" style="margin-top:1.6rem"><strong>而你无法预知下一段是哪种。</strong>
+    这正是 Howard Marks "time, not timing" 的核心——也是为什么这道题没有纯技术答案。</p>
+</section>
+
+<!-- BELIEF SLIDER -->
+<section class="wrap">
+  <div class="eyebrow reveal">折中解</div>
+  <h2 class="reveal">core_overlay:一个"信念旋钮"</h2>
+  <p class="reveal">半仓 HODL + 半仓择时。holdout CAGR 36.9(逼近 HODL 46)、Sharpe 1.02(几乎追平)、
+    回撤 −40(好于 HODL −51)。既不彻底踏空,又削了尾部回撤。</p>
+  <div class="belief reveal">
+    <div class="slider-track"><div class="knob"></div></div>
+    <div class="slider-ends">
+      <span class="l">◆ 全择时<br>不信长期 / 怕尾部</span>
+      <span class="m">↑ 底仓比例 w = 你的信念强度</span>
+      <span class="r">● 全 HODL<br>信长期 / 扛得住 −85%</span>
+    </div>
+    <p style="margin-top:1.8rem;font-size:.9rem">底仓比例 w 越高越像 HODL。<strong>这个旋钮本质就是你"信念强度"的刻度</strong>——
+      不是技术参数,是你对 BTC 长期前景的判断。纯 MA95±4 全仓择时,反而是两头不靠的中间态。</p>
+  </div>
+</section>
+
+<!-- MINDSET -->
+<section class="wrap">
+  <div class="eyebrow reveal">心性</div>
+  <h2 class="reveal">"把标的当孩子养"——一半良药,一半陷阱</h2>
+  <p class="reveal">这个比喻能让 HODL 不煎熬。但它只在"心态层"是良药,进了"决策层"就是陷阱。</p>
+  <div class="duo">
+    <div class="mcard good reveal"><div class="h">✓ 良药 · 心态层</div>
+      <h3>降低对波动的情绪反应</h3>
+      <p>情感联结让你扛得住回撤、不割在底部,压制 Marks 说的两种心理性卖出。HODL 的痛苦主要是
+        深熊 −85% + 数年套牢,能不手抖扛过的人长期占便宜。</p></div>
+    <div class="mcard trap reveal"><div class="h">✗ 陷阱 · 决策层</div>
+      <h3>孩子无条件,标的有条件</h3>
+      <ul>
+        <li>孩子你不换,标的需要"相对选择"——thesis 变弱该卖</li>
+        <li>孩子几乎不归零,标的会(BTC 是信念问题)</li>
+        <li>"看着成长"偷偷假设了它一定涨</li>
+      </ul></div>
+  </div>
+  <p class="reveal" style="margin-top:1.8rem">和"机械纪律外骨骼"对照:养孩子心态靠<strong>情感内化</strong>防手抖,
+    但副作用是<strong>也压制了"该卖时卖"</strong>;机械纪律靠<strong>规则外骨骼</strong>,规则里能保留止损。
+    养孩子心态防住了恐慌割肉,也防住了清醒止损。</p>
+</section>
+
+<!-- FINAL -->
+<section class="wrap">
+  <div class="eyebrow reveal">一句话</div>
+  <div class="final reveal">无法预知行情的前提下,MA 择时相对 HODL 的全部价值,浓缩成一句:
+    <b>用确定的牛市收益损失,买熊市回撤保护 + 防止自己割在底部。</b></div>
+  <p class="reveal" style="margin-top:2rem;font-size:1rem;color:#c4c9d2;max-width:60ch">
+    信 BTC 长期向上、且认了可能归零的风险、扛得住 −85% → <span class="blue">HODL</span>,
+    把它当孩子养是对的心态工具。<br>否则 → <span class="gold">core_overlay</span> 调一个你睡得着的底仓比例。<br>
+    孩子值得无条件的爱;标的只值得<strong>有条件</strong>的持有。区别就在这一个词。</p>
+</section>
+
+<footer class="wrap">
+  BTC_CTA · 引擎 src/backtest_vs_hodl.py · Bitstamp 2012–2026 · 生成于 2026-06-07<br>
+  数据含早期低价幻觉,分段已标注 · 过往业绩不代表未来 · 本页为研究记录,非投资建议
+</footer>
+
+<script>
+  // segmented tabs
+  const tabs=document.querySelectorAll('.tab'),panes=document.querySelectorAll('.seg-pane');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('on'));t.classList.add('on');
+    panes.forEach((p,i)=>p.classList.toggle('on',i==t.dataset.seg));
+  }));
+  // reveal on scroll
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4*45)+'ms';io.observe(el)});
+</script>
+</body>
+</html>
