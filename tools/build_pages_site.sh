@@ -55,6 +55,7 @@ copy_file binance-upside-lab.html "$out_dir/binance-upside-lab.html"
 copy_file btc-usdt-ladder-demo.html "$out_dir/btc-usdt-ladder-demo.html"
 copy_file btc-usdt-ladder-theory.html "$out_dir/btc-usdt-ladder-theory.html"
 copy_file btc-ma95-hybrid-strategy.html "$out_dir/btc-ma95-hybrid-strategy.html"
+copy_dir btc-cta "$out_dir/btc-cta"
 
 if [[ -f btc-macro-system/data/history/observations.jsonl ]]; then
   copy_file btc-macro-system/data/history/observations.jsonl "$out_dir/observations.jsonl"
