@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-07T00:28:53.053837+00:00",
+  "generated_at": "2026-06-09T00:27:18.453684+00:00",
   "start_date": "2014-01-01",
   "fetch_errors": {
     "DGS10": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
@@ -49,9 +49,9 @@
       "dollar_index_13w_change": null,
       "vix": null,
       "vix_date": null,
-      "high_yield_oas": 2.74,
-      "high_yield_oas_date": "2026-06-04",
-      "high_yield_oas_13w_delta": -0.2599999999999998
+      "high_yield_oas": 2.76,
+      "high_yield_oas_date": "2026-06-05",
+      "high_yield_oas_13w_delta": -0.3700000000000001
     },
     "debt": {
       "gross_debt_gdp": 122.56815,
@@ -91,7 +91,7 @@
       "name": "Risk appetite",
       "score": 1,
       "stance": "supportive",
-      "detail": "VIX n/a; 高收益债利差13周变化 -0.26百分点 / HY OAS 13w delta -0.26 pp"
+      "detail": "VIX n/a; 高收益债利差13周变化 -0.37百分点 / HY OAS 13w delta -0.37 pp"
     },
     {
       "name": "BTC trend",
@@ -185,20 +185,20 @@
     },
     "BAMLH0A0HYM2": {
       "0": {
-        "correlation": -0.139660461041534,
-        "pairs": 786
+        "correlation": -0.1368921822523855,
+        "pairs": 784
       },
       "30": {
-        "correlation": -0.04044547478362705,
-        "pairs": 786
+        "correlation": -0.04218073046346824,
+        "pairs": 784
       },
       "60": {
-        "correlation": -0.023248221298848144,
-        "pairs": 786
+        "correlation": -0.02309617005945026,
+        "pairs": 784
       },
       "90": {
-        "correlation": -0.014274769167785478,
-        "pairs": 786
+        "correlation": -0.014656669392115062,
+        "pairs": 784
       }
     },
     "GFDEGDQ188S": {
