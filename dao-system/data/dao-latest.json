@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-09T00:27:18+00:00",
+  "generated_at": "2026-06-10T00:36:26+00:00",
   "state": {
     "key": "washout_probe",
     "label": "恐慌小探",
@@ -46,7 +46,7 @@
           "name": "Risk appetite",
           "score": 1,
           "stance": "supportive",
-          "detail": "VIX n/a; 高收益债利差13周变化 -0.37百分点 / HY OAS 13w delta -0.37 pp"
+          "detail": "VIX n/a; 高收益债利差13周变化 -0.44百分点 / HY OAS 13w delta -0.44 pp"
         },
         {
           "name": "BTC trend",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 1,
-          "detail": "RSI14 15.3"
+          "detail": "RSI14 15.4"
         },
         {
           "name": "30d drawdown",
           "score": 1,
-          "detail": "-23.6% from 30d high"
+          "detail": "-25.0% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 13.8 days old"
+          "detail": "snapshot is 14.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-06-09",
-    "price": 62897.21,
-    "ma95": 73117.87863157895,
-    "ma200": 78248.1532,
+    "date": "2026-06-10",
+    "price": 61521.77,
+    "ma95": 73044.72852631578,
+    "ma200": 78126.285,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 15.321789388361168,
-    "atr14": 2545.7385714285697,
-    "high_30d": 82379.0,
+    "rsi14": 15.433292536966647,
+    "atr14": 2606.3121428571403,
+    "high_30d": 82066.22,
     "low_30d": 59073.01,
-    "drawdown_from_30d_high": -0.2364897607399944
+    "drawdown_from_30d_high": -0.25033990843004594
   },
   "market_structure": {
     "schema_version": 1,
