@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="2500" viewBox="0 0 1900 2500">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .dark { fill: #111827; }
+      .ink { fill: #111827; }
+      .muted { fill: #64748b; }
+      .card { fill: #ffffff; stroke: #dbe3ee; stroke-width: 2; }
+      .green { fill: #16a34a; }
+      .red { fill: #e11d48; }
+      .blue { fill: #2563eb; }
+      .amber { fill: #f59e0b; }
+      .purple { fill: #7c3aed; }
+      .cyan { fill: #0891b2; }
+      .gray { fill: #e2e8f0; }
+      .soft-green { fill: #ecfdf5; stroke: #bbf7d0; stroke-width: 2; }
+      .soft-red { fill: #fff1f2; stroke: #fecdd3; stroke-width: 2; }
+      .soft-blue { fill: #eff6ff; stroke: #bfdbfe; stroke-width: 2; }
+      .soft-amber { fill: #fffbeb; stroke: #fde68a; stroke-width: 2; }
+      .soft-purple { fill: #f5f3ff; stroke: #ddd6fe; stroke-width: 2; }
+      .title { font: 850 62px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .subtitle { font: 400 25px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .section { font: 850 36px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .label { font: 760 24px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .body { font: 400 22px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .body-sm { font: 400 19px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .tiny { font: 400 16px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .pill { font: 760 19px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+    </style>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1900" height="2500"/>
+  <rect x="0" y="0" width="1900" height="18" class="dark"/>
+
+  <rect x="80" y="60" width="1740" height="230" rx="8" class="dark"/>
+  <text x="124" y="148" class="title" fill="#ffffff">NVIDIA 生态链地图：硬瓶颈、热度和利润穿透</text>
+  <text x="126" y="205" class="subtitle" fill="#cbd5e1">不要只问“是不是 NVIDIA 链”，要问：它到底是瓶颈、配套、客户，还是概念扩散？</text>
+  <text x="126" y="250" class="body-sm" fill="#94a3b8">口径：基于 2026-06-03 附近行情与最新公司披露信号；用于研究分层，不构成投资建议。</text>
+
+  <g transform="translate(80,340)">
+    <text x="0" y="0" class="section ink">一、产业链从左到右：谁离 NVIDIA 订单最近？</text>
+    <rect x="0" y="45" width="1740" height="500" rx="8" class="card"/>
+
+    <g transform="translate(40,105)">
+      <rect x="0" y="0" width="290" height="150" rx="8" class="soft-green"/>
+      <text x="24" y="42" class="label ink">NVIDIA 本体</text>
+      <text x="24" y="82" class="body-sm muted">GPU / NVLink / CUDA</text>
+      <text x="24" y="118" class="body-sm green">生态标准制定者</text>
+
+      <line x1="315" y1="75" x2="420" y2="75" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="440" y="0" width="330" height="150" rx="8" class="soft-red"/>
+      <text x="464" y="42" class="label ink">真瓶颈</text>
+      <text x="464" y="82" class="body-sm muted">HBM / CoWoS / ASIC</text>
+      <text x="464" y="118" class="body-sm red">供给紧，议价强</text>
+
+      <line x1="795" y1="75" x2="900" y2="75" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="920" y="0" width="330" height="150" rx="8" class="soft-amber"/>
+      <text x="944" y="42" class="label ink">强配套</text>
+      <text x="944" y="82" class="body-sm muted">服务器 / ODM / 封测</text>
+      <text x="944" y="118" class="body-sm amber">订单强，利润需验证</text>
+
+      <line x1="1275" y1="75" x2="1380" y2="75" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="1400" y="0" width="290" height="150" rx="8" class="soft-blue"/>
+      <text x="1424" y="42" class="label ink">第二层客户</text>
+      <text x="1424" y="82" class="body-sm muted">云厂商 / AI 云 / 主权 AI</text>
+      <text x="1424" y="118" class="body-sm blue">先花钱，后验证 ROI</text>
+    </g>
+
+    <g transform="translate(40,315)">
+      <text x="0" y="0" class="label ink">最容易犯的错：</text>
+      <text x="190" y="0" class="body muted">把“订单联动”误读成“利润一定联动”，把“涨幅最大”误读成“基本面最硬”。</text>
+      <rect x="0" y="45" width="1660" height="82" rx="8" fill="#f1f5f9"/>
+      <text x="30" y="96" class="label ink">正确顺序：先看瓶颈和议价权，再看毛利率和 FCF，最后才看股价位置。</text>
+    </g>
+  </g>
+
+  <g transform="translate(80,930)">
+    <text x="0" y="0" class="section ink">二、研究优先级：机会分高，但也要看风险热度</text>
+
+    <rect x="0" y="45" width="840" height="580" rx="8" class="soft-green"/>
+    <text x="34" y="100" class="section ink">核心硬瓶颈池</text>
+    <text x="34" y="140" class="body-sm muted">机会分最高，适合长期跟踪；不是追高信号。</text>
+    <g transform="translate(34,180)">
+      <rect x="0" y="0" width="170" height="54" rx="8" class="green"/>
+      <text x="22" y="35" class="pill" fill="#ffffff">TSMC</text>
+      <rect x="190" y="0" width="190" height="54" rx="8" class="green"/>
+      <text x="212" y="35" class="pill" fill="#ffffff">SK Hynix</text>
+      <rect x="400" y="0" width="190" height="54" rx="8" class="green"/>
+      <text x="422" y="35" class="pill" fill="#ffffff">Broadcom</text>
+      <rect x="610" y="0" width="150" height="54" rx="8" class="green"/>
+      <text x="632" y="35" class="pill" fill="#ffffff">NVIDIA</text>
+    </g>
+    <text x="34" y="295" class="label ink">为什么硬：</text>
+    <circle cx="50" cy="337" r="7" class="green"/>
+    <text x="74" y="345" class="body-sm muted">替代难，认证周期长，客户需求明确。</text>
+    <circle cx="50" cy="378" r="7" class="green"/>
+    <text x="74" y="386" class="body-sm muted">收入不是只靠“概念”，已经进入财报。</text>
+    <circle cx="50" cy="419" r="7" class="green"/>
+    <text x="74" y="427" class="body-sm muted">如果 AI factory 继续扩张，这些环节最先受益。</text>
+    <text x="34" y="500" class="label ink">最大风险：</text>
+    <text x="34" y="540" class="body-sm muted">估值已经较高，必须持续用订单、毛利率和现金流证明自己。</text>
+
+    <rect x="900" y="45" width="840" height="580" rx="8" class="soft-red"/>
+    <text x="934" y="100" class="section ink">高弹性高热度池</text>
+    <text x="934" y="140" class="body-sm muted">不是说不好，而是容错率低。涨幅越夸张，财报必须更硬。</text>
+    <g transform="translate(934,180)">
+      <rect x="0" y="0" width="180" height="54" rx="8" class="red"/>
+      <text x="22" y="35" class="pill" fill="#ffffff">Lumentum</text>
+      <rect x="200" y="0" width="170" height="54" rx="8" class="red"/>
+      <text x="222" y="35" class="pill" fill="#ffffff">Coherent</text>
+      <rect x="390" y="0" width="160" height="54" rx="8" class="red"/>
+      <text x="412" y="35" class="pill" fill="#ffffff">Marvell</text>
+      <rect x="570" y="0" width="150" height="54" rx="8" class="red"/>
+      <text x="592" y="35" class="pill" fill="#ffffff">Delta</text>
+      <rect x="0" y="74" width="170" height="54" rx="8" class="red"/>
+      <text x="22" y="109" class="pill" fill="#ffffff">Vertiv</text>
+      <rect x="190" y="74" width="170" height="54" rx="8" class="red"/>
+      <text x="212" y="109" class="pill" fill="#ffffff">Micron</text>
+      <rect x="380" y="74" width="200" height="54" rx="8" class="red"/>
+      <text x="402" y="109" class="pill" fill="#ffffff">China optics</text>
+    </g>
+    <text x="934" y="360" class="label ink">必须看：</text>
+    <circle cx="950" cy="402" r="7" class="red"/>
+    <text x="974" y="410" class="body-sm muted">订单是否可取消，价格是否锁定。</text>
+    <circle cx="950" cy="443" r="7" class="red"/>
+    <text x="974" y="451" class="body-sm muted">毛利率有没有随收入同步上行。</text>
+    <circle cx="950" cy="484" r="7" class="red"/>
+    <text x="974" y="492" class="body-sm muted">存货和 capex 是否开始预示扩产过剩。</text>
+  </g>
+
+  <g transform="translate(80,1620)">
+    <text x="0" y="0" class="section ink">三、两类最容易看错的标的</text>
+
+    <rect x="0" y="45" width="840" height="435" rx="8" class="soft-amber"/>
+    <text x="34" y="100" class="section ink">订单强，利润未必强</text>
+    <g transform="translate(34,150)">
+      <rect x="0" y="0" width="140" height="52" rx="8" class="amber"/>
+      <text x="22" y="34" class="pill" fill="#ffffff">Dell</text>
+      <rect x="160" y="0" width="140" height="52" rx="8" class="amber"/>
+      <text x="182" y="34" class="pill" fill="#ffffff">HPE</text>
+      <rect x="320" y="0" width="160" height="52" rx="8" class="amber"/>
+      <text x="342" y="34" class="pill" fill="#ffffff">Foxconn</text>
+      <rect x="500" y="0" width="150" height="52" rx="8" class="amber"/>
+      <text x="522" y="34" class="pill" fill="#ffffff">Quanta</text>
+      <rect x="0" y="72" width="150" height="52" rx="8" class="amber"/>
+      <text x="22" y="106" class="pill" fill="#ffffff">Wiwynn</text>
+      <rect x="170" y="72" width="160" height="52" rx="8" class="amber"/>
+      <text x="192" y="106" class="pill" fill="#ffffff">Fabrinet</text>
+      <rect x="350" y="72" width="140" height="52" rx="8" class="amber"/>
+      <text x="372" y="106" class="pill" fill="#ffffff">ASE</text>
+      <rect x="510" y="72" width="150" height="52" rx="8" class="amber"/>
+      <text x="532" y="106" class="pill" fill="#ffffff">Amkor</text>
+    </g>
+    <text x="34" y="325" class="body-sm muted">这类公司最容易出现：收入大涨，但毛利率、FCF、ROIC 没有同步提升。</text>
+    <text x="34" y="365" class="label ink">核心问题：它们是在赚钱，还是只是帮巨头搬货？</text>
+
+    <rect x="900" y="45" width="840" height="435" rx="8" class="soft-blue"/>
+    <text x="934" y="100" class="section ink">第二层客户：先花钱，后证明</text>
+    <g transform="translate(934,150)">
+      <rect x="0" y="0" width="160" height="52" rx="8" class="blue"/>
+      <text x="22" y="34" class="pill" fill="#ffffff">Microsoft</text>
+      <rect x="180" y="0" width="160" height="52" rx="8" class="blue"/>
+      <text x="202" y="34" class="pill" fill="#ffffff">Alphabet</text>
+      <rect x="360" y="0" width="150" height="52" rx="8" class="blue"/>
+      <text x="382" y="34" class="pill" fill="#ffffff">Amazon</text>
+      <rect x="530" y="0" width="130" height="52" rx="8" class="blue"/>
+      <text x="552" y="34" class="pill" fill="#ffffff">Meta</text>
+      <rect x="0" y="72" width="140" height="52" rx="8" class="blue"/>
+      <text x="22" y="106" class="pill" fill="#ffffff">Oracle</text>
+      <rect x="160" y="72" width="170" height="52" rx="8" class="blue"/>
+      <text x="182" y="106" class="pill" fill="#ffffff">CoreWeave</text>
+      <rect x="350" y="72" width="140" height="52" rx="8" class="blue"/>
+      <text x="372" y="106" class="pill" fill="#ffffff">Nebius</text>
+    </g>
+    <text x="934" y="325" class="body-sm muted">它们是 NVIDIA 的客户，不等于它们会自动赚钱。关键是 AI capex 的收入回报和折旧压力。</text>
+    <text x="934" y="365" class="label ink">核心问题：买来的算力，是利润机器，还是折旧机器？</text>
+  </g>
+
+  <g transform="translate(80,2160)">
+    <rect x="0" y="0" width="1740" height="210" rx="8" class="dark"/>
+    <text x="34" y="56" class="section" fill="#ffffff">最终研究路线</text>
+    <circle cx="54" cy="102" r="8" class="green"/>
+    <text x="80" y="110" class="body" fill="#e5e7eb">先研究硬底座：TSMC、SK Hynix、Broadcom。</text>
+    <circle cx="54" cy="148" r="8" class="red"/>
+    <text x="80" y="156" class="body" fill="#e5e7eb">再研究高弹性瓶颈：Marvell、Coherent、Lumentum、Vertiv、Delta、Micron。</text>
+    <circle cx="930" cy="102" r="8" class="amber"/>
+    <text x="956" y="110" class="body" fill="#e5e7eb">然后验证利润穿透：Dell、HPE、ODM、封测、Fabrinet。</text>
+    <circle cx="930" cy="148" r="8" class="blue"/>
+    <text x="956" y="156" class="body" fill="#e5e7eb">最后看第二层客户：云厂商和 AI 云的 capex ROI。</text>
+  </g>
+
+  <g transform="translate(80,2410)">
+    <text x="0" y="0" class="tiny muted">配套文件：nvidia-ecosystem-scorecard-2026.csv、nvidia-ecosystem-complete-framework-2026.md、nvidia-ecosystem-company-diligence-template.md。图中分类用于研究分层，不构成投资建议。</text>
+  </g>
+</svg>

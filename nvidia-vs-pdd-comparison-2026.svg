@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="2500" viewBox="0 0 1800 2500">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .ink { fill: #111827; }
+      .muted { fill: #64748b; }
+      .card { fill: #ffffff; stroke: #dbe3ee; stroke-width: 2; }
+      .nvda { fill: #16a34a; }
+      .pdd { fill: #e11d48; }
+      .blue { fill: #2563eb; }
+      .amber { fill: #f59e0b; }
+      .purple { fill: #7c3aed; }
+      .dark { fill: #111827; }
+      .soft-green { fill: #ecfdf5; stroke: #bbf7d0; stroke-width: 2; }
+      .soft-red { fill: #fff1f2; stroke: #fecdd3; stroke-width: 2; }
+      .soft-blue { fill: #eff6ff; stroke: #bfdbfe; stroke-width: 2; }
+      .soft-amber { fill: #fffbeb; stroke: #fde68a; stroke-width: 2; }
+      .title { font: 850 62px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .subtitle { font: 400 25px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .section { font: 850 36px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .label { font: 760 24px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .body { font: 400 22px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .body-sm { font: 400 19px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .num { font: 850 48px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .num-md { font: 850 38px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .tiny { font: 400 16px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .mono { font: 760 18px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    </style>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1800" height="2500"/>
+  <rect x="0" y="0" width="1800" height="18" fill="#111827"/>
+
+  <rect x="80" y="65" width="1640" height="235" rx="8" class="dark"/>
+  <text x="122" y="150" class="title" fill="#ffffff">NVIDIA vs PDD：两个高效率公司，赚的是两种钱</text>
+  <text x="124" y="205" class="subtitle" fill="#cbd5e1">段永平式毛估估：NVIDIA 是 AI 生产资料税，PDD 是交易效率权。</text>
+  <text x="124" y="252" class="body-sm" fill="#94a3b8">口径：NVIDIA FY2026 + Q1 FY2027；PDD FY2025 + Q1 2026。市值为粗估，重点看数量级和生意结构。</text>
+
+  <g transform="translate(80,345)">
+    <rect x="0" y="0" width="800" height="250" rx="8" class="soft-green"/>
+    <text x="34" y="56" class="section ink">NVIDIA</text>
+    <text x="34" y="98" class="body muted">核心资产：GPU、网络、CUDA、开发者生态、AI factory 标准。</text>
+    <text x="34" y="152" class="num nvda">生产资料税收权</text>
+    <text x="34" y="196" class="body-sm muted">客户花 CAPEX 建 AI 工厂，它在最稀缺环节收高毛利。</text>
+  </g>
+
+  <g transform="translate(920,345)">
+    <rect x="0" y="0" width="800" height="250" rx="8" class="soft-red"/>
+    <text x="34" y="56" class="section ink">PDD / 拼多多</text>
+    <text x="34" y="98" class="body muted">核心资产：流量效率、低价心智、商家网络、跨境供给组织。</text>
+    <text x="34" y="152" class="num pdd">交易效率压缩权</text>
+    <text x="34" y="196" class="body-sm muted">把传统渠道、库存、营销和供需错配里的利润挤出来。</text>
+  </g>
+
+  <g transform="translate(80,645)">
+    <text x="0" y="0" class="section ink">一、规模与效率：两家公司都很猛，但 NVIDIA 的单人现金产出更极端</text>
+
+    <g transform="translate(0,45)">
+      <rect x="0" y="0" width="1640" height="330" rx="8" class="card"/>
+      <text x="34" y="58" class="label ink">员工数</text>
+      <text x="260" y="58" class="body-sm muted">NVIDIA 42,000；PDD 25,474</text>
+      <rect x="34" y="85" width="520" height="32" rx="5" fill="#e2e8f0"/>
+      <rect x="34" y="85" width="520" height="32" rx="5" class="nvda"/>
+      <text x="574" y="110" class="body-sm ink">42,000</text>
+      <rect x="34" y="130" width="520" height="32" rx="5" fill="#e2e8f0"/>
+      <rect x="34" y="130" width="315" height="32" rx="5" class="pdd"/>
+      <text x="370" y="155" class="body-sm ink">25,474</text>
+
+      <text x="34" y="220" class="label ink">每员工年收入</text>
+      <rect x="34" y="247" width="520" height="32" rx="5" fill="#e2e8f0"/>
+      <rect x="34" y="247" width="520" height="32" rx="5" class="nvda"/>
+      <text x="574" y="272" class="body-sm ink">约 514 万美元</text>
+      <rect x="34" y="292" width="520" height="32" rx="5" fill="#e2e8f0"/>
+      <rect x="34" y="292" width="245" height="32" rx="5" class="pdd"/>
+      <text x="300" y="317" class="body-sm ink">约 242 万美元</text>
+
+      <line x1="820" y1="38" x2="820" y2="292" stroke="#e2e8f0" stroke-width="2"/>
+
+      <text x="870" y="58" class="label ink">每员工年自由现金流</text>
+      <text x="870" y="96" class="body-sm muted">用全年 FCF 粗算，单位：美元/人/年。</text>
+      <rect x="870" y="125" width="520" height="32" rx="5" fill="#e2e8f0"/>
+      <rect x="870" y="125" width="520" height="32" rx="5" class="nvda"/>
+      <text x="1410" y="150" class="body-sm ink">约 230 万</text>
+      <rect x="870" y="170" width="520" height="32" rx="5" fill="#e2e8f0"/>
+      <rect x="870" y="170" width="134" height="32" rx="5" class="pdd"/>
+      <text x="1024" y="195" class="body-sm ink">约 59 万</text>
+
+      <rect x="870" y="240" width="720" height="62" rx="8" fill="#f1f5f9"/>
+      <text x="900" y="279" class="label ink">结论：PDD 很高效；NVIDIA 是生产力杠杆级别的高效。</text>
+    </g>
+  </g>
+
+  <g transform="translate(80,1075)">
+    <text x="0" y="0" class="section ink">二、现金与现金流：PDD 账上更厚，NVIDIA 造现金更快</text>
+
+    <g transform="translate(0,45)">
+      <rect x="0" y="0" width="800" height="440" rx="8" class="card"/>
+      <text x="34" y="58" class="section ink">NVIDIA</text>
+      <text x="34" y="98" class="body-sm muted">美元口径，亿美元为单位。</text>
+      <rect x="34" y="130" width="350" height="92" rx="8" fill="#ecfdf5"/>
+      <text x="58" y="164" class="body-sm muted">现金 + 债券类流动证券</text>
+      <text x="58" y="207" class="num-md nvda">503 亿</text>
+      <rect x="416" y="130" width="350" height="92" rx="8" fill="#eff6ff"/>
+      <text x="440" y="164" class="body-sm muted">加可上市股票投资</text>
+      <text x="440" y="207" class="num-md blue">806 亿</text>
+      <rect x="34" y="252" width="350" height="92" rx="8" fill="#fffbeb"/>
+      <text x="58" y="286" class="body-sm muted">Q1 FY2027 FCF</text>
+      <text x="58" y="329" class="num-md amber">486 亿</text>
+      <rect x="416" y="252" width="350" height="92" rx="8" fill="#f1f5f9"/>
+      <text x="440" y="286" class="body-sm muted">现金/投资占市值</text>
+      <text x="440" y="329" class="num-md ink">约 1.5%</text>
+      <text x="34" y="392" class="body-sm muted">现金不算多；厉害的是一个季度就能新造接近 500 亿美元自由现金流。</text>
+    </g>
+
+    <g transform="translate(840,45)">
+      <rect x="0" y="0" width="800" height="440" rx="8" class="card"/>
+      <text x="34" y="58" class="section ink">PDD / 拼多多</text>
+      <text x="34" y="98" class="body-sm muted">人民币披露，括号内为美元约算。</text>
+      <rect x="34" y="130" width="350" height="92" rx="8" fill="#fff1f2"/>
+      <text x="58" y="164" class="body-sm muted">现金 + 短期投资</text>
+      <text x="58" y="207" class="num-md pdd">4361 亿人民币</text>
+      <rect x="416" y="130" width="350" height="92" rx="8" fill="#eff6ff"/>
+      <text x="440" y="164" class="body-sm muted">美元约算</text>
+      <text x="440" y="207" class="num-md blue">632 亿美元</text>
+      <rect x="34" y="252" width="350" height="92" rx="8" fill="#fffbeb"/>
+      <text x="58" y="286" class="body-sm muted">Q1 2026 经营现金流</text>
+      <text x="58" y="329" class="num-md amber">164 亿人民币</text>
+      <rect x="416" y="252" width="350" height="92" rx="8" fill="#f1f5f9"/>
+      <text x="440" y="286" class="body-sm muted">现金/短投占市值</text>
+      <text x="440" y="329" class="num-md ink">约 50%</text>
+      <text x="34" y="392" class="body-sm muted">PDD 的现金水位非常厚；市场真正担心的是利润率和现金回报路径。</text>
+    </g>
+  </g>
+
+  <g transform="translate(80,1625)">
+    <text x="0" y="0" class="section ink">三、估值分岔：一个贵在确定性，一个便宜在不确定性</text>
+
+    <rect x="0" y="45" width="1640" height="360" rx="8" class="card"/>
+    <text x="34" y="105" class="label ink">按全年 FCF 粗估 P/FCF</text>
+    <text x="34" y="145" class="body-sm muted">NVIDIA 用 FY2026 FCF；PDD 用 FY2025 经营现金流扣资本开支。</text>
+    <rect x="34" y="180" width="720" height="36" rx="5" fill="#e2e8f0"/>
+    <rect x="34" y="180" width="720" height="36" rx="5" class="nvda"/>
+    <text x="560" y="207" class="body" fill="#ffffff">NVIDIA 约 56 倍</text>
+    <rect x="34" y="235" width="720" height="36" rx="5" fill="#e2e8f0"/>
+    <rect x="34" y="235" width="103" height="36" rx="5" class="pdd"/>
+    <text x="160" y="262" class="body ink">PDD 约 8 倍</text>
+
+    <line x1="860" y1="92" x2="860" y2="320" stroke="#e2e8f0" stroke-width="2"/>
+
+    <text x="910" y="105" class="label ink">按最新季度年化粗估</text>
+    <rect x="910" y="150" width="300" height="95" rx="8" fill="#ecfdf5"/>
+    <text x="934" y="185" class="body-sm muted">NVIDIA P/FCF</text>
+    <text x="934" y="230" class="num-md nvda">约 28 倍</text>
+    <rect x="1245" y="150" width="300" height="95" rx="8" fill="#fff1f2"/>
+    <text x="1269" y="185" class="body-sm muted">PDD P/经营现金流</text>
+    <text x="1269" y="230" class="num-md pdd">约 13 倍</text>
+
+    <rect x="910" y="275" width="635" height="58" rx="8" fill="#f1f5f9"/>
+    <text x="936" y="312" class="label ink">市场给 NVIDIA 买未来；给 PDD 打折现在。</text>
+  </g>
+
+  <g transform="translate(80,2090)">
+    <text x="0" y="0" class="section ink">四、供应链联动：NVIDIA 更像生态总开关，PDD 更像交易成本压路机</text>
+
+    <g transform="translate(0,45)">
+      <rect x="0" y="0" width="800" height="245" rx="8" class="soft-green"/>
+      <text x="34" y="50" class="label ink">NVIDIA 的联动链</text>
+      <circle cx="52" cy="88" r="7" class="nvda"/>
+      <text x="76" y="96" class="body-sm muted">直接稀缺件：HBM、先进封装、光模块、交换、服务器、电源、液冷。</text>
+      <circle cx="52" cy="130" r="7" class="nvda"/>
+      <text x="76" y="138" class="body-sm muted">共同建设方：云厂商、主权 AI、三星、SK、现代等 AI factory 伙伴。</text>
+      <circle cx="52" cy="172" r="7" class="nvda"/>
+      <text x="76" y="180" class="body-sm muted">信号识别：老黄公开站台/投资/供货协议，常常是产业链需求确认。</text>
+    </g>
+
+    <g transform="translate(840,45)">
+      <rect x="0" y="0" width="800" height="245" rx="8" class="soft-red"/>
+      <text x="34" y="50" class="label ink">PDD 的联动链</text>
+      <circle cx="52" cy="88" r="7" class="pdd"/>
+      <text x="76" y="96" class="body-sm muted">直接受益方：白牌工厂、跨境物流、支付、履约、广告流量。</text>
+      <circle cx="52" cy="130" r="7" class="pdd"/>
+      <text x="76" y="138" class="body-sm muted">核心约束：补贴强度、履约成本、关税/监管、商家生态稳定性。</text>
+      <circle cx="52" cy="172" r="7" class="pdd"/>
+      <text x="76" y="180" class="body-sm muted">信号识别：利润率如果下行，说明效率红利被竞争和投入吃掉。</text>
+    </g>
+  </g>
+
+  <g transform="translate(80,2400)">
+    <rect x="0" y="0" width="1640" height="70" rx="8" class="dark"/>
+    <text x="32" y="45" class="label" fill="#ffffff">一句话结论：PDD 更便宜、现金更厚；NVIDIA 更贵、生态位更强、现金流爆发力更高。</text>
+  </g>
+
+  <g transform="translate(80,2487)">
+    <text x="0" y="0" class="tiny muted">数据来源：NVIDIA FY2026 10-K、Q1 FY2027 results/10-Q；PDD FY2025 20-F、Q1 2026 results。金额约算用于数量级比较，不构成投资建议。</text>
+  </g>
+</svg>

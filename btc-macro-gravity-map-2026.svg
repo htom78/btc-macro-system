@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="2600" viewBox="0 0 2000 2600">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="28%" r="75%">
+      <stop offset="0%" stop-color="#223126"/>
+      <stop offset="42%" stop-color="#121815"/>
+      <stop offset="100%" stop-color="#0b100e"/>
+    </radialGradient>
+    <radialGradient id="btcGlow" cx="42%" cy="34%" r="70%">
+      <stop offset="0%" stop-color="#f5b65f"/>
+      <stop offset="42%" stop-color="#b87825"/>
+      <stop offset="100%" stop-color="#3d2716"/>
+    </radialGradient>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="28" stdDeviation="32" flood-color="#020403" flood-opacity="0.52"/>
+    </filter>
+    <filter id="fineNoise" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.035"/>
+      </feComponentTransfer>
+    </filter>
+    <marker id="arrowSupport" viewBox="0 0 14 14" refX="12" refY="7" markerWidth="11" markerHeight="11" orient="auto">
+      <path d="M0 0 L14 7 L0 14 Z" fill="#76b48b"/>
+    </marker>
+    <marker id="arrowHostile" viewBox="0 0 14 14" refX="12" refY="7" markerWidth="11" markerHeight="11" orient="auto">
+      <path d="M0 0 L14 7 L0 14 Z" fill="#d98064"/>
+    </marker>
+    <style>
+      .bg { fill:url(#bgGrad); }
+      .grain { filter:url(#fineNoise); opacity:.9; }
+      .grid { stroke:#e6d8bd; stroke-opacity:.045; stroke-width:1; }
+      .h1 { fill:#f2eadf; font: 850 76px "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif; letter-spacing:0; }
+      .h2 { fill:#f2eadf; font: 780 42px "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif; }
+      .label { fill:#f2eadf; font: 780 32px "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif; }
+      .body { fill:#c7c5bb; font-family:"Avenir Next","PingFang SC","Microsoft YaHei",sans-serif; }
+      .muted { fill:#a3a69c; font-family:"Avenir Next","PingFang SC","Microsoft YaHei",sans-serif; }
+      .tiny { fill:#9da59b; font: 500 22px "SF Mono","JetBrains Mono",Menlo,monospace; }
+      .mono { fill:#ebe2d1; font-family:"SF Mono","JetBrains Mono",Menlo,monospace; }
+      .score { font: 820 34px "SF Mono","JetBrains Mono",Menlo,monospace; }
+      .glass { fill:rgba(22,28,24,.72); stroke:#2f3d34; stroke-width:2; filter:url(#softShadow); }
+      .metric { fill:rgba(17,23,20,.74); stroke-width:2; }
+      .metric-value { font: 840 34px "SF Mono","JetBrains Mono",Menlo,monospace; }
+      .support { stroke:#76b48b; stroke-width:5; fill:none; stroke-linecap:round; marker-end:url(#arrowSupport); opacity:.82; }
+      .hostile { stroke:#d98064; stroke-width:5; fill:none; stroke-linecap:round; marker-end:url(#arrowHostile); opacity:.82; }
+      .mixed-line { stroke:#c6ad68; stroke-width:4; fill:none; stroke-linecap:round; stroke-dasharray:18 14; opacity:.72; }
+      .debt-line { stroke:#bdb080; stroke-width:4; fill:none; stroke-linecap:round; stroke-dasharray:8 16; opacity:.68; }
+      .ring { fill:none; stroke:#e7d6ad; stroke-opacity:.16; stroke-width:2; stroke-dasharray:24 18; }
+      .ring-strong { fill:none; stroke:#d9a34a; stroke-opacity:.48; stroke-width:3; }
+      .axis { stroke:#d8c6a3; stroke-opacity:.18; stroke-width:2; }
+      .support-fill { fill:#85c79d; }
+      .hostile-fill { fill:#df8b6e; }
+      .mixed-fill { fill:#d0b56b; }
+      .debt-fill { fill:#c2b58e; }
+      .support-stroke { stroke:#618f72; }
+      .hostile-stroke { stroke:#a25e4c; }
+      .mixed-stroke { stroke:#9c8548; }
+      .debt-stroke { stroke:#887d5e; }
+      .amber { fill:#d69c47; }
+      .caption { fill:#7f877f; font: 500 20px "Avenir Next","PingFang SC","Microsoft YaHei",sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="2000" height="2600"/>
+  <g opacity="1">
+    <line class="grid" x1="80" y1="0" x2="80" y2="2600"/><line class="grid" x1="160" y1="0" x2="160" y2="2600"/><line class="grid" x1="240" y1="0" x2="240" y2="2600"/><line class="grid" x1="320" y1="0" x2="320" y2="2600"/><line class="grid" x1="400" y1="0" x2="400" y2="2600"/><line class="grid" x1="480" y1="0" x2="480" y2="2600"/><line class="grid" x1="560" y1="0" x2="560" y2="2600"/><line class="grid" x1="640" y1="0" x2="640" y2="2600"/><line class="grid" x1="720" y1="0" x2="720" y2="2600"/><line class="grid" x1="800" y1="0" x2="800" y2="2600"/><line class="grid" x1="880" y1="0" x2="880" y2="2600"/><line class="grid" x1="960" y1="0" x2="960" y2="2600"/><line class="grid" x1="1040" y1="0" x2="1040" y2="2600"/><line class="grid" x1="1120" y1="0" x2="1120" y2="2600"/><line class="grid" x1="1200" y1="0" x2="1200" y2="2600"/><line class="grid" x1="1280" y1="0" x2="1280" y2="2600"/><line class="grid" x1="1360" y1="0" x2="1360" y2="2600"/><line class="grid" x1="1440" y1="0" x2="1440" y2="2600"/><line class="grid" x1="1520" y1="0" x2="1520" y2="2600"/><line class="grid" x1="1600" y1="0" x2="1600" y2="2600"/><line class="grid" x1="1680" y1="0" x2="1680" y2="2600"/><line class="grid" x1="1760" y1="0" x2="1760" y2="2600"/><line class="grid" x1="1840" y1="0" x2="1840" y2="2600"/><line class="grid" x1="1920" y1="0" x2="1920" y2="2600"/>
+    <line class="grid" x1="0" y1="80" x2="2000" y2="80"/><line class="grid" x1="0" y1="160" x2="2000" y2="160"/><line class="grid" x1="0" y1="240" x2="2000" y2="240"/><line class="grid" x1="0" y1="320" x2="2000" y2="320"/><line class="grid" x1="0" y1="400" x2="2000" y2="400"/><line class="grid" x1="0" y1="480" x2="2000" y2="480"/><line class="grid" x1="0" y1="560" x2="2000" y2="560"/><line class="grid" x1="0" y1="640" x2="2000" y2="640"/><line class="grid" x1="0" y1="720" x2="2000" y2="720"/><line class="grid" x1="0" y1="800" x2="2000" y2="800"/><line class="grid" x1="0" y1="880" x2="2000" y2="880"/><line class="grid" x1="0" y1="960" x2="2000" y2="960"/><line class="grid" x1="0" y1="1040" x2="2000" y2="1040"/><line class="grid" x1="0" y1="1120" x2="2000" y2="1120"/><line class="grid" x1="0" y1="1200" x2="2000" y2="1200"/><line class="grid" x1="0" y1="1280" x2="2000" y2="1280"/><line class="grid" x1="0" y1="1360" x2="2000" y2="1360"/><line class="grid" x1="0" y1="1440" x2="2000" y2="1440"/><line class="grid" x1="0" y1="1520" x2="2000" y2="1520"/><line class="grid" x1="0" y1="1600" x2="2000" y2="1600"/><line class="grid" x1="0" y1="1680" x2="2000" y2="1680"/><line class="grid" x1="0" y1="1760" x2="2000" y2="1760"/><line class="grid" x1="0" y1="1840" x2="2000" y2="1840"/><line class="grid" x1="0" y1="1920" x2="2000" y2="1920"/><line class="grid" x1="0" y1="2000" x2="2000" y2="2000"/><line class="grid" x1="0" y1="2080" x2="2000" y2="2080"/><line class="grid" x1="0" y1="2160" x2="2000" y2="2160"/><line class="grid" x1="0" y1="2240" x2="2000" y2="2240"/><line class="grid" x1="0" y1="2320" x2="2000" y2="2320"/><line class="grid" x1="0" y1="2400" x2="2000" y2="2400"/><line class="grid" x1="0" y1="2480" x2="2000" y2="2480"/><line class="grid" x1="0" y1="2560" x2="2000" y2="2560"/>
+  </g>
+  <rect class="grain" width="2000" height="2600"/>
+
+  <text class="tiny" x="110" y="94">BTC MACRO GRAVITY MAP · DATA AS OF 2026-06-01</text>
+  <text class="h1" x="110" y="180">BTC 与宏观的引力关系</text>
+  <text class="muted" x="114" y="232" style="font-size:30px">不是预测价格，而是看 BTC 现在被哪些宏观力量拉住，哪些力量在托底。</text>
+  <text class="tiny" x="114" y="278">generated 2026-06-02 00:22 UTC · public data · research only</text>
+
+  <g transform="translate(0,0)">
+    <line class="axis" x1="1000" y1="390" x2="1000" y2="1510"/>
+    <line class="axis" x1="315" y1="860" x2="1685" y2="860"/>
+    <circle class="ring" cx="1000" cy="860" r="410"/>
+    <circle class="ring" cx="1000" cy="860" r="300"/>
+    <circle class="ring" cx="1000" cy="860" r="200"/>
+    <circle class="ring-strong" cx="1000" cy="860" r="114"/>
+    
+      <path class="force support" d="M 445 625 C 660 520, 765 565, 890 795"/>
+      <path class="force support" d="M 420 1055 C 620 1045, 755 1010, 900 900"/>
+      <path class="force hostile" d="M 1560 610 C 1320 550, 1220 620, 1078 792"/>
+      <path class="force hostile" d="M 1570 920 C 1360 918, 1225 900, 1090 865"/>
+      <path class="force mixed-line" d="M 1520 1215 C 1340 1140, 1200 1010, 1080 910"/>
+      <path class="force debt-line" d="M 1000 1445 C 995 1255, 995 1085, 995 950"/>
+    
+
+    <g filter="url(#softShadow)">
+      <circle cx="1000" cy="860" r="150" fill="url(#btcGlow)"/>
+      <circle cx="1000" cy="860" r="151" fill="none" stroke="#ffd28a" stroke-opacity=".42" stroke-width="3"/>
+      <circle cx="1000" cy="860" r="90" fill="#17130e" fill-opacity=".34"/>
+    </g>
+    <text class="mono" x="918" y="830" style="font-size:42px;font-weight:900">BTC</text>
+    <text class="mono" x="886" y="886" style="font-size:42px;font-weight:900">$73,571</text>
+    <text class="tiny" x="889" y="930">regime mixed / score -1</text>
+    <text class="tiny" x="870" y="965">MA200 gap -7.5%</text>
+
+    
+    <g class="card-wrap">
+      <rect class="glass support-stroke" x="120" y="470" width="520" height="300" rx="26"/>
+      <rect class="support" x="146" y="496" width="10" height="248" rx="5"/>
+      <text class="label" x="178" y="532">美元流动性</text>
+      <text class="tiny" x="178" y="570">USD liquidity</text>
+      <text class="score support-fill" x="514" y="544">+2</text>
+      <text class="body" x="178" y="622" style="font-size:25px">M2 3个月年化 6.9%</text>
+<text class="body" x="178" y="658" style="font-size:25px">联储资产负债表13周 1.4%</text>
+<text class="body" x="178" y="694" style="font-size:25px">钱的水位在回升，</text>
+<text class="body" x="178" y="730" style="font-size:25px">这是当前最强支撑。</text>
+    </g>
+    
+    
+    <g class="card-wrap">
+      <rect class="glass support-stroke" x="110" y="940" width="520" height="300" rx="26"/>
+      <rect class="support" x="136" y="966" width="10" height="248" rx="5"/>
+      <text class="label" x="168" y="1002">风险偏好</text>
+      <text class="tiny" x="168" y="1040">Risk appetite</text>
+      <text class="score support-fill" x="504" y="1014">+2</text>
+      <text class="body" x="168" y="1092" style="font-size:25px">VIX 15.32</text>
+<text class="body" x="168" y="1128" style="font-size:25px">高收益债利差13周 -0.38pp</text>
+<text class="body" x="168" y="1164" style="font-size:25px">信用压力没有升温，</text>
+<text class="body" x="168" y="1200" style="font-size:25px">风险资产仍有呼吸空间。</text>
+    </g>
+    
+    
+    <g class="card-wrap">
+      <rect class="glass hostile-stroke" x="1360" y="470" width="520" height="300" rx="26"/>
+      <rect class="hostile" x="1386" y="496" width="10" height="248" rx="5"/>
+      <text class="label" x="1418" y="532">通胀约束</text>
+      <text class="tiny" x="1418" y="570">Inflation constraint</text>
+      <text class="score hostile-fill" x="1754" y="544">-2</text>
+      <text class="body" x="1418" y="622" style="font-size:25px">CPI同比 3.9%</text>
+<text class="body" x="1418" y="658" style="font-size:25px">3个月年化 7.3%</text>
+<text class="body" x="1418" y="694" style="font-size:25px">它把降息门槛抬高，</text>
+<text class="body" x="1418" y="730" style="font-size:25px">让流动性支撑难以释放。</text>
+    </g>
+    
+    
+    <g class="card-wrap">
+      <rect class="glass hostile-stroke" x="1370" y="835" width="520" height="290" rx="26"/>
+      <rect class="hostile" x="1396" y="861" width="10" height="238" rx="5"/>
+      <text class="label" x="1428" y="897">实际利率</text>
+      <text class="tiny" x="1428" y="935">Real-rate pressure</text>
+      <text class="score hostile-fill" x="1764" y="909">-2</text>
+      <text class="body" x="1428" y="987" style="font-size:25px">10年期实际收益率 2.07%</text>
+<text class="body" x="1428" y="1023" style="font-size:25px">13周上行 +0.35pp</text>
+<text class="body" x="1428" y="1059" style="font-size:25px">这是 BTC 估值最直接的</text>
+<text class="body" x="1428" y="1095" style="font-size:25px">折现率压力。</text>
+    </g>
+    
+    
+    <g class="card-wrap">
+      <rect class="glass mixed-stroke" x="1350" y="1195" width="540" height="300" rx="26"/>
+      <rect class="mixed" x="1376" y="1221" width="10" height="248" rx="5"/>
+      <text class="label" x="1408" y="1257">趋势与美元</text>
+      <text class="tiny" x="1408" y="1295">Trend / dollar</text>
+      <text class="score mixed-fill" x="1764" y="1269">-1 / 0</text>
+      <text class="body" x="1408" y="1347" style="font-size:25px">BTC 仍低于200日均线</text>
+<text class="body" x="1408" y="1383" style="font-size:25px">30日 -5.9%</text>
+<text class="body" x="1408" y="1419" style="font-size:25px">广义美元13周 0.9%</text>
+<text class="body" x="1408" y="1455" style="font-size:25px">价格趋势还没确认转强。</text>
+    </g>
+    
+    
+    <g class="card-wrap">
+      <rect class="glass debt-stroke" x="670" y="1430" width="660" height="300" rx="26"/>
+      <rect class="debt" x="696" y="1456" width="10" height="248" rx="5"/>
+      <text class="label" x="728" y="1492">财政压力</text>
+      <text class="tiny" x="728" y="1530">Debt pressure</text>
+      <text class="score debt-fill" x="1204" y="1504">0</text>
+      <text class="body" x="728" y="1582" style="font-size:25px">公众持有债务/GDP 98.24%</text>
+<text class="body" x="728" y="1618" style="font-size:25px">利息支出/GDP 3.15%</text>
+<text class="body" x="728" y="1654" style="font-size:25px">长期支持硬通货叙事，</text>
+<text class="body" x="728" y="1690" style="font-size:25px">短期可能放大真实利率压力。</text>
+    </g>
+    
+  </g>
+
+  <g transform="translate(110,1840)">
+    <text class="h2" x="0" y="0">今日读法：支撑与压制并存</text>
+    <text class="muted" x="0" y="48" style="font-size:27px">流动性和信用环境在托底，但通胀和真实利率把 BTC 的上行弹性扣住。</text>
+    
+      <g>
+        <rect class="metric support-stroke" x="0" y="105" width="350" height="128" rx="20"/>
+        <text class="tiny" x="26" y="145">支撑一 / liquidity</text>
+        <text class="metric-value support-fill" x="26" y="189">6.9%</text>
+        <text class="tiny" x="26" y="217">M2 3M annualized</text>
+      </g>
+    
+    
+      <g>
+        <rect class="metric support-stroke" x="390" y="105" width="350" height="128" rx="20"/>
+        <text class="tiny" x="416" y="145">支撑二 / credit</text>
+        <text class="metric-value support-fill" x="416" y="189">-0.38pp</text>
+        <text class="tiny" x="416" y="217">HY OAS 13w</text>
+      </g>
+    
+    
+      <g>
+        <rect class="metric hostile-stroke" x="780" y="105" width="350" height="128" rx="20"/>
+        <text class="tiny" x="806" y="145">压制一 / inflation</text>
+        <text class="metric-value hostile-fill" x="806" y="189">7.3%</text>
+        <text class="tiny" x="806" y="217">CPI 3M annualized</text>
+      </g>
+    
+    
+      <g>
+        <rect class="metric hostile-stroke" x="1170" y="105" width="350" height="128" rx="20"/>
+        <text class="tiny" x="1196" y="145">压制二 / real yield</text>
+        <text class="metric-value hostile-fill" x="1196" y="189">2.07%</text>
+        <text class="tiny" x="1196" y="217">10Y real yield</text>
+      </g>
+    
+    <rect class="glass mixed-stroke" x="0" y="290" width="1780" height="250" rx="28"/>
+    <text class="label" x="42" y="360">核心结论</text>
+    <text class="body" x="42" y="415" style="font-size:31px">这不是单边牛市环境，也不是流动性枯竭环境。更像是“水位上升，但阀门还被通胀和真实利率卡住”。如果 CPI</text>
+<text class="body" x="42" y="462" style="font-size:31px">3个月年化降下来、实际利率停止上行，BTC</text>
+<text class="body" x="42" y="509" style="font-size:31px">的宏观阻力会明显减轻；如果油价/关税/供给冲击让通胀重新上行，流动性支撑会被 Fed 反应函数抵消。</text>
+  </g>
+
+  <g transform="translate(110,2440)">
+    <text class="h2" x="0" y="0">下一步只盯五个闸门</text>
+    <text class="caption" x="0" y="52">1. CPI 3个月年化是否回落  2. 10Y实际利率是否下行  3. 美元是否转弱  4. 信用利差是否扩大  5. BTC 能否收复 MA200</text>
+    <text class="caption" x="0" y="104">数据源：BTC macro system latest.json / FRED / Blockchain.com public price chart。研究用途，不构成投资建议。</text>
+  </g>
+</svg>

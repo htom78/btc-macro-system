@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2200" viewBox="0 0 1600 2200">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .ink { fill: #111827; }
+      .muted { fill: #64748b; }
+      .soft { fill: #e2e8f0; }
+      .card { fill: #ffffff; stroke: #dbe3ee; stroke-width: 2; }
+      .dark-card { fill: #111827; }
+      .green { fill: #16a34a; }
+      .blue { fill: #2563eb; }
+      .amber { fill: #f59e0b; }
+      .red { fill: #dc2626; }
+      .purple { fill: #7c3aed; }
+      .cyan { fill: #0891b2; }
+      .title { font: 800 62px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .subtitle { font: 400 25px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .section { font: 800 34px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .label { font: 700 23px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .body { font: 400 22px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .body-sm { font: 400 19px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .num { font: 850 48px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .num-sm { font: 850 34px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .tiny { font: 400 16px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .mono { font: 700 18px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    </style>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#334155"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1600" height="2200"/>
+
+  <rect x="0" y="0" width="1600" height="18" fill="#16a34a"/>
+  <rect x="80" y="70" width="1440" height="220" rx="8" class="dark-card"/>
+  <text x="120" y="150" class="title" fill="#ffffff">英伟达财务逻辑：不是现金多，是造现金快</text>
+  <text x="122" y="205" class="subtitle" fill="#cbd5e1">段永平式毛估估：先看生意，再看现金流和可持续性，最后才看价格。</text>
+  <text x="122" y="250" class="body-sm" fill="#94a3b8">口径：FY2026 年报 + Q1 FY2027 季报。FY2027 Q1 已在自然年 2026 年 5 月披露，不是未来预测。</text>
+
+  <g transform="translate(80,330)">
+    <rect x="0" y="0" width="450" height="170" rx="8" class="card"/>
+    <text x="32" y="46" class="label ink">全球员工</text>
+    <text x="32" y="110" class="num green">42,000</text>
+    <text x="32" y="145" class="body-sm muted">覆盖 38 个国家；每员工收入约 514 万美元</text>
+  </g>
+
+  <g transform="translate(575,330)">
+    <rect x="0" y="0" width="450" height="170" rx="8" class="card"/>
+    <text x="32" y="46" class="label ink">FY2026 自由现金流</text>
+    <text x="32" y="110" class="num blue">966 亿美元</text>
+    <text x="32" y="145" class="body-sm muted">收入 2159 亿，净利润 1201 亿</text>
+  </g>
+
+  <g transform="translate(1070,330)">
+    <rect x="0" y="0" width="450" height="170" rx="8" class="card"/>
+    <text x="32" y="46" class="label ink">Q1 FY2027 年化 FCF</text>
+    <text x="32" y="110" class="num amber">1944 亿美元</text>
+    <text x="32" y="145" class="body-sm muted">单季 FCF 486 亿，现金机器在加速</text>
+  </g>
+
+  <g transform="translate(80,550)">
+    <text x="0" y="0" class="section ink">一、这到底是什么生意？</text>
+    <text x="0" y="42" class="body muted">客户负责重资产建设，英伟达控制最稀缺的生产资料：GPU、网络、CUDA、生态路径。</text>
+
+    <g transform="translate(0,80)">
+      <rect x="0" y="0" width="300" height="140" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+      <text x="30" y="44" class="label ink">客户资本开支</text>
+      <text x="30" y="85" class="body-sm muted">云厂商、主权 AI、企业</text>
+      <text x="30" y="115" class="body-sm blue">花钱建 AI Factory</text>
+
+      <line x1="322" y1="70" x2="405" y2="70" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="430" y="0" width="300" height="140" rx="8" fill="#ecfdf5" stroke="#bbf7d0" stroke-width="2"/>
+      <text x="460" y="44" class="label ink">英伟达瓶颈</text>
+      <text x="460" y="85" class="body-sm muted">芯片 + 网络 + 软件栈</text>
+      <text x="460" y="115" class="body-sm green">收“生产资料税”</text>
+
+      <line x1="752" y1="70" x2="835" y2="70" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="860" y="0" width="300" height="140" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/>
+      <text x="890" y="44" class="label ink">AI 工厂开工</text>
+      <text x="890" y="85" class="body-sm muted">训练、推理、agent 编排</text>
+      <text x="890" y="115" class="body-sm amber">tokens 变成收入单位</text>
+
+      <line x1="1182" y1="70" x2="1265" y2="70" stroke="#334155" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="1290" y="0" width="150" height="140" rx="8" fill="#fef2f2" stroke="#fecaca" stroke-width="2"/>
+      <text x="1320" y="50" class="label ink">现金流</text>
+      <text x="1320" y="92" class="body-sm muted">高毛利</text>
+      <text x="1320" y="120" class="body-sm red">快速回流</text>
+    </g>
+
+    <rect x="0" y="255" width="1440" height="86" rx="8" fill="#111827"/>
+    <text x="36" y="310" class="label" fill="#ffffff">一句话：它不是靠“现金余额”值钱，而是靠“把别人 CAPEX 转成自己高毛利现金流”的能力值钱。</text>
+  </g>
+
+  <g transform="translate(80,930)">
+    <rect x="0" y="0" width="700" height="520" rx="8" class="card"/>
+    <text x="34" y="58" class="section ink">二、财务结果：现金流像开闸</text>
+    <text x="34" y="96" class="body-sm muted">单位：亿美元。左边是 FY2026 全年，右边是 Q1 FY2027 单季。</text>
+
+    <text x="34" y="150" class="label ink">FY2026 全年</text>
+    <text x="34" y="202" class="body-sm muted">收入</text>
+    <rect x="125" y="180" width="500" height="30" rx="5" fill="#dbeafe"/>
+    <rect x="125" y="180" width="500" height="30" rx="5" class="blue"/>
+    <text x="640" y="203" class="body-sm ink">2159</text>
+
+    <text x="34" y="252" class="body-sm muted">净利润</text>
+    <rect x="125" y="230" width="500" height="30" rx="5" fill="#e2e8f0"/>
+    <rect x="125" y="230" width="278" height="30" rx="5" class="green"/>
+    <text x="420" y="253" class="body-sm ink">1201</text>
+
+    <text x="34" y="302" class="body-sm muted">FCF</text>
+    <rect x="125" y="280" width="500" height="30" rx="5" fill="#e2e8f0"/>
+    <rect x="125" y="280" width="224" height="30" rx="5" class="amber"/>
+    <text x="365" y="303" class="body-sm ink">966</text>
+
+    <line x1="34" y1="350" x2="666" y2="350" stroke="#e2e8f0" stroke-width="2"/>
+
+    <text x="34" y="402" class="label ink">Q1 FY2027 单季</text>
+    <text x="34" y="454" class="body-sm muted">收入</text>
+    <rect x="125" y="432" width="500" height="30" rx="5" fill="#dbeafe"/>
+    <rect x="125" y="432" width="500" height="30" rx="5" class="blue"/>
+    <text x="640" y="455" class="body-sm ink">816</text>
+
+    <text x="34" y="504" class="body-sm muted">Non-GAAP 利润</text>
+    <rect x="220" y="482" width="405" height="30" rx="5" fill="#e2e8f0"/>
+    <rect x="220" y="482" width="226" height="30" rx="5" class="green"/>
+    <text x="462" y="505" class="body-sm ink">455</text>
+  </g>
+
+  <g transform="translate(820,930)">
+    <rect x="0" y="0" width="700" height="520" rx="8" class="card"/>
+    <text x="34" y="58" class="section ink">三、资产负债表：现金多，但不是重点</text>
+    <text x="34" y="96" class="body-sm muted">截至 Q1 FY2027。关键不是账上躺了多少钱，而是每季能新造多少钱。</text>
+
+    <g transform="translate(34,135)">
+      <rect x="0" y="0" width="632" height="68" rx="8" fill="#ecfdf5"/>
+      <text x="24" y="43" class="label ink">现金 + 债券类流动证券</text>
+      <text x="500" y="45" class="num-sm green">503</text>
+    </g>
+    <g transform="translate(34,225)">
+      <rect x="0" y="0" width="632" height="68" rx="8" fill="#eff6ff"/>
+      <text x="24" y="43" class="label ink">加可上市股权证券后</text>
+      <text x="500" y="45" class="num-sm blue">806</text>
+    </g>
+    <g transform="translate(34,315)">
+      <rect x="0" y="0" width="632" height="68" rx="8" fill="#fef2f2"/>
+      <text x="24" y="43" class="label ink">总债务约</text>
+      <text x="520" y="45" class="num-sm red">85</text>
+    </g>
+    <g transform="translate(34,405)">
+      <rect x="0" y="0" width="302" height="70" rx="8" fill="#f5f3ff"/>
+      <text x="22" y="31" class="body-sm muted">非上市股权投资</text>
+      <text x="22" y="59" class="num-sm purple">434</text>
+      <rect x="330" y="0" width="302" height="70" rx="8" fill="#fff7ed"/>
+      <text x="352" y="31" class="body-sm muted">投资承诺</text>
+      <text x="352" y="59" class="num-sm amber">270</text>
+    </g>
+  </g>
+
+  <g transform="translate(80,1505)">
+    <rect x="0" y="0" width="1440" height="380" rx="8" class="card"/>
+    <text x="34" y="60" class="section ink">四、段永平式毛估估：好公司没疑问，难点是好价格</text>
+
+    <g transform="translate(34,105)">
+      <rect x="0" y="0" width="420" height="210" rx="8" fill="#ecfdf5" stroke="#bbf7d0" stroke-width="2"/>
+      <text x="26" y="44" class="label ink">好生意</text>
+      <text x="26" y="86" class="body-sm muted">客户掏 CAPEX，英伟达拿高毛利。</text>
+      <text x="26" y="122" class="body-sm muted">Q1 FY2027 毛利约 75%。</text>
+      <text x="26" y="164" class="body-sm green">低自有重资产 + 高生态锁定</text>
+    </g>
+
+    <g transform="translate(510,105)">
+      <rect x="0" y="0" width="420" height="210" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+      <text x="26" y="44" class="label ink">好公司</text>
+      <text x="26" y="86" class="body-sm muted">芯片、网络、CUDA、开发者生态</text>
+      <text x="26" y="122" class="body-sm muted">共同构成切换成本。</text>
+      <text x="26" y="164" class="body-sm blue">算力需求越标准化，护城河越深</text>
+    </g>
+
+    <g transform="translate(986,105)">
+      <rect x="0" y="0" width="420" height="210" rx="8" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/>
+      <text x="26" y="44" class="label ink">好价格？</text>
+      <text x="26" y="86" class="body-sm muted">若常态 FCF 1000-1200 亿：贵。</text>
+      <text x="26" y="122" class="body-sm muted">若常态 FCF 1800-2000 亿：合理但不便宜。</text>
+      <text x="26" y="164" class="body-sm amber">核心变量是“常态”到底在哪</text>
+    </g>
+  </g>
+
+  <g transform="translate(80,1935)">
+    <rect x="0" y="0" width="1440" height="180" rx="8" fill="#111827"/>
+    <text x="34" y="52" class="section" fill="#ffffff">五、三条硬核监控线</text>
+    <circle cx="52" cy="96" r="8" class="green"/>
+    <text x="75" y="104" class="body" fill="#e5e7eb">AI 需求是否从军备竞赛走向真实商业化回报？</text>
+    <circle cx="52" cy="137" r="8" class="amber"/>
+    <text x="75" y="145" class="body" fill="#e5e7eb">75% 左右毛利率能否守住，竞争和客户自研会不会压价？</text>
+    <circle cx="750" cy="96" r="8" class="red"/>
+    <text x="773" y="104" class="body" fill="#e5e7eb">客户集中度：Q1 前三客户约 21% / 17% / 16%。</text>
+    <circle cx="750" cy="137" r="8" class="purple"/>
+    <text x="773" y="145" class="body" fill="#e5e7eb">生态投资是否扩大护城河，还是变成循环需求？</text>
+  </g>
+
+  <g transform="translate(80,2140)">
+    <line x1="0" y1="0" x2="1440" y2="0" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="0" y="34" class="tiny muted">财年时间轴：FY2026 截至 2026-01-25；FY2027 从自然年 2026-01-26 左右开始；Q1 FY2027 截至 2026-04-26，2026-05-20 已披露。</text>
+    <text x="0" y="58" class="tiny muted">数据来源：NVIDIA FY2026 Form 10-K、Q1 FY2027 Form 10-Q / results。图中金额单位均为美元；“毛估估”用于抓商业本质，不构成投资建议。</text>
+  </g>
+</svg>

@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="2500" viewBox="0 0 1900 2500">
+  <defs>
+    <style>
+      .bg{fill:#f7f5ef}
+      .ink{fill:#182026;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif}
+      .muted{fill:#667078;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif}
+      .panel{fill:#ffffff;stroke:#d8d4c9;stroke-width:2}
+      .rule{stroke:#ded9cc;stroke-width:2}
+      .barHot{fill:#e76f51}
+      .barWarm{fill:#f4a261}
+      .barHard{fill:#2a9d8f}
+      .barCore{fill:#287271}
+      .barSoft{fill:#8ab17d}
+      .badgeHot{fill:#fff1e8;stroke:#efad8d;stroke-width:2}
+      .badgeCore{fill:#eaf5f1;stroke:#8ec7bb;stroke-width:2}
+      .badgeWarn{fill:#fff8da;stroke:#e9c46a;stroke-width:2}
+      .badgeRisk{fill:#fbecec;stroke:#df8b83;stroke-width:2}
+      .small{font-size:28px}
+      .body{font-size:34px}
+      .mid{font-size:40px}
+      .h2{font-size:50px;font-weight:800}
+      .h1{font-size:74px;font-weight:900}
+      .num{font-size:34px;font-weight:800}
+      .rank{font-size:30px;font-weight:800;fill:#fff}
+    </style>
+  </defs>
+
+  <rect class="bg" width="1900" height="2500"/>
+
+  <text class="ink h1" x="100" y="130">NVIDIA 生态链 A 类标的：涨幅和硬度分开看</text>
+  <text class="muted body" x="104" y="190">口径：2025-06-03 附近到 2026-06-02/03 近一年股价粗算；基本面硬度只看财报位置、利润率、现金流、</text>
+  <text class="muted body" x="104" y="230">披露可验证性。涨幅榜用于控风险，硬度榜用于建研究池。</text>
+
+  <rect class="panel" x="80" y="250" width="820" height="1220" rx="18"/>
+  <rect class="panel" x="1000" y="250" width="820" height="1220" rx="18"/>
+
+  <text class="ink h2" x="120" y="330">涨幅热度排名</text>
+  <text class="muted small" x="122" y="380">涨得越多，后续容错率越低；这不是买入排名。</text>
+
+  <text class="ink h2" x="1040" y="330">基本面硬度排名</text>
+  <text class="muted small" x="1042" y="380">位置越硬、现金流越清楚，越适合长期跟踪。</text>
+
+  <!-- Hot ranking bars -->
+  <g transform="translate(120,430)">
+    <g transform="translate(0,0)">
+      <circle cx="18" cy="15" r="18" fill="#e76f51"/><text class="rank" x="10" y="26">1</text>
+      <text class="ink body" x="52" y="26">SK Hynix</text><rect class="barHot" x="230" y="0" width="360" height="30" rx="15"/><text class="ink num" x="640" y="27">+1042%</text>
+    </g>
+    <g transform="translate(0,90)">
+      <circle cx="18" cy="15" r="18" fill="#e76f51"/><text class="rank" x="10" y="26">2</text>
+      <text class="ink body" x="52" y="26">Micron</text><rect class="barHot" x="230" y="0" width="325" height="30" rx="15"/><text class="ink num" x="640" y="27">+941%</text>
+    </g>
+    <g transform="translate(0,180)">
+      <circle cx="18" cy="15" r="18" fill="#f4a261"/><text class="rank" x="10" y="26">3</text>
+      <text class="ink body" x="52" y="26">Delta</text><rect class="barWarm" x="230" y="0" width="191" height="30" rx="15"/><text class="ink num" x="640" y="27">+554%</text>
+    </g>
+    <g transform="translate(0,270)">
+      <circle cx="18" cy="15" r="18" fill="#f4a261"/><text class="rank" x="10" y="26">4</text>
+      <text class="ink body" x="52" y="26">Coherent</text><rect class="barWarm" x="230" y="0" width="149" height="30" rx="15"/><text class="ink num" x="640" y="27">+430%</text>
+    </g>
+    <g transform="translate(0,360)">
+      <circle cx="18" cy="15" r="18" fill="#f4a261"/><text class="rank" x="10" y="26">5</text>
+      <text class="ink body" x="52" y="26">Marvell</text><rect class="barWarm" x="230" y="0" width="127" height="30" rx="15"/><text class="ink num" x="640" y="27">+368%</text>
+    </g>
+    <g transform="translate(0,450)">
+      <circle cx="18" cy="15" r="18" fill="#8ab17d"/><text class="rank" x="10" y="26">6</text>
+      <text class="ink body" x="52" y="26">Vertiv</text><rect class="barSoft" x="230" y="0" width="68" height="30" rx="15"/><text class="ink num" x="640" y="27">+198%</text>
+    </g>
+    <g transform="translate(0,540)">
+      <circle cx="18" cy="15" r="18" fill="#8ab17d"/><text class="rank" x="10" y="26">7</text>
+      <text class="ink body" x="52" y="26">Fabrinet</text><rect class="barSoft" x="230" y="0" width="66" height="30" rx="15"/><text class="ink num" x="640" y="27">+192%</text>
+    </g>
+    <g transform="translate(0,630)">
+      <circle cx="18" cy="15" r="18" fill="#2a9d8f"/><text class="rank" x="10" y="26">8</text>
+      <text class="ink body" x="52" y="26">TSMC</text><rect class="barHard" x="230" y="0" width="44" height="30" rx="15"/><text class="ink num" x="640" y="27">+126%</text>
+    </g>
+    <g transform="translate(0,720)">
+      <circle cx="18" cy="15" r="18" fill="#287271"/><text class="rank" x="10" y="26">9</text>
+      <text class="ink body" x="52" y="26">Broadcom</text><rect class="barCore" x="230" y="0" width="31" height="30" rx="15"/><text class="ink num" x="640" y="27">+89%</text>
+    </g>
+  </g>
+
+  <!-- Fundamental ranking bars -->
+  <g transform="translate(1040,430)">
+    <g transform="translate(0,0)">
+      <circle cx="18" cy="15" r="18" fill="#287271"/><text class="rank" x="10" y="26">1</text>
+      <text class="ink body" x="52" y="26">TSMC</text><rect class="barCore" x="260" y="0" width="350" height="30" rx="15"/><text class="ink num" x="640" y="27">最硬</text>
+    </g>
+    <g transform="translate(0,90)">
+      <circle cx="18" cy="15" r="18" fill="#287271"/><text class="rank" x="10" y="26">2</text>
+      <text class="ink body" x="52" y="26">Broadcom</text><rect class="barCore" x="260" y="0" width="311" height="30" rx="15"/><text class="ink num" x="640" y="27">很硬</text>
+    </g>
+    <g transform="translate(0,180)">
+      <circle cx="18" cy="15" r="18" fill="#2a9d8f"/><text class="rank" x="10" y="26">3</text>
+      <text class="ink body" x="52" y="26">SK Hynix</text><rect class="barHard" x="260" y="0" width="272" height="30" rx="15"/><text class="ink num" x="640" y="27">瓶颈</text>
+    </g>
+    <g transform="translate(0,270)">
+      <circle cx="18" cy="15" r="18" fill="#2a9d8f"/><text class="rank" x="10" y="26">4</text>
+      <text class="ink body" x="52" y="26">Micron</text><rect class="barHard" x="260" y="0" width="233" height="30" rx="15"/><text class="ink num" x="640" y="27">周期</text>
+    </g>
+    <g transform="translate(0,360)">
+      <circle cx="18" cy="15" r="18" fill="#8ab17d"/><text class="rank" x="10" y="26">5</text>
+      <text class="ink body" x="52" y="26">Vertiv</text><rect class="barSoft" x="260" y="0" width="194" height="30" rx="15"/><text class="ink num" x="640" y="27">现金流</text>
+    </g>
+    <g transform="translate(0,450)">
+      <circle cx="18" cy="15" r="18" fill="#8ab17d"/><text class="rank" x="10" y="26">6</text>
+      <text class="ink body" x="52" y="26">Delta</text><rect class="barSoft" x="260" y="0" width="155" height="30" rx="15"/><text class="ink num" x="640" y="27">待复核</text>
+    </g>
+    <g transform="translate(0,540)">
+      <circle cx="18" cy="15" r="18" fill="#f4a261"/><text class="rank" x="10" y="26">7</text>
+      <text class="ink body" x="52" y="26">Marvell</text><rect class="barWarm" x="260" y="0" width="117" height="30" rx="15"/><text class="ink num" x="640" y="27">转收入</text>
+    </g>
+    <g transform="translate(0,630)">
+      <circle cx="18" cy="15" r="18" fill="#e76f51"/><text class="rank" x="10" y="26">8</text>
+      <text class="ink body" x="52" y="26">Coherent</text><rect class="barHot" x="260" y="0" width="78" height="30" rx="15"/><text class="ink num" x="640" y="27">现金流红灯</text>
+    </g>
+    <g transform="translate(0,720)">
+      <circle cx="18" cy="15" r="18" fill="#e76f51"/><text class="rank" x="10" y="26">9</text>
+      <text class="ink body" x="52" y="26">Fabrinet</text><rect class="barHot" x="260" y="0" width="39" height="30" rx="15"/><text class="ink num" x="640" y="27">毛利薄</text>
+    </g>
+  </g>
+
+  <rect class="panel" x="80" y="1530" width="1740" height="520" rx="18"/>
+  <text class="ink h2" x="120" y="1610">四个判断盒</text>
+
+  <rect class="badgeCore" x="120" y="1660" width="390" height="260" rx="16"/>
+  <text class="ink mid" x="150" y="1720">TSMC / Broadcom</text>
+  <text class="muted body" x="150" y="1780">不是涨幅最大，</text>
+  <text class="muted body" x="150" y="1830">但收入、毛利率、</text>
+  <text class="muted body" x="150" y="1880">现金流最干净。</text>
+
+  <rect class="badgeWarn" x="545" y="1660" width="390" height="260" rx="16"/>
+  <text class="ink mid" x="575" y="1720">SK / Micron</text>
+  <text class="muted body" x="575" y="1780">真瓶颈 + 周期弹性，</text>
+  <text class="muted body" x="575" y="1830">后续只看 HBM 价格、</text>
+  <text class="muted body" x="575" y="1880">库存和扩产回报。</text>
+
+  <rect class="badgeHot" x="970" y="1660" width="390" height="260" rx="16"/>
+  <text class="ink mid" x="1000" y="1720">Marvell / 光链</text>
+  <text class="muted body" x="1000" y="1780">弹性很大，</text>
+  <text class="muted body" x="1000" y="1830">但订单要转收入，</text>
+  <text class="muted body" x="1000" y="1880">收入还要转现金。</text>
+
+  <rect class="badgeRisk" x="1395" y="1660" width="390" height="260" rx="16"/>
+  <text class="ink mid" x="1425" y="1720">Coherent / Fabrinet</text>
+  <text class="muted body" x="1425" y="1780">需求线索强，</text>
+  <text class="muted body" x="1425" y="1830">但库存和 FCF</text>
+  <text class="muted body" x="1425" y="1880">必须持续盯。</text>
+
+  <rect class="panel" x="80" y="2110" width="1740" height="290" rx="18"/>
+  <text class="ink h2" x="120" y="2190">术层闸门</text>
+  <text class="muted body" x="120" y="2250">只有三个条件同时合适，才从研究进入交易；否则继续观察，不用为了“属于 AI 链”而追。</text>
+
+  <g transform="translate(210,2315)">
+    <circle cx="0" cy="0" r="54" fill="#2a9d8f"/><text class="rank" x="-28" y="12" style="font-size:36px">估值</text>
+    <line x1="70" y1="0" x2="250" y2="0" class="rule"/>
+    <circle cx="320" cy="0" r="54" fill="#2a9d8f"/><text class="rank" x="292" y="12" style="font-size:36px">业绩</text>
+    <line x1="390" y1="0" x2="570" y2="0" class="rule"/>
+    <circle cx="640" cy="0" r="54" fill="#2a9d8f"/><text class="rank" x="612" y="12" style="font-size:36px">回撤</text>
+    <text class="ink mid" x="760" y="12">三者同时通过，才考虑下单。</text>
+  </g>
+
+  <text class="muted small" x="100" y="2460">结论：涨幅榜用于控制风险，硬度榜用于建立长期研究池；下一步先做 TSMC / Broadcom 的估值框架，再拆 HBM 周期。</text>
+</svg>

@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="3000" viewBox="0 0 1900 3000">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .ink { fill: #111827; }
+      .muted { fill: #64748b; }
+      .card { fill: #ffffff; stroke: #dbe3ee; stroke-width: 2; }
+      .dark { fill: #111827; }
+      .nvda { fill: #16a34a; }
+      .pdd { fill: #e11d48; }
+      .apple { fill: #2563eb; }
+      .amber { fill: #f59e0b; }
+      .purple { fill: #7c3aed; }
+      .soft-nvda { fill: #ecfdf5; stroke: #bbf7d0; stroke-width: 2; }
+      .soft-pdd { fill: #fff1f2; stroke: #fecdd3; stroke-width: 2; }
+      .soft-apple { fill: #eff6ff; stroke: #bfdbfe; stroke-width: 2; }
+      .soft-gray { fill: #f1f5f9; stroke: #dbe3ee; stroke-width: 2; }
+      .title { font: 850 62px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .subtitle { font: 400 25px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .section { font: 850 36px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .label { font: 760 24px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .body { font: 400 22px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .body-sm { font: 400 19px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .num { font: 850 48px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .num-md { font: 850 38px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+      .tiny { font: 400 16px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1900" height="3000"/>
+  <rect x="0" y="0" width="1900" height="18" class="dark"/>
+
+  <rect x="80" y="60" width="1740" height="245" rx="8" class="dark"/>
+  <text x="124" y="148" class="title" fill="#ffffff">NVIDIA vs PDD vs Apple：天才、狠人、好宝宝</text>
+  <text x="126" y="205" class="subtitle" fill="#cbd5e1">三家公司都优秀，但赚的是三种不同的钱：生产资料税、交易效率权、消费生态现金牛。</text>
+  <text x="126" y="252" class="body-sm" fill="#94a3b8">口径：NVIDIA FY2026 + Q1 FY2027；PDD FY2025 + Q1 2026；Apple FY2025 + Q2 FY2026。PDD 市值按 ADS=4 普通股折算。</text>
+
+  <g transform="translate(80,355)">
+    <rect x="0" y="0" width="550" height="270" rx="8" class="soft-nvda"/>
+    <text x="34" y="54" class="section ink">NVIDIA</text>
+    <text x="34" y="96" class="body muted">天才型尖子生</text>
+    <text x="34" y="154" class="num nvda">AI 生产资料税</text>
+    <text x="34" y="202" class="body-sm muted">客户花 CAPEX 建 AI 工厂，NVIDIA 在最稀缺环节收高毛利。</text>
+    <text x="34" y="238" class="body-sm nvda">关键词：生态位最硬，价格也最贵。</text>
+  </g>
+
+  <g transform="translate(675,355)">
+    <rect x="0" y="0" width="550" height="270" rx="8" class="soft-pdd"/>
+    <text x="34" y="54" class="section ink">PDD / 拼多多</text>
+    <text x="34" y="96" class="body muted">极聪明的高分学生</text>
+    <text x="34" y="154" class="num pdd">交易效率压缩权</text>
+    <text x="34" y="202" class="body-sm muted">用平台组织能力压缩传统渠道、库存、营销和供需错配。</text>
+    <text x="34" y="238" class="body-sm pdd">关键词：便宜、现金厚，但有信任折价。</text>
+  </g>
+
+  <g transform="translate(1270,355)">
+    <rect x="0" y="0" width="550" height="270" rx="8" class="soft-apple"/>
+    <text x="34" y="54" class="section ink">Apple</text>
+    <text x="34" y="96" class="body muted">好宝宝公司</text>
+    <text x="34" y="154" class="num apple">消费生态现金牛</text>
+    <text x="34" y="202" class="body-sm muted">品牌、硬件、服务和回购纪律共同构成稳定现金流机器。</text>
+    <text x="34" y="238" class="body-sm apple">关键词：最像优秀公司教科书。</text>
+  </g>
+
+  <g transform="translate(80,685)">
+    <text x="0" y="0" class="section ink">一、核心财务表：先看钱从哪里来，再看值多少钱</text>
+    <rect x="0" y="45" width="1740" height="780" rx="8" class="card"/>
+
+    <g transform="translate(34,95)">
+      <text x="0" y="0" class="label muted">维度</text>
+      <text x="420" y="0" class="label nvda">NVIDIA</text>
+      <text x="820" y="0" class="label pdd">PDD / 拼多多</text>
+      <text x="1240" y="0" class="label apple">Apple</text>
+      <line x1="0" y1="28" x2="1672" y2="28" stroke="#dbe3ee" stroke-width="2"/>
+
+      <g transform="translate(0,75)">
+        <text x="0" y="0" class="body ink">员工数</text>
+        <text x="420" y="0" class="body ink">42,000</text>
+        <text x="820" y="0" class="body ink">25,474</text>
+        <text x="1240" y="0" class="body ink">约 166,000</text>
+      </g>
+      <g transform="translate(0,145)">
+        <text x="0" y="0" class="body ink">年收入</text>
+        <text x="420" y="0" class="body ink">2159 亿美元</text>
+        <text x="820" y="0" class="body ink">618 亿美元</text>
+        <text x="1240" y="0" class="body ink">4162 亿美元</text>
+      </g>
+      <g transform="translate(0,215)">
+        <text x="0" y="0" class="body ink">年净利润</text>
+        <text x="420" y="0" class="body ink">1201 亿美元</text>
+        <text x="820" y="0" class="body ink">140 亿美元</text>
+        <text x="1240" y="0" class="body ink">1120 亿美元</text>
+      </g>
+      <g transform="translate(0,285)">
+        <text x="0" y="0" class="body ink">年自由现金流</text>
+        <text x="420" y="0" class="body ink">966 亿美元</text>
+        <text x="820" y="0" class="body ink">151 亿美元</text>
+        <text x="1240" y="0" class="body ink">988 亿美元</text>
+      </g>
+      <g transform="translate(0,355)">
+        <text x="0" y="0" class="body ink">现金/短投口径</text>
+        <text x="420" y="0" class="body ink">503 亿；加股票 806 亿</text>
+        <text x="820" y="0" class="body ink">632 亿；加长期类 770 亿</text>
+        <text x="1240" y="0" class="body ink">1466 亿；净现金 619 亿</text>
+      </g>
+      <g transform="translate(0,425)">
+        <text x="0" y="0" class="body ink">粗估市值</text>
+        <text x="420" y="0" class="body ink">5.43 万亿美元</text>
+        <text x="820" y="0" class="body ink">约 1255 亿美元</text>
+        <text x="1240" y="0" class="body ink">4.64 万亿美元</text>
+      </g>
+      <g transform="translate(0,495)">
+        <text x="0" y="0" class="body ink">全年 P/FCF</text>
+        <text x="420" y="0" class="body ink">约 56 倍</text>
+        <text x="820" y="0" class="body ink">约 8 倍</text>
+        <text x="1240" y="0" class="body ink">约 47 倍</text>
+      </g>
+      <g transform="translate(0,565)">
+        <text x="0" y="0" class="body ink">最新阶段年化</text>
+        <text x="420" y="0" class="body ink">Q1 P/FCF 约 28 倍</text>
+        <text x="820" y="0" class="body ink">Q1 P/OCF 约 13 倍</text>
+        <text x="1240" y="0" class="body ink">半年 P/FCF 约 30 倍</text>
+      </g>
+      <g transform="translate(0,635)">
+        <text x="0" y="0" class="body ink">一句话</text>
+        <text x="420" y="0" class="body-sm ink">贵，但生态位最硬</text>
+        <text x="820" y="0" class="body-sm ink">便宜，现金厚，但折价大</text>
+        <text x="1240" y="0" class="body-sm ink">稳定，纪律好，最像好宝宝</text>
+      </g>
+    </g>
+  </g>
+
+  <g transform="translate(80,1570)">
+    <text x="0" y="0" class="section ink">二、经营效率：NVIDIA 是单人现金产出的极端样本</text>
+    <rect x="0" y="45" width="1740" height="500" rx="8" class="card"/>
+
+    <text x="40" y="105" class="label ink">每员工年收入</text>
+    <rect x="40" y="135" width="620" height="36" rx="5" fill="#e2e8f0"/>
+    <rect x="40" y="135" width="620" height="36" rx="5" class="nvda"/>
+    <text x="690" y="162" class="body ink">NVIDIA 约 514 万美元</text>
+    <rect x="40" y="195" width="620" height="36" rx="5" fill="#e2e8f0"/>
+    <rect x="40" y="195" width="292" height="36" rx="5" class="pdd"/>
+    <text x="360" y="222" class="body ink">PDD 约 242 万美元</text>
+    <rect x="40" y="255" width="620" height="36" rx="5" fill="#e2e8f0"/>
+    <rect x="40" y="255" width="303" height="36" rx="5" class="apple"/>
+    <text x="372" y="282" class="body ink">Apple 约 251 万美元</text>
+
+    <line x1="870" y1="92" x2="870" y2="420" stroke="#dbe3ee" stroke-width="2"/>
+
+    <text x="930" y="105" class="label ink">每员工年自由现金流</text>
+    <rect x="930" y="135" width="620" height="36" rx="5" fill="#e2e8f0"/>
+    <rect x="930" y="135" width="620" height="36" rx="5" class="nvda"/>
+    <text x="1580" y="162" class="body ink">约 230 万</text>
+    <rect x="930" y="195" width="620" height="36" rx="5" fill="#e2e8f0"/>
+    <rect x="930" y="195" width="159" height="36" rx="5" class="pdd"/>
+    <text x="1118" y="222" class="body ink">约 59 万</text>
+    <rect x="930" y="255" width="620" height="36" rx="5" fill="#e2e8f0"/>
+    <rect x="930" y="255" width="159" height="36" rx="5" class="apple"/>
+    <text x="1118" y="282" class="body ink">约 59 万</text>
+
+    <rect x="40" y="360" width="1660" height="75" rx="8" fill="#f1f5f9"/>
+    <text x="72" y="407" class="label ink">结论：PDD 和 Apple 都很优秀，但 NVIDIA 的 AI 生产力杠杆把单人现金产出拉到了另一个层级。</text>
+  </g>
+
+  <g transform="translate(80,2165)">
+    <text x="0" y="0" class="section ink">三、估值与风险：贵、便宜、好宝宝，不是同一个问题</text>
+    <rect x="0" y="45" width="1740" height="545" rx="8" class="card"/>
+
+    <text x="40" y="105" class="label ink">按全年 FCF 粗估 P/FCF</text>
+    <rect x="40" y="145" width="760" height="38" rx="5" fill="#e2e8f0"/>
+    <rect x="40" y="145" width="760" height="38" rx="5" class="nvda"/>
+    <text x="620" y="173" class="body" fill="#ffffff">NVIDIA 约 56 倍</text>
+    <rect x="40" y="210" width="760" height="38" rx="5" fill="#e2e8f0"/>
+    <rect x="40" y="210" width="109" height="38" rx="5" class="pdd"/>
+    <text x="175" y="238" class="body ink">PDD 约 8 倍</text>
+    <rect x="40" y="275" width="760" height="38" rx="5" fill="#e2e8f0"/>
+    <rect x="40" y="275" width="637" height="38" rx="5" class="apple"/>
+    <text x="520" y="303" class="body" fill="#ffffff">Apple 约 47 倍</text>
+
+    <line x1="880" y1="95" x2="880" y2="465" stroke="#dbe3ee" stroke-width="2"/>
+
+    <g transform="translate(940,100)">
+      <rect x="0" y="0" width="335" height="95" rx="8" fill="#ecfdf5"/>
+      <text x="24" y="36" class="body-sm muted">NVIDIA 核心问题</text>
+      <text x="24" y="73" class="label nvda">AI capex 能持续多久</text>
+    </g>
+    <g transform="translate(1310,100)">
+      <rect x="0" y="0" width="335" height="95" rx="8" fill="#fff1f2"/>
+      <text x="24" y="36" class="body-sm muted">PDD 核心问题</text>
+      <text x="24" y="73" class="label pdd">利润率和信任折价</text>
+    </g>
+    <g transform="translate(940,225)">
+      <rect x="0" y="0" width="335" height="95" rx="8" fill="#eff6ff"/>
+      <text x="24" y="36" class="body-sm muted">Apple 核心问题</text>
+      <text x="24" y="73" class="label apple">成熟后的增长上限</text>
+    </g>
+    <g transform="translate(1310,225)">
+      <rect x="0" y="0" width="335" height="95" rx="8" fill="#fffbeb"/>
+      <text x="24" y="36" class="body-sm muted">好宝宝定义</text>
+      <text x="24" y="73" class="label amber">少出幺蛾子，持续交钱</text>
+    </g>
+
+    <rect x="940" y="370" width="705" height="80" rx="8" fill="#f1f5f9"/>
+    <text x="972" y="418" class="label ink">一句话：NVIDIA 买未来，PDD 买折价，Apple 买纪律。</text>
+  </g>
+
+  <g transform="translate(80,2810)">
+    <rect x="0" y="0" width="1740" height="95" rx="8" class="dark"/>
+    <text x="34" y="58" class="label" fill="#ffffff">最终判断：Apple 最适合当“好宝宝”参照系，因为它把赚钱、守纪律、回报股东这三件事长期做得最稳定。</text>
+  </g>
+
+  <g transform="translate(80,2940)">
+    <text x="0" y="0" class="tiny muted">数据来源：NVIDIA FY2026 10-K、Q1 FY2027 10-Q/results；PDD FY2025 20-F、Q1 2026 results；Apple FY2025 10-K、Q2 FY2026 results。金额约算用于数量级比较，不构成投资建议。</text>
+  </g>
+</svg>
