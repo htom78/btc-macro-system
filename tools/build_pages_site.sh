@@ -58,6 +58,24 @@ copy_file btc-usdt-ladder-theory.html "$out_dir/btc-usdt-ladder-theory.html"
 copy_file btc-ma95-hybrid-strategy.html "$out_dir/btc-ma95-hybrid-strategy.html"
 copy_dir btc-cta "$out_dir/btc-cta"
 
+# NVIDIA 生态链研究包 + BTC 宏观引力图
+copy_file nvidia-research.html "$out_dir/nvidia-research.html"
+copy_dir assets "$out_dir/assets"
+for f in nvidia-ecosystem-complete-framework-2026.md \
+         nvidia-ecosystem-watchlist-2026.md \
+         nvidia-core-a-financial-teardown-2026.md \
+         nvidia-pdd-apple-comparison-2026.md \
+         nvidia-ecosystem-company-diligence-template.md \
+         nvidia-ecosystem-scorecard-2026.csv \
+         nvidia-ecosystem-map-2026.svg nvidia-ecosystem-map-2026.png \
+         nvidia-finance-logic-2026.svg nvidia-finance-logic-2026.png \
+         nvidia-core-a-financial-teardown-2026.svg nvidia-core-a-financial-teardown-2026.png \
+         nvidia-pdd-apple-comparison-2026.svg nvidia-pdd-apple-comparison-2026.png \
+         nvidia-vs-pdd-comparison-2026.svg nvidia-vs-pdd-comparison-2026.png \
+         btc-macro-gravity-map-2026.svg btc-macro-gravity-map-2026.png; do
+  copy_file "$f" "$out_dir/$f"
+done
+
 if [[ -f btc-macro-system/data/history/observations.jsonl ]]; then
   copy_file btc-macro-system/data/history/observations.jsonl "$out_dir/observations.jsonl"
 fi
