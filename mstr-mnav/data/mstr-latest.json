@@ -1,0 +1,26 @@
+{
+  "ts": "2026-06-11T13:03:11+00:00",
+  "btc_price_usd": 62896.0,
+  "mstr_price_usd": 115.35,
+  "basic_shares": 333913000,
+  "shares_asof": "2026-03-31",
+  "diluted_shares": 333913000,
+  "btc_holdings": 843738,
+  "holdings_source": "strategy.com",
+  "btc_nav_usd": 53067745248,
+  "mcap_basic_usd": 38516864550,
+  "mcap_diluted_usd": 38516864550,
+  "mnav_basic": 0.7258,
+  "mnav_diluted": 0.7258,
+  "nav_per_share_usd": 158.93,
+  "premium_pct_diluted": -27.42,
+  "level": "P0_deep_discount",
+  "thresholds": {
+    "P3_high_premium": 2.0,
+    "P2_observe": 1.5,
+    "P1_entry": 1.2,
+    "P1_extreme": 1.0,
+    "P0_deep_discount": 0.85
+  },
+  "_doc": "GitHub Actions 每日快照,口径与 VPS 实时版 monitor.py 锁步。level 按 mNAV diluted 分级。股数为最近申报期加权平均,ATM 增发会使 mNAV 略被低估(保守方向)。"
+}

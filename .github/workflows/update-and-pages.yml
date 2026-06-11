@@ -54,6 +54,10 @@ jobs:
       - name: Generate major futures system
         run: python3 major-futures-system/scripts/update_major_futures.py
 
+      - name: Update MSTR mNAV daily snapshot
+        if: github.event_name != 'push'
+        run: python3 mstr-mnav/scripts/update_mstr_data.py
+
       - name: Commit updated history
         if: github.event_name != 'push'
         run: |
@@ -65,6 +69,7 @@ jobs:
           git add investment-thesis-harness/outputs/report.html investment-thesis-harness/outputs/latest.json
           git add -f investment-thesis-harness/data/history/thesis_snapshots.jsonl
           git add major-futures-system/data/latest.json
+          git add mstr-mnav/data/mstr-latest.json mstr-mnav/data/mstr-history.jsonl
           if git diff --cached --quiet; then
             echo "No report changes to commit."
           else

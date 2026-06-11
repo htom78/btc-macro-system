@@ -531,6 +531,11 @@
 
       <aside class="snapshot" aria-label="监控快照">
         <section class="metric-card">
+          <span class="metric-label">mNAV (diluted)</span>
+          <b class="metric-value" id="mnavValue">--</b>
+          <p class="metric-note" id="mnavNote">读取 data/mstr-latest.json</p>
+        </section>
+        <section class="metric-card">
           <span class="metric-label">MSTR BTC holdings</span>
           <b class="metric-value" id="mstrHoldings">--</b>
           <p class="metric-note" id="mstrHoldingsNote">读取 data/mstr-holdings-timeline.json</p>
@@ -766,6 +771,20 @@
       return date ? { date, value: timeline[date] } : null;
     }
 
+    async function initMnav() {
+      try {
+        const latest = await readJson("data/mstr-latest.json");
+        const mnav = latest.mnav_diluted;
+        $("mnavValue").textContent = Number.isFinite(mnav) ? mnav.toFixed(3) : "--";
+        const day = (latest.ts || "").slice(0, 10);
+        const levelLabel = latest.level || "neutral";
+        $("mnavNote").textContent =
+          `${day} 快照 · BTC $${formatCompactNumber(latest.btc_price_usd)} · MSTR $${latest.mstr_price_usd} · ${formatPct(latest.premium_pct_diluted)} premium · ${levelLabel}`;
+      } catch (error) {
+        $("mnavNote").textContent = "mstr-latest.json 未生成,等下一次每日构建。";
+      }
+    }
+
     async function initSnapshot() {
       try {
         const [holdings, shares, saylor, crcl, nvda] = await Promise.all([
@@ -804,6 +823,7 @@
       }
     }
 
+    initMnav();
     initSnapshot();
   </script>
 </body>
