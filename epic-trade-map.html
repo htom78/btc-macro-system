@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EPICUSDT 交易点位图</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f1e8;
+      --paper-2: #fffaf0;
+      --ink: #161715;
+      --muted: #68625b;
+      --line: rgba(22, 23, 21, 0.16);
+      --line-strong: rgba(22, 23, 21, 0.32);
+      --panel: rgba(255, 250, 240, 0.86);
+      --green: #168369;
+      --green-soft: rgba(22, 131, 105, 0.13);
+      --amber: #be6a18;
+      --amber-soft: rgba(190, 106, 24, 0.15);
+      --red: #bd4545;
+      --red-soft: rgba(189, 69, 69, 0.13);
+      --blue: #2f62a3;
+      --blue-soft: rgba(47, 98, 163, 0.13);
+      --shadow: 0 18px 58px rgba(26, 24, 19, 0.12);
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --serif: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        linear-gradient(90deg, rgba(22, 23, 21, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(22, 23, 21, 0.03) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(135deg, rgba(189, 69, 69, 0.08), transparent 32%),
+        linear-gradient(225deg, rgba(47, 98, 163, 0.1), transparent 30%),
+        var(--paper);
+      line-height: 1.55;
+    }
+
+    button { font: inherit; }
+    a { color: inherit; }
+
+    .app {
+      width: min(1480px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 26px 0 34px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: var(--red);
+      font: 800 12px/1 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font: 760 clamp(34px, 5vw, 72px)/0.92 var(--serif);
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 860px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .button {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 13px;
+      background: rgba(255, 250, 240, 0.76);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 760;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .button.primary {
+      border-color: rgba(22, 23, 21, 0.78);
+      background: var(--ink);
+      color: var(--paper-2);
+    }
+
+    .button:disabled {
+      cursor: wait;
+      opacity: 0.72;
+      transform: none;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr) 390px;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(18px);
+    }
+
+    .panel-section {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel-section:last-child { border-bottom: 0; }
+
+    .section-title {
+      margin: 0;
+      color: var(--muted);
+      font: 800 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .price {
+      font: 850 clamp(46px, 6vw, 82px)/0.92 var(--mono);
+      letter-spacing: 0;
+    }
+
+    .stamp {
+      color: var(--muted);
+      font: 720 12px/1.35 var(--mono);
+    }
+
+    .decision {
+      min-height: 82px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      padding: 14px;
+      border: 1px solid rgba(189, 69, 69, 0.26);
+      border-radius: 8px;
+      background: var(--red-soft);
+    }
+
+    .decision.long {
+      border-color: rgba(22, 131, 105, 0.26);
+      background: var(--green-soft);
+    }
+
+    .decision.wait {
+      border-color: rgba(190, 106, 24, 0.28);
+      background: var(--amber-soft);
+    }
+
+    .decision b {
+      font: 850 20px/1.1 var(--mono);
+      overflow-wrap: anywhere;
+    }
+
+    .decision span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric, .zone, .rule {
+      min-height: 70px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .metric span, .zone span, .rule span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .metric b, .zone b, .rule b {
+      display: block;
+      margin-top: 8px;
+      font: 820 16px/1.1 var(--mono);
+      overflow-wrap: anywhere;
+    }
+
+    .zone b { font-size: 19px; }
+
+    .zone.short { border-color: rgba(189, 69, 69, 0.32); background: var(--red-soft); }
+    .zone.repair { border-color: rgba(22, 131, 105, 0.32); background: var(--green-soft); }
+    .zone.target { border-color: rgba(47, 98, 163, 0.28); background: var(--blue-soft); }
+
+    .chart-panel {
+      min-height: 720px;
+      display: grid;
+      grid-template-rows: auto minmax(470px, 1fr) auto;
+    }
+
+    .chart-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .status-pill {
+      min-height: 40px;
+      min-width: 150px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(189, 69, 69, 0.28);
+      border-radius: 8px;
+      background: var(--red-soft);
+      color: var(--red);
+      font: 850 13px/1 var(--mono);
+    }
+
+    .status-pill.wait { border-color: rgba(190, 106, 24, 0.28); background: var(--amber-soft); color: var(--amber); }
+    .status-pill.long { border-color: rgba(22, 131, 105, 0.28); background: var(--green-soft); color: var(--green); }
+
+    .canvas-wrap {
+      position: relative;
+      min-height: 470px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(255, 250, 240, 0.14)),
+        repeating-linear-gradient(90deg, rgba(22, 23, 21, 0.04) 0 1px, transparent 1px 64px);
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      min-height: 470px;
+      display: block;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 18px 14px;
+      border-top: 1px solid rgba(22, 23, 21, 0.08);
+      background: rgba(255, 250, 240, 0.62);
+    }
+
+    .chip {
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid rgba(22, 23, 21, 0.12);
+      border-radius: 8px;
+      padding: 0 10px;
+      background: rgba(255, 250, 240, 0.82);
+      color: var(--muted);
+      font: 720 12px/1 var(--mono);
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .dot.green { background: var(--green); }
+    .dot.blue { background: var(--blue); }
+    .dot.amber { background: var(--amber); }
+
+    .rules {
+      display: grid;
+      gap: 10px;
+    }
+
+    .rule {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .idx {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.56);
+      font: 850 11px/1 var(--mono);
+    }
+
+    .rule p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .rule strong {
+      display: block;
+      color: var(--ink);
+      font: 820 14px/1.2 var(--mono);
+      margin-bottom: 5px;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1180px) {
+      .stage { grid-template-columns: 1fr; }
+      .chart-panel { min-height: 600px; }
+    }
+
+    @media (max-width: 760px) {
+      .app { width: min(100% - 22px, 1480px); padding-top: 18px; }
+      .topbar { grid-template-columns: 1fr; }
+      .actions { justify-content: flex-start; }
+      .metrics { grid-template-columns: 1fr; }
+      .chart-head { display: grid; }
+      .price { font-size: 44px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">EPICUSDT execution map</p>
+        <h1>只交易确认后的反抽失败。</h1>
+        <p class="lead">当前复盘结论：0.557 附近的放量突破已经快速失败，真正的交易点不在追跌，而在 0.529-0.536 反抽区是否重新被卖下来。</p>
+      </div>
+      <div class="actions">
+        <a class="button" href="./">首页</a>
+        <a class="button" href="binance-upside-lab.html">小币潜力</a>
+        <button class="button primary" id="refreshBtn" type="button">刷新数据</button>
+      </div>
+    </header>
+
+    <section class="stage">
+      <aside class="panel">
+        <div class="panel-section">
+          <p class="section-title">Live price</p>
+          <div class="price" id="price">--</div>
+          <div class="stamp" id="stamp">等待 Binance Futures 公共 API...</div>
+          <div class="decision wait" id="decisionBox">
+            <b id="decisionTitle">读取中</b>
+            <span id="decisionText">正在计算当前价格相对关键区的位置。</span>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <p class="section-title">Point levels</p>
+          <div class="zone short">
+            <span>偏空观察 / 反抽失败区</span>
+            <b>0.529 - 0.536</b>
+          </div>
+          <div class="zone repair">
+            <span>空头撤退 / 结构修复线</span>
+            <b>站回 0.542</b>
+          </div>
+          <div class="zone target">
+            <span>第一目标 / 旧破位低区</span>
+            <b>0.506 - 0.501</b>
+          </div>
+          <div class="zone target">
+            <span>第二目标 / 旧修复区</span>
+            <b>0.485 - 0.501</b>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <p class="section-title">Market context</p>
+          <div class="metrics">
+            <div class="metric"><span>Funding</span><b id="funding">--</b></div>
+            <div class="metric"><span>OI 5m 趋势</span><b id="oiTrend">--</b></div>
+            <div class="metric"><span>全账户 L/S</span><b id="globalLsr">--</b></div>
+            <div class="metric"><span>顶级持仓 L/S</span><b id="topLsr">--</b></div>
+            <div class="metric"><span>Taker L/S</span><b id="takerLsr">--</b></div>
+            <div class="metric"><span>15m 主动买卖</span><b id="taker20">--</b></div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel chart-panel">
+        <div class="chart-head">
+          <div>
+            <p class="section-title">15m map</p>
+            <strong id="chartTitle">EPICUSDT 15m 结构与交易区</strong>
+          </div>
+          <div class="status-pill wait" id="statusPill">WAIT</div>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="chart" aria-label="EPICUSDT price map"></canvas>
+        </div>
+        <div class="legend">
+          <span class="chip"><i class="dot"></i>0.529-0.536 反抽失败区</span>
+          <span class="chip"><i class="dot green"></i>0.542 修复线</span>
+          <span class="chip"><i class="dot blue"></i>0.506-0.501 第一目标</span>
+          <span class="chip"><i class="dot amber"></i>实时价格</span>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="panel-section">
+          <p class="section-title">Trade plan</p>
+          <div class="rules">
+            <div class="rule">
+              <span class="idx">01</span>
+              <p><strong>可交易点位</strong>反抽 0.529-0.536 后，5m/15m 收不回区间上沿，且 taker 卖出占优，可视为短线空头观察点。</p>
+            </div>
+            <div class="rule">
+              <span class="idx">02</span>
+              <p><strong>取消条件</strong>重新站回 0.542，尤其 15m 收在其上，说明突破失败后的空头延续被修复。</p>
+            </div>
+            <div class="rule">
+              <span class="idx">03</span>
+              <p><strong>目标处理</strong>第一观察 0.506-0.501；若放量跌破并反抽失败，再看 0.485-0.501。</p>
+            </div>
+            <div class="rule">
+              <span class="idx">04</span>
+              <p><strong>风险</strong>顶级账户仍偏多，若价格不再下跌而 OI 上升，可能变成挤压燃料，不适合硬扛。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <p class="section-title">Latest candles</p>
+          <div class="metrics">
+            <div class="metric"><span>5m 高 / 低</span><b id="range5">--</b></div>
+            <div class="metric"><span>15m 高 / 低</span><b id="range15">--</b></div>
+            <div class="metric"><span>1h 高 / 低</span><b id="range1h">--</b></div>
+            <div class="metric"><span>最近 15m 收盘</span><b id="last15">--</b></div>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <p class="section-title">Position sizing note</p>
+          <p class="footer-note">这个页面只负责把复盘点位动态化：它不下单，不建议杠杆倍数，不保证 Binance API 可用。小币合约滑点和插针很大，所有信号都只适合小仓验证。非投资建议。</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const BASE = "https://fapi.binance.com";
+    const SYMBOL = "EPICUSDT";
+    const LEVELS = {
+      shortLow: 0.529,
+      shortHigh: 0.536,
+      repair: 0.542,
+      targetLow: 0.501,
+      targetHigh: 0.506,
+      deepLow: 0.485,
+      deepHigh: 0.501
+    };
+
+    const els = {
+      refreshBtn: document.getElementById("refreshBtn"),
+      price: document.getElementById("price"),
+      stamp: document.getElementById("stamp"),
+      decisionBox: document.getElementById("decisionBox"),
+      decisionTitle: document.getElementById("decisionTitle"),
+      decisionText: document.getElementById("decisionText"),
+      funding: document.getElementById("funding"),
+      oiTrend: document.getElementById("oiTrend"),
+      globalLsr: document.getElementById("globalLsr"),
+      topLsr: document.getElementById("topLsr"),
+      takerLsr: document.getElementById("takerLsr"),
+      taker20: document.getElementById("taker20"),
+      statusPill: document.getElementById("statusPill"),
+      range5: document.getElementById("range5"),
+      range15: document.getElementById("range15"),
+      range1h: document.getElementById("range1h"),
+      last15: document.getElementById("last15"),
+      chart: document.getElementById("chart")
+    };
+
+    const fmt = (n, d = 4) => Number.isFinite(n) ? n.toFixed(d) : "--";
+    const pct = (n, d = 2) => Number.isFinite(n) ? `${(n * 100).toFixed(d)}%` : "--";
+    const ratioFmt = n => Number.isFinite(n) ? n.toFixed(3) : "--";
+
+    async function api(path, params) {
+      const url = `${BASE}${path}?${new URLSearchParams(params)}`;
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      return res.json();
+    }
+
+    function parseKlines(rows) {
+      return rows.map(k => ({
+        t: k[0],
+        h: Number(k[2]),
+        l: Number(k[3]),
+        c: Number(k[4]),
+        q: Number(k[7]),
+        tq: Number(k[10])
+      }));
+    }
+
+    function summarizeKlines(rows) {
+      const last = rows.at(-1);
+      const recent = rows.slice(-20);
+      const quote = recent.reduce((sum, k) => sum + k.q, 0);
+      const takerQuote = recent.reduce((sum, k) => sum + k.tq, 0);
+      return {
+        last: last?.c,
+        high20: Math.max(...recent.map(k => k.h)),
+        low20: Math.min(...recent.map(k => k.l)),
+        taker20: quote > takerQuote ? takerQuote / (quote - takerQuote) : NaN
+      };
+    }
+
+    async function latestRatio(path, key = "longShortRatio") {
+      const rows = await api(path, { symbol: SYMBOL, period: "5m", limit: 30 });
+      return Number(rows.at(-1)?.[key]);
+    }
+
+    async function oiTrend() {
+      const rows = await api("/futures/data/openInterestHist", { symbol: SYMBOL, period: "5m", limit: 30 });
+      const first = Number(rows[0]?.sumOpenInterest);
+      const last = Number(rows.at(-1)?.sumOpenInterest);
+      return first ? last / first - 1 : NaN;
+    }
+
+    function classify(mark, takerLatest, oiMove) {
+      if (mark >= LEVELS.repair) {
+        return {
+          cls: "long",
+          pill: "REPAIR",
+          title: "空头撤退",
+          text: "价格重新站上 0.542，突破失败后的空头延续暂时不成立。"
+        };
+      }
+      if (mark >= LEVELS.shortLow && mark <= LEVELS.shortHigh) {
+        const sellOk = takerLatest < 1 && oiMove > -0.006;
+        return {
+          cls: sellOk ? "short" : "wait",
+          pill: sellOk ? "SHORT WATCH" : "WAIT",
+          title: sellOk ? "进入反抽失败区" : "到达观察区",
+          text: sellOk
+            ? "价格回到 0.529-0.536，且主动卖出仍占优，可等待 5m/15m 收线确认。"
+            : "价格到达 0.529-0.536，但卖压或 OI 条件不够干净，先等收线。"
+        };
+      }
+      if (mark < LEVELS.targetHigh) {
+        return {
+          cls: "wait",
+          pill: "TARGET AREA",
+          title: "已接近目标区",
+          text: "价格已经靠近 0.506-0.501，追空性价比下降，优先看反抽后的二次确认。"
+        };
+      }
+      if (mark < LEVELS.shortLow) {
+        return {
+          cls: "short",
+          pill: "BEARISH",
+          title: "失守后延续",
+          text: "价格位于 0.529 下方，空头结构仍在，但更好的入场点是反抽失败。"
+        };
+      }
+      return {
+        cls: "wait",
+        pill: "WAIT",
+        title: "区间中",
+        text: "价格夹在 0.536 与 0.542 之间，方向性不够干净。"
+      };
+    }
+
+    function setDecision(state) {
+      els.decisionBox.className = `decision ${state.cls === "short" ? "" : state.cls}`;
+      els.statusPill.className = `status-pill ${state.cls === "short" ? "" : state.cls}`;
+      els.statusPill.textContent = state.pill;
+      els.decisionTitle.textContent = state.title;
+      els.decisionText.textContent = state.text;
+    }
+
+    function drawChart(rows, mark) {
+      const canvas = els.chart;
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const w = rect.width;
+      const h = rect.height;
+      const pad = { l: 54, r: 22, t: 24, b: 42 };
+      const values = rows.flatMap(k => [k.h, k.l]).concat(Object.values(LEVELS), [mark]);
+      const min = Math.min(...values) * 0.992;
+      const max = Math.max(...values) * 1.008;
+      const x = i => pad.l + (i / Math.max(1, rows.length - 1)) * (w - pad.l - pad.r);
+      const y = v => pad.t + (max - v) / (max - min) * (h - pad.t - pad.b);
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.font = "12px SFMono-Regular, Menlo, monospace";
+      ctx.textBaseline = "middle";
+
+      function band(lo, hi, color, label) {
+        const y1 = y(hi);
+        const y2 = y(lo);
+        ctx.fillStyle = color;
+        ctx.fillRect(pad.l, y1, w - pad.l - pad.r, y2 - y1);
+        ctx.fillStyle = "rgba(22,23,21,0.72)";
+        ctx.fillText(label, pad.l + 8, (y1 + y2) / 2);
+      }
+
+      band(LEVELS.shortLow, LEVELS.shortHigh, "rgba(189,69,69,0.16)", "short watch 0.529-0.536");
+      band(LEVELS.targetLow, LEVELS.targetHigh, "rgba(47,98,163,0.14)", "target 0.506-0.501");
+      band(LEVELS.deepLow, LEVELS.deepHigh, "rgba(47,98,163,0.08)", "deep zone 0.485-0.501");
+
+      const grid = [LEVELS.repair, LEVELS.shortHigh, LEVELS.shortLow, LEVELS.targetHigh, LEVELS.targetLow, mark];
+      grid.forEach(v => {
+        const yy = y(v);
+        ctx.strokeStyle = v === mark ? "rgba(190,106,24,0.86)" : "rgba(22,23,21,0.14)";
+        ctx.lineWidth = v === mark ? 2 : 1;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, yy);
+        ctx.lineTo(w - pad.r, yy);
+        ctx.stroke();
+        ctx.fillStyle = v === mark ? "#be6a18" : "rgba(22,23,21,0.58)";
+        ctx.fillText(fmt(v), 8, yy);
+      });
+
+      ctx.strokeStyle = "rgba(22,23,21,0.22)";
+      ctx.strokeRect(pad.l, pad.t, w - pad.l - pad.r, h - pad.t - pad.b);
+
+      ctx.beginPath();
+      rows.forEach((k, i) => {
+        const xx = x(i);
+        const yy = y(k.c);
+        if (i === 0) ctx.moveTo(xx, yy);
+        else ctx.lineTo(xx, yy);
+      });
+      ctx.strokeStyle = "#161715";
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+
+      rows.forEach((k, i) => {
+        const xx = x(i);
+        ctx.strokeStyle = k.c >= rows[Math.max(0, i - 1)].c ? "rgba(22,131,105,0.5)" : "rgba(189,69,69,0.55)";
+        ctx.beginPath();
+        ctx.moveTo(xx, y(k.h));
+        ctx.lineTo(xx, y(k.l));
+        ctx.stroke();
+      });
+
+      const nowX = x(rows.length - 1);
+      const nowY = y(mark);
+      ctx.fillStyle = "#be6a18";
+      ctx.beginPath();
+      ctx.arc(nowX, nowY, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillText(`now ${fmt(mark)}`, Math.min(nowX + 9, w - 116), nowY - 16);
+    }
+
+    async function refresh() {
+      els.refreshBtn.disabled = true;
+      els.refreshBtn.textContent = "刷新中";
+      try {
+        const [premium, oiMove, global, top, taker, k5Raw, k15Raw, k1hRaw] = await Promise.all([
+          api("/fapi/v1/premiumIndex", { symbol: SYMBOL }),
+          oiTrend(),
+          latestRatio("/futures/data/globalLongShortAccountRatio"),
+          latestRatio("/futures/data/topLongShortPositionRatio"),
+          latestRatio("/futures/data/takerlongshortRatio", "buySellRatio"),
+          api("/fapi/v1/klines", { symbol: SYMBOL, interval: "5m", limit: 80 }),
+          api("/fapi/v1/klines", { symbol: SYMBOL, interval: "15m", limit: 96 }),
+          api("/fapi/v1/klines", { symbol: SYMBOL, interval: "1h", limit: 80 })
+        ]);
+
+        const mark = Number(premium.markPrice);
+        const k5 = parseKlines(k5Raw);
+        const k15 = parseKlines(k15Raw);
+        const k1h = parseKlines(k1hRaw);
+        const s5 = summarizeKlines(k5);
+        const s15 = summarizeKlines(k15);
+        const s1h = summarizeKlines(k1h);
+
+        els.price.textContent = fmt(mark);
+        els.stamp.textContent = `Binance Futures · ${new Date().toLocaleString("zh-CN", { hour12: false })}`;
+        els.funding.textContent = pct(Number(premium.lastFundingRate), 4);
+        els.oiTrend.textContent = pct(oiMove, 2);
+        els.globalLsr.textContent = ratioFmt(global);
+        els.topLsr.textContent = ratioFmt(top);
+        els.takerLsr.textContent = ratioFmt(taker);
+        els.taker20.textContent = ratioFmt(s15.taker20);
+        els.range5.textContent = `${fmt(s5.high20)} / ${fmt(s5.low20)}`;
+        els.range15.textContent = `${fmt(s15.high20)} / ${fmt(s15.low20)}`;
+        els.range1h.textContent = `${fmt(s1h.high20)} / ${fmt(s1h.low20)}`;
+        els.last15.textContent = k15.slice(-4).map(k => fmt(k.c)).join(" → ");
+
+        setDecision(classify(mark, taker, oiMove));
+        drawChart(k15.slice(-64), mark);
+      } catch (error) {
+        els.stamp.textContent = `读取失败：${error.message}`;
+        setDecision({
+          cls: "wait",
+          pill: "API ERROR",
+          title: "数据未更新",
+          text: "Binance Futures 公共 API 暂时不可用，不能根据旧数据交易。"
+        });
+      } finally {
+        els.refreshBtn.disabled = false;
+        els.refreshBtn.textContent = "刷新数据";
+      }
+    }
+
+    els.refreshBtn.addEventListener("click", refresh);
+    window.addEventListener("resize", () => refresh());
+    refresh();
+    setInterval(refresh, 60000);
+  </script>
+</body>
+</html>
