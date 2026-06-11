@@ -1,0 +1,99 @@
+{
+  "name": "binance-smallcap-agent-harness",
+  "version": "0.1.0",
+  "source_policy": {
+    "data_sources": ["Binance USD-M Futures public REST API"],
+    "no_private_keys": true,
+    "no_order_execution": true,
+    "no_financial_advice": true
+  },
+  "runtime": {
+    "focus": ["ALLOUSDT", "LABUSDT", "OPNUSDT"],
+    "limit": 24,
+    "min_pct": 8.0,
+    "min_quote_volume": 5000000.0,
+    "sleep": 0.06
+  },
+  "notification_policy": {
+    "notify_only_on_new_actionable_event": true,
+    "required_fields": [
+      "symbol",
+      "current_price",
+      "funding",
+      "oi_trend",
+      "long_short_context",
+      "reason",
+      "observation_zone",
+      "risk_note"
+    ]
+  },
+  "thresholds": {
+    "short_crowded_account_ratio": 0.55,
+    "top_long_position_ratio": 0.5,
+    "taker_buy_ratio": 1.08,
+    "taker_sell_ratio": 0.92,
+    "oi_rising_min": 0.0,
+    "oi_stable_min": -0.003,
+    "negative_funding": -0.0001
+  },
+  "symbols": {
+    "ALLOUSDT": {
+      "thesis": "Post-confirmation short monitor after confirmed break below 0.2300. Do not repeat the break alert; only notify on rebound failure, short momentum weakening, squeeze-risk change, or a later crowded-short squeeze that fails at high resistance.",
+      "zones": {
+        "confirmed_break_level": [0.23, 0.23],
+        "rebound_lower": [0.205, 0.218],
+        "rebound_upper": [0.218, 0.23],
+        "squeeze_floor": [0.205, 0.205],
+        "post_squeeze_high_failure": [0.475, 0.486],
+        "reclaim_pressure": [0.458, 0.46],
+        "first_retest_pressure": [0.425, 0.438],
+        "major_retest_pressure": [0.396, 0.425],
+        "deleveraging_pressure": [0.353, 0.364]
+      },
+      "event_gates": [
+        "Notify if price rebounds into 0.2050-0.2180 or 0.2180-0.2300 and 5m/15m taker flow rolls bearish while OI is stable or rising.",
+        "Notify if price reclaims 0.2050 and 0.2180 with improving 15m structure, suggesting short momentum is weakening.",
+        "Notify if funding and positioning become unusually short-crowded while price stops falling, creating squeeze risk.",
+        "Notify if a later crowded-short squeeze tags 0.475-0.486 but fails back below 0.458-0.460, especially when OI starts contracting.",
+        "Notify if price breaks down into 0.353-0.364 after the failed squeeze with OI contracting, marking high-volatility deleveraging rather than a fresh low-risk short entry.",
+        "Do not chase the deleveraging tail; wait for 0.353-0.364 or 0.396-0.425 retest failure, or for 0.458-0.460 reclaim to weaken the short thesis."
+      ]
+    },
+    "LABUSDT": {
+      "thesis": "Whale-long thesis monitor after violent rally: negative funding plus short crowd can be squeeze fuel only if price defends support or reclaims pressure with OI stable/rising.",
+      "zones": {
+        "short_term_support": [14.8, 15.1],
+        "prior_high_pressure": [16.2, 16.4],
+        "squeeze_validation": [17.05, 17.05],
+        "upper_distribution_pressure": [18.0, 18.18],
+        "deep_breakdown": [13.2, 13.8]
+      },
+      "event_gates": [
+        "Notify validation if price holds support or fake-breaks then reclaims with OI stable/rising and global accounts still short-crowded.",
+        "Notify validation if price breaks above 16.4 with squeeze-like taker buy and stable/rising OI.",
+        "Notify invalidation if price loses 14.8 then retests and fails, or loses 13.8 with OI rising and effective taker sell.",
+        "Notify learning event if negative funding plus short crowd fails to produce a squeeze, or an apparent squeeze fails quickly."
+      ]
+    },
+    "OPNUSDT": {
+      "thesis": "Distribution-vs-potential monitor: after a sharp run, separate controlled support absorption from high-area failed retest and sell-effective OI expansion.",
+      "zones": {
+        "support_absorption": [0.188, 0.195],
+        "retest_pressure": [0.207, 0.215],
+        "breakout_validation": [0.227, 0.227],
+        "upper_reference_high": [0.274, 0.274]
+      },
+      "event_gates": [
+        "Notify distribution watch if retest pressure fails with OI stable/rising and taker sell effective.",
+        "Notify potential validation if support holds and price reclaims 0.207-0.215 with taker buy and OI stable/rising.",
+        "Notify invalidation if price loses support absorption with OI rising and taker sell effective."
+      ]
+    }
+  },
+  "learning_rules": [
+    "Negative funding is fuel, not proof; price structure must confirm it.",
+    "OI expansion is only useful when paired with directionally effective taker flow.",
+    "For small caps, a failed reclaim after a vertical rally is often more informative than raw long-short ratios.",
+    "A thesis should be logged as validation, invalidation, or learning event so future rules can be improved."
+  ]
+}

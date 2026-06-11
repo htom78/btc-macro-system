@@ -60,6 +60,16 @@ python3 smallcap-futures-system/scripts/update_smallcap_system.py --focus ALLOUS
 python3 smallcap-futures-system/scripts/update_smallcap_system.py --show
 ```
 
+运行 agent harness:
+
+```bash
+python3 smallcap-futures-system/scripts/run_agent_harness.py --no-update --dry-run
+python3 smallcap-futures-system/scripts/run_agent_harness.py --raw
+python3 smallcap-futures-system/scripts/validate_harness.py
+```
+
+harness 规则放在 `harness/config.json`; 最新决策写入 `data/harness_state.json`, 并追加到 `data/harness_decisions.jsonl`。
+
 打开页面:
 
 ```text
