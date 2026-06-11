@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-11T00:40:01.560139+00:00",
+  "generated_at": "2026-06-11T13:19:49.318860+00:00",
   "start_date": "2014-01-01",
   "fetch_errors": {
     "DGS10": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
@@ -11,12 +11,12 @@
   },
   "indicators": {
     "btc": {
-      "date": "2026-06-10",
-      "price": 61642.38,
-      "change_30d": -0.24960156404069822,
-      "change_90d": -0.12187027003156115,
-      "change_365d": -0.44114097128016116,
-      "ma200": 78240.80155,
+      "date": "2026-06-11",
+      "price": 61450.38,
+      "change_30d": -0.24820478652634714,
+      "change_90d": -0.12828439343651155,
+      "change_365d": -0.4427749256251945,
+      "ma200": 78124.66530000001,
       "above_ma200": false
     },
     "inflation": {
@@ -97,7 +97,7 @@
       "name": "BTC trend",
       "score": -1,
       "stance": "hostile",
-      "detail": "价格 $61,642 / Price $61,642; 200日均线 $78,241 / 200d MA $78,241"
+      "detail": "价格 $61,450 / Price $61,450; 200日均线 $78,125 / 200d MA $78,125"
     },
     {
       "name": "Fiscal pressure",
@@ -121,11 +121,11 @@
         "pairs": 147
       },
       "60": {
-        "correlation": -0.0983996964231624,
+        "correlation": -0.09847980098559225,
         "pairs": 147
       },
       "90": {
-        "correlation": -0.09727083944810005,
+        "correlation": -0.09741621540714508,
         "pairs": 147
       }
     },
@@ -139,11 +139,11 @@
         "pairs": 148
       },
       "60": {
-        "correlation": -0.11505260724948017,
+        "correlation": -0.11501706679463276,
         "pairs": 148
       },
       "90": {
-        "correlation": 0.013903189996326946,
+        "correlation": 0.013917023868180322,
         "pairs": 148
       }
     },
@@ -161,7 +161,7 @@
         "pairs": 147
       },
       "90": {
-        "correlation": 0.048584768784024346,
+        "correlation": 0.04857473180948124,
         "pairs": 147
       }
     },
@@ -171,15 +171,15 @@
         "pairs": 648
       },
       "30": {
-        "correlation": 0.026623326469981275,
+        "correlation": 0.026610688479846687,
         "pairs": 648
       },
       "60": {
-        "correlation": -0.011137402460389205,
+        "correlation": -0.011143166861187812,
         "pairs": 648
       },
       "90": {
-        "correlation": -0.030763979111111277,
+        "correlation": -0.030767347709273887,
         "pairs": 648
       }
     },
@@ -189,15 +189,15 @@
         "pairs": 785
       },
       "30": {
-        "correlation": -0.04394051379450094,
+        "correlation": -0.04400423182966368,
         "pairs": 785
       },
       "60": {
-        "correlation": -0.02613890754315679,
+        "correlation": -0.026159008906968158,
         "pairs": 785
       },
       "90": {
-        "correlation": -0.021109946250520283,
+        "correlation": -0.021333342771670254,
         "pairs": 785
       }
     },
@@ -260,8 +260,8 @@
   "history": {
     "enabled": true,
     "path": "data/history/observations.jsonl",
-    "count": 13,
+    "count": 14,
     "first_market_date": "2026-05-24",
-    "last_market_date": "2026-06-10"
+    "last_market_date": "2026-06-11"
   }
 }
