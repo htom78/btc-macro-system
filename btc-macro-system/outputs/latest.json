@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-10T00:36:26.205818+00:00",
+  "generated_at": "2026-06-11T00:40:01.560139+00:00",
   "start_date": "2014-01-01",
   "fetch_errors": {
     "DGS10": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
@@ -11,18 +11,18 @@
   },
   "indicators": {
     "btc": {
-      "date": "2026-06-05",
-      "price": 63812.6,
-      "change_30d": -0.21149321974817004,
-      "change_90d": -0.06335064324683659,
-      "change_365d": -0.3907754307956821,
-      "ma200": 78931.70934999999,
+      "date": "2026-06-10",
+      "price": 61642.38,
+      "change_30d": -0.24960156404069822,
+      "change_90d": -0.12187027003156115,
+      "change_365d": -0.44114097128016116,
+      "ma200": 78240.80155,
       "above_ma200": false
     },
     "inflation": {
-      "cpi_date": "2026-04-01",
-      "cpi_yoy": 0.039470269087042764,
-      "cpi_3m_annualized": 0.0731977426903978,
+      "cpi_date": "2026-05-01",
+      "cpi_yoy": 0.04270032656680245,
+      "cpi_3m_annualized": 0.08204073344058549,
       "breakeven_10y": null,
       "breakeven_10y_date": null
     },
@@ -49,9 +49,9 @@
       "dollar_index_13w_change": null,
       "vix": null,
       "vix_date": null,
-      "high_yield_oas": 2.75,
-      "high_yield_oas_date": "2026-06-08",
-      "high_yield_oas_13w_delta": -0.43999999999999995
+      "high_yield_oas": 2.78,
+      "high_yield_oas_date": "2026-06-09",
+      "high_yield_oas_13w_delta": -0.28000000000000025
     },
     "debt": {
       "gross_debt_gdp": 122.56815,
@@ -73,7 +73,7 @@
       "name": "Inflation constraint",
       "score": -2,
       "stance": "hostile",
-      "detail": "CPI同比 3.9% / CPI YoY 3.9%; 3个月年化 7.3% / 3m annualized 7.3%"
+      "detail": "CPI同比 4.3% / CPI YoY 4.3%; 3个月年化 8.2% / 3m annualized 8.2%"
     },
     {
       "name": "Real-rate pressure",
@@ -91,13 +91,13 @@
       "name": "Risk appetite",
       "score": 1,
       "stance": "supportive",
-      "detail": "VIX n/a; 高收益债利差13周变化 -0.44百分点 / HY OAS 13w delta -0.44 pp"
+      "detail": "VIX n/a; 高收益债利差13周变化 -0.28百分点 / HY OAS 13w delta -0.28 pp"
     },
     {
       "name": "BTC trend",
       "score": -1,
       "stance": "hostile",
-      "detail": "价格 $63,813 / Price $63,813; 200日均线 $78,932 / 200d MA $78,932"
+      "detail": "价格 $61,642 / Price $61,642; 200日均线 $78,241 / 200d MA $78,241"
     },
     {
       "name": "Fiscal pressure",
@@ -113,20 +113,20 @@
   "correlations": {
     "CPIAUCSL": {
       "0": {
-        "correlation": 0.04280894456271344,
-        "pairs": 146
+        "correlation": 0.04506072471266509,
+        "pairs": 147
       },
       "30": {
-        "correlation": 0.001354797596757225,
-        "pairs": 146
+        "correlation": -0.0005382756573086943,
+        "pairs": 147
       },
       "60": {
-        "correlation": -0.0927411708211955,
-        "pairs": 146
+        "correlation": -0.0983996964231624,
+        "pairs": 147
       },
       "90": {
-        "correlation": -0.09489379154061528,
-        "pairs": 146
+        "correlation": -0.09727083944810005,
+        "pairs": 147
       }
     },
     "FEDFUNDS": {
@@ -139,11 +139,11 @@
         "pairs": 148
       },
       "60": {
-        "correlation": -0.11543409543786443,
+        "correlation": -0.11505260724948017,
         "pairs": 148
       },
       "90": {
-        "correlation": 0.013747966235277286,
+        "correlation": 0.013903189996326946,
         "pairs": 148
       }
     },
@@ -161,7 +161,7 @@
         "pairs": 147
       },
       "90": {
-        "correlation": 0.048690685267601536,
+        "correlation": 0.048584768784024346,
         "pairs": 147
       }
     },
@@ -171,34 +171,34 @@
         "pairs": 648
       },
       "30": {
-        "correlation": 0.026760534005827303,
+        "correlation": 0.026623326469981275,
         "pairs": 648
       },
       "60": {
-        "correlation": -0.010999484797246351,
+        "correlation": -0.011137402460389205,
         "pairs": 648
       },
       "90": {
-        "correlation": -0.030704686156745816,
+        "correlation": -0.030763979111111277,
         "pairs": 648
       }
     },
     "BAMLH0A0HYM2": {
       "0": {
-        "correlation": -0.13625220671626537,
-        "pairs": 784
+        "correlation": -0.13626187163627412,
+        "pairs": 785
       },
       "30": {
-        "correlation": -0.04261371894214529,
-        "pairs": 784
+        "correlation": -0.04394051379450094,
+        "pairs": 785
       },
       "60": {
-        "correlation": -0.02334814748770555,
-        "pairs": 784
+        "correlation": -0.02613890754315679,
+        "pairs": 785
       },
       "90": {
-        "correlation": -0.014799696194104144,
-        "pairs": 784
+        "correlation": -0.021109946250520283,
+        "pairs": 785
       }
     },
     "GFDEGDQ188S": {
@@ -260,8 +260,8 @@
   "history": {
     "enabled": true,
     "path": "data/history/observations.jsonl",
-    "count": 12,
+    "count": 13,
     "first_market_date": "2026-05-24",
-    "last_market_date": "2026-06-05"
+    "last_market_date": "2026-06-10"
   }
 }
