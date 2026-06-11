@@ -6,10 +6,10 @@
   <string>local.btc-macro-system.update</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/tom/Documents/投资思考/btc-macro-system/scripts/update_once.sh</string>
+    <string>/Volumes/PortableSSD/Projects/Claude_Projects/投资思考/btc-macro-system/scripts/update_once.sh</string>
   </array>
   <key>WorkingDirectory</key>
-  <string>/Users/tom/Documents/投资思考/btc-macro-system</string>
+  <string>/Volumes/PortableSSD/Projects/Claude_Projects/投资思考/btc-macro-system</string>
   <key>StartCalendarInterval</key>
   <dict>
     <key>Hour</key>
@@ -18,9 +18,9 @@
     <integer>10</integer>
   </dict>
   <key>StandardOutPath</key>
-  <string>/Users/tom/Documents/投资思考/btc-macro-system/logs/update.log</string>
+  <string>/Volumes/PortableSSD/Projects/Claude_Projects/投资思考/btc-macro-system/logs/update.log</string>
   <key>StandardErrorPath</key>
-  <string>/Users/tom/Documents/投资思考/btc-macro-system/logs/update.err</string>
+  <string>/Volumes/PortableSSD/Projects/Claude_Projects/投资思考/btc-macro-system/logs/update.err</string>
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>
