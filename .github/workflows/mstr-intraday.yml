@@ -1,0 +1,68 @@
+name: MSTR mNAV Intraday Refresh
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 美股盘中每 30 分钟(UTC 13:30-21:00 覆盖 EDT/EST 两种 9:30-16:00 ET)。
+    # GitHub schedule 高峰期可能延迟数分钟,看板有快照时间戳兜底。
+    - cron: "*/30 13-21 * * 1-5"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# 与主 workflow(update-and-pages.yml)同组,串行化 Pages 部署避免互踩
+concurrency:
+  group: btc-macro-report
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Update MSTR mNAV latest snapshot
+        run: python3 mstr-mnav/scripts/update_mstr_data.py --latest-only
+
+      - name: Commit latest snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add mstr-mnav/data/mstr-latest.json
+          if git diff --cached --quiet; then
+            echo "No snapshot change to commit."
+          else
+            git commit -m "Update MSTR mNAV intraday snapshot"
+            # 主 workflow 的 bot commit 可能并发推送,rebase 重试一次
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Prepare Pages artifact
+        run: bash tools/build_pages_site.sh _site
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

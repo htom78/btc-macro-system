@@ -220,8 +220,9 @@ def classify(mnav: float) -> str | None:
 
 
 def main() -> int:
+    latest_only = "--latest-only" in sys.argv[1:]
     now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
-    log(f"update_mstr_data @ {now_iso}")
+    log(f"update_mstr_data @ {now_iso}{' (latest-only)' if latest_only else ''}")
 
     btc_px = get_btc_price()
     mstr_px = get_mstr_price()
@@ -269,6 +270,11 @@ def main() -> int:
 
     DATA.mkdir(exist_ok=True)
     LATEST.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n")
+
+    if latest_only:
+        # 盘中 30 分钟级刷新只更新 latest,历史序列保持每日一条
+        log(f"wrote {LATEST.relative_to(HERE)} (history skipped)")
+        return 0
 
     history_line = json.dumps(
         {k: v for k, v in snapshot.items() if k not in ("thresholds", "_doc")},

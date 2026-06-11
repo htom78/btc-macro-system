@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MSTR mNAV 实时看板</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f2ec;
+      --panel: rgba(255, 255, 255, 0.86);
+      --ink: #171916;
+      --muted: #656660;
+      --line: rgba(23, 25, 22, 0.16);
+      --btc: #c87218;
+      --blue: #286da8;
+      --green: #168369;
+      --red: #b94747;
+      --mono: "SFMono-Regular", "Cascadia Mono", "Menlo", monospace;
+      --sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); }
+    body {
+      margin: 0; color: var(--ink); font-family: var(--sans); line-height: 1.58;
+      background:
+        linear-gradient(90deg, rgba(23, 25, 22, 0.045) 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(23, 25, 22, 0.035) 1px, transparent 1px) 0 0 / 42px 42px,
+        var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--blue); }
+    .shell { width: min(980px, calc(100vw - 30px)); margin: 0 auto; padding: 24px 0 56px; }
+    .topline {
+      display: flex; justify-content: space-between; align-items: baseline;
+      border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 26px;
+      font-size: 13px; color: var(--muted);
+    }
+    .hero { text-align: center; padding: 14px 0 6px; }
+    .hero .eyebrow {
+      font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin: 0;
+    }
+    #mnavBig {
+      font-family: var(--mono); font-size: clamp(64px, 14vw, 124px);
+      font-weight: 650; letter-spacing: -3px; line-height: 1.05; margin: 4px 0 0;
+    }
+    #levelBadge {
+      display: inline-block; font-size: 13px; font-family: var(--mono);
+      padding: 4px 14px; border-radius: 999px; border: 1px solid var(--line);
+      background: var(--panel); margin-top: 8px;
+    }
+    .freshness { font-size: 13px; color: var(--muted); margin-top: 10px; }
+    .freshness b { font-family: var(--mono); font-weight: 600; }
+    .live-dot {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green); margin-right: 4px; animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+    .band-wrap { margin: 34px 0 8px; }
+    .band-title { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+    .cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px; margin: 26px 0;
+    }
+    .card {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+    }
+    .card span { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .card b { display: block; font-family: var(--mono); font-size: 21px; font-weight: 600; margin-top: 4px; }
+    .card p { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+
+    .chart-wrap {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+      padding: 16px; margin-top: 8px;
+    }
+    .chart-wrap h2 { font-size: 15px; margin: 0 0 10px; }
+    svg text { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
+    .note {
+      font-size: 13px; color: var(--muted); margin-top: 26px; border-top: 1px solid var(--line); padding-top: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topline">
+      <span>MSTR mNAV · live board</span>
+      <span><a href="./">← 返回 Hub</a> · <a href="education.html">mNAV 是什么</a></span>
+    </div>
+
+    <div class="hero">
+      <p class="eyebrow">mNAV (diluted) — BTC leg live</p>
+      <p id="mnavBig">--</p>
+      <span id="levelBadge">loading</span>
+      <p class="freshness" id="freshness">读取快照中……</p>
+    </div>
+
+    <div class="band-wrap">
+      <p class="band-title">阈值带 · P0 深度折价 → P3 过热溢价</p>
+      <svg id="band" width="100%" height="64" viewBox="0 0 1000 64" preserveAspectRatio="none"></svg>
+    </div>
+
+    <div class="cards">
+      <div class="card"><span>BTC 价格(实时)</span><b id="btcPx">--</b><p>CoinGecko · 30s 轮询</p></div>
+      <div class="card"><span>MSTR 价格(快照)</span><b id="mstrPx">--</b><p id="mstrPxNote">盘中 30 分钟刷新</p></div>
+      <div class="card"><span>BTC 持仓</span><b id="holdings">--</b><p id="holdingsNote">--</p></div>
+      <div class="card"><span>NAV / share</span><b id="navShare">--</b><p>holdings × BTC ÷ basic</p></div>
+    </div>
+
+    <div class="chart-wrap">
+      <h2>mNAV 日线轨迹 <small style="color:var(--muted);font-weight:400">data/mstr-history.jsonl</small></h2>
+      <svg id="chart" width="100%" height="220" viewBox="0 0 1000 220" preserveAspectRatio="none"></svg>
+    </div>
+
+    <p class="note">
+      口径:mNAV = MSTR 市值(diluted) ÷ BTC NAV。BTC 价格为浏览器实时拉取,MSTR 价格与股数来自最近一次
+      Actions 快照(盘中每 30 分钟、收盘后每日一次),所以盘中 mNAV 的 MSTR 腿最多滞后 30 分钟。
+      股数为最近申报期加权平均,ATM 增发使 mNAV 略被低估(保守方向)。阈值与 monitor 私库锁步。
+      研究用途,不构成投资建议。
+    </p>
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const fmtUsd = v => "$" + Number(v).toLocaleString("en-US", { maximumFractionDigits: 0 });
+
+    const ZONES = [
+      // [from, to, color, label] — from/to 为 mNAV 值,在 classify 边界处分段
+      [0.60, 0.85, "#b94747", "P0 deep discount"],
+      [0.85, 1.00, "#c87218", "P1 extreme"],
+      [1.00, 1.20, "#168369", "P1 entry"],
+      [1.20, 1.50, "#286da8", "P2 observe"],
+      [1.50, 2.00, "#656660", "neutral-high"],
+      [2.00, 2.30, "#b94747", "P3 high premium"],
+    ];
+    const BAND_MIN = 0.60, BAND_MAX = 2.30;
+    const bandX = v => Math.max(0, Math.min(1000, (v - BAND_MIN) / (BAND_MAX - BAND_MIN) * 1000));
+
+    let snapshot = null;
+    let liveBtc = null;
+
+    function classify(mnav, t) {
+      if (mnav >= t.P3_high_premium) return "P3_high_premium";
+      if (mnav < t.P0_deep_discount) return "P0_deep_discount";
+      if (mnav < t.P1_extreme) return "P1_extreme";
+      if (mnav < t.P1_entry) return "P1_entry";
+      if (mnav < t.P2_observe) return "P2_observe";
+      return "neutral";
+    }
+
+    function drawBand(mnav) {
+      const parts = ZONES.map(([a, b, color]) =>
+        `<rect x="${bandX(a)}" y="22" width="${bandX(b) - bandX(a)}" height="16" fill="${color}" opacity="0.55"/>`
+      );
+      const ticks = [0.85, 1.0, 1.2, 1.5, 2.0].map(v =>
+        `<line x1="${bandX(v)}" y1="18" x2="${bandX(v)}" y2="42" stroke="#171916" stroke-width="1" opacity="0.5"/>
+         <text x="${bandX(v)}" y="56" text-anchor="middle">${v.toFixed(2)}</text>`
+      );
+      let marker = "";
+      if (Number.isFinite(mnav)) {
+        const x = bandX(mnav);
+        marker = `<path d="M ${x} 16 l -7 -12 l 14 0 z" fill="#171916"/>
+                  <text x="${x}" y="12" text-anchor="middle" font-weight="bold" fill="#171916">${mnav.toFixed(3)}</text>`;
+      }
+      $("band").innerHTML = parts.join("") + ticks.join("") + marker;
+    }
+
+    function recompute() {
+      if (!snapshot) return;
+      const btc = liveBtc ?? snapshot.btc_price_usd;
+      const nav = snapshot.btc_holdings * btc;
+      const mnav = snapshot.mcap_diluted_usd / nav;
+      const level = classify(mnav, snapshot.thresholds);
+      $("mnavBig").textContent = mnav.toFixed(3);
+      $("levelBadge").textContent = level;
+      $("navShare").textContent = "$" + (nav / snapshot.basic_shares).toFixed(2);
+      $("btcPx").textContent = fmtUsd(btc);
+      const btcTag = liveBtc != null
+        ? '<span class="live-dot"></span>BTC 实时'
+        : "BTC 用快照价(实时源暂不可用)";
+      $("freshness").innerHTML =
+        `${btcTag} · MSTR 快照 <b>${(snapshot.ts || "").replace("T", " ").slice(0, 16)} UTC</b>`;
+      drawBand(mnav);
+    }
+
+    async function loadSnapshot() {
+      const resp = await fetch("data/mstr-latest.json", { cache: "no-store" });
+      snapshot = await resp.json();
+      $("mstrPx").textContent = "$" + snapshot.mstr_price_usd;
+      $("holdings").textContent = Number(snapshot.btc_holdings).toLocaleString("en-US") + " BTC";
+      $("holdingsNote").textContent = "source: " + (snapshot.holdings_source || "--");
+      recompute();
+    }
+
+    async function pollBtc() {
+      try {
+        const resp = await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
+          { cache: "no-store" }
+        );
+        if (!resp.ok) throw new Error(resp.status);
+        liveBtc = Number((await resp.json()).bitcoin.usd);
+      } catch (e) {
+        liveBtc = null; // 降级用快照价,freshness 区会标注
+      }
+      recompute();
+    }
+
+    async function drawHistory() {
+      try {
+        const resp = await fetch("data/mstr-history.jsonl", { cache: "no-store" });
+        const rows = (await resp.text()).trim().split("\n")
+          .filter(Boolean).map(l => JSON.parse(l))
+          .filter(r => Number.isFinite(r.mnav_diluted));
+        if (rows.length < 2) {
+          $("chart").innerHTML = '<text x="500" y="110" text-anchor="middle">历史数据积累中(每日一条),两天后出现轨迹线。</text>';
+          return;
+        }
+        const vals = rows.map(r => r.mnav_diluted);
+        const lo = Math.min(...vals) * 0.97, hi = Math.max(...vals) * 1.03;
+        const X = i => 30 + i / (rows.length - 1) * 950;
+        const Y = v => 200 - (v - lo) / (hi - lo) * 180;
+        const path = rows.map((r, i) => `${i ? "L" : "M"} ${X(i).toFixed(1)} ${Y(r.mnav_diluted).toFixed(1)}`).join(" ");
+        const gridLines = [0.85, 1.0, 1.2, 1.5, 2.0].filter(v => v > lo && v < hi).map(v =>
+          `<line x1="30" y1="${Y(v)}" x2="980" y2="${Y(v)}" stroke="#171916" stroke-width="0.5" opacity="0.18" stroke-dasharray="4 4"/>
+           <text x="2" y="${Y(v) + 3}">${v.toFixed(2)}</text>`
+        );
+        const last = rows[rows.length - 1];
+        $("chart").innerHTML = gridLines.join("") +
+          `<path d="${path}" fill="none" stroke="#c87218" stroke-width="2"/>` +
+          `<circle cx="${X(rows.length - 1)}" cy="${Y(last.mnav_diluted)}" r="4" fill="#c87218"/>` +
+          `<text x="${X(0)}" y="216">${(rows[0].ts || "").slice(0, 10)}</text>` +
+          `<text x="950" y="216" text-anchor="end">${(last.ts || "").slice(0, 10)}</text>`;
+      } catch (e) {
+        $("chart").innerHTML = '<text x="500" y="110" text-anchor="middle">历史读取失败。</text>';
+      }
+    }
+
+    loadSnapshot().then(() => { pollBtc(); drawHistory(); });
+    setInterval(pollBtc, 30_000);
+    setInterval(loadSnapshot, 5 * 60_000); // 5 分钟重读快照,接住盘中刷新
+  </script>
+</body>
+</html>
