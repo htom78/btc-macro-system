@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-11T13:19:49.318860+00:00",
+  "generated_at": "2026-06-12T00:38:09.175988+00:00",
   "start_date": "2014-01-01",
   "fetch_errors": {
     "DGS10": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
@@ -41,17 +41,17 @@
       "m2_date": "2026-04-01",
       "m2_yoy": 0.04724532391610836,
       "m2_3m_annualized": 0.06861025830852618,
-      "fed_balance_sheet_date": "2026-06-03",
-      "fed_balance_sheet_13w_change": 0.012460751371194068
+      "fed_balance_sheet_date": "2026-06-10",
+      "fed_balance_sheet_13w_change": 0.011894208304595644
     },
     "dollar_risk": {
       "dollar_index_date": null,
       "dollar_index_13w_change": null,
       "vix": null,
       "vix_date": null,
-      "high_yield_oas": 2.78,
-      "high_yield_oas_date": "2026-06-09",
-      "high_yield_oas_13w_delta": -0.28000000000000025
+      "high_yield_oas": 2.8,
+      "high_yield_oas_date": "2026-06-10",
+      "high_yield_oas_13w_delta": -0.29000000000000004
     },
     "debt": {
       "gross_debt_gdp": 122.56815,
@@ -91,7 +91,7 @@
       "name": "Risk appetite",
       "score": 1,
       "stance": "supportive",
-      "detail": "VIX n/a; 高收益债利差13周变化 -0.28百分点 / HY OAS 13w delta -0.28 pp"
+      "detail": "VIX n/a; 高收益债利差13周变化 -0.29百分点 / HY OAS 13w delta -0.29 pp"
     },
     {
       "name": "BTC trend",
@@ -167,38 +167,38 @@
     },
     "WALCL": {
       "0": {
-        "correlation": -0.0030200696934844728,
-        "pairs": 648
+        "correlation": -0.0032282973828947755,
+        "pairs": 649
       },
       "30": {
-        "correlation": 0.026610688479846687,
-        "pairs": 648
+        "correlation": 0.026593943042137736,
+        "pairs": 649
       },
       "60": {
-        "correlation": -0.011143166861187812,
-        "pairs": 648
+        "correlation": -0.011160354555820035,
+        "pairs": 649
       },
       "90": {
-        "correlation": -0.030767347709273887,
-        "pairs": 648
+        "correlation": -0.03078527409493927,
+        "pairs": 649
       }
     },
     "BAMLH0A0HYM2": {
       "0": {
-        "correlation": -0.13626187163627412,
-        "pairs": 785
+        "correlation": -0.13652066494462758,
+        "pairs": 786
       },
       "30": {
-        "correlation": -0.04400423182966368,
-        "pairs": 785
+        "correlation": -0.04401409084506796,
+        "pairs": 786
       },
       "60": {
-        "correlation": -0.026159008906968158,
-        "pairs": 785
+        "correlation": -0.026170277177450133,
+        "pairs": 786
       },
       "90": {
-        "correlation": -0.021333342771670254,
-        "pairs": 785
+        "correlation": -0.021347509292420387,
+        "pairs": 786
       }
     },
     "GFDEGDQ188S": {

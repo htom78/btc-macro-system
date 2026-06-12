@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-11T13:19:49+00:00",
+  "generated_at": "2026-06-12T00:38:09+00:00",
   "state": {
-    "key": "washout_probe",
-    "label": "恐慌小探",
-    "score": -4,
+    "key": "defensive_pause",
+    "label": "逆风防守",
+    "score": -5,
     "confidence": "medium-low",
-    "action": "只允许小额、分批、观察性 DCA；不追反弹。",
+    "action": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。",
     "score_formula": "天 + 地 + 人"
   },
   "axes": [
@@ -46,7 +46,7 @@
           "name": "Risk appetite",
           "score": 1,
           "stance": "supportive",
-          "detail": "VIX n/a; 高收益债利差13周变化 -0.28百分点 / HY OAS 13w delta -0.28 pp"
+          "detail": "VIX n/a; 高收益债利差13周变化 -0.29百分点 / HY OAS 13w delta -0.29 pp"
         },
         {
           "name": "BTC trend",
@@ -66,7 +66,7 @@
       "id": "earth",
       "name": "地",
       "en": "Market structure",
-      "score": -2,
+      "score": -3,
       "stance": "hostile",
       "detail": "trend, washout, ETF flow, and reserved derivatives inputs",
       "inputs": [
@@ -82,13 +82,13 @@
         },
         {
           "name": "RSI washout",
-          "score": 1,
-          "detail": "RSI14 22.5"
+          "score": 0,
+          "detail": "RSI14 25.4"
         },
         {
           "name": "30d drawdown",
           "score": 1,
-          "detail": "-23.3% from 30d high"
+          "detail": "-22.5% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 16.3 days old"
+          "detail": "snapshot is 16.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-06-11",
-    "price": 62917.65,
-    "ma95": 73011.83147368421,
-    "ma200": 78006.4703,
+    "date": "2026-06-12",
+    "price": 63613.23,
+    "ma95": 72967.90336842106,
+    "ma200": 77886.4343,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 22.471643863449884,
-    "atr14": 2712.9821428571413,
+    "rsi14": 25.361660592257437,
+    "atr14": 2647.1499999999987,
     "high_30d": 82066.22,
     "low_30d": 59073.01,
-    "drawdown_from_30d_high": -0.23333071755955126
+    "drawdown_from_30d_high": -0.22485487938886428
   },
   "market_structure": {
     "schema_version": 1,
@@ -209,8 +209,8 @@
     },
     {
       "zone": "当前动作",
-      "default": "恐慌小探",
-      "rule": "只允许小额、分批、观察性 DCA；不追反弹。"
+      "default": "逆风防守",
+      "rule": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。"
     }
   ],
   "source_health": {

@@ -384,7 +384,7 @@
         }
       }
     ],
-    "generated_at": "2026-06-11T13:19:49.863626+00:00",
+    "generated_at": "2026-06-12T00:38:09.524389+00:00",
     "weights": {
       "demand_strength": 0.17,
       "bottleneck_power": 0.18,
@@ -1434,7 +1434,7 @@
   },
   "snapshot": {
     "as_of": "2026-05-28",
-    "generated_at": "2026-06-11T13:19:49.863626+00:00",
+    "generated_at": "2026-06-12T00:38:09.524389+00:00",
     "topic_id": "ai-physical-bottlenecks",
     "topic_title": "AI Physical Bottlenecks",
     "thesis_count": 4,
