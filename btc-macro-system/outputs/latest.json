@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-12T00:38:09.175988+00:00",
+  "generated_at": "2026-06-13T00:39:26.079337+00:00",
   "start_date": "2014-01-01",
   "fetch_errors": {
     "DGS10": "failed to fetch https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: curl: (28) Operation timed out after 45002 milliseconds with 0 bytes received",
@@ -11,12 +11,12 @@
   },
   "indicators": {
     "btc": {
-      "date": "2026-06-11",
-      "price": 61450.38,
-      "change_30d": -0.24820478652634714,
-      "change_90d": -0.12828439343651155,
-      "change_365d": -0.4427749256251945,
-      "ma200": 78124.66530000001,
+      "date": "2026-06-12",
+      "price": 63547.89,
+      "change_30d": -0.21050136380944806,
+      "change_90d": -0.10453350776369164,
+      "change_365d": -0.4153210477058663,
+      "ma200": 78008.47015,
       "above_ma200": false
     },
     "inflation": {
@@ -49,9 +49,9 @@
       "dollar_index_13w_change": null,
       "vix": null,
       "vix_date": null,
-      "high_yield_oas": 2.8,
-      "high_yield_oas_date": "2026-06-10",
-      "high_yield_oas_13w_delta": -0.29000000000000004
+      "high_yield_oas": 2.78,
+      "high_yield_oas_date": "2026-06-11",
+      "high_yield_oas_13w_delta": -0.3900000000000001
     },
     "debt": {
       "gross_debt_gdp": 122.56815,
@@ -91,13 +91,13 @@
       "name": "Risk appetite",
       "score": 1,
       "stance": "supportive",
-      "detail": "VIX n/a; 高收益债利差13周变化 -0.29百分点 / HY OAS 13w delta -0.29 pp"
+      "detail": "VIX n/a; 高收益债利差13周变化 -0.39百分点 / HY OAS 13w delta -0.39 pp"
     },
     {
       "name": "BTC trend",
       "score": -1,
       "stance": "hostile",
-      "detail": "价格 $61,450 / Price $61,450; 200日均线 $78,125 / 200d MA $78,125"
+      "detail": "价格 $63,548 / Price $63,548; 200日均线 $78,008 / 200d MA $78,008"
     },
     {
       "name": "Fiscal pressure",
@@ -121,11 +121,11 @@
         "pairs": 147
       },
       "60": {
-        "correlation": -0.09847980098559225,
+        "correlation": -0.09760818993726907,
         "pairs": 147
       },
       "90": {
-        "correlation": -0.09741621540714508,
+        "correlation": -0.09584178129928017,
         "pairs": 147
       }
     },
@@ -139,11 +139,11 @@
         "pairs": 148
       },
       "60": {
-        "correlation": -0.11501706679463276,
+        "correlation": -0.1153895039086467,
         "pairs": 148
       },
       "90": {
-        "correlation": 0.013917023868180322,
+        "correlation": 0.013766786190302638,
         "pairs": 148
       }
     },
@@ -161,7 +161,7 @@
         "pairs": 147
       },
       "90": {
-        "correlation": 0.04857473180948124,
+        "correlation": 0.04867848755947984,
         "pairs": 147
       }
     },
@@ -171,33 +171,33 @@
         "pairs": 649
       },
       "30": {
-        "correlation": 0.026593943042137736,
+        "correlation": 0.026727461842395633,
         "pairs": 649
       },
       "60": {
-        "correlation": -0.011160354555820035,
+        "correlation": -0.01109749119475943,
         "pairs": 649
       },
       "90": {
-        "correlation": -0.03078527409493927,
+        "correlation": -0.030746352496429683,
         "pairs": 649
       }
     },
     "BAMLH0A0HYM2": {
       "0": {
-        "correlation": -0.13652066494462758,
+        "correlation": -0.13711080310874252,
         "pairs": 786
       },
       "30": {
-        "correlation": -0.04401409084506796,
+        "correlation": -0.04492951808559289,
         "pairs": 786
       },
       "60": {
-        "correlation": -0.026170277177450133,
+        "correlation": -0.026217679633901494,
         "pairs": 786
       },
       "90": {
-        "correlation": -0.021347509292420387,
+        "correlation": -0.021912744320271293,
         "pairs": 786
       }
     },
@@ -260,8 +260,8 @@
   "history": {
     "enabled": true,
     "path": "data/history/observations.jsonl",
-    "count": 14,
+    "count": 15,
     "first_market_date": "2026-05-24",
-    "last_market_date": "2026-06-11"
+    "last_market_date": "2026-06-12"
   }
 }
