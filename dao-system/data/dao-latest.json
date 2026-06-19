@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-18T00:24:19+00:00",
+  "generated_at": "2026-06-19T01:49:42+00:00",
   "state": {
     "key": "defensive_pause",
     "label": "逆风防守",
@@ -14,9 +14,9 @@
       "id": "heaven",
       "name": "天",
       "en": "Macro liquidity",
-      "score": -1,
-      "stance": "mixed",
-      "detail": "macro score -1; regime mixed",
+      "score": -2,
+      "stance": "hostile",
+      "detail": "macro score -2; regime hostile",
       "inputs": [
         {
           "name": "USD liquidity",
@@ -34,7 +34,7 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.14% / 10Y real yield 2.14%; 13周变化 0.31百分点 / 13w delta 0.31 pp"
+          "detail": "10年期实际收益率 2.23% / 10Y real yield 2.23%; 13周变化 0.37百分点 / 13w delta 0.37 pp"
         },
         {
           "name": "Dollar pressure",
@@ -44,21 +44,21 @@
         },
         {
           "name": "Risk appetite",
-          "score": 2,
+          "score": 1,
           "stance": "supportive",
-          "detail": "VIX 16.41; 高收益债利差13周变化 -0.51百分点 / HY OAS 13w delta -0.51 pp"
+          "detail": "VIX 18.44; 高收益债利差13周变化 -0.57百分点 / HY OAS 13w delta -0.57 pp"
         },
         {
           "name": "BTC trend",
           "score": -1,
           "stance": "hostile",
-          "detail": "价格 $65,612 / Price $65,612; 200日均线 $77,395 / 200d MA $77,395"
+          "detail": "价格 $64,429 / Price $64,429; 200日均线 $77,263 / 200d MA $77,263"
         },
         {
           "name": "Fiscal pressure",
           "score": 0,
           "stance": "mixed",
-          "detail": "公众持有债务/GDP 98.24% / Public debt/GDP 98.24%; 利息支出/GDP 3.15% / interest outlays/GDP 3.15%; 长期支撑硬通货叙事，但短期会放大利率压力 / structural BTC narrative support, but rate pressure risk"
+          "detail": "公众持有债务/GDP 98.85% / Public debt/GDP 98.85%; 利息支出/GDP 3.15% / interest outlays/GDP 3.15%; 长期支撑硬通货叙事，但短期会放大利率压力 / structural BTC narrative support, but rate pressure risk"
         }
       ]
     },
@@ -66,7 +66,7 @@
       "id": "earth",
       "name": "地",
       "en": "Market structure",
-      "score": -4,
+      "score": -3,
       "stance": "hostile",
       "detail": "trend, washout, ETF flow, and reserved derivatives inputs",
       "inputs": [
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 52.8"
+          "detail": "RSI14 57.1"
         },
         {
           "name": "30d drawdown",
-          "score": 0,
-          "detail": "-17.3% from 30d high"
+          "score": 1,
+          "detail": "-19.6% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 22.8 days old"
+          "detail": "snapshot is 23.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-06-18",
-    "price": 64597.2,
-    "ma95": 72602.5532631579,
-    "ma200": 77135.37264999999,
+    "date": "2026-06-19",
+    "price": 62845.64,
+    "ma95": 72457.72147368421,
+    "ma200": 77009.5981,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 52.801569371755555,
-    "atr14": 2211.6042857142857,
+    "rsi14": 57.08701170409643,
+    "atr14": 2053.9978571428574,
     "high_30d": 78123.68,
     "low_30d": 59073.01,
-    "drawdown_from_30d_high": -0.1731418694050254
+    "drawdown_from_30d_high": -0.19556221621920522
   },
   "market_structure": {
     "schema_version": 1,
