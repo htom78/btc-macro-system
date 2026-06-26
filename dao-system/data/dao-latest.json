@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-25T00:19:56+00:00",
+  "generated_at": "2026-06-26T00:20:00+00:00",
   "state": {
     "key": "defensive_pause",
     "label": "逆风防守",
@@ -34,7 +34,7 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.29% / 10Y real yield 2.29%; 13周变化 0.23百分点 / 13w delta 0.23 pp"
+          "detail": "10年期实际收益率 2.23% / 10Y real yield 2.23%; 13周变化 0.21百分点 / 13w delta 0.21 pp"
         },
         {
           "name": "Dollar pressure",
@@ -46,19 +46,19 @@
           "name": "Risk appetite",
           "score": 1,
           "stance": "supportive",
-          "detail": "VIX 19.49; 高收益债利差13周变化 -0.48百分点 / HY OAS 13w delta -0.48 pp"
+          "detail": "VIX 18.63; 高收益债利差13周变化 -0.41百分点 / HY OAS 13w delta -0.41 pp"
         },
         {
           "name": "BTC trend",
           "score": -1,
           "stance": "hostile",
-          "detail": "价格 $62,654 / Price $62,654; 200日均线 $76,450 / 200d MA $76,450"
+          "detail": "价格 $60,984 / Price $60,984; 200日均线 $76,309 / 200d MA $76,309"
         },
         {
           "name": "Fiscal pressure",
           "score": 0,
           "stance": "mixed",
-          "detail": "公众持有债务/GDP 98.85% / Public debt/GDP 98.85%; 利息支出/GDP 3.15% / interest outlays/GDP 3.15%; 长期支撑硬通货叙事，但短期会放大利率压力 / structural BTC narrative support, but rate pressure risk"
+          "detail": "公众持有债务/GDP 98.71% / Public debt/GDP 98.71%; 利息支出/GDP 3.15% / interest outlays/GDP 3.15%; 长期支撑硬通货叙事，但短期会放大利率压力 / structural BTC narrative support, but rate pressure risk"
         }
       ]
     },
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 39.1"
+          "detail": "RSI14 35.8"
         },
         {
           "name": "30d drawdown",
           "score": 1,
-          "detail": "-19.9% from 30d high"
+          "detail": "-19.8% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 29.8 days old"
+          "detail": "snapshot is 30.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-06-25",
-    "price": 60892.71,
-    "ma95": 71975.70136842105,
-    "ma200": 76163.04065000001,
+    "date": "2026-06-26",
+    "price": 59712.82,
+    "ma95": 71845.69642105263,
+    "ma200": 76002.39014999999,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 39.11280295661689,
-    "atr14": 1903.0185714285722,
-    "high_30d": 76033.66,
-    "low_30d": 59010.74,
-    "drawdown_from_30d_high": -0.1991348305474181
+    "rsi14": 35.76634785889314,
+    "atr14": 2062.765,
+    "high_30d": 74462.4,
+    "low_30d": 58000.0,
+    "drawdown_from_30d_high": -0.19808091063409183
   },
   "market_structure": {
     "schema_version": 1,
