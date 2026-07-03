@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-07-02T00:17:56.692602+00:00",
+  "generated_at": "2026-07-03T00:16:18.456542+00:00",
   "start_date": "2014-01-01",
   "fetch_errors": {},
   "indicators": {
     "btc": {
-      "date": "2026-07-01",
-      "price": 58534.28,
-      "change_30d": -0.2043793586540491,
-      "change_90d": -0.14046313505518881,
-      "change_365d": -0.4536160681323521,
-      "ma200": 75355.3821,
+      "date": "2026-07-02",
+      "price": 59963.86,
+      "change_30d": -0.1592944697026203,
+      "change_90d": -0.10356344974896603,
+      "change_365d": -0.4327289769420497,
+      "ma200": 75203.79705,
       "above_ma200": false
     },
     "inflation": {
@@ -17,34 +17,34 @@
       "cpi_yoy": 0.04270032656680245,
       "cpi_3m_annualized": 0.08204073344058549,
       "breakeven_10y": 2.23,
-      "breakeven_10y_date": "2026-07-01"
+      "breakeven_10y_date": "2026-07-02"
     },
     "policy_rates": {
       "fedfunds": 3.63,
       "fedfunds_date": "2026-06-01",
-      "ten_year": 4.44,
-      "ten_year_date": "2026-06-30",
-      "real_yield_10y": 2.2,
-      "real_yield_10y_date": "2026-06-30",
-      "real_yield_13w_delta": 0.20000000000000018,
-      "yield_curve_10y2y": 0.31,
-      "yield_curve_10y2y_date": "2026-07-01"
+      "ten_year": 4.48,
+      "ten_year_date": "2026-07-01",
+      "real_yield_10y": 2.25,
+      "real_yield_10y_date": "2026-07-01",
+      "real_yield_13w_delta": 0.22999999999999998,
+      "yield_curve_10y2y": 0.35,
+      "yield_curve_10y2y_date": "2026-07-02"
     },
     "liquidity": {
       "m2_date": "2026-05-01",
       "m2_yoy": 0.05580313182711283,
       "m2_3m_annualized": 0.07735001311046674,
-      "fed_balance_sheet_date": "2026-06-24",
-      "fed_balance_sheet_13w_change": 0.011789409930148986
+      "fed_balance_sheet_date": "2026-07-01",
+      "fed_balance_sheet_13w_change": 0.007373402778942939
     },
     "dollar_risk": {
       "dollar_index_date": "2026-06-26",
       "dollar_index_13w_change": 1.2408477140679608e-05,
-      "vix": 16.45,
-      "vix_date": "2026-06-30",
-      "high_yield_oas": 2.75,
-      "high_yield_oas_date": "2026-06-30",
-      "high_yield_oas_13w_delta": -0.5299999999999998
+      "vix": 16.59,
+      "vix_date": "2026-07-01",
+      "high_yield_oas": 2.74,
+      "high_yield_oas_date": "2026-07-01",
+      "high_yield_oas_13w_delta": -0.41999999999999993
     },
     "debt": {
       "gross_debt_gdp": 122.59387,
@@ -58,9 +58,9 @@
   "signals": [
     {
       "name": "USD liquidity",
-      "score": 2,
+      "score": 1,
       "stance": "supportive",
-      "detail": "M2 3个月年化 7.7% / M2 3m annualized 7.7%; 联储资产负债表13周 1.2% / Fed balance sheet 13w 1.2%"
+      "detail": "M2 3个月年化 7.7% / M2 3m annualized 7.7%; 联储资产负债表13周 0.7% / Fed balance sheet 13w 0.7%"
     },
     {
       "name": "Inflation constraint",
@@ -72,7 +72,7 @@
       "name": "Real-rate pressure",
       "score": -2,
       "stance": "hostile",
-      "detail": "10年期实际收益率 2.20% / 10Y real yield 2.20%; 13周变化 0.20百分点 / 13w delta 0.20 pp"
+      "detail": "10年期实际收益率 2.25% / 10Y real yield 2.25%; 13周变化 0.23百分点 / 13w delta 0.23 pp"
     },
     {
       "name": "Dollar pressure",
@@ -84,13 +84,13 @@
       "name": "Risk appetite",
       "score": 2,
       "stance": "supportive",
-      "detail": "VIX 16.45; 高收益债利差13周变化 -0.53百分点 / HY OAS 13w delta -0.53 pp"
+      "detail": "VIX 16.59; 高收益债利差13周变化 -0.42百分点 / HY OAS 13w delta -0.42 pp"
     },
     {
       "name": "BTC trend",
       "score": -1,
       "stance": "hostile",
-      "detail": "价格 $58,534 / Price $58,534; 200日均线 $75,355 / 200d MA $75,355"
+      "detail": "价格 $59,964 / Price $59,964; 200日均线 $75,204 / 200d MA $75,204"
     },
     {
       "name": "Fiscal pressure",
@@ -100,8 +100,8 @@
     }
   ],
   "regime": {
-    "score": -1,
-    "label": "mixed"
+    "score": -2,
+    "label": "hostile"
   },
   "correlations": {
     "CPIAUCSL": {
@@ -118,7 +118,7 @@
         "pairs": 147
       },
       "90": {
-        "correlation": -0.0991872802343842,
+        "correlation": -0.09850050061502091,
         "pairs": 147
       }
     },
@@ -132,84 +132,84 @@
         "pairs": 149
       },
       "60": {
-        "correlation": -0.11443482915236443,
+        "correlation": -0.11457638365885418,
         "pairs": 149
       },
       "90": {
-        "correlation": 0.014356652106683906,
+        "correlation": 0.014191476163889749,
         "pairs": 149
       }
     },
     "DGS10": {
       "0": {
-        "correlation": 0.018779397930014263,
-        "pairs": 3123
+        "correlation": 0.018615568672496273,
+        "pairs": 3124
       },
       "30": {
-        "correlation": 0.03426326629403484,
-        "pairs": 3123
+        "correlation": 0.03421504654642875,
+        "pairs": 3124
       },
       "60": {
-        "correlation": -0.05585810897408998,
-        "pairs": 3123
+        "correlation": -0.05565915536372338,
+        "pairs": 3124
       },
       "90": {
-        "correlation": -0.013748857679724905,
-        "pairs": 3123
+        "correlation": -0.013616699973786606,
+        "pairs": 3124
       }
     },
     "DFII10": {
       "0": {
-        "correlation": -0.012978242423078133,
-        "pairs": 3123
+        "correlation": -0.0131963022375107,
+        "pairs": 3124
       },
       "30": {
-        "correlation": 0.041160872437101835,
-        "pairs": 3123
+        "correlation": 0.04113946029026245,
+        "pairs": 3124
       },
       "60": {
-        "correlation": -0.047460273135458524,
-        "pairs": 3123
+        "correlation": -0.04731660022990887,
+        "pairs": 3124
       },
       "90": {
-        "correlation": -0.0273398774464135,
-        "pairs": 3123
+        "correlation": -0.02727060161245386,
+        "pairs": 3124
       }
     },
     "T10YIE": {
       "0": {
-        "correlation": 0.05395611398760032,
-        "pairs": 3124
+        "correlation": 0.0539537449493686,
+        "pairs": 3125
       },
       "30": {
-        "correlation": -0.005647076958793241,
-        "pairs": 3124
+        "correlation": -0.005707066265538829,
+        "pairs": 3125
       },
       "60": {
-        "correlation": -0.022281493398060556,
-        "pairs": 3124
+        "correlation": -0.02216099415253875,
+        "pairs": 3125
       },
       "90": {
-        "correlation": 0.01962630695934483,
-        "pairs": 3124
+        "correlation": 0.01974947046997728,
+        "pairs": 3125
       }
     },
     "T10Y2Y": {
       "0": {
-        "correlation": 0.0048247181388389425,
-        "pairs": 3124
+        "correlation": 0.00501732914681621,
+        "pairs": 3125
       },
       "30": {
-        "correlation": 0.008870712451498862,
-        "pairs": 3124
+        "correlation": 0.008810449100944992,
+        "pairs": 3125
       },
       "60": {
-        "correlation": -0.03811185860897722,
-        "pairs": 3124
+        "correlation": -0.03816618738548607,
+        "pairs": 3125
       },
       "90": {
-        "correlation": 0.00020851409306458789,
-        "pairs": 3124
+        "correlation": 0.0001473600784425527,
+        "pairs": 3125
       }
     },
     "M2SL": {
@@ -226,26 +226,26 @@
         "pairs": 148
       },
       "90": {
-        "correlation": 0.046843070903319003,
+        "correlation": 0.0474937944386645,
         "pairs": 148
       }
     },
     "WALCL": {
       "0": {
-        "correlation": -0.0030435411843174665,
-        "pairs": 651
+        "correlation": -0.002691452779903723,
+        "pairs": 652
       },
       "30": {
-        "correlation": 0.02697949115449444,
-        "pairs": 651
+        "correlation": 0.02702213424030993,
+        "pairs": 652
       },
       "60": {
-        "correlation": -0.010839854163616979,
-        "pairs": 651
+        "correlation": -0.010778311546161228,
+        "pairs": 652
       },
       "90": {
-        "correlation": -0.030956143083503217,
-        "pairs": 651
+        "correlation": -0.03083004846562135,
+        "pairs": 652
       }
     },
     "DTWEXBGS": {
@@ -254,52 +254,52 @@
         "pairs": 3108
       },
       "30": {
-        "correlation": -0.002934185249208029,
+        "correlation": -0.0029999968267620273,
         "pairs": 3108
       },
       "60": {
-        "correlation": -0.01813380962815615,
+        "correlation": -0.017930010392283546,
         "pairs": 3108
       },
       "90": {
-        "correlation": -0.0017033367882238772,
+        "correlation": -0.0016342125928455286,
         "pairs": 3108
       }
     },
     "VIXCLS": {
       "0": {
-        "correlation": -0.0070261488543642975,
-        "pairs": 3171
+        "correlation": -0.007047930322033552,
+        "pairs": 3172
       },
       "30": {
-        "correlation": -0.013853339387098556,
-        "pairs": 3171
+        "correlation": -0.013893204472421568,
+        "pairs": 3172
       },
       "60": {
-        "correlation": -0.019181677016276565,
-        "pairs": 3171
+        "correlation": -0.019018923445990626,
+        "pairs": 3172
       },
       "90": {
-        "correlation": 0.0195943674412345,
-        "pairs": 3171
+        "correlation": 0.019620599040727594,
+        "pairs": 3172
       }
     },
     "BAMLH0A0HYM2": {
       "0": {
-        "correlation": -0.14603066118602626,
-        "pairs": 785
+        "correlation": -0.14579885436819937,
+        "pairs": 786
       },
       "30": {
-        "correlation": -0.04068233739110462,
-        "pairs": 785
+        "correlation": -0.04079084148261543,
+        "pairs": 786
       },
       "60": {
-        "correlation": -0.026896568586308095,
-        "pairs": 785
+        "correlation": -0.026730182245541294,
+        "pairs": 786
       },
       "90": {
-        "correlation": -0.02760040406534766,
-        "pairs": 785
+        "correlation": -0.0281804856539594,
+        "pairs": 786
       }
     },
     "GFDEGDQ188S": {
@@ -361,8 +361,8 @@
   "history": {
     "enabled": true,
     "path": "data/history/observations.jsonl",
-    "count": 34,
+    "count": 35,
     "first_market_date": "2026-05-24",
-    "last_market_date": "2026-07-01"
+    "last_market_date": "2026-07-02"
   }
 }
