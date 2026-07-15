@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-14T00:00:52+00:00",
+  "generated_at": "2026-07-15T00:00:44+00:00",
   "state": {
     "key": "defensive_pause",
     "label": "逆风防守",
-    "score": -10,
+    "score": -8,
     "confidence": "medium-low",
     "action": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。",
     "score_formula": "天 + 地 + 人"
@@ -14,9 +14,9 @@
       "id": "heaven",
       "name": "天",
       "en": "Macro liquidity",
-      "score": -4,
+      "score": -2,
       "stance": "hostile",
-      "detail": "macro score -4; regime hostile",
+      "detail": "macro score -2; regime hostile",
       "inputs": [
         {
           "name": "USD liquidity",
@@ -26,15 +26,15 @@
         },
         {
           "name": "Inflation constraint",
-          "score": -2,
+          "score": -1,
           "stance": "hostile",
-          "detail": "CPI同比 4.3% / CPI YoY 4.3%; 3个月年化 8.2% / 3m annualized 8.2%"
+          "detail": "CPI同比 3.7% / CPI YoY 3.7%; 3个月年化 2.8% / 3m annualized 2.8%"
         },
         {
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.32% / 10Y real yield 2.32%; 13周变化 0.37百分点 / 13w delta 0.37 pp"
+          "detail": "10年期实际收益率 2.36% / 10Y real yield 2.36%; 13周变化 0.44百分点 / 13w delta 0.44 pp"
         },
         {
           "name": "Dollar pressure",
@@ -44,15 +44,15 @@
         },
         {
           "name": "Risk appetite",
-          "score": 1,
+          "score": 2,
           "stance": "supportive",
-          "detail": "VIX 15.03; 高收益债利差13周变化 -0.25百分点 / HY OAS 13w delta -0.25 pp"
+          "detail": "VIX 17.16; 高收益债利差13周变化 -0.26百分点 / HY OAS 13w delta -0.26 pp"
         },
         {
           "name": "BTC trend",
           "score": -1,
           "stance": "hostile",
-          "detail": "价格 $63,744 / Price $63,744; 200日均线 $73,866 / 200d MA $73,866"
+          "detail": "价格 $62,242 / Price $62,242; 200日均线 $73,741 / 200d MA $73,741"
         },
         {
           "name": "Fiscal pressure",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 67.0"
+          "detail": "RSI14 70.5"
         },
         {
           "name": "30d drawdown",
-          "score": 0,
-          "detail": "-7.4% from 30d high"
+          "score": -1,
+          "detail": "-2.9% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 48.8 days old"
+          "detail": "snapshot is 49.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-07-14",
-    "price": 62258.09,
-    "ma95": 70570.09642105263,
-    "ma200": 73616.8257,
+    "date": "2026-07-15",
+    "price": 64988.0,
+    "ma95": 70513.59694736842,
+    "ma200": 73516.37845,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 66.96845656370304,
-    "atr14": 1832.3414285714275,
-    "high_30d": 67264.0,
+    "rsi14": 70.46106026030657,
+    "atr14": 1780.7407142857135,
+    "high_30d": 66944.0,
     "low_30d": 57717.55,
-    "drawdown_from_30d_high": -0.07442183039961947
+    "drawdown_from_30d_high": -0.029218451242829846
   },
   "market_structure": {
     "schema_version": 1,
