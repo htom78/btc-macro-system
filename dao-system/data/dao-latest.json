@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-28T00:08:25+00:00",
+  "generated_at": "2026-07-29T00:06:12+00:00",
   "state": {
     "key": "defensive_pause",
     "label": "逆风防守",
@@ -22,7 +22,7 @@
           "name": "USD liquidity",
           "score": 1,
           "stance": "supportive",
-          "detail": "M2 3个月年化 7.7% / M2 3m annualized 7.7%; 联储资产负债表13周 0.6% / Fed balance sheet 13w 0.6%"
+          "detail": "M2 3个月年化 8.7% / M2 3m annualized 8.7%; 联储资产负债表13周 0.6% / Fed balance sheet 13w 0.6%"
         },
         {
           "name": "Inflation constraint",
@@ -34,7 +34,7 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.43% / 10Y real yield 2.43%; 13周变化 0.54百分点 / 13w delta 0.54 pp"
+          "detail": "10年期实际收益率 2.44% / 10Y real yield 2.44%; 13周变化 0.53百分点 / 13w delta 0.53 pp"
         },
         {
           "name": "Dollar pressure",
@@ -46,13 +46,13 @@
           "name": "Risk appetite",
           "score": 0,
           "stance": "mixed",
-          "detail": "VIX 18.58; 高收益债利差13周变化 -0.07百分点 / HY OAS 13w delta -0.07 pp"
+          "detail": "VIX 18.67; 高收益债利差13周变化 -0.03百分点 / HY OAS 13w delta -0.03 pp"
         },
         {
           "name": "BTC trend",
           "score": -1,
           "stance": "hostile",
-          "detail": "价格 $65,335 / Price $65,335; 200日均线 $72,130 / 200d MA $72,130"
+          "detail": "价格 $63,711 / Price $63,711; 200日均线 $71,994 / 200d MA $71,994"
         },
         {
           "name": "Fiscal pressure",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 42.7"
+          "detail": "RSI14 46.4"
         },
         {
           "name": "30d drawdown",
           "score": 0,
-          "detail": "-5.0% from 30d high"
+          "detail": "-4.3% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 62.8 days old"
+          "detail": "snapshot is 63.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-07-28",
-    "price": 63577.84,
-    "ma95": 69024.41663157895,
-    "ma200": 71859.60644999999,
+    "date": "2026-07-29",
+    "price": 64019.75,
+    "ma95": 68883.76726315789,
+    "ma200": 71729.12389999999,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 42.68759420398023,
-    "atr14": 1367.6228571428578,
+    "rsi14": 46.36410687714305,
+    "atr14": 1393.2435714285716,
     "high_30d": 66923.95,
     "low_30d": 57717.55,
-    "drawdown_from_30d_high": -0.0499986925457927
+    "drawdown_from_30d_high": -0.04339552581699069
   },
   "market_structure": {
     "schema_version": 1,
