@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-06T00:07:34+00:00",
+  "generated_at": "2026-09-05T17:06:07+00:00",
   "state": {
-    "key": "defensive_pause",
-    "label": "逆风防守",
-    "score": -9,
+    "key": "balanced_hold",
+    "label": "平衡持有",
+    "score": -3,
     "confidence": "medium-low",
-    "action": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。",
+    "action": "维持核心仓，战术仓按阶梯，不因单条新闻改变方向。",
     "score_formula": "天 + 地 + 人"
   },
   "axes": [
@@ -14,45 +14,45 @@
       "id": "heaven",
       "name": "天",
       "en": "Macro liquidity",
-      "score": -3,
-      "stance": "hostile",
-      "detail": "macro score -3; regime hostile",
+      "score": 0,
+      "stance": "mixed",
+      "detail": "macro score +0; regime mixed",
       "inputs": [
         {
           "name": "USD liquidity",
           "score": 1,
           "stance": "supportive",
-          "detail": "M2 3个月年化 8.7% / M2 3m annualized 8.7%; 联储资产负债表13周 0.6% / Fed balance sheet 13w 0.6%"
+          "detail": "M2 3个月年化 8.4% / M2 3m annualized 8.4%; 联储资产负债表13周 0.4% / Fed balance sheet 13w 0.4%"
         },
         {
           "name": "Inflation constraint",
           "score": -1,
           "stance": "hostile",
-          "detail": "CPI同比 3.7% / CPI YoY 3.7%; 3个月年化 2.8% / 3m annualized 2.8%"
+          "detail": "CPI同比 3.5% / CPI YoY 3.5%; 3个月年化 0.5% / 3m annualized 0.5%"
         },
         {
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.40% / 10Y real yield 2.40%; 13周变化 0.44百分点 / 13w delta 0.44 pp"
+          "detail": "10年期实际收益率 2.42% / 10Y real yield 2.42%; 13周变化 0.31百分点 / 13w delta 0.31 pp"
         },
         {
           "name": "Dollar pressure",
-          "score": -1,
-          "stance": "hostile",
-          "detail": "广义美元13周 1.1% / Broad dollar 13w 1.1%"
+          "score": 0,
+          "stance": "mixed",
+          "detail": "广义美元13周 -0.1% / Broad dollar 13w -0.1%"
         },
         {
           "name": "Risk appetite",
           "score": 1,
           "stance": "supportive",
-          "detail": "VIX 16.50; 高收益债利差13周变化 -0.04百分点 / HY OAS 13w delta -0.04 pp"
+          "detail": "VIX 14.32; 高收益债利差13周变化 -0.09百分点 / HY OAS 13w delta -0.09 pp"
         },
         {
           "name": "BTC trend",
-          "score": -1,
-          "stance": "hostile",
-          "detail": "价格 $64,054 / Price $64,054; 200日均线 $70,808 / 200d MA $70,808"
+          "score": 1,
+          "stance": "supportive",
+          "detail": "价格 $79,677 / Price $79,677; 200日均线 $69,623 / 200d MA $69,623"
         },
         {
           "name": "Fiscal pressure",
@@ -66,29 +66,29 @@
       "id": "earth",
       "name": "地",
       "en": "Market structure",
-      "score": -4,
-      "stance": "hostile",
+      "score": -1,
+      "stance": "mixed",
       "detail": "trend, washout, ETF flow, and reserved derivatives inputs",
       "inputs": [
         {
           "name": "MA95 trend",
-          "score": -1,
-          "detail": "below MA95"
+          "score": 1,
+          "detail": "above MA95"
         },
         {
           "name": "MA200 regime",
-          "score": -1,
-          "detail": "below MA200"
+          "score": 1,
+          "detail": "above MA200"
         },
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 47.4"
+          "detail": "RSI14 59.6"
         },
         {
           "name": "30d drawdown",
-          "score": 0,
-          "detail": "-3.5% from 30d high"
+          "score": -1,
+          "detail": "-2.7% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 71.8 days old"
+          "detail": "snapshot is 102.5 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-08-06",
-    "price": 64586.51,
-    "ma95": 67731.18084210526,
-    "ma200": 70509.9228,
-    "above_ma95": false,
-    "above_ma200": false,
-    "rsi14": 47.35316296797504,
-    "atr14": 1420.3592857142855,
-    "high_30d": 66923.95,
-    "low_30d": 61453.09,
-    "drawdown_from_30d_high": -0.034926808713472424
+    "date": "2026-09-05",
+    "price": 80050.01,
+    "ma95": 66121.08105263158,
+    "ma200": 69686.40705,
+    "above_ma95": true,
+    "above_ma200": true,
+    "rsi14": 59.59901381290001,
+    "atr14": 2599.2621428571447,
+    "high_30d": 82283.0,
+    "low_30d": 62468.21,
+    "drawdown_from_30d_high": -0.0271379264246564
   },
   "market_structure": {
     "schema_version": 1,
@@ -209,8 +209,8 @@
     },
     {
       "zone": "当前动作",
-      "default": "逆风防守",
-      "rule": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。"
+      "default": "平衡持有",
+      "rule": "维持核心仓，战术仓按阶梯，不因单条新闻改变方向。"
     }
   ],
   "source_health": {
