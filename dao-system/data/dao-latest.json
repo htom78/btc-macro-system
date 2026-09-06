@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-05T17:06:07+00:00",
+  "generated_at": "2026-09-06T00:50:18+00:00",
   "state": {
     "key": "balanced_hold",
     "label": "平衡持有",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 59.6"
+          "detail": "RSI14 57.3"
         },
         {
           "name": "30d drawdown",
           "score": -1,
-          "detail": "-2.7% from 30d high"
+          "detail": "-2.9% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 102.5 days old"
+          "detail": "snapshot is 102.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-09-05",
-    "price": 80050.01,
-    "ma95": 66121.08105263158,
-    "ma200": 69686.40705,
+    "date": "2026-09-06",
+    "price": 79874.04,
+    "ma95": 66285.45578947368,
+    "ma200": 69752.5861,
     "above_ma95": true,
     "above_ma200": true,
-    "rsi14": 59.59901381290001,
-    "atr14": 2599.2621428571447,
+    "rsi14": 57.26880070278945,
+    "atr14": 2427.807857142859,
     "high_30d": 82283.0,
     "low_30d": 62468.21,
-    "drawdown_from_30d_high": -0.0271379264246564
+    "drawdown_from_30d_high": -0.029276521274139378
   },
   "market_structure": {
     "schema_version": 1,
