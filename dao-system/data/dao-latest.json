@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-09T01:11:51+00:00",
+  "generated_at": "2026-09-10T01:00:27+00:00",
   "state": {
     "key": "balanced_hold",
     "label": "平衡持有",
@@ -34,7 +34,7 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.43% / 10Y real yield 2.43%; 13周变化 0.24百分点 / 13w delta 0.24 pp"
+          "detail": "10年期实际收益率 2.43% / 10Y real yield 2.43%; 13周变化 0.23百分点 / 13w delta 0.23 pp"
         },
         {
           "name": "Dollar pressure",
@@ -46,13 +46,13 @@
           "name": "Risk appetite",
           "score": 1,
           "stance": "supportive",
-          "detail": "VIX 15.30; 高收益债利差13周变化 -0.07百分点 / HY OAS 13w delta -0.07 pp"
+          "detail": "VIX 15.72; 高收益债利差13周变化 -0.11百分点 / HY OAS 13w delta -0.11 pp"
         },
         {
           "name": "BTC trend",
           "score": 1,
           "stance": "supportive",
-          "detail": "价格 $79,094 / Price $79,094; 200日均线 $69,816 / 200d MA $69,816"
+          "detail": "价格 $78,444 / Price $78,444; 200日均线 $69,868 / 200d MA $69,868"
         },
         {
           "name": "Fiscal pressure",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 49.4"
+          "detail": "RSI14 42.4"
         },
         {
           "name": "30d drawdown",
           "score": 0,
-          "detail": "-4.2% from 30d high"
+          "detail": "-5.0% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 105.8 days old"
+          "detail": "snapshot is 106.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-09-09",
-    "price": 78832.92,
-    "ma95": 66823.862,
-    "ma200": 69922.20805,
+    "date": "2026-09-10",
+    "price": 78143.97,
+    "ma95": 66974.3072631579,
+    "ma200": 69972.09330000001,
     "above_ma95": true,
     "above_ma200": true,
-    "rsi14": 49.367983590988665,
-    "atr14": 2203.647142857145,
+    "rsi14": 42.364692960616416,
+    "atr14": 2177.61642857143,
     "high_30d": 82283.0,
     "low_30d": 62468.21,
-    "drawdown_from_30d_high": -0.041929438644677575
+    "drawdown_from_30d_high": -0.05030237108515734
   },
   "market_structure": {
     "schema_version": 1,
