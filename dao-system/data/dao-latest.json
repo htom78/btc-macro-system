@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-09-28T01:33:34+00:00",
+  "generated_at": "2026-09-29T02:33:06+00:00",
   "state": {
     "key": "balanced_hold",
     "label": "平衡持有",
@@ -34,25 +34,25 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.85% / 10Y real yield 2.85%; 13周变化 0.66百分点 / 13w delta 0.66 pp"
+          "detail": "10年期实际收益率 2.83% / 10Y real yield 2.83%; 13周变化 0.65百分点 / 13w delta 0.65 pp"
         },
         {
           "name": "Dollar pressure",
           "score": 0,
           "stance": "mixed",
-          "detail": "广义美元13周 -0.7% / Broad dollar 13w -0.7%"
+          "detail": "广义美元13周 -0.5% / Broad dollar 13w -0.5%"
         },
         {
           "name": "Risk appetite",
           "score": 1,
           "stance": "supportive",
-          "detail": "VIX 14.21; 高收益债利差13周变化 0.02百分点 / HY OAS 13w delta 0.02 pp"
+          "detail": "VIX 14.21; 高收益债利差13周变化 0.10百分点 / HY OAS 13w delta 0.10 pp"
         },
         {
           "name": "BTC trend",
           "score": 1,
           "stance": "supportive",
-          "detail": "价格 $84,423 / Price $84,423; 200日均线 $71,003 / 200d MA $71,003"
+          "detail": "价格 $84,444 / Price $84,444; 200日均线 $71,074 / 200d MA $71,074"
         },
         {
           "name": "Fiscal pressure",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 67.3"
+          "detail": "RSI14 73.5"
         },
         {
           "name": "30d drawdown",
           "score": 0,
-          "detail": "-3.8% from 30d high"
+          "detail": "-5.1% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 124.8 days old"
+          "detail": "snapshot is 125.9 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-09-28",
-    "price": 84057.61,
-    "ma95": 70310.10052631579,
-    "ma200": 71141.03175,
+    "date": "2026-09-29",
+    "price": 82917.41,
+    "ma95": 70544.98484210526,
+    "ma200": 71197.8928,
     "above_ma95": true,
     "above_ma200": true,
-    "rsi14": 67.26135283277972,
-    "atr14": 2362.3314285714273,
+    "rsi14": 73.52031796453431,
+    "atr14": 2278.662857142856,
     "high_30d": 87397.0,
     "low_30d": 74887.5,
-    "drawdown_from_30d_high": -0.038209435106468126
+    "drawdown_from_30d_high": -0.05125564950742012
   },
   "market_structure": {
     "schema_version": 1,
