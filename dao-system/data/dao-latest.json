@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-06T02:53:45+00:00",
+  "generated_at": "2026-10-07T02:15:33+00:00",
   "state": {
     "key": "balanced_hold",
     "label": "平衡持有",
-    "score": -4,
+    "score": -3,
     "confidence": "medium-low",
     "action": "维持核心仓，战术仓按阶梯，不因单条新闻改变方向。",
     "score_formula": "天 + 地 + 人"
@@ -34,7 +34,7 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.92% / 10Y real yield 2.92%; 13周变化 0.66百分点 / 13w delta 0.66 pp"
+          "detail": "10年期实际收益率 2.95% / 10Y real yield 2.95%; 13周变化 0.71百分点 / 13w delta 0.71 pp"
         },
         {
           "name": "Dollar pressure",
@@ -46,13 +46,13 @@
           "name": "Risk appetite",
           "score": 0,
           "stance": "mixed",
-          "detail": "VIX 15.31; 高收益债利差13周变化 0.36百分点 / HY OAS 13w delta 0.36 pp"
+          "detail": "VIX 15.52; 高收益债利差13周变化 0.40百分点 / HY OAS 13w delta 0.40 pp"
         },
         {
           "name": "BTC trend",
           "score": 1,
           "stance": "supportive",
-          "detail": "价格 $86,488 / Price $86,488; 200日均线 $71,503 / 200d MA $71,503"
+          "detail": "价格 $85,771 / Price $85,771; 200日均线 $71,582 / 200d MA $71,582"
         },
         {
           "name": "Fiscal pressure",
@@ -66,7 +66,7 @@
       "id": "earth",
       "name": "地",
       "en": "Market structure",
-      "score": -1,
+      "score": 0,
       "stance": "mixed",
       "detail": "trend, washout, ETF flow, and reserved derivatives inputs",
       "inputs": [
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 46.1"
+          "detail": "RSI14 47.4"
         },
         {
           "name": "30d drawdown",
-          "score": -1,
-          "detail": "-2.1% from 30d high"
+          "score": 0,
+          "detail": "-3.9% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 132.9 days old"
+          "detail": "snapshot is 133.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-10-06",
-    "price": 85550.84,
-    "ma95": 72377.81315789474,
-    "ma200": 71656.07755,
+    "date": "2026-10-07",
+    "price": 83947.81,
+    "ma95": 72597.28989473684,
+    "ma200": 71731.20115000001,
     "above_ma95": true,
     "above_ma200": true,
-    "rsi14": 46.12566491829417,
-    "atr14": 1990.337857142856,
+    "rsi14": 47.35429249909658,
+    "atr14": 1931.9485714285713,
     "high_30d": 87397.0,
     "low_30d": 74887.5,
-    "drawdown_from_30d_high": -0.021123837202649987
+    "drawdown_from_30d_high": -0.039465771136309
   },
   "market_structure": {
     "schema_version": 1,
