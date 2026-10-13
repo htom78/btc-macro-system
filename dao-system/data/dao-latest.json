@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-12T02:16:57+00:00",
+  "generated_at": "2026-10-13T03:29:41+00:00",
   "state": {
     "key": "balanced_hold",
     "label": "平衡持有",
@@ -46,13 +46,13 @@
           "name": "Risk appetite",
           "score": 0,
           "stance": "mixed",
-          "detail": "VIX 15.41; 高收益债利差13周变化 0.45百分点 / HY OAS 13w delta 0.45 pp"
+          "detail": "VIX 14.84; 高收益债利差13周变化 0.45百分点 / HY OAS 13w delta 0.45 pp"
         },
         {
           "name": "BTC trend",
           "score": 1,
           "stance": "supportive",
-          "detail": "价格 $82,917 / Price $82,917; 200日均线 $71,919 / 200d MA $71,919"
+          "detail": "价格 $83,677 / Price $83,677; 200日均线 $71,981 / 200d MA $71,981"
         },
         {
           "name": "Fiscal pressure",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 51.3"
+          "detail": "RSI14 47.2"
         },
         {
           "name": "30d drawdown",
           "score": 0,
-          "detail": "-4.2% from 30d high"
+          "detail": "-5.2% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 138.8 days old"
+          "detail": "snapshot is 139.9 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-10-12",
-    "price": 83745.53,
-    "ma95": 73624.45694736842,
-    "ma200": 72054.08195,
+    "date": "2026-10-13",
+    "price": 82868.73,
+    "ma95": 73800.63810526316,
+    "ma200": 72126.64375,
     "above_ma95": true,
     "above_ma200": true,
-    "rsi14": 51.34075354072398,
-    "atr14": 1927.2999999999997,
+    "rsi14": 47.166671942951325,
+    "atr14": 2090.809285714287,
     "high_30d": 87397.0,
     "low_30d": 74887.5,
-    "drawdown_from_30d_high": -0.04178026705722171
+    "drawdown_from_30d_high": -0.05181264803139696
   },
   "market_structure": {
     "schema_version": 1,
