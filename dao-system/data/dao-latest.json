@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-16T01:11:53+00:00",
+  "generated_at": "2026-10-17T01:14:46+00:00",
   "state": {
     "key": "balanced_hold",
     "label": "平衡持有",
@@ -34,7 +34,7 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.84% / 10Y real yield 2.84%; 13周变化 0.52百分点 / 13w delta 0.52 pp"
+          "detail": "10年期实际收益率 2.78% / 10Y real yield 2.78%; 13周变化 0.43百分点 / 13w delta 0.43 pp"
         },
         {
           "name": "Dollar pressure",
@@ -46,7 +46,7 @@
           "name": "Risk appetite",
           "score": 0,
           "stance": "mixed",
-          "detail": "VIX 16.87; 高收益债利差13周变化 0.54百分点 / HY OAS 13w delta 0.54 pp"
+          "detail": "VIX 16.46; 高收益债利差13周变化 0.52百分点 / HY OAS 13w delta 0.52 pp"
         },
         {
           "name": "BTC trend",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 41.8"
+          "detail": "RSI14 38.7"
         },
         {
           "name": "30d drawdown",
           "score": 0,
-          "detail": "-6.0% from 30d high"
+          "detail": "-6.8% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 142.8 days old"
+          "detail": "snapshot is 143.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-10-16",
-    "price": 82162.75,
-    "ma95": 74393.43242105264,
-    "ma200": 72362.0412,
+    "date": "2026-10-17",
+    "price": 81446.2,
+    "ma95": 74559.694,
+    "ma200": 72424.8494,
     "above_ma95": true,
     "above_ma200": true,
-    "rsi14": 41.770154798239425,
-    "atr14": 1998.530000000002,
+    "rsi14": 38.747804879381036,
+    "atr14": 2104.6714285714293,
     "high_30d": 87397.0,
-    "low_30d": 75921.88,
-    "drawdown_from_30d_high": -0.05989049967390181
+    "low_30d": 76205.46,
+    "drawdown_from_30d_high": -0.06808929368284955
   },
   "market_structure": {
     "schema_version": 1,
