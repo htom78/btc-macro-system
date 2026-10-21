@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-20T01:42:29.052974+00:00",
+  "generated_at": "2026-10-21T01:28:19.955299+00:00",
   "start_date": "2014-01-01",
   "fetch_errors": {},
   "indicators": {
@@ -17,18 +17,18 @@
       "cpi_yoy": 0.04023310268457836,
       "cpi_3m_annualized": 0.045623423212118874,
       "breakeven_10y": 2.35,
-      "breakeven_10y_date": "2026-10-19"
+      "breakeven_10y_date": "2026-10-20"
     },
     "policy_rates": {
       "fedfunds": 3.75,
       "fedfunds_date": "2026-09-01",
-      "ten_year": 5.09,
-      "ten_year_date": "2026-10-16",
-      "real_yield_10y": 2.74,
-      "real_yield_10y_date": "2026-10-16",
-      "real_yield_13w_delta": 0.43000000000000016,
-      "yield_curve_10y2y": 0.38,
-      "yield_curve_10y2y_date": "2026-10-19"
+      "ten_year": 5.15,
+      "ten_year_date": "2026-10-19",
+      "real_yield_10y": 2.8,
+      "real_yield_10y_date": "2026-10-19",
+      "real_yield_13w_delta": 0.44999999999999973,
+      "yield_curve_10y2y": 0.33,
+      "yield_curve_10y2y_date": "2026-10-20"
     },
     "liquidity": {
       "m2_date": "2026-08-01",
@@ -40,11 +40,11 @@
     "dollar_risk": {
       "dollar_index_date": "2026-10-16",
       "dollar_index_13w_change": 0.0072454088765177005,
-      "vix": 19.99,
-      "vix_date": "2026-10-16",
-      "high_yield_oas": 3.31,
-      "high_yield_oas_date": "2026-10-16",
-      "high_yield_oas_13w_delta": 0.5800000000000001
+      "vix": 18.44,
+      "vix_date": "2026-10-19",
+      "high_yield_oas": 3.29,
+      "high_yield_oas_date": "2026-10-19",
+      "high_yield_oas_13w_delta": 0.6000000000000001
     },
     "debt": {
       "gross_debt_gdp": 122.59387,
@@ -72,7 +72,7 @@
       "name": "Real-rate pressure",
       "score": -2,
       "stance": "hostile",
-      "detail": "10年期实际收益率 2.74% / 10Y real yield 2.74%; 13周变化 0.43百分点 / 13w delta 0.43 pp"
+      "detail": "10年期实际收益率 2.80% / 10Y real yield 2.80%; 13周变化 0.45百分点 / 13w delta 0.45 pp"
     },
     {
       "name": "Dollar pressure",
@@ -84,7 +84,7 @@
       "name": "Risk appetite",
       "score": -1,
       "stance": "hostile",
-      "detail": "VIX 19.99; 高收益债利差13周变化 0.58百分点 / HY OAS 13w delta 0.58 pp"
+      "detail": "VIX 18.44; 高收益债利差13周变化 0.60百分点 / HY OAS 13w delta 0.60 pp"
     },
     {
       "name": "BTC trend",
@@ -142,74 +142,74 @@
     },
     "DGS10": {
       "0": {
-        "correlation": 0.019276097418970652,
-        "pairs": 3198
+        "correlation": 0.019259865665148285,
+        "pairs": 3199
       },
       "30": {
-        "correlation": 0.034929407714892245,
-        "pairs": 3198
+        "correlation": 0.034910274857253426,
+        "pairs": 3199
       },
       "60": {
-        "correlation": -0.0558206194129732,
-        "pairs": 3198
+        "correlation": -0.055822306742061706,
+        "pairs": 3199
       },
       "90": {
-        "correlation": -0.015243968464785863,
-        "pairs": 3198
+        "correlation": -0.01525457785576162,
+        "pairs": 3199
       }
     },
     "DFII10": {
       "0": {
-        "correlation": -0.013443623666306406,
-        "pairs": 3198
+        "correlation": -0.013453835383518055,
+        "pairs": 3199
       },
       "30": {
-        "correlation": 0.0420640955320577,
-        "pairs": 3198
+        "correlation": 0.04204052036570407,
+        "pairs": 3199
       },
       "60": {
-        "correlation": -0.04647816572342822,
-        "pairs": 3198
+        "correlation": -0.04648108014936829,
+        "pairs": 3199
       },
       "90": {
-        "correlation": -0.02797103295053158,
-        "pairs": 3198
+        "correlation": -0.02797922096853193,
+        "pairs": 3199
       }
     },
     "T10YIE": {
       "0": {
-        "correlation": 0.055706016045286036,
-        "pairs": 3199
+        "correlation": 0.05570601600825518,
+        "pairs": 3200
       },
       "30": {
-        "correlation": -0.0059093064152252245,
-        "pairs": 3199
+        "correlation": -0.005909295303572119,
+        "pairs": 3200
       },
       "60": {
-        "correlation": -0.02392605840551744,
-        "pairs": 3199
+        "correlation": -0.023926042433559776,
+        "pairs": 3200
       },
       "90": {
-        "correlation": 0.01804311595760326,
-        "pairs": 3199
+        "correlation": 0.018043123287248903,
+        "pairs": 3200
       }
     },
     "T10Y2Y": {
       "0": {
-        "correlation": 0.0050922697820600825,
-        "pairs": 3199
+        "correlation": 0.005105674878573798,
+        "pairs": 3200
       },
       "30": {
-        "correlation": 0.008412687205251517,
-        "pairs": 3199
+        "correlation": 0.008424740786306,
+        "pairs": 3200
       },
       "60": {
-        "correlation": -0.03753147072102654,
-        "pairs": 3199
+        "correlation": -0.03750430856106466,
+        "pairs": 3200
       },
       "90": {
-        "correlation": -1.7639757138632015e-05,
-        "pairs": 3199
+        "correlation": -9.763173567390955e-07,
+        "pairs": 3200
       }
     },
     "M2SL": {
@@ -268,37 +268,37 @@
     },
     "VIXCLS": {
       "0": {
-        "correlation": -0.007093648865066085,
-        "pairs": 3249
+        "correlation": -0.007081766464473894,
+        "pairs": 3250
       },
       "30": {
-        "correlation": -0.013096548363552713,
-        "pairs": 3249
+        "correlation": -0.013083922367296897,
+        "pairs": 3250
       },
       "60": {
-        "correlation": -0.018629130233580198,
-        "pairs": 3249
+        "correlation": -0.018614780765403228,
+        "pairs": 3250
       },
       "90": {
-        "correlation": 0.01928933416739084,
-        "pairs": 3249
+        "correlation": 0.019298184278702005,
+        "pairs": 3250
       }
     },
     "BAMLH0A0HYM2": {
       "0": {
-        "correlation": -0.13806326970414903,
+        "correlation": -0.1380014319633958,
         "pairs": 783
       },
       "30": {
-        "correlation": -0.03943033203596804,
+        "correlation": -0.03956064499161376,
         "pairs": 783
       },
       "60": {
-        "correlation": -0.030643546584580496,
+        "correlation": -0.030392430785914942,
         "pairs": 783
       },
       "90": {
-        "correlation": -0.0465707686019701,
+        "correlation": -0.046736460442453436,
         "pairs": 783
       }
     },
