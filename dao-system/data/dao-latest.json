@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-22T01:25:54+00:00",
+  "generated_at": "2026-10-23T01:25:15+00:00",
   "state": {
     "key": "balanced_hold",
     "label": "平衡持有",
-    "score": -1,
+    "score": -4,
     "confidence": "medium-low",
     "action": "维持核心仓，战术仓按阶梯，不因单条新闻改变方向。",
     "score_formula": "天 + 地 + 人"
@@ -14,51 +14,51 @@
       "id": "heaven",
       "name": "天",
       "en": "Macro liquidity",
-      "score": 1,
-      "stance": "mixed",
-      "detail": "macro score +1; regime mildly supportive",
+      "score": -2,
+      "stance": "hostile",
+      "detail": "macro score -2; regime hostile",
       "inputs": [
         {
           "name": "USD liquidity",
-          "score": 0,
-          "stance": "mixed",
-          "detail": "n/a"
+          "score": 1,
+          "stance": "supportive",
+          "detail": "M2 3个月年化 5.8% / M2 3m annualized 5.8%; 联储资产负债表13周 0.1% / Fed balance sheet 13w 0.1%"
         },
         {
           "name": "Inflation constraint",
-          "score": 0,
-          "stance": "mixed",
-          "detail": "CPI同比 n/a / CPI YoY n/a; 3个月年化 n/a / 3m annualized n/a"
+          "score": -2,
+          "stance": "hostile",
+          "detail": "CPI同比 4.0% / CPI YoY 4.0%; 3个月年化 4.6% / 3m annualized 4.6%"
         },
         {
           "name": "Real-rate pressure",
-          "score": 0,
-          "stance": "mixed",
-          "detail": "10年期实际收益率 n/a% / 10Y real yield n/a%; 13周变化 n/a百分点 / 13w delta n/a pp"
+          "score": -2,
+          "stance": "hostile",
+          "detail": "10年期实际收益率 2.76% / 10Y real yield 2.76%; 13周变化 0.37百分点 / 13w delta 0.37 pp"
         },
         {
           "name": "Dollar pressure",
           "score": 0,
           "stance": "mixed",
-          "detail": "广义美元13周 n/a / Broad dollar 13w n/a"
+          "detail": "广义美元13周 0.7% / Broad dollar 13w 0.7%"
         },
         {
           "name": "Risk appetite",
           "score": 0,
           "stance": "mixed",
-          "detail": "VIX n/a; 高收益债利差13周变化 n/a百分点 / HY OAS 13w delta n/a pp"
+          "detail": "VIX 16.68; 高收益债利差13周变化 0.59百分点 / HY OAS 13w delta 0.59 pp"
         },
         {
           "name": "BTC trend",
           "score": 1,
           "stance": "supportive",
-          "detail": "价格 $82,943 / Price $82,943; 200日均线 $72,651 / 200d MA $72,651"
+          "detail": "价格 $84,019 / Price $84,019; 200日均线 $72,735 / 200d MA $72,735"
         },
         {
           "name": "Fiscal pressure",
           "score": 0,
           "stance": "mixed",
-          "detail": "公众持有债务/GDP n/a% / Public debt/GDP n/a%; 利息支出/GDP n/a% / interest outlays/GDP n/a%; 长期支撑硬通货叙事，但短期会放大利率压力 / structural BTC narrative support, but rate pressure risk"
+          "detail": "公众持有债务/GDP 98.71% / Public debt/GDP 98.71%; 利息支出/GDP 3.15% / interest outlays/GDP 3.15%; 长期支撑硬通货叙事，但短期会放大利率压力 / structural BTC narrative support, but rate pressure risk"
         }
       ]
     },
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 61.3"
+          "detail": "RSI14 45.2"
         },
         {
           "name": "30d drawdown",
           "score": 0,
-          "detail": "-3.5% from 30d high"
+          "detail": "-6.8% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 148.8 days old"
+          "detail": "snapshot is 149.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-10-22",
-    "price": 84246.16,
-    "ma95": 75539.9705263158,
-    "ma200": 72808.45985,
+    "date": "2026-10-23",
+    "price": 81301.98,
+    "ma95": 75678.39084210526,
+    "ma200": 72856.0067,
     "above_ma95": true,
     "above_ma200": true,
-    "rsi14": 61.25708370476769,
-    "atr14": 1883.2771428571432,
-    "high_30d": 87282.81,
+    "rsi14": 45.216755385687144,
+    "atr14": 2008.6907142857142,
+    "high_30d": 87249.05,
     "low_30d": 79676.02,
-    "drawdown_from_30d_high": -0.03479092847721099
+    "drawdown_from_30d_high": -0.06816200291006047
   },
   "market_structure": {
     "schema_version": 1,
