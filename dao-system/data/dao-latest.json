@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-28T02:06:59+00:00",
+  "generated_at": "2026-10-29T02:20:08+00:00",
   "state": {
-    "key": "defensive_pause",
-    "label": "逆风防守",
-    "score": -5,
+    "key": "balanced_hold",
+    "label": "平衡持有",
+    "score": -4,
     "confidence": "medium-low",
-    "action": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。",
+    "action": "维持核心仓，战术仓按阶梯，不因单条新闻改变方向。",
     "score_formula": "天 + 地 + 人"
   },
   "axes": [
@@ -14,9 +14,9 @@
       "id": "heaven",
       "name": "天",
       "en": "Macro liquidity",
-      "score": -3,
+      "score": -2,
       "stance": "hostile",
-      "detail": "macro score -3; regime hostile",
+      "detail": "macro score -2; regime hostile",
       "inputs": [
         {
           "name": "USD liquidity",
@@ -34,7 +34,7 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.66% / 10Y real yield 2.66%; 13周变化 0.22百分点 / 13w delta 0.22 pp"
+          "detail": "10年期实际收益率 2.64% / 10Y real yield 2.64%; 13周变化 0.23百分点 / 13w delta 0.23 pp"
         },
         {
           "name": "Dollar pressure",
@@ -44,21 +44,21 @@
         },
         {
           "name": "Risk appetite",
-          "score": -1,
-          "stance": "hostile",
-          "detail": "VIX 18.39; 高收益债利差13周变化 0.49百分点 / HY OAS 13w delta 0.49 pp"
+          "score": 0,
+          "stance": "mixed",
+          "detail": "VIX 17.52; 高收益债利差13周变化 0.34百分点 / HY OAS 13w delta 0.34 pp"
         },
         {
           "name": "BTC trend",
           "score": 1,
           "stance": "supportive",
-          "detail": "价格 $80,000 / Price $80,000; 200日均线 $72,987 / 200d MA $72,987"
+          "detail": "价格 $80,809 / Price $80,809; 200日均线 $73,026 / 200d MA $73,026"
         },
         {
           "name": "Fiscal pressure",
           "score": 0,
           "stance": "mixed",
-          "detail": "公众持有债务/GDP 98.71% / Public debt/GDP 98.71%; 利息支出/GDP 3.15% / interest outlays/GDP 3.15%; 长期支撑硬通货叙事，但短期会放大利率压力 / structural BTC narrative support, but rate pressure risk"
+          "detail": "公众持有债务/GDP 97.37% / Public debt/GDP 97.37%; 利息支出/GDP 3.94% / interest outlays/GDP 3.94%; 长期支撑硬通货叙事，但短期会放大利率压力 / structural BTC narrative support, but rate pressure risk"
         }
       ]
     },
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 45.6"
+          "detail": "RSI14 39.1"
         },
         {
           "name": "30d drawdown",
           "score": 0,
-          "detail": "-7.4% from 30d high"
+          "detail": "-8.5% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 154.8 days old"
+          "detail": "snapshot is 155.9 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-10-28",
-    "price": 80768.66,
-    "ma95": 76479.89505263157,
-    "ma200": 73062.49554999999,
+    "date": "2026-10-29",
+    "price": 79860.73,
+    "ma95": 76637.79305263158,
+    "ma200": 73110.4257,
     "above_ma95": true,
     "above_ma200": true,
-    "rsi14": 45.6369076597398,
-    "atr14": 1824.03,
+    "rsi14": 39.06516511108047,
+    "atr14": 1802.7628571428577,
     "high_30d": 87249.05,
     "low_30d": 79107.0,
-    "drawdown_from_30d_high": -0.0742746196090387
+    "drawdown_from_30d_high": -0.08468080741280282
   },
   "market_structure": {
     "schema_version": 1,
@@ -209,8 +209,8 @@
     },
     {
       "zone": "当前动作",
-      "default": "逆风防守",
-      "rule": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。"
+      "default": "平衡持有",
+      "rule": "维持核心仓，战术仓按阶梯，不因单条新闻改变方向。"
     }
   ],
   "source_health": {
