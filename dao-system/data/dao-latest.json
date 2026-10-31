@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-30T02:32:11+00:00",
+  "generated_at": "2026-10-31T02:15:36+00:00",
   "state": {
     "key": "balanced_hold",
     "label": "平衡持有",
@@ -34,7 +34,7 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.67% / 10Y real yield 2.67%; 13周变化 0.26百分点 / 13w delta 0.26 pp"
+          "detail": "10年期实际收益率 2.63% / 10Y real yield 2.63%; 13周变化 0.22百分点 / 13w delta 0.22 pp"
         },
         {
           "name": "Dollar pressure",
@@ -46,7 +46,7 @@
           "name": "Risk appetite",
           "score": 0,
           "stance": "mixed",
-          "detail": "VIX 16.91; 高收益债利差13周变化 0.27百分点 / HY OAS 13w delta 0.27 pp"
+          "detail": "VIX 17.20; 高收益债利差13周变化 0.42百分点 / HY OAS 13w delta 0.42 pp"
         },
         {
           "name": "BTC trend",
@@ -83,7 +83,7 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 32.7"
+          "detail": "RSI14 33.4"
         },
         {
           "name": "30d drawdown",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 156.9 days old"
+          "detail": "snapshot is 157.8 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-10-30",
-    "price": 77192.07,
-    "ma95": 76757.9745263158,
-    "ma200": 73113.75405,
+    "date": "2026-10-31",
+    "price": 77258.65,
+    "ma95": 76899.02589473684,
+    "ma200": 73129.09385,
     "above_ma95": true,
     "above_ma200": true,
-    "rsi14": 32.657474688512735,
-    "atr14": 1968.4435714285719,
+    "rsi14": 33.37318276115363,
+    "atr14": 1979.4585714285724,
     "high_30d": 87249.05,
-    "low_30d": 76301.02,
-    "drawdown_from_30d_high": -0.11526750147995879
+    "low_30d": 76141.02,
+    "drawdown_from_30d_high": -0.11450439861522854
   },
   "market_structure": {
     "schema_version": 1,
