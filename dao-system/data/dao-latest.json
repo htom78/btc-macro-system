@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-03T03:54:11+00:00",
+  "generated_at": "2026-11-04T02:58:54+00:00",
   "state": {
     "key": "defensive_pause",
     "label": "逆风防守",
@@ -14,9 +14,9 @@
       "id": "heaven",
       "name": "天",
       "en": "Macro liquidity",
-      "score": -3,
+      "score": -4,
       "stance": "hostile",
-      "detail": "macro score -3; regime hostile",
+      "detail": "macro score -4; regime hostile",
       "inputs": [
         {
           "name": "USD liquidity",
@@ -32,9 +32,9 @@
         },
         {
           "name": "Real-rate pressure",
-          "score": -1,
+          "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.60% / 10Y real yield 2.60%; 13周变化 0.13百分点 / 13w delta 0.13 pp"
+          "detail": "10年期实际收益率 2.62% / 10Y real yield 2.62%; 13周变化 0.19百分点 / 13w delta 0.19 pp"
         },
         {
           "name": "Dollar pressure",
@@ -46,7 +46,7 @@
           "name": "Risk appetite",
           "score": -1,
           "stance": "hostile",
-          "detail": "VIX 19.42; 高收益债利差13周变化 0.59百分点 / HY OAS 13w delta 0.59 pp"
+          "detail": "VIX 21.15; 高收益债利差13周变化 0.65百分点 / HY OAS 13w delta 0.65 pp"
         },
         {
           "name": "BTC trend",
@@ -66,8 +66,8 @@
       "id": "earth",
       "name": "地",
       "en": "Market structure",
-      "score": -2,
-      "stance": "hostile",
+      "score": -1,
+      "stance": "mixed",
       "detail": "trend, washout, ETF flow, and reserved derivatives inputs",
       "inputs": [
         {
@@ -82,13 +82,13 @@
         },
         {
           "name": "RSI washout",
-          "score": 0,
-          "detail": "RSI14 26.8"
+          "score": 1,
+          "detail": "RSI14 21.7"
         },
         {
           "name": "30d drawdown",
           "score": 0,
-          "detail": "-11.7% from 30d high"
+          "detail": "-12.0% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 160.9 days old"
+          "detail": "snapshot is 161.9 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-11-03",
-    "price": 76833.89,
-    "ma95": 77324.92021052631,
-    "ma200": 73153.1263,
+    "date": "2026-11-04",
+    "price": 76310.99,
+    "ma95": 77472.8112631579,
+    "ma200": 73158.51145,
     "above_ma95": false,
     "above_ma200": true,
-    "rsi14": 26.838801913187226,
-    "atr14": 1899.4278571428586,
-    "high_30d": 86996.0,
+    "rsi14": 21.682983094252535,
+    "atr14": 1883.2371428571444,
+    "high_30d": 86698.35,
     "low_30d": 76141.02,
-    "drawdown_from_30d_high": -0.1168112327003541
+    "drawdown_from_30d_high": -0.11981035394560569
   },
   "market_structure": {
     "schema_version": 1,
