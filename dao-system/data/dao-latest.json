@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-05T03:25:47+00:00",
+  "generated_at": "2026-11-06T03:21:22+00:00",
   "state": {
     "key": "defensive_pause",
     "label": "逆风防守",
-    "score": -6,
+    "score": -7,
     "confidence": "medium-low",
     "action": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。",
     "score_formula": "天 + 地 + 人"
@@ -14,15 +14,15 @@
       "id": "heaven",
       "name": "天",
       "en": "Macro liquidity",
-      "score": -4,
+      "score": -3,
       "stance": "hostile",
-      "detail": "macro score -4; regime hostile",
+      "detail": "macro score -3; regime hostile",
       "inputs": [
         {
           "name": "USD liquidity",
           "score": 1,
           "stance": "supportive",
-          "detail": "M2 3个月年化 6.0% / M2 3m annualized 6.0%; 联储资产负债表13周 0.1% / Fed balance sheet 13w 0.1%"
+          "detail": "M2 3个月年化 6.0% / M2 3m annualized 6.0%; 联储资产负债表13周 -0.0% / Fed balance sheet 13w -0.0%"
         },
         {
           "name": "Inflation constraint",
@@ -34,7 +34,7 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.65% / 10Y real yield 2.65%; 13周变化 0.25百分点 / 13w delta 0.25 pp"
+          "detail": "10年期实际收益率 2.64% / 10Y real yield 2.64%; 13周变化 0.23百分点 / 13w delta 0.23 pp"
         },
         {
           "name": "Dollar pressure",
@@ -44,9 +44,9 @@
         },
         {
           "name": "Risk appetite",
-          "score": -1,
-          "stance": "hostile",
-          "detail": "VIX 20.83; 高收益债利差13周变化 0.67百分点 / HY OAS 13w delta 0.67 pp"
+          "score": 0,
+          "stance": "mixed",
+          "detail": "VIX 16.61; 高收益债利差13周变化 0.57百分点 / HY OAS 13w delta 0.57 pp"
         },
         {
           "name": "BTC trend",
@@ -66,14 +66,14 @@
       "id": "earth",
       "name": "地",
       "en": "Market structure",
-      "score": 0,
-      "stance": "mixed",
+      "score": -2,
+      "stance": "hostile",
       "detail": "trend, washout, ETF flow, and reserved derivatives inputs",
       "inputs": [
         {
           "name": "MA95 trend",
-          "score": 1,
-          "detail": "above MA95"
+          "score": -1,
+          "detail": "below MA95"
         },
         {
           "name": "MA200 regime",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 0,
-          "detail": "RSI14 47.4"
+          "detail": "RSI14 35.0"
         },
         {
           "name": "30d drawdown",
           "score": 0,
-          "detail": "-5.8% from 30d high"
+          "detail": "-10.5% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 162.9 days old"
+          "detail": "snapshot is 163.9 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-11-05",
-    "price": 80621.35,
-    "ma95": 77696.38157894737,
-    "ma200": 73213.0891,
-    "above_ma95": true,
+    "date": "2026-11-06",
+    "price": 75906.38,
+    "ma95": 77778.35610526316,
+    "ma200": 73190.03525,
+    "above_ma95": false,
     "above_ma200": true,
-    "rsi14": 47.394645767405834,
-    "atr14": 1994.9178571428586,
-    "high_30d": 85601.11,
-    "low_30d": 75600.64,
-    "drawdown_from_30d_high": -0.058174011995872466
+    "rsi14": 35.01951183339399,
+    "atr14": 2288.6800000000003,
+    "high_30d": 84856.07,
+    "low_30d": 75035.1,
+    "drawdown_from_30d_high": -0.10546906072836038
   },
   "market_structure": {
     "schema_version": 1,
