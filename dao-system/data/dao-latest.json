@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-15T02:32:14+00:00",
+  "generated_at": "2026-11-16T02:40:47+00:00",
   "state": {
     "key": "defensive_pause",
     "label": "逆风防守",
-    "score": -8,
+    "score": -9,
     "confidence": "medium-low",
     "action": "核心仓不动，战术仓暂停买回，等待 ETF/趋势修复。",
     "score_formula": "天 + 地 + 人"
@@ -52,7 +52,7 @@
           "name": "BTC trend",
           "score": -1,
           "stance": "hostile",
-          "detail": "价格 $68,232 / Price $68,232; 200日均线 $73,036 / 200d MA $73,036"
+          "detail": "价格 $64,119 / Price $64,119; 200日均线 $72,975 / 200d MA $72,975"
         },
         {
           "name": "Fiscal pressure",
@@ -66,7 +66,7 @@
       "id": "earth",
       "name": "地",
       "en": "Market structure",
-      "score": -2,
+      "score": -3,
       "stance": "hostile",
       "detail": "trend, washout, ETF flow, and reserved derivatives inputs",
       "inputs": [
@@ -82,13 +82,13 @@
         },
         {
           "name": "RSI washout",
-          "score": 1,
-          "detail": "RSI14 21.3"
+          "score": 0,
+          "detail": "RSI14 25.0"
         },
         {
           "name": "30d drawdown",
           "score": 1,
-          "detail": "-23.8% from 30d high"
+          "detail": "-23.1% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 172.9 days old"
+          "detail": "snapshot is 173.9 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-11-15",
-    "price": 64647.94,
-    "ma95": 78443.2554736842,
-    "ma200": 72917.6882,
+    "date": "2026-11-16",
+    "price": 65275.39,
+    "ma95": 78469.75494736842,
+    "ma200": 72865.8733,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 21.302360487183023,
-    "atr14": 2949.037857142858,
+    "rsi14": 25.020270880321604,
+    "atr14": 2950.272142857143,
     "high_30d": 84856.07,
     "low_30d": 61946.17,
-    "drawdown_from_30d_high": -0.2381459570305342
+    "drawdown_from_30d_high": -0.23075167162466992
   },
   "market_structure": {
     "schema_version": 1,
