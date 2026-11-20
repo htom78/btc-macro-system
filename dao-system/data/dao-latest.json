@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-19T04:05:11+00:00",
+  "generated_at": "2026-11-20T03:56:24+00:00",
   "state": {
     "key": "defensive_pause",
     "label": "逆风防守",
@@ -16,13 +16,13 @@
       "en": "Macro liquidity",
       "score": -4,
       "stance": "hostile",
-      "detail": "macro score -7; regime hostile",
+      "detail": "macro score -6; regime hostile",
       "inputs": [
         {
           "name": "USD liquidity",
           "score": 1,
           "stance": "supportive",
-          "detail": "M2 3个月年化 6.0% / M2 3m annualized 6.0%; 联储资产负债表13周 -0.0% / Fed balance sheet 13w -0.0%"
+          "detail": "M2 3个月年化 6.0% / M2 3m annualized 6.0%; 联储资产负债表13周 -0.1% / Fed balance sheet 13w -0.1%"
         },
         {
           "name": "Inflation constraint",
@@ -34,7 +34,7 @@
           "name": "Real-rate pressure",
           "score": -2,
           "stance": "hostile",
-          "detail": "10年期实际收益率 2.89% / 10Y real yield 2.89%; 13周变化 0.48百分点 / 13w delta 0.48 pp"
+          "detail": "10年期实际收益率 2.88% / 10Y real yield 2.88%; 13周变化 0.53百分点 / 13w delta 0.53 pp"
         },
         {
           "name": "Dollar pressure",
@@ -44,15 +44,15 @@
         },
         {
           "name": "Risk appetite",
-          "score": -2,
+          "score": -1,
           "stance": "hostile",
-          "detail": "VIX 25.46; 高收益债利差13周变化 0.68百分点 / HY OAS 13w delta 0.68 pp"
+          "detail": "VIX 24.56; 高收益债利差13周变化 0.74百分点 / HY OAS 13w delta 0.74 pp"
         },
         {
           "name": "BTC trend",
           "score": -1,
           "stance": "hostile",
-          "detail": "价格 $64,818 / Price $64,818; 200日均线 $72,865 / 200d MA $72,865"
+          "detail": "价格 $62,985 / Price $62,985; 200日均线 $72,720 / 200d MA $72,720"
         },
         {
           "name": "Fiscal pressure",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 1,
-          "detail": "RSI14 14.2"
+          "detail": "RSI14 12.2"
         },
         {
           "name": "30d drawdown",
           "score": 1,
-          "detail": "-25.2% from 30d high"
+          "detail": "-26.3% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 176.9 days old"
+          "detail": "snapshot is 177.9 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-11-19",
-    "price": 63446.45,
-    "ma95": 78490.93536842105,
-    "ma200": 72642.71075,
+    "date": "2026-11-20",
+    "price": 62105.61,
+    "ma95": 78449.75863157895,
+    "ma200": 72546.31085,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 14.167365333714912,
-    "atr14": 2524.623571428571,
-    "high_30d": 84856.07,
-    "low_30d": 61946.17,
-    "drawdown_from_30d_high": -0.25230510911004966
+    "rsi14": 12.218435712364567,
+    "atr14": 2616.337142857143,
+    "high_30d": 84305.25,
+    "low_30d": 61220.0,
+    "drawdown_from_30d_high": -0.263324526052648
   },
   "market_structure": {
     "schema_version": 1,
