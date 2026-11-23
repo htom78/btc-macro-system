@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-22T02:59:21+00:00",
+  "generated_at": "2026-11-23T03:40:09+00:00",
   "state": {
     "key": "defensive_pause",
     "label": "逆风防守",
@@ -52,7 +52,7 @@
           "name": "BTC trend",
           "score": -1,
           "stance": "hostile",
-          "detail": "价格 $58,787 / Price $58,787; 200日均线 $72,531 / 200d MA $72,531"
+          "detail": "价格 $60,088 / Price $60,088; 200日均线 $72,427 / 200d MA $72,427"
         },
         {
           "name": "Fiscal pressure",
@@ -83,12 +83,12 @@
         {
           "name": "RSI washout",
           "score": 1,
-          "detail": "RSI14 14.9"
+          "detail": "RSI14 18.5"
         },
         {
           "name": "30d drawdown",
           "score": 1,
-          "detail": "-27.5% from 30d high"
+          "detail": "-25.0% from 30d high"
         },
         {
           "name": "ETF flow",
@@ -118,24 +118,24 @@
         {
           "name": "mNAV staleness",
           "score": -1,
-          "detail": "snapshot is 179.9 days old"
+          "detail": "snapshot is 180.9 days old"
         }
       ]
     }
   ],
   "btc": {
     "source": "coinbase",
-    "date": "2026-11-22",
-    "price": 59347.16,
-    "ma95": 78261.98178947368,
-    "ma200": 72315.29445,
+    "date": "2026-11-23",
+    "price": 61409.87,
+    "ma95": 78158.96968421053,
+    "ma200": 72231.39615,
     "above_ma95": false,
     "above_ma200": false,
-    "rsi14": 14.864107976552546,
-    "atr14": 3113.19,
+    "rsi14": 18.530633835940634,
+    "atr14": 3235.758571428572,
     "high_30d": 81890.0,
     "low_30d": 55106.0,
-    "drawdown_from_30d_high": -0.27528196360972035
+    "drawdown_from_30d_high": -0.250093173769691
   },
   "market_structure": {
     "schema_version": 1,
